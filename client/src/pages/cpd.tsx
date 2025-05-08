@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { cpdRecordsStorage } from "@/lib/storage";
 import CpdForm from "@/components/forms/cpd-form";
 import DocumentManager from "@/components/documents/document-manager";
+import AIHelperCard from "@/components/ai/ai-helper-card";
 import type { CpdRecord } from "@shared/schema";
 
 export default function CPDPage() {

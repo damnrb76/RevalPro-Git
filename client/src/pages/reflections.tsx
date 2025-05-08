@@ -12,6 +12,7 @@ import { reflectiveAccountsStorage, reflectiveDiscussionStorage } from "@/lib/st
 import ReflectionForm from "@/components/forms/reflection-form";
 import ReflectiveDiscussionForm from "@/components/forms/reflective-discussion-form";
 import DocumentManager from "@/components/documents/document-manager";
+import AIHelperCard from "@/components/ai/ai-helper-card";
 import { CodeSectionsEnum } from "@shared/schema";
 import type { ReflectiveAccount, ReflectiveDiscussion } from "@shared/schema";
 
@@ -451,11 +452,29 @@ export default function ReflectionsPage() {
           meeting notes, or any documents related to your reflective accounts and discussion.
         </p>
         
-        <DocumentManager 
-          category="reflections"
-          title="Reflection Evidence"
-          description="Upload documents that support your reflective accounts and discussion, such as meeting notes or signed discussion forms."
-        />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+          <div className="lg:col-span-2">
+            <DocumentManager 
+              category="reflections"
+              title="Reflection Evidence"
+              description="Upload documents that support your reflective accounts and discussion, such as meeting notes or signed discussion forms."
+            />
+          </div>
+          
+          <div>
+            <AIHelperCard 
+              title="Reflection Assistant" 
+              description="Get help with writing effective reflections for your revalidation"
+              suggestedQuestions={[
+                "How do I write a good reflective account?",
+                "What should I include in my reflection?",
+                "How do I link my reflection to The Code?",
+                "Can you help me structure my reflection?"
+              ]}
+              defaultTab="reflection"
+            />
+          </div>
+        </div>
       </section>
     </main>
   );

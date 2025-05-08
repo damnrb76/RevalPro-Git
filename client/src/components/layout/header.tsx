@@ -71,6 +71,10 @@ export default function Header({ logo }: HeaderProps) {
             {userProfile?.name || "Welcome"}
           </div>
           
+          <div className="mr-3 hidden sm:block">
+            <AssistantButton variant="secondary" size="sm" />
+          </div>
+          
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="p-2 rounded-full bg-revalpro-purple text-white hover:bg-revalpro-purple/90">
@@ -106,6 +110,9 @@ export default function Header({ logo }: HeaderProps) {
                 )}
               </DropdownMenuItem>
               <DropdownMenuSeparator />
+              <DropdownMenuItem className="sm:hidden block">
+                <AssistantButton variant="ghost" className="w-full justify-start p-0 hover:bg-transparent" />
+              </DropdownMenuItem>
               <a 
                 href="https://www.nmc.org.uk/revalidation/" 
                 target="_blank" 
