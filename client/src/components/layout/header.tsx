@@ -13,6 +13,7 @@ import {
 import { LogOut, User, Settings, HelpCircle, MoonStar, Sun } from "lucide-react";
 import { userProfileStorage } from "@/lib/storage";
 import { useTheme } from "@/components/ui/theme-provider";
+import AssistantButton from "@/components/ai/assistant-button";
 
 type HeaderProps = {
   logo: string;
