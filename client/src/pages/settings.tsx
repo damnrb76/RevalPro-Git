@@ -22,7 +22,7 @@ import {
   getSetting,
   setSetting
 } from "@/lib/storage";
-import { downloadRawData, downloadRevalidationSummary } from "@/lib/pdf-generator";
+import { downloadRawData, downloadSummaryReport } from "@/lib/pdf-generator";
 import UserProfileForm from "@/components/forms/user-profile-form";
 import ProfileImageUploader from "@/components/profile/profile-image-uploader";
 import type { UserProfile } from "@shared/schema";
@@ -92,7 +92,7 @@ export default function SettingsPage() {
   
   const handleExportSummary = async () => {
     try {
-      await downloadRevalidationSummary();
+      await downloadSummaryReport();
       toast({
         title: "Summary exported",
         description: "Your revalidation summary has been exported successfully.",
