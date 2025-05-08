@@ -119,20 +119,20 @@ export default function RevalidationSummary({
             
             <div className="flex flex-col">
               <div className="mb-4">
-                <h3 className="text-md font-semibold text-nhs-black mb-2">Upcoming Revalidation</h3>
+                <h3 className="text-md font-semibold text-revalpro-dark-blue mb-2">Upcoming Revalidation</h3>
                 {userProfile ? (
                   <div className="grid grid-cols-2 gap-2 text-sm">
-                    <div className="text-nhs-dark-grey">Registration Number:</div>
-                    <div className="font-medium">{userProfile.registrationNumber}</div>
+                    <div className="text-revalpro-black">Registration Number:</div>
+                    <div className="font-medium text-revalpro-black">{userProfile.registrationNumber}</div>
                     
-                    <div className="text-nhs-dark-grey">Expiry Date:</div>
-                    <div className="font-medium">{formatDateFull(userProfile.expiryDate)}</div>
+                    <div className="text-revalpro-black">Expiry Date:</div>
+                    <div className="font-medium text-revalpro-black">{formatDateFull(userProfile.expiryDate)}</div>
                     
-                    <div className="text-nhs-dark-grey">Revalidation Due:</div>
-                    <div className="font-medium">3-year cycle ending</div>
+                    <div className="text-revalpro-black">Revalidation Due:</div>
+                    <div className="font-medium text-revalpro-black">3-year cycle ending</div>
                   </div>
                 ) : (
-                  <div className="text-sm text-nhs-dark-grey">
+                  <div className="text-sm text-revalpro-black">
                     <p>No profile information found. Please set up your profile in Settings.</p>
                     <Link href="/settings">
                       <span className="text-revalpro-blue hover:underline mt-2 inline-block cursor-pointer">
@@ -144,11 +144,15 @@ export default function RevalidationSummary({
               </div>
               
               <div className="mt-auto flex flex-col space-y-2">
-                <Button>
+                <Button className="bg-revalpro-blue hover:bg-revalpro-dark-blue">
                   <ListCheck className="mr-2 h-4 w-4" />
                   View Revalidation Checklist
                 </Button>
-                <Button variant="outline" onClick={handleExportSummary}>
+                <Button 
+                  variant="outline" 
+                  onClick={handleExportSummary}
+                  className="text-revalpro-blue border-revalpro-blue hover:bg-revalpro-grey"
+                >
                   <Download className="mr-2 h-4 w-4" />
                   Export Revalidation Data
                 </Button>

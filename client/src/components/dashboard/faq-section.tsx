@@ -50,8 +50,8 @@ export default function FaqSection() {
   
   return (
     <section>
-      <h2 className="text-xl font-bold text-nhs-black mb-4">Frequently Asked Questions</h2>
-      <Card className="divide-y divide-nhs-pale-grey">
+      <h2 className="text-xl font-bold text-revalpro-black mb-4">Frequently Asked Questions</h2>
+      <Card className="divide-y divide-revalpro-grey">
         {faqItems.map((item, index) => (
           <div className="p-5" key={index}>
             <button 
@@ -59,15 +59,15 @@ export default function FaqSection() {
               onClick={() => toggleFAQ(index)}
               aria-expanded={openIndex === index}
             >
-              <h3 className="font-semibold text-nhs-black">{item.question}</h3>
+              <h3 className="font-semibold text-revalpro-dark-blue">{item.question}</h3>
               {openIndex === index ? (
-                <ChevronUp className="w-5 h-5 text-nhs-blue" />
+                <ChevronUp className="w-5 h-5 text-revalpro-blue" />
               ) : (
-                <ChevronDown className="w-5 h-5 text-nhs-blue" />
+                <ChevronDown className="w-5 h-5 text-revalpro-blue" />
               )}
             </button>
             <div className={cn(
-              "mt-2 text-sm text-nhs-dark-grey transition-all duration-200 overflow-hidden",
+              "mt-2 text-sm text-revalpro-black transition-all duration-200 overflow-hidden",
               openIndex === index ? "max-h-96" : "max-h-0"
             )}>
               <p>{item.answer}</p>

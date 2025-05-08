@@ -47,24 +47,24 @@ export default function NmcGuidance() {
   
   return (
     <section className="mb-8">
-      <h2 className="text-xl font-bold text-nhs-black mb-4">NMC Guidance</h2>
+      <h2 className="text-xl font-bold text-revalpro-black mb-4">NMC Guidance</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {revalidationGuidelines && (
           <div className="bg-white rounded-lg shadow-md p-5">
             <div className="flex items-start">
-              <div className="mr-4 text-nhs-blue text-2xl">
+              <div className="mr-4 text-revalpro-blue text-2xl">
                 <Book className="h-7 w-7" />
               </div>
               <div>
-                <h3 className="font-semibold mb-2">{revalidationGuidelines.title}</h3>
-                <p className="text-sm text-nhs-dark-grey mb-3">
+                <h3 className="font-semibold text-revalpro-dark-blue mb-2">{revalidationGuidelines.title}</h3>
+                <p className="text-sm text-revalpro-black mb-3">
                   {revalidationGuidelines.description}
                 </p>
                 <a 
                   href={revalidationGuidelines.url}
                   target="_blank" 
                   rel="noopener noreferrer" 
-                  className="text-nhs-blue text-sm font-medium hover:underline"
+                  className="text-revalpro-blue text-sm font-medium hover:underline"
                 >
                   View Guidelines
                 </a>
@@ -76,19 +76,19 @@ export default function NmcGuidance() {
         {theCode && (
           <div className="bg-white rounded-lg shadow-md p-5">
             <div className="flex items-start">
-              <div className="mr-4 text-nhs-blue text-2xl">
+              <div className="mr-4 text-revalpro-green text-2xl">
                 <Newspaper className="h-7 w-7" />
               </div>
               <div>
-                <h3 className="font-semibold mb-2">{theCode.title}</h3>
-                <p className="text-sm text-nhs-dark-grey mb-3">
+                <h3 className="font-semibold text-revalpro-dark-blue mb-2">{theCode.title}</h3>
+                <p className="text-sm text-revalpro-black mb-3">
                   {theCode.description}
                 </p>
                 <a 
                   href={theCode.url}
                   target="_blank" 
                   rel="noopener noreferrer" 
-                  className="text-nhs-blue text-sm font-medium hover:underline"
+                  className="text-revalpro-green text-sm font-medium hover:underline"
                 >
                   View The Code
                 </a>

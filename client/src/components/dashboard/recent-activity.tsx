@@ -104,32 +104,32 @@ export default function RecentActivity() {
   return (
     <section className="mb-8">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold text-nhs-black">Recent Activity</h2>
+        <h2 className="text-xl font-bold text-revalpro-black">Recent Activity</h2>
         <Link href="/">
-          <a className="text-nhs-blue text-sm hover:underline">View All</a>
+          <span className="text-revalpro-blue text-sm hover:underline cursor-pointer">View All</span>
         </Link>
       </div>
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
         {recentActivities.length > 0 ? (
           <table className="min-w-full">
-            <thead className="bg-nhs-pale-grey">
+            <thead className="bg-revalpro-grey">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-nhs-dark-grey uppercase tracking-wider">Date</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-nhs-dark-grey uppercase tracking-wider">Category</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-nhs-dark-grey uppercase tracking-wider">Activity</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-nhs-dark-grey uppercase tracking-wider">Status</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-revalpro-dark-blue uppercase tracking-wider">Date</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-revalpro-dark-blue uppercase tracking-wider">Category</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-revalpro-dark-blue uppercase tracking-wider">Activity</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-revalpro-dark-blue uppercase tracking-wider">Status</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-nhs-pale-grey">
+            <tbody className="divide-y divide-revalpro-grey">
               {recentActivities.map((activity, index) => (
                 <tr key={`${activity.category}-${activity.id}-${index}`}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-nhs-dark-grey">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-revalpro-black">
                     {formatDateShort(activity.date)}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-nhs-dark-grey">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-revalpro-black">
                     {activity.category}
                   </td>
-                  <td className="px-6 py-4 text-sm text-nhs-dark-grey">
+                  <td className="px-6 py-4 text-sm text-revalpro-black">
                     {activity.activity}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -145,8 +145,8 @@ export default function RecentActivity() {
           </table>
         ) : (
           <div className="p-6 text-center">
-            <p className="text-nhs-dark-grey">No recent activity found.</p>
-            <p className="text-sm text-nhs-dark-grey mt-1">
+            <p className="text-revalpro-black">No recent activity found.</p>
+            <p className="text-sm text-revalpro-dark-blue mt-1">
               Start recording your revalidation activities to see them here.
             </p>
           </div>
