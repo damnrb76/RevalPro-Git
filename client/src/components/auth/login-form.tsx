@@ -99,7 +99,7 @@ export default function LoginForm() {
         <div className="text-sm text-muted-foreground text-center">
           <p>Demo Account</p>
           <p>Username: <span className="font-mono">demouser</span></p>
-          <p>Password: <span className="font-mono">password123</span></p>
+          <p>Password: <span className="font-mono">hello</span></p>
         </div>
       </form>
     </Form>
