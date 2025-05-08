@@ -174,7 +174,7 @@ export default function HealthCharacterForm({ initialData, onClose, onSuccess }:
             
             {/* Character Declaration */}
             <div className="space-y-4">
-              <h3 className="font-semibold text-nhs-black">Character Declaration</h3>
+              <h3 className="font-semibold text-revalpro-dark-blue">Character Declaration</h3>
               
               <FormField
                 control={form.control}
@@ -256,6 +256,7 @@ export default function HealthCharacterForm({ initialData, onClose, onSuccess }:
               </Button>
               <Button 
                 type="submit"
+                className="bg-revalpro-blue hover:bg-revalpro-dark-blue"
                 disabled={mutation.isPending}
               >
                 {mutation.isPending ? "Saving..." : initialData ? "Update" : "Complete"}
