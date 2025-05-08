@@ -8,7 +8,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { InfoIcon, PlusCircle, AlertTriangle, Clock, CheckCircle2, FileText } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { reflectiveAccountsStorage } from "@/lib/storage";
+import { reflectiveAccountsStorage, reflectiveDiscussionStorage } from "@/lib/storage";
 import ReflectionForm from "@/components/forms/reflection-form";
 import ReflectiveDiscussionForm from "@/components/forms/reflective-discussion-form";
 import DocumentManager from "@/components/documents/document-manager";
@@ -38,7 +38,7 @@ export default function ReflectionsPage() {
   const { data: reflectiveDiscussion } = useQuery({
     queryKey: ['reflectiveDiscussion'],
     queryFn: async () => {
-      return reflectiveAccountsStorage.getCurrent();
+      return reflectiveDiscussionStorage.getCurrent();
     },
   });
   
@@ -434,11 +434,29 @@ export default function ReflectionsPage() {
       {/* Reflective Discussion Form Dialog */}
       {isDiscussionFormOpen && (
         <ReflectiveDiscussionForm 
-          initialData={reflectiveDiscussion as ReflectiveDiscussion}
+          initialData={reflectiveDiscussion as unknown as ReflectiveDiscussion}
           onClose={handleDiscussionFormClose}
           onSuccess={handleDiscussionFormSuccess}
         />
       )}
+      
+      {/* Document Manager Section */}
+      <section className="mb-8">
+        <div className="flex items-center space-x-2 mb-4">
+          <FileText className="h-5 w-5 text-nhs-blue" />
+          <h2 className="text-xl font-semibold">Reflection Documents</h2>
+        </div>
+        <p className="text-nhs-dark-grey mb-4">
+          Upload and manage supporting documents for your reflective practice. Store certificates, 
+          meeting notes, or any documents related to your reflective accounts and discussion.
+        </p>
+        
+        <DocumentManager 
+          category="reflections"
+          title="Reflection Evidence"
+          description="Upload documents that support your reflective accounts and discussion, such as meeting notes or signed discussion forms."
+        />
+      </section>
     </main>
   );
 }
