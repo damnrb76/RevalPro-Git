@@ -349,11 +349,29 @@ export default function CPDPage() {
           participation in courses, workshops, and other learning activities.
         </p>
         
-        <DocumentManager 
-          category="cpd"
-          title="CPD Evidence"
-          description="Upload certificates, attendance records, and other evidence of your continuing professional development activities."
-        />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+          <div className="lg:col-span-2">
+            <DocumentManager 
+              category="cpd"
+              title="CPD Evidence"
+              description="Upload certificates, attendance records, and other evidence of your continuing professional development activities."
+            />
+          </div>
+          
+          <div>
+            <AIHelperCard 
+              title="CPD Assistant" 
+              description="Get help finding and recording CPD activities"
+              suggestedQuestions={[
+                "What counts as participatory learning?",
+                "Can you suggest CPD activities for my specialty?",
+                "How should I evidence my CPD?",
+                "What are good CPD activities for nurses?"
+              ]}
+              defaultTab="cpd"
+            />
+          </div>
+        </div>
       </section>
       
       {/* CPD Form Dialog */}
