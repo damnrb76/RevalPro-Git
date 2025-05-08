@@ -56,8 +56,8 @@ export default function RevalidationSummary({
             <div>
               <div className="mb-4">
                 <div className="flex justify-between mb-2">
-                  <span className="text-sm font-medium text-nhs-dark-grey">Overall Completion</span>
-                  <span className="text-sm font-medium text-nhs-dark-grey">{overallPercentage}%</span>
+                  <span className="text-sm font-medium text-revalpro-black">Overall Completion</span>
+                  <span className="text-sm font-medium text-revalpro-black">{overallPercentage}%</span>
                 </div>
                 <Progress 
                   value={overallPercentage} 
@@ -75,7 +75,7 @@ export default function RevalidationSummary({
                   <Progress 
                     value={practiceHours} 
                     max={450} 
-                    variant="nhs-blue"
+                    variant="revalpro-blue"
                   />
                 </div>
                 
@@ -87,7 +87,7 @@ export default function RevalidationSummary({
                   <Progress 
                     value={cpdHours} 
                     max={35} 
-                    variant="nhs-blue"
+                    variant="revalpro-green"
                   />
                 </div>
                 
@@ -99,7 +99,7 @@ export default function RevalidationSummary({
                   <Progress 
                     value={feedbackCount} 
                     max={5} 
-                    variant="nhs-blue"
+                    variant="revalpro-orange"
                   />
                 </div>
                 
@@ -111,7 +111,7 @@ export default function RevalidationSummary({
                   <Progress 
                     value={reflectionsCount} 
                     max={5} 
-                    variant="nhs-blue"
+                    variant="revalpro-purple"
                   />
                 </div>
               </div>
@@ -135,9 +135,9 @@ export default function RevalidationSummary({
                   <div className="text-sm text-nhs-dark-grey">
                     <p>No profile information found. Please set up your profile in Settings.</p>
                     <Link href="/settings">
-                      <a className="text-nhs-blue hover:underline mt-2 inline-block">
+                      <span className="text-revalpro-blue hover:underline mt-2 inline-block cursor-pointer">
                         Set up profile
-                      </a>
+                      </span>
                     </Link>
                   </div>
                 )}
