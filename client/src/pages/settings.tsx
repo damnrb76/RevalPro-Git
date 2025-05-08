@@ -31,6 +31,11 @@ export default function SettingsPage() {
   const [isProfileFormOpen, setIsProfileFormOpen] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
   const [isClearing, setIsClearing] = useState(false);
+  const [activeTab, setActiveTab] = useState<string>(() => {
+    // Get tab from URL if present, otherwise default to "profile"
+    const params = new URLSearchParams(window.location.search);
+    return params.get('tab') || 'profile';
+  });
   const { toast } = useToast();
   const { theme, setTheme } = useTheme();
   const queryClient = useQueryClient();
@@ -175,7 +180,7 @@ export default function SettingsPage() {
         <p className="text-nhs-dark-grey">Manage your profile and application settings</p>
       </div>
       
-      <Tabs defaultValue="profile" className="mb-6">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6">
         <TabsList>
           <TabsTrigger value="profile">Profile</TabsTrigger>
           <TabsTrigger value="data">Data Management</TabsTrigger>

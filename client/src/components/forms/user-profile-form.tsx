@@ -70,16 +70,20 @@ export default function UserProfileForm({ initialData, onClose, onSuccess }: Use
       if (initialData) {
         // Update existing profile, preserving the profile image if it exists
         await userProfileStorage.update(initialData.id, {
-          ...data,
-          expiryDate: new Date(data.expiryDate),
+          name: data.name,
+          registrationNumber: data.registrationNumber,
+          expiryDate: new Date(data.expiryDate), 
+          email: data.email,
           profileImage: initialData.profileImage, // Preserve the existing profile image
         });
         return initialData.id;
       } else {
         // Create new profile
         return await userProfileStorage.add({
-          ...data,
+          name: data.name,
+          registrationNumber: data.registrationNumber,
           expiryDate: new Date(data.expiryDate),
+          email: data.email,
           profileImage: null, // Initialize with no profile image
         });
       }

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
@@ -79,7 +79,11 @@ export default function Header({ logo }: HeaderProps) {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="p-2 rounded-full bg-revalpro-purple text-white hover:bg-revalpro-purple/90">
                 <Avatar className="h-8 w-8 bg-revalpro-purple text-white border-2 border-white">
-                  <AvatarFallback>{initials}</AvatarFallback>
+                  {userProfile?.profileImage ? (
+                    <AvatarImage src={userProfile.profileImage} alt="Profile" className="object-cover" />
+                  ) : (
+                    <AvatarFallback>{initials}</AvatarFallback>
+                  )}
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
