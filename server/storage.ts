@@ -25,13 +25,11 @@ export class MemStorage implements IStorage {
       checkPeriod: 86400000, // 24 hours - prune expired entries
     });
     
-    // Add demo user for testing (using our hashing function from auth.ts)
-    // For demo purposes, we'll create a properly hashed password
-    const hashedPassword = "5d41402abc4b2a76b9719d911017c592.5eb63bbbe01eeed093cb22bb8f5acdc3"; // "hello" with salt
+    // Add demo user for testing with simple hashing
     this.users.set(1, {
       id: 1, 
       username: "demouser",
-      password: hashedPassword,
+      password: "hashed_hello", // Simple hash for "hello"
       created: new Date()
     });
     this.currentId = 2; // Start new users at ID 2
