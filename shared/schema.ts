@@ -96,7 +96,9 @@ export const feedbackRecords = pgTable("feedback_records", {
   created: timestamp("created").notNull().defaultNow(),
 });
 
-export const insertFeedbackRecordSchema = createInsertSchema(feedbackRecords).pick({
+export const insertFeedbackRecordSchema = createInsertSchema(feedbackRecords, {
+  date: z.coerce.date(),
+}).pick({
   date: true,
   source: true,
   content: true,
@@ -117,7 +119,9 @@ export const reflectiveAccounts = pgTable("reflective_accounts", {
   created: timestamp("created").notNull().defaultNow(),
 });
 
-export const insertReflectiveAccountSchema = createInsertSchema(reflectiveAccounts).pick({
+export const insertReflectiveAccountSchema = createInsertSchema(reflectiveAccounts, {
+  date: z.coerce.date(),
+}).pick({
   date: true,
   title: true,
   experience: true,
@@ -139,7 +143,9 @@ export const reflectiveDiscussions = pgTable("reflective_discussions", {
   created: timestamp("created").notNull().defaultNow(),
 });
 
-export const insertReflectiveDiscussionSchema = createInsertSchema(reflectiveDiscussions).pick({
+export const insertReflectiveDiscussionSchema = createInsertSchema(reflectiveDiscussions, {
+  date: z.coerce.date(),
+}).pick({
   date: true,
   partnerName: true,
   partnerNmcPin: true,
@@ -179,7 +185,9 @@ export const confirmations = pgTable("confirmations", {
   created: timestamp("created").notNull().defaultNow(),
 });
 
-export const insertConfirmationSchema = createInsertSchema(confirmations).pick({
+export const insertConfirmationSchema = createInsertSchema(confirmations, {
+  confirmationDate: z.coerce.date(),
+}).pick({
   confirmerName: true,
   confirmerEmail: true,
   confirmerNmcPin: true,
