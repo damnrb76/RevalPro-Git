@@ -185,7 +185,7 @@ export default function DocumentUploader({ category, onUploadComplete }: Documen
               <span>Upload Progress</span>
               <span>{progress}%</span>
             </div>
-            <Progress value={progress} className="h-2" />
+            <Progress value={progress} max={100} className="h-2" />
           </div>
         )}
       </CardContent>

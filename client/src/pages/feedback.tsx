@@ -5,10 +5,11 @@ import { formatDateShort } from "@/lib/date-utils";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { InfoIcon, PlusCircle, AlertTriangle, Clock, CheckCircle2 } from "lucide-react";
+import { InfoIcon, PlusCircle, AlertTriangle, Clock, CheckCircle2, FileText } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { feedbackRecordsStorage } from "@/lib/storage";
 import FeedbackForm from "@/components/forms/feedback-form";
+import DocumentManager from "@/components/documents/document-manager";
 import type { FeedbackRecord } from "@shared/schema";
 
 export default function FeedbackPage() {
@@ -305,6 +306,24 @@ export default function FeedbackPage() {
           </Card>
         </TabsContent>
       </Tabs>
+      
+      {/* Document Manager Section */}
+      <section className="mb-8">
+        <div className="flex items-center space-x-2 mb-4">
+          <FileText className="h-5 w-5 text-nhs-blue" />
+          <h2 className="text-xl font-semibold">Feedback Documents</h2>
+        </div>
+        <p className="text-nhs-dark-grey mb-4">
+          Upload and manage supporting documents for practice-related feedback. Store copies of 
+          written feedback, letters, emails, or screenshots of digital feedback.
+        </p>
+        
+        <DocumentManager 
+          category="feedback"
+          title="Feedback Evidence"
+          description="Upload letters, emails, survey results, appraisal documents, and other evidence of feedback you've received."
+        />
+      </section>
       
       {/* Feedback Form Dialog */}
       {isFormOpen && (
