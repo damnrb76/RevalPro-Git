@@ -22,6 +22,7 @@ export const userProfiles = pgTable("user_profiles", {
   registrationNumber: text("registration_number").notNull(),
   expiryDate: date("expiry_date").notNull(),
   email: text("email"),
+  profileImage: text("profile_image"),
   created: timestamp("created").notNull().defaultNow(),
 });
 
@@ -30,6 +31,7 @@ export const insertUserProfileSchema = createInsertSchema(userProfiles).pick({
   registrationNumber: true,
   expiryDate: true,
   email: true,
+  profileImage: true,
 });
 
 // Practice Hours

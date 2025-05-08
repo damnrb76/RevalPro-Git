@@ -225,6 +225,26 @@ export const userProfileStorage = {
   getCurrent: async () => {
     const profiles = await getAll<UserProfile>(STORES.USER_PROFILE);
     return profiles.length > 0 ? profiles[0] : null;
+  },
+  updateProfileImage: async (imageDataUrl: string): Promise<void> => {
+    const profile = await userProfileStorage.getCurrent();
+    if (profile) {
+      await update<UserProfile>(STORES.USER_PROFILE, profile.id, {
+        profileImage: imageDataUrl
+      });
+    } else {
+      throw new Error('No profile found to update image');
+    }
+  },
+  removeProfileImage: async (): Promise<void> => {
+    const profile = await userProfileStorage.getCurrent();
+    if (profile) {
+      await update<UserProfile>(STORES.USER_PROFILE, profile.id, {
+        profileImage: null
+      });
+    } else {
+      throw new Error('No profile found to remove image');
+    }
   }
 };
 
