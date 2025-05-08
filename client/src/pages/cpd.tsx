@@ -5,11 +5,12 @@ import { formatDateShort } from "@/lib/date-utils";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { InfoIcon, PlusCircle, AlertTriangle, Clock, CheckCircle2 } from "lucide-react";
+import { InfoIcon, PlusCircle, AlertTriangle, Clock, CheckCircle2, FileText } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { cpdRecordsStorage } from "@/lib/storage";
 import CpdForm from "@/components/forms/cpd-form";
+import DocumentManager from "@/components/documents/document-manager";
 import type { CpdRecord } from "@shared/schema";
 
 export default function CPDPage() {
