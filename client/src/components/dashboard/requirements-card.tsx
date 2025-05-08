@@ -49,14 +49,14 @@ export default function RequirementsCard({
   const getProgressVariant = (status: string) => {
     switch (status) {
       case "completed":
-        return "nhs-green";
+        return "revalpro-green";
       case "attention_needed":
-        return "nhs-warm-yellow";
+        return "revalpro-orange";
       case "not_started":
-        return "nhs-red";
+        return "revalpro-pink";
       case "in_progress":
       default:
-        return "nhs-light-blue";
+        return "revalpro-blue";
     }
   };
   
@@ -78,18 +78,18 @@ export default function RequirementsCard({
   return (
     <Card className="p-5 flex flex-col h-full">
       <div className="flex justify-between items-center mb-3">
-        <h3 className="font-semibold">{title}</h3>
+        <h3 className="font-semibold text-revalpro-dark-blue">{title}</h3>
         <Badge variant={getStatusVariant(status)}>
           {getStatusText(status)}
         </Badge>
       </div>
       
-      <p className="text-sm text-nhs-dark-grey mb-3">{description}</p>
+      <p className="text-sm text-revalpro-black mb-3">{description}</p>
       
       <div className="mb-3">
         <div className="flex justify-between text-sm mb-1">
-          <span>Completed</span>
-          <span className="font-medium">
+          <span className="text-revalpro-black">Completed</span>
+          <span className="font-medium text-revalpro-black">
             {completed}/{total} {unit}
             {additionalInfo && ` (${additionalInfo})`}
           </span>
@@ -102,7 +102,10 @@ export default function RequirementsCard({
       </div>
       
       <Link href={linkHref}>
-        <Button className="mt-auto w-full" size="sm">
+        <Button 
+          className="mt-auto w-full bg-revalpro-blue hover:bg-revalpro-dark-blue" 
+          size="sm"
+        >
           {linkText}
         </Button>
       </Link>

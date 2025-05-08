@@ -50,9 +50,9 @@ export default function HealthCharacterForm({ initialData, onClose, onSuccess }:
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData ? {
-      goodHealth: initialData.goodHealth,
+      goodHealth: initialData.goodHealth === null ? false : initialData.goodHealth,
       healthChanges: initialData.healthChanges || "",
-      goodCharacter: initialData.goodCharacter,
+      goodCharacter: initialData.goodCharacter === null ? false : initialData.goodCharacter,
       characterChanges: initialData.characterChanges || "",
       completed: initialData.completed,
     } : {
@@ -124,7 +124,7 @@ export default function HealthCharacterForm({ initialData, onClose, onSuccess }:
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             {/* Health Declaration */}
             <div className="space-y-4">
-              <h3 className="font-semibold text-nhs-black">Health Declaration</h3>
+              <h3 className="font-semibold text-revalpro-dark-blue">Health Declaration</h3>
               
               <FormField
                 control={form.control}

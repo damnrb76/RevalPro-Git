@@ -54,7 +54,7 @@ export default function RequirementsSection({
   
   return (
     <section className="mb-8">
-      <h2 className="text-xl font-bold text-nhs-black mb-4">Revalidation Requirements</h2>
+      <h2 className="text-xl font-bold text-revalpro-black mb-4">Revalidation Requirements</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <RequirementsCard
           title="Practice Hours"
