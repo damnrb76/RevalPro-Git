@@ -72,7 +72,7 @@ export default function UserProfileForm({ initialData, onClose, onSuccess }: Use
         await userProfileStorage.update(initialData.id, {
           name: data.name,
           registrationNumber: data.registrationNumber,
-          expiryDate: new Date(data.expiryDate), 
+          expiryDate: data.expiryDate, 
           email: data.email,
           profileImage: initialData.profileImage, // Preserve the existing profile image
         });
@@ -82,7 +82,7 @@ export default function UserProfileForm({ initialData, onClose, onSuccess }: Use
         return await userProfileStorage.add({
           name: data.name,
           registrationNumber: data.registrationNumber,
-          expiryDate: new Date(data.expiryDate),
+          expiryDate: data.expiryDate,
           email: data.email,
           profileImage: null, // Initialize with no profile image
         });

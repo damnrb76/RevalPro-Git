@@ -72,16 +72,16 @@ export default function PracticeHoursForm({ initialData, onClose, onSuccess }: P
         // Update existing record
         await practiceHoursStorage.update(initialData.id, {
           ...data,
-          startDate: new Date(data.startDate),
-          endDate: new Date(data.endDate),
+          startDate: data.startDate,
+          endDate: data.endDate,
         });
         return initialData.id;
       } else {
         // Create new record
         return await practiceHoursStorage.add({
           ...data,
-          startDate: new Date(data.startDate),
-          endDate: new Date(data.endDate),
+          startDate: data.startDate,
+          endDate: data.endDate,
         });
       }
     },

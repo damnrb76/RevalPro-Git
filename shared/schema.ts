@@ -26,7 +26,9 @@ export const userProfiles = pgTable("user_profiles", {
   created: timestamp("created").notNull().defaultNow(),
 });
 
-export const insertUserProfileSchema = createInsertSchema(userProfiles).pick({
+export const insertUserProfileSchema = createInsertSchema(userProfiles, {
+  expiryDate: z.coerce.date(),
+}).pick({
   name: true,
   registrationNumber: true,
   expiryDate: true,
@@ -46,7 +48,10 @@ export const practiceHours = pgTable("practice_hours", {
   created: timestamp("created").notNull().defaultNow(),
 });
 
-export const insertPracticeHoursSchema = createInsertSchema(practiceHours).pick({
+export const insertPracticeHoursSchema = createInsertSchema(practiceHours, {
+  startDate: z.coerce.date(),
+  endDate: z.coerce.date(),
+}).pick({
   startDate: true,
   endDate: true,
   hours: true,
@@ -68,7 +73,9 @@ export const cpdRecords = pgTable("cpd_records", {
   created: timestamp("created").notNull().defaultNow(),
 });
 
-export const insertCpdRecordSchema = createInsertSchema(cpdRecords).pick({
+export const insertCpdRecordSchema = createInsertSchema(cpdRecords, {
+  date: z.coerce.date(),
+}).pick({
   date: true,
   title: true,
   description: true,
