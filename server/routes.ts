@@ -1,10 +1,13 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { setupAuth } from "./auth";
 
 // Simple server to serve the static frontend
 // The actual data is stored in the browser using IndexedDB
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Set up authentication routes and middleware
+  setupAuth(app);
   // Health check endpoint
   app.get('/api/health', (req, res) => {
     res.json({ status: 'OK', message: 'NurseValidate UK API is running' });

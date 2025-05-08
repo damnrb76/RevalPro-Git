@@ -1,39 +1,36 @@
-import { useState } from "react";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { useLocation } from "wouter";
+
 import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useAuth } from "@/hooks/use-auth";
 import { Loader2 } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/use-auth";
 
-// Form validation schema
+// Login form validation schema
 const loginSchema = z.object({
-  username: z
-    .string()
-    .min(3, { message: "Username must be at least 3 characters" })
-    .max(50, { message: "Username cannot exceed 50 characters" }),
-  password: z
-    .string()
-    .min(6, { message: "Password must be at least 6 characters" }),
+  username: z.string().min(3, {
+    message: "Username must be at least 3 characters.",
+  }),
+  password: z.string().min(6, {
+    message: "Password must be at least 6 characters.",
+  }),
 });
 
 type LoginFormValues = z.infer<typeof loginSchema>;
 
 export default function LoginForm() {
-  const [showPassword, setShowPassword] = useState(false);
   const { loginMutation } = useAuth();
-  const { toast } = useToast();
+  const [, setLocation] = useLocation();
 
   // Initialize the form
   const form = useForm<LoginFormValues>({
@@ -46,17 +43,16 @@ export default function LoginForm() {
 
   // Handle form submission
   const onSubmit = async (values: LoginFormValues) => {
-    try {
-      await loginMutation.mutateAsync(values);
-    } catch (error) {
-      // Error handling is done in the mutation itself via toast
-      console.error("Login error:", error);
-    }
+    loginMutation.mutate(values, {
+      onSuccess: () => {
+        setLocation("/");
+      },
+    });
   };
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <FormField
           control={form.control}
           name="username"
@@ -70,7 +66,6 @@ export default function LoginForm() {
             </FormItem>
           )}
         />
-
         <FormField
           control={form.control}
           name="password"
@@ -78,22 +73,7 @@ export default function LoginForm() {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <div className="relative">
-                  <Input 
-                    type={showPassword ? "text" : "password"} 
-                    placeholder="Enter your password" 
-                    {...field} 
-                  />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="absolute right-0 top-0 h-full px-3 py-2 text-revalpro-blue hover:text-revalpro-dark-blue"
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? "Hide" : "Show"}
-                  </Button>
-                </div>
+                <Input type="password" placeholder="••••••••" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -102,7 +82,7 @@ export default function LoginForm() {
 
         <Button 
           type="submit" 
-          className="w-full bg-revalpro-blue hover:bg-revalpro-dark-blue"
+          className="w-full bg-gradient-to-br from-revalpro-blue to-revalpro-teal hover:from-revalpro-blue/90 hover:to-revalpro-teal/90"
           disabled={loginMutation.isPending}
         >
           {loginMutation.isPending ? (
@@ -114,6 +94,13 @@ export default function LoginForm() {
             "Sign In"
           )}
         </Button>
+
+        {/* Demo Account Info */}
+        <div className="text-sm text-muted-foreground text-center">
+          <p>Demo Account</p>
+          <p>Username: <span className="font-mono">demouser</span></p>
+          <p>Password: <span className="font-mono">password123</span></p>
+        </div>
       </form>
     </Form>
   );

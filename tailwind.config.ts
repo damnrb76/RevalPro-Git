@@ -65,9 +65,11 @@ export default {
         revalpro: {
           blue: "hsl(var(--revalpro-blue))",
           "dark-blue": "hsl(var(--revalpro-dark-blue))",
+          teal: "hsl(var(--revalpro-teal))",
           orange: "hsl(var(--revalpro-orange))",
           green: "hsl(var(--revalpro-green))",
           purple: "hsl(var(--revalpro-purple))",
+          fuchsia: "hsl(var(--revalpro-fuchsia))",
           pink: "hsl(var(--revalpro-pink))",
           black: "hsl(var(--revalpro-black))",
           white: "hsl(var(--revalpro-white))",

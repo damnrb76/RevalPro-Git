@@ -1,96 +1,35 @@
 import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Redirect } from "wouter";
 import RegisterForm from "@/components/auth/register-form";
 import LoginForm from "@/components/auth/login-form";
-import { Redirect } from "wouter";
+import { Card } from "@/components/ui/card";
 import { useAuth } from "@/hooks/use-auth";
 
 export default function AuthPage() {
   const [activeTab, setActiveTab] = useState<string>("login");
-  const { user, isLoading } = useAuth();
+  const { user } = useAuth();
 
-  // Redirect to homepage if already logged in
-  if (user && !isLoading) {
+  // If user is already logged in, redirect to home page
+  if (user) {
     return <Redirect to="/" />;
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-br from-revalpro-light-grey to-revalpro-white">
-      <div className="w-full max-w-6xl grid md:grid-cols-2 gap-8 items-center">
-        {/* Hero Section */}
-        <div className="flex flex-col space-y-6">
-          <div>
-            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-revalpro-blue via-revalpro-purple to-revalpro-pink bg-clip-text text-transparent">
-              RevalPro
-            </h1>
-            <h2 className="text-2xl md:text-3xl font-bold text-revalpro-dark-blue">
-              Nursing Revalidation Made Easy
-            </h2>
-            <p className="mt-4 text-revalpro-black">
-              Simplify your NMC revalidation process with our secure tracking system.
-              Stay organized and prepared for your three-year revalidation cycle.
+    <div className="container flex flex-col md:flex-row items-stretch min-h-[calc(100vh-16rem)] py-10 gap-8">
+      {/* Left side - Forms */}
+      <div className="flex-1 w-full max-w-md mx-auto md:mx-0">
+        <div className="space-y-6">
+          <div className="space-y-2 text-center md:text-left">
+            <h1 className="text-3xl font-bold">Welcome to RevalPro</h1>
+            <p className="text-muted-foreground">
+              Your secure UK nursing revalidation partner
             </p>
           </div>
 
-          <div className="space-y-4">
-            <div className="flex items-start space-x-3">
-              <div className="h-6 w-6 rounded-full bg-revalpro-green flex items-center justify-center text-white">
-                ✓
-              </div>
-              <div>
-                <h3 className="font-medium text-revalpro-dark-blue">Track Practice Hours</h3>
-                <p className="text-sm text-revalpro-black">Record and monitor your 450 required practice hours</p>
-              </div>
-            </div>
-            
-            <div className="flex items-start space-x-3">
-              <div className="h-6 w-6 rounded-full bg-revalpro-blue flex items-center justify-center text-white">
-                ✓
-              </div>
-              <div>
-                <h3 className="font-medium text-revalpro-dark-blue">Manage CPD Requirements</h3>
-                <p className="text-sm text-revalpro-black">Organize your 35 hours including 20 participatory learning</p>
-              </div>
-            </div>
-            
-            <div className="flex items-start space-x-3">
-              <div className="h-6 w-6 rounded-full bg-revalpro-orange flex items-center justify-center text-white">
-                ✓
-              </div>
-              <div>
-                <h3 className="font-medium text-revalpro-dark-blue">Document Feedback</h3>
-                <p className="text-sm text-revalpro-black">Collect and store your 5 pieces of practice feedback</p>
-              </div>
-            </div>
-            
-            <div className="flex items-start space-x-3">
-              <div className="h-6 w-6 rounded-full bg-revalpro-purple flex items-center justify-center text-white">
-                ✓
-              </div>
-              <div>
-                <h3 className="font-medium text-revalpro-dark-blue">Secure & Private</h3>
-                <p className="text-sm text-revalpro-black">All your data remains securely stored on your device</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        {/* Auth Form */}
-        <Card className="w-full shadow-lg border-revalpro-grey">
-          <CardHeader>
-            <CardTitle className="text-revalpro-dark-blue text-xl">
-              {activeTab === "login" ? "Sign In to RevalPro" : "Create Your RevalPro Account"}
-            </CardTitle>
-            <CardDescription>
-              {activeTab === "login"
-                ? "Access your revalidation progress and records"
-                : "Start tracking your nursing revalidation requirements"}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Tabs defaultValue="login" value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="grid w-full grid-cols-2 mb-4">
+          <Card className="p-6 border-2 border-revalpro-blue/20 shadow-md">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+              <TabsList className="grid w-full grid-cols-2 mb-6">
                 <TabsTrigger value="login">Sign In</TabsTrigger>
                 <TabsTrigger value="register">Register</TabsTrigger>
               </TabsList>
@@ -101,8 +40,45 @@ export default function AuthPage() {
                 <RegisterForm />
               </TabsContent>
             </Tabs>
-          </CardContent>
-        </Card>
+          </Card>
+        </div>
+      </div>
+
+      {/* Right side - Hero Section */}
+      <div className="flex-1 rounded-lg p-8 bg-gradient-to-br from-revalpro-fuchsia/10 via-revalpro-blue/20 to-revalpro-teal/10 flex flex-col justify-center">
+        <div className="max-w-md mx-auto md:mx-0 space-y-6">
+          <h2 className="text-3xl font-bold bg-gradient-to-br from-revalpro-fuchsia to-revalpro-blue bg-clip-text text-transparent">
+            Simplify Your Revalidation Journey
+          </h2>
+          
+          <div className="space-y-4">
+            <p className="text-xl">
+              RevalPro helps UK nurses manage NMC revalidation requirements with ease.
+            </p>
+            
+            <div className="grid gap-3">
+              <div className="flex items-start gap-2">
+                <div className="h-6 w-6 rounded-full bg-revalpro-blue/20 flex items-center justify-center text-revalpro-blue shrink-0">✓</div>
+                <p>All data stored securely on your device</p>
+              </div>
+              
+              <div className="flex items-start gap-2">
+                <div className="h-6 w-6 rounded-full bg-revalpro-fuchsia/20 flex items-center justify-center text-revalpro-fuchsia shrink-0">✓</div>
+                <p>Track practice hours, CPD, reflections and more</p>
+              </div>
+              
+              <div className="flex items-start gap-2">
+                <div className="h-6 w-6 rounded-full bg-revalpro-teal/20 flex items-center justify-center text-revalpro-teal shrink-0">✓</div>
+                <p>Get helpful reminders before your revalidation deadline</p>
+              </div>
+              
+              <div className="flex items-start gap-2">
+                <div className="h-6 w-6 rounded-full bg-revalpro-purple/20 flex items-center justify-center text-revalpro-purple shrink-0">✓</div>
+                <p>Export data and summaries for your submission</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

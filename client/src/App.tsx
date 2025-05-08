@@ -4,9 +4,12 @@ import { queryClient } from "./lib/queryClient";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { AuthProvider } from "@/hooks/use-auth";
+import { ProtectedRoute } from "@/lib/protected-route";
 
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
+import AuthPage from "@/pages/auth-page";
 import PracticeHours from "@/pages/practice-hours";
 import CPD from "@/pages/cpd";
 import Feedback from "@/pages/feedback";
@@ -20,33 +23,43 @@ import NavigationTabs from "@/components/layout/navigation-tabs";
 // Import the logo
 import logo from "@assets/Leonardo_Phoenix_10_design_a_vibrant_and_professional_logo_for_3.jpg";
 
-function App() {
+function AppRouter() {
   const [location] = useLocation();
+  const showTabs = location !== '/auth';
 
   return (
+    <div className="min-h-screen flex flex-col">
+      <Header logo={logo} />
+      {showTabs && <NavigationTabs currentPath={location} />}
+      <div className="flex-grow">
+        <Switch>
+          <Route path="/auth" component={AuthPage} />
+          <ProtectedRoute path="/" component={Home} />
+          <ProtectedRoute path="/practice-hours" component={PracticeHours} />
+          <ProtectedRoute path="/cpd" component={CPD} />
+          <ProtectedRoute path="/feedback" component={Feedback} />
+          <ProtectedRoute path="/reflections" component={Reflections} />
+          <ProtectedRoute path="/declarations" component={Declarations} />
+          <ProtectedRoute path="/settings" component={Settings} />
+          <Route component={NotFound} />
+        </Switch>
+      </div>
+      <Footer logo={logo} />
+    </div>
+  );
+}
+
+function App() {
+  return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme="light" storageKey="revalpro-theme">
-        <TooltipProvider>
-          <div className="min-h-screen flex flex-col">
-            <Header logo={logo} />
-            <NavigationTabs currentPath={location} />
-            <div className="flex-grow">
-              <Switch>
-                <Route path="/" component={Home} />
-                <Route path="/practice-hours" component={PracticeHours} />
-                <Route path="/cpd" component={CPD} />
-                <Route path="/feedback" component={Feedback} />
-                <Route path="/reflections" component={Reflections} />
-                <Route path="/declarations" component={Declarations} />
-                <Route path="/settings" component={Settings} />
-                <Route component={NotFound} />
-              </Switch>
-            </div>
-            <Footer logo={logo} />
-          </div>
-          <Toaster />
-        </TooltipProvider>
-      </ThemeProvider>
+      <AuthProvider>
+        <ThemeProvider defaultTheme="light" storageKey="revalpro-theme">
+          <TooltipProvider>
+            <AppRouter />
+            <Toaster />
+          </TooltipProvider>
+        </ThemeProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }
