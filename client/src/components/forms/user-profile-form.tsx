@@ -68,10 +68,11 @@ export default function UserProfileForm({ initialData, onClose, onSuccess }: Use
   const mutation = useMutation({
     mutationFn: async (data: z.infer<typeof formSchema>) => {
       if (initialData) {
-        // Update existing profile
+        // Update existing profile, preserving the profile image if it exists
         await userProfileStorage.update(initialData.id, {
           ...data,
           expiryDate: new Date(data.expiryDate),
+          profileImage: initialData.profileImage, // Preserve the existing profile image
         });
         return initialData.id;
       } else {
@@ -79,6 +80,7 @@ export default function UserProfileForm({ initialData, onClose, onSuccess }: Use
         return await userProfileStorage.add({
           ...data,
           expiryDate: new Date(data.expiryDate),
+          profileImage: null, // Initialize with no profile image
         });
       }
     },

@@ -24,6 +24,7 @@ import {
 } from "@/lib/storage";
 import { downloadRawData, downloadRevalidationSummary } from "@/lib/pdf-generator";
 import UserProfileForm from "@/components/forms/user-profile-form";
+import ProfileImageUploader from "@/components/profile/profile-image-uploader";
 import type { UserProfile } from "@shared/schema";
 
 export default function SettingsPage() {
@@ -197,7 +198,18 @@ export default function SettingsPage() {
             <CardContent>
               {userProfile ? (
                 <div className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {/* Profile Image Column */}
+                    <div className="flex flex-col items-center justify-start">
+                      <ProfileImageUploader
+                        currentImageUrl={userProfile.profileImage || null}
+                        initials={userProfile.name.split(' ').map(n => n[0]).join('')}
+                        onImageUpload={userProfileStorage.updateProfileImage}
+                        onImageRemove={userProfileStorage.removeProfileImage}
+                      />
+                    </div>
+                    
+                    {/* Personal Details Column */}
                     <div>
                       <h3 className="text-sm font-medium text-nhs-dark-grey mb-2">Personal Details</h3>
                       <div className="space-y-2">
@@ -211,6 +223,7 @@ export default function SettingsPage() {
                       </div>
                     </div>
                     
+                    {/* Registration Details Column */}
                     <div>
                       <h3 className="text-sm font-medium text-nhs-dark-grey mb-2">Registration Details</h3>
                       <div className="space-y-2">
