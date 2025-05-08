@@ -17,15 +17,18 @@ import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import NavigationTabs from "@/components/layout/navigation-tabs";
 
+// Import the logo
+import logo from "@assets/Leonardo_Phoenix_10_design_a_vibrant_and_professional_logo_for_3.jpg";
+
 function App() {
   const [location] = useLocation();
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme="light" storageKey="nursevalidate-theme">
+      <ThemeProvider defaultTheme="light" storageKey="revalpro-theme">
         <TooltipProvider>
           <div className="min-h-screen flex flex-col">
-            <Header />
+            <Header logo={logo} />
             <NavigationTabs currentPath={location} />
             <div className="flex-grow">
               <Switch>
@@ -39,7 +42,7 @@ function App() {
                 <Route component={NotFound} />
               </Switch>
             </div>
-            <Footer />
+            <Footer logo={logo} />
           </div>
           <Toaster />
         </TooltipProvider>

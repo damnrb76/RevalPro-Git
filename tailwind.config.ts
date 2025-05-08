@@ -61,6 +61,37 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        // RevalPro colors from logo
+        revalpro: {
+          blue: "hsl(var(--revalpro-blue))",
+          "dark-blue": "hsl(var(--revalpro-dark-blue))",
+          orange: "hsl(var(--revalpro-orange))",
+          green: "hsl(var(--revalpro-green))",
+          purple: "hsl(var(--revalpro-purple))",
+          pink: "hsl(var(--revalpro-pink))",
+          black: "hsl(var(--revalpro-black))",
+          white: "hsl(var(--revalpro-white))",
+          "light-grey": "hsl(var(--revalpro-light-grey))",
+          grey: "hsl(var(--revalpro-grey))",
+        },
+        // Legacy NHS colors (mapped to RevalPro)
+        nhs: {
+          blue: "hsl(var(--nhs-blue))",
+          "dark-blue": "hsl(var(--nhs-dark-blue))",
+          "bright-blue": "hsl(var(--nhs-bright-blue))",
+          "light-blue": "hsl(var(--nhs-light-blue))",
+          green: "hsl(var(--nhs-green))",
+          "light-green": "hsl(var(--nhs-light-green))",
+          yellow: "hsl(var(--nhs-yellow))",
+          "warm-yellow": "hsl(var(--nhs-warm-yellow))",
+          red: "hsl(var(--nhs-red))",
+          black: "hsl(var(--nhs-black))",
+          "dark-grey": "hsl(var(--nhs-dark-grey))",
+          "mid-grey": "hsl(var(--nhs-mid-grey))",
+          "pale-grey": "hsl(var(--nhs-pale-grey))",
+          "light-grey": "hsl(var(--nhs-light-grey))",
+          white: "hsl(var(--nhs-white))",
+        },
       },
       keyframes: {
         "accordion-down": {

@@ -3,74 +3,93 @@
 @tailwind utilities;
 
 :root {
-  /* NHS Colors */
-  --nhs-blue: 210 100% 36%;
+  /* RevalPro Colors from Logo */
+  --revalpro-blue: 199 80% 60%;
+  --revalpro-dark-blue: 205 80% 40%;
+  --revalpro-orange: 30 100% 55%;
+  --revalpro-green: 100 60% 45%;
+  --revalpro-purple: 260 50% 65%;
+  --revalpro-pink: 340 75% 60%;
+  --revalpro-black: 0 0% 15%;
+  --revalpro-white: 0 0% 100%;
+  --revalpro-light-grey: 210 10% 95%;
+  --revalpro-grey: 210 10% 90%;
+  
+  /* NHS Colors (legacy) */
+  --nhs-blue: var(--revalpro-dark-blue);
   --nhs-dark-blue: 220 100% 26%;
-  --nhs-bright-blue: 205 100% 40%;
-  --nhs-light-blue: 200 69% 58%;
-  --nhs-green: 146 100% 25%;
-  --nhs-light-green: 87 74% 43%;
-  --nhs-yellow: 60 100% 60%;
-  --nhs-warm-yellow: 43 100% 55%;
-  --nhs-red: 6 79% 47%;
-  --nhs-black: 205 21% 16%;
+  --nhs-bright-blue: var(--revalpro-blue);
+  --nhs-light-blue: var(--revalpro-blue);
+  --nhs-green: var(--revalpro-green);
+  --nhs-light-green: var(--revalpro-green);
+  --nhs-yellow: var(--revalpro-orange);
+  --nhs-warm-yellow: var(--revalpro-orange);
+  --nhs-red: var(--revalpro-pink);
+  --nhs-black: var(--revalpro-black);
   --nhs-dark-grey: 205 15% 33%;
   --nhs-mid-grey: 205 14% 52%;
-  --nhs-pale-grey: 195 8% 93%;
-  --nhs-light-grey: 195 8% 95%;
-  --nhs-white: 0 0% 100%;
+  --nhs-pale-grey: var(--revalpro-grey);
+  --nhs-light-grey: var(--revalpro-light-grey);
+  --nhs-white: var(--revalpro-white);
 
-  /* NHS Design System Colors as Base */
-  --background: 195 8% 95%;
-  --foreground: 205 21% 16%;
-  --muted: 195 8% 93%;
+  /* Design System Colors */
+  --background: var(--revalpro-light-grey);
+  --foreground: var(--revalpro-black);
+  --muted: var(--revalpro-grey);
   --muted-foreground: 205 15% 33%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 205 21% 16%;
-  --card: 0 0% 100%;
-  --card-foreground: 205 21% 16%;
+  --popover: var(--revalpro-white);
+  --popover-foreground: var(--revalpro-black);
+  --card: var(--revalpro-white);
+  --card-foreground: var(--revalpro-black);
   --border: 205 14% 90%;
   --input: 205 14% 90%;
-  --primary: 210 100% 36%;
-  --primary-foreground: 210 40% 98%;
-  --secondary: 195 8% 93%;
-  --secondary-foreground: 205 21% 16%;
-  --accent: 195 8% 93%;
-  --accent-foreground: 205 21% 16%;
-  --destructive: 6 79% 47%;
-  --destructive-foreground: 210 40% 98%;
-  --ring: 215 20.2% 65.1%;
+  --primary: var(--revalpro-dark-blue);
+  --primary-foreground: var(--revalpro-white);
+  --secondary: var(--revalpro-grey);
+  --secondary-foreground: var(--revalpro-black);
+  --accent: var(--revalpro-blue);
+  --accent-foreground: var(--revalpro-white);
+  --destructive: var(--revalpro-pink);
+  --destructive-foreground: var(--revalpro-white);
+  --ring: var(--revalpro-blue);
   --radius: 0.5rem;
 
   /* Chart colors */
-  --chart-1: 210 100% 36%;
-  --chart-2: 146 100% 25%;
-  --chart-3: 43 100% 55%;
-  --chart-4: 200 69% 58%;
-  --chart-5: 6 79% 47%;
+  --chart-1: var(--revalpro-blue);
+  --chart-2: var(--revalpro-green);
+  --chart-3: var(--revalpro-orange);
+  --chart-4: var(--revalpro-purple);
+  --chart-5: var(--revalpro-pink);
 }
 
 .dark {
   --background: 205 30% 12%;
-  --foreground: 195 8% 95%;
+  --foreground: var(--revalpro-white);
   --muted: 205 20% 20%;
   --muted-foreground: 205 10% 75%;
   --popover: 205 30% 12%; 
-  --popover-foreground: 195 8% 95%;
+  --popover-foreground: var(--revalpro-white);
   --card: 205 25% 15%;
-  --card-foreground: 195 8% 95%;
+  --card-foreground: var(--revalpro-white);
   --border: 205 20% 20%;
   --input: 205 20% 20%;
-  --primary: 210 100% 40%;
-  --primary-foreground: 210 40% 98%;
+  --primary: var(--revalpro-blue);
+  --primary-foreground: var(--revalpro-white);
   --secondary: 205 20% 20%;
-  --secondary-foreground: 195 8% 95%;
-  --accent: 205 20% 20%;
-  --accent-foreground: 195 8% 95%;
-  --destructive: 6 79% 45%;
-  --destructive-foreground: 210 40% 98%;
-  --ring: 205 14% 40%;
+  --secondary-foreground: var(--revalpro-white);
+  --accent: var(--revalpro-purple);
+  --accent-foreground: var(--revalpro-white);
+  --destructive: var(--revalpro-pink);
+  --destructive-foreground: var(--revalpro-white);
+  --ring: var(--revalpro-blue);
   --radius: 0.5rem;
+  
+  /* Chart colors remain bright in dark mode */
+  --chart-1: var(--revalpro-blue);
+  --chart-2: var(--revalpro-green);
+  --chart-3: var(--revalpro-orange);
+  --chart-4: var(--revalpro-purple);
+  --chart-5: var(--revalpro-pink);
 }
 
 @layer base {
@@ -84,7 +103,7 @@
   }
   
   h1, h2, h3, h4, h5, h6 {
-    @apply font-bold text-nhs-black;
+    @apply font-bold text-revalpro-black;
   }
   
   /* Hide scrollbar for Chrome, Safari and Opera */
@@ -99,10 +118,36 @@
   }
 
   .progress-bar {
-    @apply h-[10px] rounded-[5px] bg-nhs-pale-grey overflow-hidden;
+    @apply h-[10px] rounded-[5px] bg-revalpro-grey overflow-hidden;
   }
   
   .progress-fill {
     @apply h-full rounded-[5px];
+  }
+  
+  /* Form element colors */
+  form {
+    @apply bg-gradient-to-br from-revalpro-light-grey to-revalpro-white;
+  }
+  
+  /* Colorful gradient backgrounds for cards */
+  .card-gradient-blue {
+    @apply bg-gradient-to-br from-revalpro-blue/20 to-revalpro-blue/5;
+  }
+  
+  .card-gradient-green {
+    @apply bg-gradient-to-br from-revalpro-green/20 to-revalpro-green/5;
+  }
+  
+  .card-gradient-orange {
+    @apply bg-gradient-to-br from-revalpro-orange/20 to-revalpro-orange/5;
+  }
+  
+  .card-gradient-purple {
+    @apply bg-gradient-to-br from-revalpro-purple/20 to-revalpro-purple/5;
+  }
+  
+  .card-gradient-pink {
+    @apply bg-gradient-to-br from-revalpro-pink/20 to-revalpro-pink/5;
   }
 }
