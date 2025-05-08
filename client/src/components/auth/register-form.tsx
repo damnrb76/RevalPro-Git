@@ -23,8 +23,8 @@ const registerSchema = z.object({
   }),
   password: z
     .string()
-    .min(6, {
-      message: "Password must be at least 6 characters.",
+    .min(3, {
+      message: "Password must be at least 3 characters.",
     })
     .max(100, {
       message: "Password must not be longer than 100 characters.",
