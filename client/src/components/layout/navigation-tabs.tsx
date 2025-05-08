@@ -21,18 +21,20 @@ export default function NavigationTabs({ currentPath }: NavigationTabsProps) {
       <div className="container mx-auto px-4">
         <div className="flex overflow-x-auto whitespace-nowrap py-2 hide-scrollbar">
           {links.map((link) => (
-            <Link key={link.href} href={link.href}>
-              <a 
-                className={cn(
-                  "px-4 py-2 font-medium transition-colors",
-                  currentPath === link.href
-                    ? "text-nhs-blue border-b-2 border-nhs-blue"
-                    : "text-nhs-dark-grey hover:text-nhs-blue hover:border-b-2 hover:border-nhs-blue/50"
-                )}
-              >
-                {link.label}
-              </a>
-            </Link>
+            <div key={link.href} className="mr-2">
+              <Link href={link.href}>
+                <span 
+                  className={cn(
+                    "px-4 py-2 font-medium transition-colors cursor-pointer inline-block",
+                    currentPath === link.href
+                      ? "text-revalpro-dark-blue border-b-2 border-revalpro-dark-blue"
+                      : "text-revalpro-black/70 hover:text-revalpro-dark-blue hover:border-b-2 hover:border-revalpro-dark-blue/50"
+                  )}
+                >
+                  {link.label}
+                </span>
+              </Link>
+            </div>
           ))}
         </div>
       </div>

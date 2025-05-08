@@ -112,9 +112,9 @@ export default function HealthCharacterForm({ initialData, onClose, onSuccess }:
           </DialogDescription>
         </DialogHeader>
         
-        <Alert className="bg-nhs-pale-grey border-nhs-light-blue my-2">
-          <InfoIcon className="h-4 w-4 text-nhs-light-blue" />
-          <AlertDescription>
+        <Alert className="bg-revalpro-blue/10 border-revalpro-blue my-2">
+          <InfoIcon className="h-4 w-4 text-revalpro-blue" />
+          <AlertDescription className="text-revalpro-black">
             This declaration is for your personal record only. The official declaration will be made
             during your NMC revalidation application.
           </AlertDescription>
@@ -130,7 +130,7 @@ export default function HealthCharacterForm({ initialData, onClose, onSuccess }:
                 control={form.control}
                 name="goodHealth"
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 card-gradient-green">
                     <FormControl>
                       <Checkbox
                         checked={field.value}
@@ -180,7 +180,7 @@ export default function HealthCharacterForm({ initialData, onClose, onSuccess }:
                 control={form.control}
                 name="goodCharacter"
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 card-gradient-blue">
                     <FormControl>
                       <Checkbox
                         checked={field.value}
@@ -227,7 +227,7 @@ export default function HealthCharacterForm({ initialData, onClose, onSuccess }:
               control={form.control}
               name="completed"
               render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 bg-nhs-pale-grey">
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 card-gradient-purple">
                   <FormControl>
                     <Checkbox
                       checked={field.value}

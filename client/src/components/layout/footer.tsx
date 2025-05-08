@@ -1,13 +1,26 @@
 import { Link } from "wouter";
 
-export default function Footer() {
+type FooterProps = {
+  logo: string;
+};
+
+export default function Footer({ logo }: FooterProps) {
   return (
-    <footer className="bg-nhs-dark-blue text-white mt-12 py-8">
+    <footer className="bg-gradient-to-r from-revalpro-dark-blue to-revalpro-blue text-white mt-12 py-8">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
-            <h3 className="font-bold text-lg mb-4">NurseValidate UK</h3>
-            <p className="text-sm text-nhs-pale-grey">Supporting UK nurses with their NMC revalidation journey.</p>
+            <div className="flex items-center mb-4">
+              <div className="h-10 w-10 mr-3 rounded-full overflow-hidden shadow-md">
+                <img 
+                  src={logo} 
+                  alt="RevalPro Logo" 
+                  className="h-full w-full object-cover"
+                />
+              </div>
+              <h3 className="font-bold text-lg">RevalPro</h3>
+            </div>
+            <p className="text-sm text-revalpro-white/80">Supporting UK nurses with their NMC revalidation journey.</p>
           </div>
           
           <div>
@@ -16,7 +29,7 @@ export default function Footer() {
               <li>
                 <a 
                   href="https://www.nmc.org.uk/" 
-                  className="text-nhs-pale-grey hover:text-white"
+                  className="text-revalpro-white/80 hover:text-white"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -26,7 +39,7 @@ export default function Footer() {
               <li>
                 <a 
                   href="https://www.nmc.org.uk/standards/code/" 
-                  className="text-nhs-pale-grey hover:text-white"
+                  className="text-revalpro-white/80 hover:text-white"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -36,7 +49,7 @@ export default function Footer() {
               <li>
                 <a 
                   href="https://www.nmc.org.uk/revalidation/" 
-                  className="text-nhs-pale-grey hover:text-white"
+                  className="text-revalpro-white/80 hover:text-white"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -44,28 +57,30 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <Link href="/settings?tab=privacy">
-                  <a className="text-nhs-pale-grey hover:text-white">Privacy Policy</a>
-                </Link>
+                <span className="text-revalpro-white/80 hover:text-white cursor-pointer">
+                  <Link href="/settings?tab=privacy">
+                    Privacy Policy
+                  </Link>
+                </span>
               </li>
             </ul>
           </div>
           
           <div>
             <h3 className="font-bold text-lg mb-4">Data Privacy</h3>
-            <p className="text-sm text-nhs-pale-grey mb-2">
+            <p className="text-sm text-revalpro-white/80 mb-2">
               All your revalidation data is stored locally on your device.
             </p>
             <Link href="/settings?tab=data">
-              <button className="bg-nhs-pale-grey text-nhs-dark-blue text-sm px-4 py-2 rounded hover:bg-white transition">
+              <button className="bg-revalpro-orange text-white font-medium text-sm px-4 py-2 rounded hover:bg-revalpro-orange/90 transition shadow-sm">
                 Backup My Data
               </button>
             </Link>
           </div>
         </div>
         
-        <div className="mt-8 pt-6 border-t border-nhs-bright-blue text-center text-sm text-nhs-pale-grey">
-          <p>© {new Date().getFullYear()} NurseValidate UK. This app is not affiliated with the Nursing & Midwifery Council.</p>
+        <div className="mt-8 pt-6 border-t border-revalpro-blue/30 text-center text-sm text-revalpro-white/80">
+          <p>© {new Date().getFullYear()} RevalPro. This app is not affiliated with the Nursing & Midwifery Council.</p>
         </div>
       </div>
     </footer>
