@@ -1,7 +1,7 @@
 import { GoogleGenerativeAI, GenerativeModel, GenerationConfig } from "@google/generative-ai";
 
-// Initialize the Google Generative AI with the API key
-const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
+// Check if the API key exists
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 
 // Configure the AI model
 const defaultConfig: GenerationConfig = {
@@ -11,11 +11,46 @@ const defaultConfig: GenerationConfig = {
   maxOutputTokens: 1024,
 };
 
-// Create a model instance with the gemini-pro model
-const model = genAI.getGenerativeModel({
-  model: "gemini-pro",
-  generationConfig: defaultConfig,
-});
+// Initialize the Google Generative AI only if the API key exists
+let genAI: GoogleGenerativeAI | null = null;
+let model: GenerativeModel | null = null;
+
+if (apiKey) {
+  try {
+    genAI = new GoogleGenerativeAI(apiKey);
+    
+    // Create a model instance with the gemini-pro model
+    model = genAI.getGenerativeModel({
+      model: "gemini-pro",
+      generationConfig: defaultConfig,
+    });
+    
+    console.log("Gemini AI initialized successfully");
+  } catch (error) {
+    console.error("Failed to initialize Gemini AI:", error);
+  }
+} else {
+  console.warn("VITE_GEMINI_API_KEY not found in environment variables");
+}
+
+/**
+ * Function to safely generate content with Gemini, handling the case where the model might be null
+ * @param prompt The prompt to send to the AI
+ * @returns Promise with the AI response text
+ */
+async function safeGenerateContent(prompt: string): Promise<string> {
+  if (!model || !apiKey) {
+    return "I'm sorry, the AI assistant is not properly configured. Please make sure the Gemini API key is set up correctly.";
+  }
+  
+  try {
+    const result = await model.generateContent(prompt);
+    return result.response.text();
+  } catch (error) {
+    console.error("Error generating content from Gemini:", error);
+    return "I'm sorry, I encountered an error with the AI service. Please check if the Gemini API key is valid and try again later.";
+  }
+}
 
 /**
  * Get revalidation advice based on a user's question
@@ -23,35 +58,27 @@ const model = genAI.getGenerativeModel({
  * @returns Promise with the AI response
  */
 export async function getRevalidationAdvice(question: string): Promise<string> {
-  try {
-    // Add context about nursing revalidation to help Gemini understand the domain
-    const prompt = `
-    You are RevalPro Assistant, a specialized AI for helping UK nurses with their NMC (Nursing and Midwifery Council) revalidation process. 
-    Nurses need to revalidate every 3 years to maintain their registration. The requirements include:
-    - 450 practice hours (or 900 if revalidating as both a nurse and midwife)
-    - 35 hours of CPD including 20 participatory learning hours
-    - 5 pieces of practice-related feedback
-    - 5 written reflective accounts
-    - Reflective discussion
-    - Health and character declaration
-    - Professional indemnity arrangement
-    - Confirmation from an appropriate person
-    
-    Respond to the following question about nursing revalidation in the UK:
-    ${question}
-    
-    Keep your response friendly, informative, and specific to UK nursing practices. 
-    Provide accurate information based on NMC guidelines. If you're unsure, suggest where they might find reliable information.
-    `;
+  // Add context about nursing revalidation to help Gemini understand the domain
+  const prompt = `
+  You are RevalPro Assistant, a specialized AI for helping UK nurses with their NMC (Nursing and Midwifery Council) revalidation process. 
+  Nurses need to revalidate every 3 years to maintain their registration. The requirements include:
+  - 450 practice hours (or 900 if revalidating as both a nurse and midwife)
+  - 35 hours of CPD including 20 participatory learning hours
+  - 5 pieces of practice-related feedback
+  - 5 written reflective accounts
+  - Reflective discussion
+  - Health and character declaration
+  - Professional indemnity arrangement
+  - Confirmation from an appropriate person
+  
+  Respond to the following question about nursing revalidation in the UK:
+  ${question}
+  
+  Keep your response friendly, informative, and specific to UK nursing practices. 
+  Provide accurate information based on NMC guidelines. If you're unsure, suggest where they might find reliable information.
+  `;
 
-    // Generate content using the model
-    const result = await model.generateContent(prompt);
-    const response = result.response;
-    return response.text();
-  } catch (error) {
-    console.error("Error getting advice from Gemini:", error);
-    return "I'm sorry, I encountered an error when processing your question. Please try again later.";
-  }
+  return safeGenerateContent(prompt);
 }
 
 /**
@@ -64,32 +91,25 @@ export async function generateReflectiveTemplate(
   experience: string,
   codeSection: string
 ): Promise<string> {
-  try {
-    const prompt = `
-    As a professional nursing reflection expert, help create a reflective account template for a UK nurse's NMC revalidation.
-    
-    The nurse had this experience: ${experience}
-    
-    This relates to this section of The Code: ${codeSection}
-    
-    Create a structured reflection that includes:
-    1. What happened (brief description of the experience or event)
-    2. The nature of the experience (describe what you learned from CPD, feedback or event)
-    3. What you learned from the experience
-    4. How this learning changed or improved your practice
-    5. How this relates to the Code section mentioned
-    
-    Format this as a first-person narrative that the nurse can use as a starting point for their own reflection.
-    Keep it professional, thoughtful, and focused on learning and development.
-    `;
+  const prompt = `
+  As a professional nursing reflection expert, help create a reflective account template for a UK nurse's NMC revalidation.
+  
+  The nurse had this experience: ${experience}
+  
+  This relates to this section of The Code: ${codeSection}
+  
+  Create a structured reflection that includes:
+  1. What happened (brief description of the experience or event)
+  2. The nature of the experience (describe what you learned from CPD, feedback or event)
+  3. What you learned from the experience
+  4. How this learning changed or improved your practice
+  5. How this relates to the Code section mentioned
+  
+  Format this as a first-person narrative that the nurse can use as a starting point for their own reflection.
+  Keep it professional, thoughtful, and focused on learning and development.
+  `;
 
-    const result = await model.generateContent(prompt);
-    const response = result.response;
-    return response.text();
-  } catch (error) {
-    console.error("Error generating reflective template:", error);
-    return "I'm sorry, I encountered an error when generating your reflective template. Please try again later.";
-  }
+  return safeGenerateContent(prompt);
 }
 
 /**
@@ -102,36 +122,29 @@ export async function suggestCpdActivities(
   specialty: string,
   interests: string
 ): Promise<string> {
-  try {
-    const prompt = `
-    As a CPD specialist for UK nurses, suggest relevant continuing professional development activities for a nurse with the following details:
-    
-    Specialty or area of practice: ${specialty}
-    Professional interests/goals: ${interests}
-    
-    Suggest 5 specific CPD activities that:
-    1. Would be relevant to their specialty and interests
-    2. Include a mix of participatory (involving interaction with others) and non-participatory learning
-    3. Are practical and accessible
-    4. Align with NMC requirements for revalidation
-    5. Would demonstrate commitment to ongoing professional development
-    
-    For each suggestion, explain:
-    - The activity and its format
-    - Why it's relevant to their specialty/interests
-    - What type of learning it represents (participatory or non-participatory)
-    - How it contributes to their professional development
-    
-    Format your response as a clear, bulleted list with a brief introduction and conclusion.
-    `;
+  const prompt = `
+  As a CPD specialist for UK nurses, suggest relevant continuing professional development activities for a nurse with the following details:
+  
+  Specialty or area of practice: ${specialty}
+  Professional interests/goals: ${interests}
+  
+  Suggest 5 specific CPD activities that:
+  1. Would be relevant to their specialty and interests
+  2. Include a mix of participatory (involving interaction with others) and non-participatory learning
+  3. Are practical and accessible
+  4. Align with NMC requirements for revalidation
+  5. Would demonstrate commitment to ongoing professional development
+  
+  For each suggestion, explain:
+  - The activity and its format
+  - Why it's relevant to their specialty/interests
+  - What type of learning it represents (participatory or non-participatory)
+  - How it contributes to their professional development
+  
+  Format your response as a clear, bulleted list with a brief introduction and conclusion.
+  `;
 
-    const result = await model.generateContent(prompt);
-    const response = result.response;
-    return response.text();
-  } catch (error) {
-    console.error("Error suggesting CPD activities:", error);
-    return "I'm sorry, I encountered an error when generating CPD suggestions. Please try again later.";
-  }
+  return safeGenerateContent(prompt);
 }
 
 export default {
