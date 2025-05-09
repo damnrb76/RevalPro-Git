@@ -13,6 +13,7 @@ export default function NavigationTabs({ currentPath }: NavigationTabsProps) {
     { href: "/feedback", label: "Feedback" },
     { href: "/reflections", label: "Reflections" },
     { href: "/declarations", label: "Declarations" },
+    { href: "/ai-assistant", label: "AI Assistant" },
     { href: "/settings", label: "Settings" },
   ];
   
