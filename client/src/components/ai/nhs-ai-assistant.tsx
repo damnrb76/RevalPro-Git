@@ -188,11 +188,16 @@ export default function NhsAiAssistant({
   };
 
   return (
-    <Card className={`border-2 border-revalpro-blue/20 ${className}`}>
-      <CardHeader className="bg-gradient-to-r from-revalpro-blue/10 to-revalpro-teal/10 pb-2">
-        <CardTitle className="flex items-center gap-2 text-revalpro-dark-blue">
-          <HelpCircle className="h-5 w-5 text-revalpro-blue" />
-          NHS Revalidation AI Assistant
+    <Card className={`ai-assistant-card ${className} shadow-lg`}>
+      <CardHeader className="bg-gradient-to-r from-revalpro-blue/30 via-revalpro-teal/20 to-revalpro-purple/20 pb-2">
+        <CardTitle className="flex items-center gap-2 text-white">
+          <div className="flex items-center justify-center w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm">
+            <HelpCircle className="h-5 w-5 text-white" />
+          </div>
+          <div className="flex flex-col">
+            <span className="text-lg font-bold">RevalPro AI Assistant</span>
+            <span className="text-xs font-normal text-white/80">NMC Revalidation Guidance</span>
+          </div>
         </CardTitle>
       </CardHeader>
       <CardContent className="p-0">

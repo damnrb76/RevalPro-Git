@@ -17,9 +17,9 @@ import Reflections from "@/pages/reflections";
 import Declarations from "@/pages/declarations";
 import Settings from "@/pages/settings";
 import AiAssistant from "@/pages/ai-assistant";
-import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import NavigationTabs from "@/components/layout/navigation-tabs";
+import ProminentHeader from "@/components/layout/prominent-header";
 
 // Import the logo
 import logo from "@assets/Leonardo_Phoenix_10_design_a_vibrant_and_professional_logo_for_3.jpg";
@@ -27,12 +27,13 @@ import logo from "@assets/Leonardo_Phoenix_10_design_a_vibrant_and_professional_
 function AppRouter() {
   const [location] = useLocation();
   const showTabs = location !== '/auth';
+  const isAuthPage = location === '/auth';
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header logo={logo} />
+      <ProminentHeader />
       {showTabs && <NavigationTabs currentPath={location} />}
-      <div className="flex-grow">
+      <div className={`flex-grow ${!isAuthPage ? 'pt-4' : ''}`}>
         <Switch>
           <Route path="/auth" component={AuthPage} />
           <ProtectedRoute path="/" component={Home} />

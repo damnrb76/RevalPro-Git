@@ -100,7 +100,7 @@
   }
   
   body {
-    @apply bg-background text-foreground font-sans;
+    @apply bg-gradient-to-br from-revalpro-light-grey via-white to-revalpro-light-grey text-foreground font-sans;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
   
@@ -134,22 +134,79 @@
   
   /* Colorful gradient backgrounds for cards */
   .card-gradient-blue {
-    @apply bg-gradient-to-br from-revalpro-blue/20 to-revalpro-blue/5;
+    @apply bg-gradient-to-br from-revalpro-blue/30 to-revalpro-blue/10 hover:from-revalpro-blue/40 hover:to-revalpro-blue/20 transition-all duration-300;
   }
   
   .card-gradient-green {
-    @apply bg-gradient-to-br from-revalpro-green/20 to-revalpro-green/5;
+    @apply bg-gradient-to-br from-revalpro-green/30 to-revalpro-green/10 hover:from-revalpro-green/40 hover:to-revalpro-green/20 transition-all duration-300;
   }
   
   .card-gradient-orange {
-    @apply bg-gradient-to-br from-revalpro-orange/20 to-revalpro-orange/5;
+    @apply bg-gradient-to-br from-revalpro-orange/30 to-revalpro-orange/10 hover:from-revalpro-orange/40 hover:to-revalpro-orange/20 transition-all duration-300;
   }
   
   .card-gradient-purple {
-    @apply bg-gradient-to-br from-revalpro-purple/20 to-revalpro-purple/5;
+    @apply bg-gradient-to-br from-revalpro-purple/30 to-revalpro-purple/10 hover:from-revalpro-purple/40 hover:to-revalpro-purple/20 transition-all duration-300;
   }
   
   .card-gradient-pink {
-    @apply bg-gradient-to-br from-revalpro-pink/20 to-revalpro-pink/5;
+    @apply bg-gradient-to-br from-revalpro-pink/30 to-revalpro-pink/10 hover:from-revalpro-pink/40 hover:to-revalpro-pink/20 transition-all duration-300;
+  }
+  
+  /* Enhanced card styling */
+  .card {
+    @apply transition-all duration-300 rounded-lg overflow-hidden shadow-md hover:shadow-lg;
+  }
+  
+  .card:hover {
+    @apply transform -translate-y-1;
+  }
+  
+  /* Button animations */
+  button:not(.unstyled) {
+    @apply transition-all duration-300;
+  }
+  
+  button:not(.unstyled):hover {
+    @apply transform -translate-y-0.5 shadow-md;
+  }
+  
+  /* Vibrant gradients for section backgrounds */
+  .header-gradient {
+    @apply bg-gradient-to-r from-revalpro-blue to-revalpro-teal;
+  }
+  
+  .section-gradient-1 {
+    @apply bg-gradient-to-br from-revalpro-blue/30 to-revalpro-teal/20;
+  }
+  
+  .section-gradient-2 {
+    @apply bg-gradient-to-br from-revalpro-teal/30 to-revalpro-green/20;
+  }
+  
+  .section-gradient-3 {
+    @apply bg-gradient-to-br from-revalpro-purple/30 to-revalpro-pink/20;
+  }
+  
+  .section-gradient-4 {
+    @apply bg-gradient-to-br from-revalpro-orange/30 to-revalpro-orange/20;
+  }
+  
+  /* Logo prominence */
+  .logo-container {
+    @apply transition-all duration-300 rounded-full overflow-hidden;
+  }
+  
+  .logo-container:hover {
+    @apply transform scale-105 shadow-lg;
+  }
+  
+  .logo-text {
+    @apply font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-revalpro-blue via-revalpro-teal to-revalpro-green;
+  }
+  
+  /* Special components styling */
+  .ai-assistant-card {
+    @apply bg-gradient-to-br from-revalpro-blue/20 via-revalpro-purple/15 to-revalpro-teal/10 border-2 border-revalpro-blue/30;
   }
 }
