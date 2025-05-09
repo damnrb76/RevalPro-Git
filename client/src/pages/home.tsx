@@ -7,6 +7,7 @@ import RequirementsSection from "@/components/dashboard/requirements-section";
 import RecentActivity from "@/components/dashboard/recent-activity";
 import NmcGuidance from "@/components/dashboard/nmc-guidance";
 import FaqSection from "@/components/dashboard/faq-section";
+import NhsAiAssistant from "@/components/ai/nhs-ai-assistant";
 import { 
   userProfileStorage, 
   practiceHoursStorage, 
@@ -139,8 +140,15 @@ export default function Home() {
         reflectionsCount={reflectionsCount || 0}
       />
       
-      {/* Recent Activity */}
-      <RecentActivity />
+      {/* NHS AI Assistant */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <div className="lg:col-span-2">
+          <RecentActivity />
+        </div>
+        <div className="lg:col-span-1">
+          <NhsAiAssistant />
+        </div>
+      </div>
       
       {/* NMC Guidance */}
       <NmcGuidance />

@@ -16,6 +16,7 @@ import Feedback from "@/pages/feedback";
 import Reflections from "@/pages/reflections";
 import Declarations from "@/pages/declarations";
 import Settings from "@/pages/settings";
+import AiAssistant from "@/pages/ai-assistant";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import NavigationTabs from "@/components/layout/navigation-tabs";
@@ -41,6 +42,7 @@ function AppRouter() {
           <ProtectedRoute path="/reflections" component={Reflections} />
           <ProtectedRoute path="/declarations" component={Declarations} />
           <ProtectedRoute path="/settings" component={Settings} />
+          <ProtectedRoute path="/ai-assistant" component={AiAssistant} />
           <Route component={NotFound} />
         </Switch>
       </div>
