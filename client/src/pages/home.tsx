@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import AlertBanner from "@/components/dashboard/alert-banner";
 import RevalidationSummary from "@/components/dashboard/revalidation-summary";
+import DashboardVisualizations from "@/components/dashboard/dashboard-visualizations";
 import RequirementsSection from "@/components/dashboard/requirements-section";
 import RecentActivity from "@/components/dashboard/recent-activity";
 import NmcGuidance from "@/components/dashboard/nmc-guidance";
@@ -11,7 +12,10 @@ import {
   practiceHoursStorage, 
   cpdRecordsStorage, 
   feedbackRecordsStorage, 
-  reflectiveAccountsStorage 
+  reflectiveAccountsStorage,
+  reflectiveDiscussionStorage,
+  healthDeclarationStorage,
+  confirmationStorage
 } from "@/lib/storage";
 import { getDaysUntil } from "@/lib/date-utils";
 import type { UserProfile } from "@shared/schema";
@@ -60,6 +64,27 @@ export default function Home() {
       return reflectiveAccountsStorage.getCount();
     },
   });
+  
+  const { data: reflectiveDiscussionCompleted } = useQuery({
+    queryKey: ['reflectiveDiscussionCompleted'],
+    queryFn: async () => {
+      return reflectiveDiscussionStorage.isCompleted();
+    },
+  });
+  
+  const { data: healthDeclarationCompleted } = useQuery({
+    queryKey: ['healthDeclarationCompleted'],
+    queryFn: async () => {
+      return healthDeclarationStorage.isCompleted();
+    },
+  });
+  
+  const { data: confirmationCompleted } = useQuery({
+    queryKey: ['confirmationCompleted'],
+    queryFn: async () => {
+      return confirmationStorage.isCompleted();
+    },
+  });
 
   // Calculate days until revalidation when profile changes
   useEffect(() => {
@@ -81,12 +106,28 @@ export default function Home() {
       
       {/* Revalidation Summary */}
       <RevalidationSummary 
-        userProfile={userProfile}
+        userProfile={userProfile || null}
         practiceHours={practiceHoursTotal || 0}
         cpdHours={cpdHoursTotal || 0}
         participatoryHours={cpdParticipatory || 0}
         feedbackCount={feedbackCount || 0}
         reflectionsCount={reflectionsCount || 0}
+        reflectiveDiscussionCompleted={reflectiveDiscussionCompleted || false}
+        healthDeclarationCompleted={healthDeclarationCompleted || false}
+        confirmationCompleted={confirmationCompleted || false}
+      />
+      
+      {/* Dashboard Visualizations */}
+      <DashboardVisualizations 
+        userProfile={userProfile || null}
+        practiceHours={practiceHoursTotal || 0}
+        cpdHours={cpdHoursTotal || 0}
+        participatoryHours={cpdParticipatory || 0}
+        feedbackCount={feedbackCount || 0}
+        reflectionsCount={reflectionsCount || 0}
+        reflectiveDiscussionCompleted={reflectiveDiscussionCompleted || false}
+        healthDeclarationCompleted={healthDeclarationCompleted || false}
+        confirmationCompleted={confirmationCompleted || false}
       />
       
       {/* Requirements Cards */}

@@ -313,6 +313,10 @@ export const reflectiveDiscussionStorage = {
   getCurrent: async () => {
     const discussions = await getAll<ReflectiveDiscussion>(STORES.REFLECTIVE_DISCUSSION);
     return discussions.length > 0 ? discussions[0] : null;
+  },
+  isCompleted: async (): Promise<boolean> => {
+    const discussions = await getAll<ReflectiveDiscussion>(STORES.REFLECTIVE_DISCUSSION);
+    return discussions.length > 0;
   }
 };
 
