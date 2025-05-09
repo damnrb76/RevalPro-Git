@@ -121,7 +121,10 @@ export default function DashboardVisualizations({
     daysRemaining: number;
   };
   
-  let timelineData: TimelineDataItem[] = [];
+  let timelineData: TimelineDataItem[] = [
+    { name: "Timeline", percentComplete: 0, daysRemaining: 0 }
+  ];
+  
   if (userProfile && userProfile.expiryDate) {
     const expiryDate = new Date(userProfile.expiryDate);
     const threeYearsAgo = new Date(expiryDate);
@@ -391,7 +394,17 @@ export default function DashboardVisualizations({
                           <CartesianGrid strokeDasharray="3 3" horizontal={false} />
                           <XAxis type="number" domain={[0, 100]} tickFormatter={(value) => `${value}%`} />
                           <YAxis dataKey="name" type="category" />
-                          <Tooltip formatter={(value: number, name) => [name === 'percentComplete' ? `${value.toFixed(1)}% completed` : `${value.toFixed(0)} days remaining`, '']} />
+                          <Tooltip 
+                            formatter={(value, name) => {
+                              const numValue = typeof value === 'number' ? value : parseFloat(value as string);
+                              return [
+                                name === 'percentComplete' 
+                                  ? `${numValue.toFixed(1)}% completed` 
+                                  : `${numValue.toFixed(0)} days remaining`, 
+                                ''
+                              ];
+                            }} 
+                          />
                           <Bar 
                             dataKey="percentComplete" 
                             fill="#4c75bf" 

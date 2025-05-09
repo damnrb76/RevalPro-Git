@@ -328,6 +328,10 @@ export const healthDeclarationStorage = {
   getCurrent: async () => {
     const declarations = await getAll<HealthDeclaration>(STORES.HEALTH_DECLARATION);
     return declarations.length > 0 ? declarations[0] : null;
+  },
+  isCompleted: async (): Promise<boolean> => {
+    const declarations = await getAll<HealthDeclaration>(STORES.HEALTH_DECLARATION);
+    return declarations.length > 0;
   }
 };
 
@@ -339,6 +343,10 @@ export const confirmationStorage = {
   getCurrent: async () => {
     const confirmations = await getAll<Confirmation>(STORES.CONFIRMATION);
     return confirmations.length > 0 ? confirmations[0] : null;
+  },
+  isCompleted: async (): Promise<boolean> => {
+    const confirmations = await getAll<Confirmation>(STORES.CONFIRMATION);
+    return confirmations.length > 0;
   }
 };
 
