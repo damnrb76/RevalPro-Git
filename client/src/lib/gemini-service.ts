@@ -1,4 +1,5 @@
 import { GoogleGenerativeAI, GenerativeModel, GenerationConfig } from "@google/generative-ai";
+import { getFallbackResponse, getFallbackReflectionTemplate, getFallbackCpdSuggestions } from "./fallback-responses";
 
 // Check if the API key exists
 const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
@@ -36,11 +37,13 @@ if (apiKey) {
 /**
  * Function to safely generate content with Gemini, handling the case where the model might be null
  * @param prompt The prompt to send to the AI
+ * @param fallbackResponse A fallback response if Gemini is not available
  * @returns Promise with the AI response text
  */
-async function safeGenerateContent(prompt: string): Promise<string> {
+async function safeGenerateContent(prompt: string, fallbackResponse: string = "Sorry, I'm unable to provide a response at this time."): Promise<string> {
+  // If no API key or model, use the fallback response
   if (!model || !apiKey) {
-    return "I'm sorry, the AI assistant is not properly configured. Please make sure the Gemini API key is set up correctly.";
+    return fallbackResponse;
   }
   
   try {
@@ -48,7 +51,8 @@ async function safeGenerateContent(prompt: string): Promise<string> {
     return result.response.text();
   } catch (error) {
     console.error("Error generating content from Gemini:", error);
-    return "I'm sorry, I encountered an error with the AI service. Please check if the Gemini API key is valid and try again later.";
+    // Use fallback response in case of API errors
+    return fallbackResponse;
   }
 }
 
@@ -58,6 +62,9 @@ async function safeGenerateContent(prompt: string): Promise<string> {
  * @returns Promise with the AI response
  */
 export async function getRevalidationAdvice(question: string): Promise<string> {
+  // Create fallback response from our predefined responses
+  const fallbackResponse = getFallbackResponse(question);
+  
   // Add context about nursing revalidation to help Gemini understand the domain
   const prompt = `
   You are RevalPro Assistant, a specialized AI for helping UK nurses with their NMC (Nursing and Midwifery Council) revalidation process. 
@@ -78,7 +85,7 @@ export async function getRevalidationAdvice(question: string): Promise<string> {
   Provide accurate information based on NMC guidelines. If you're unsure, suggest where they might find reliable information.
   `;
 
-  return safeGenerateContent(prompt);
+  return safeGenerateContent(prompt, fallbackResponse);
 }
 
 /**
@@ -91,6 +98,9 @@ export async function generateReflectiveTemplate(
   experience: string,
   codeSection: string
 ): Promise<string> {
+  // Create fallback reflection template
+  const fallbackTemplate = getFallbackReflectionTemplate(experience, codeSection);
+  
   const prompt = `
   As a professional nursing reflection expert, help create a reflective account template for a UK nurse's NMC revalidation.
   
@@ -109,7 +119,7 @@ export async function generateReflectiveTemplate(
   Keep it professional, thoughtful, and focused on learning and development.
   `;
 
-  return safeGenerateContent(prompt);
+  return safeGenerateContent(prompt, fallbackTemplate);
 }
 
 /**
@@ -122,6 +132,9 @@ export async function suggestCpdActivities(
   specialty: string,
   interests: string
 ): Promise<string> {
+  // Create fallback CPD suggestions
+  const fallbackSuggestions = getFallbackCpdSuggestions(specialty, interests);
+  
   const prompt = `
   As a CPD specialist for UK nurses, suggest relevant continuing professional development activities for a nurse with the following details:
   
@@ -144,7 +157,7 @@ export async function suggestCpdActivities(
   Format your response as a clear, bulleted list with a brief introduction and conclusion.
   `;
 
-  return safeGenerateContent(prompt);
+  return safeGenerateContent(prompt, fallbackSuggestions);
 }
 
 export default {

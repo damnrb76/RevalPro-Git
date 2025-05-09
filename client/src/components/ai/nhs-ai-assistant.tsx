@@ -73,6 +73,24 @@ export default function NhsAiAssistant({
       ]);
     }
   }, [messages.length]);
+  
+  // Check if Gemini API key is configured properly
+  useEffect(() => {
+    const checkApiKey = async () => {
+      if (!import.meta.env.VITE_GEMINI_API_KEY) {
+        setMessages(prev => [
+          ...prev,
+          {
+            role: "assistant",
+            content: "ℹ️ I'm currently operating in offline mode with pre-configured responses about NMC revalidation. For more personalized assistance, ask your administrator to set up the Gemini API integration.",
+            timestamp: new Date()
+          }
+        ]);
+      }
+    };
+    
+    checkApiKey();
+  }, []);
 
   const handleSendMessage = async () => {
     if (!inputValue.trim()) return;
@@ -403,7 +421,15 @@ export default function NhsAiAssistant({
         </Tabs>
       </CardContent>
       <CardFooter className="pb-2 pt-1 px-4 text-xs text-gray-500 flex items-center justify-between">
-        <div>AI-powered by Gemini</div>
+        <div>
+          {import.meta.env.VITE_GEMINI_API_KEY 
+            ? "AI-powered by Gemini" 
+            : <span className="flex items-center gap-1">
+                <span className="w-2 h-2 rounded-full bg-amber-500"></span>
+                <span>Running with fallback data</span>
+              </span>
+          }
+        </div>
         <div className="flex items-center gap-1">
           <Badge variant="outline" className="text-[10px] h-5">
             NHS-Compliant
