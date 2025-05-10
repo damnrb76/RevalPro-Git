@@ -7,6 +7,7 @@ import { promisify } from "util";
 import { createCustomer, createSubscription, getSubscription, cancelSubscription, reactivateSubscription, changeSubscriptionPlan } from "./stripe";
 import { PLAN_DETAILS } from "../shared/subscription-plans";
 import Stripe from "stripe";
+import { checkNmcServiceStatus, verifyRegistration, calculateNmcImportantDates, getLatestRevalidationRequirements, checkNmcMaintenanceStatus } from "./nmc-api";
 
 const scryptAsync = promisify(scrypt);
 
@@ -56,7 +57,89 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Health check endpoint
   app.get('/api/health', (req, res) => {
-    res.json({ status: 'OK', message: 'NurseValidate UK API is running' });
+    res.json({ status: 'OK', message: 'RevalPro UK API is running' });
+  });
+  
+  // NMC API integration endpoints
+  // These endpoints provide integration with the UK Nursing & Midwifery Council
+  
+  // Get NMC service status
+  app.get('/api/nmc/service-status', async (req, res) => {
+    try {
+      const status = await checkNmcServiceStatus();
+      res.json(status);
+    } catch (error) {
+      console.error('Error getting NMC service status:', error);
+      res.status(500).json({ 
+        error: 'Failed to check NMC service status',
+        status: 'Unavailable', 
+        lastChecked: new Date().toISOString() 
+      });
+    }
+  });
+  
+  // Verify NMC registration
+  app.post('/api/nmc/verify-registration', async (req, res) => {
+    try {
+      const { pin, dateOfBirth } = req.body;
+      
+      if (!pin) {
+        return res.status(400).json({ error: 'NMC PIN is required' });
+      }
+      
+      const result = await verifyRegistration(pin, dateOfBirth);
+      res.json(result);
+    } catch (error) {
+      console.error('Error verifying NMC registration:', error);
+      res.status(500).json({ 
+        error: 'Failed to verify registration',
+        pin: req.body.pin || '',
+        name: '',
+        registrationStatus: 'Not Found'
+      });
+    }
+  });
+  
+  // Get important NMC dates based on expiry date
+  app.post('/api/nmc/important-dates', async (req, res) => {
+    try {
+      const { expiryDate } = req.body;
+      
+      if (!expiryDate) {
+        return res.status(400).json({ error: 'Expiry date is required' });
+      }
+      
+      const dates = calculateNmcImportantDates(expiryDate);
+      res.json(dates);
+    } catch (error) {
+      console.error('Error calculating NMC dates:', error);
+      res.status(500).json({ error: 'Failed to calculate important dates' });
+    }
+  });
+  
+  // Get latest revalidation requirements from NMC
+  app.get('/api/nmc/revalidation-requirements', async (req, res) => {
+    try {
+      const requirements = await getLatestRevalidationRequirements();
+      res.json(requirements);
+    } catch (error) {
+      console.error('Error getting revalidation requirements:', error);
+      res.status(500).json({ error: 'Failed to get revalidation requirements' });
+    }
+  });
+  
+  // Check if NMC portal is under maintenance
+  app.get('/api/nmc/maintenance-status', async (req, res) => {
+    try {
+      const underMaintenance = await checkNmcMaintenanceStatus();
+      res.json({ underMaintenance });
+    } catch (error) {
+      console.error('Error checking maintenance status:', error);
+      res.status(500).json({ 
+        error: 'Failed to check maintenance status',
+        underMaintenance: true 
+      });
+    }
   });
 
   // NMC guidelines endpoints (static data)
