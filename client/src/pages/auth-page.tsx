@@ -3,8 +3,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Redirect } from "wouter";
 import RegisterForm from "@/components/auth/register-form";
 import LoginForm from "@/components/auth/login-form";
+import GoogleSignInButton from "@/components/auth/google-signin-button";
 import { Card } from "@/components/ui/card";
 import { useAuth } from "@/hooks/use-auth";
+import { Separator } from "@/components/ui/separator";
 
 export default function AuthPage() {
   const [activeTab, setActiveTab] = useState<string>("login");
@@ -21,13 +23,26 @@ export default function AuthPage() {
       <div className="flex-1 w-full max-w-md mx-auto md:mx-0">
         <div className="space-y-6">
           <div className="space-y-2 text-center md:text-left">
-            <h1 className="text-3xl font-bold">Welcome to RevalPro</h1>
+            <h1 className="text-3xl font-bold logo-text">Welcome to RevalPro</h1>
             <p className="text-muted-foreground">
               Your secure UK nursing revalidation partner
             </p>
           </div>
 
           <Card className="p-6 border-2 border-revalpro-blue/20 shadow-md">
+            <div className="mb-6">
+              <GoogleSignInButton />
+            </div>
+            
+            <div className="relative mb-6">
+              <div className="absolute inset-0 flex items-center">
+                <Separator className="w-full" />
+              </div>
+              <div className="relative flex justify-center">
+                <span className="bg-white px-2 text-xs text-gray-500">OR CONTINUE WITH</span>
+              </div>
+            </div>
+            
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
               <TabsList className="grid w-full grid-cols-2 mb-6">
                 <TabsTrigger value="login">Sign In</TabsTrigger>

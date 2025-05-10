@@ -13,6 +13,8 @@ export const users = pgTable("users", {
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
   password: true,
+}).extend({
+  password: z.string().min(8, "Password must be at least 8 characters long"),
 });
 
 // User Profile

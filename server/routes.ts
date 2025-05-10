@@ -2,12 +2,55 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth } from "./auth";
+import { scrypt, randomBytes } from "crypto";
+import { promisify } from "util";
+
+const scryptAsync = promisify(scrypt);
+
+async function hashPassword(password: string) {
+  const salt = randomBytes(16).toString("hex");
+  const buf = (await scryptAsync(password, salt, 64)) as Buffer;
+  return `${buf.toString("hex")}.${salt}`;
+}
 
 // Simple server to serve the static frontend
 // The actual data is stored in the browser using IndexedDB
 export async function registerRoutes(app: Express): Promise<Server> {
   // Set up authentication routes and middleware
   setupAuth(app);
+  
+  // Google user registration handler
+  app.post("/api/register-google-user", async (req, res) => {
+    try {
+      const { username, email, uid, displayName } = req.body;
+
+      if (!username || !uid) {
+        return res.status(400).json({ error: "Missing required fields" });
+      }
+
+      // Check if user already exists
+      const existingUser = await storage.getUserByUsername(username);
+      if (existingUser) {
+        return res.status(200).json({ message: "User already exists" });
+      }
+
+      // Create a special password hash for Google users (uses UID)
+      const hashedPassword = await hashPassword(`google_${uid}`);
+
+      // Create user in our system
+      const user = await storage.createUser({
+        username,
+        password: hashedPassword,
+      });
+
+      // Success
+      res.status(201).json({ message: "User created successfully" });
+    } catch (error) {
+      console.error("Error creating Google user:", error);
+      res.status(500).json({ error: "Failed to create user" });
+    }
+  });
+  
   // Health check endpoint
   app.get('/api/health', (req, res) => {
     res.json({ status: 'OK', message: 'NurseValidate UK API is running' });
