@@ -9,7 +9,8 @@ import {
   ClipboardCheck, 
   HelpCircle,
   Settings as SettingsIcon,
-  CreditCard 
+  CreditCard,
+  Heart
 } from 'lucide-react';
 
 type NavigationTabsProps = {
@@ -74,6 +75,13 @@ export default function NavigationTabs({ currentPath }: NavigationTabsProps) {
       icon: <HelpCircle size={16} />,
       color: "bg-gradient-to-r from-revalpro-blue/20 to-revalpro-purple/20 text-revalpro-blue",
       hoverColor: "hover:from-revalpro-blue/30 hover:to-revalpro-purple/30"
+    },
+    { 
+      href: "/nmc-verification", 
+      label: "NMC Portal", 
+      icon: <Heart size={16} />,
+      color: "bg-revalpro-red/20 text-revalpro-red",
+      hoverColor: "hover:bg-revalpro-red/30"
     },
     { 
       href: "/subscription", 

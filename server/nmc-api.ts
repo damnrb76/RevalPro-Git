@@ -8,7 +8,8 @@
 
 import axios from 'axios';
 import * as cheerio from 'cheerio';
-import type { RevalidationServiceStatus, RegistrationVerificationResult, NmcDates } from './types';
+// Import types defined in our own server/types.ts file
+import type { RevalidationServiceStatus, RegistrationVerificationResult, NmcDates } from '../server/types';
 
 // Base URLs for NMC services
 const NMC_BASE_URL = 'https://www.nmc.org.uk';

@@ -19,6 +19,7 @@ import Settings from "@/pages/settings";
 import AiAssistant from "@/pages/ai-assistant";
 import SubscriptionPage from "@/pages/subscription";
 import SubscriptionSuccess from "@/pages/subscription-success";
+import NmcVerification from "@/pages/nmc-verification";
 import Footer from "@/components/layout/footer";
 import NavigationTabs from "@/components/layout/navigation-tabs";
 import ProminentHeader from "@/components/layout/prominent-header";
@@ -46,6 +47,7 @@ function AppRouter() {
           <ProtectedRoute path="/declarations" component={Declarations} />
           <ProtectedRoute path="/settings" component={Settings} />
           <ProtectedRoute path="/ai-assistant" component={AiAssistant} />
+          <ProtectedRoute path="/nmc-verification" component={NmcVerification} />
           <ProtectedRoute path="/subscription" component={SubscriptionPage} />
           <ProtectedRoute path="/subscription/success" component={SubscriptionSuccess} />
           <Route component={NotFound} />
