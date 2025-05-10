@@ -7,7 +7,17 @@ export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   username: text("username").notNull().unique(),
   password: text("password").notNull(),
+  email: text("email"),
   created: timestamp("created").notNull().defaultNow(),
+  
+  // Subscription fields
+  currentPlan: text("current_plan").default("free"),
+  stripeCustomerId: text("stripe_customer_id"),
+  stripeSubscriptionId: text("stripe_subscription_id"),
+  subscriptionStatus: text("subscription_status").default("inactive"),
+  subscriptionPeriod: text("subscription_period"),  // "monthly" or "annual"
+  subscriptionEndDate: timestamp("subscription_end_date"),
+  cancelAtPeriodEnd: boolean("cancel_at_period_end").default(false),
 });
 
 export const insertUserSchema = createInsertSchema(users).pick({

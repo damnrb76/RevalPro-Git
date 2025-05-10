@@ -6,10 +6,22 @@ import createMemoryStore from "memorystore";
 const MemoryStore = createMemoryStore(session);
 
 // Extend the interface with any CRUD methods and session store
+export interface SubscriptionInfo {
+  stripeCustomerId?: string;
+  stripeSubscriptionId?: string;
+  subscriptionStatus?: string;
+  currentPlan?: string;
+  subscriptionPeriod?: string | null;
+  subscriptionEndDate?: Date | null;
+  cancelAtPeriodEnd?: boolean;
+}
+
 export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
+  getUserByStripeCustomerId(customerId: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+  updateUserStripeInfo(userId: number, info: SubscriptionInfo): Promise<User>;
   sessionStore: session.Store;
 }
 
@@ -30,7 +42,15 @@ export class MemStorage implements IStorage {
       id: 1, 
       username: "demouser",
       password: "hashed_hello", // Simple hash for "hello"
-      created: new Date()
+      email: null,
+      created: new Date(),
+      currentPlan: "free",
+      stripeCustomerId: null,
+      stripeSubscriptionId: null,
+      subscriptionStatus: "inactive",
+      subscriptionPeriod: null,
+      subscriptionEndDate: null,
+      cancelAtPeriodEnd: false
     });
     this.currentId = 2; // Start new users at ID 2
   }
@@ -51,10 +71,39 @@ export class MemStorage implements IStorage {
     const user: User = { 
       ...insertUser, 
       id,
-      created: timestamp
+      email: null,
+      created: timestamp,
+      currentPlan: "free",
+      stripeCustomerId: null,
+      stripeSubscriptionId: null,
+      subscriptionStatus: "inactive",
+      subscriptionPeriod: null,
+      subscriptionEndDate: null,
+      cancelAtPeriodEnd: false
     };
     this.users.set(id, user);
     return user;
+  }
+  
+  async getUserByStripeCustomerId(customerId: string): Promise<User | undefined> {
+    return Array.from(this.users.values()).find(
+      (user) => user.stripeCustomerId === customerId,
+    );
+  }
+  
+  async updateUserStripeInfo(userId: number, info: SubscriptionInfo): Promise<User> {
+    const user = await this.getUser(userId);
+    if (!user) {
+      throw new Error(`User with ID ${userId} not found`);
+    }
+    
+    const updatedUser = {
+      ...user,
+      ...info
+    };
+    
+    this.users.set(userId, updatedUser);
+    return updatedUser;
   }
 }
 
