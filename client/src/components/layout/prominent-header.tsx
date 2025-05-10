@@ -10,6 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import logoPath from "@assets/Leonardo_Phoenix_10_design_a_vibrant_and_professional_logo_for_3.jpg";
 
 const ProminentHeader: React.FC = () => {
@@ -72,7 +73,12 @@ const ProminentHeader: React.FC = () => {
                   ? 'bg-revalpro-blue/10 text-revalpro-blue hover:bg-revalpro-blue/20' 
                   : 'bg-white/20 text-white hover:bg-white/30'
               }`}>
-                <User size={16} /> 
+                <Avatar className="h-8 w-8 border-2 border-white/50">
+                  <AvatarImage src={user.profilePicture || ""} alt={user.username} />
+                  <AvatarFallback className="bg-revalpro-blue text-white">
+                    {user.username ? user.username.substring(0, 2).toUpperCase() : "UK"}
+                  </AvatarFallback>
+                </Avatar>
                 <span>{user.username}</span>
                 <ChevronDown size={16} />
               </DropdownMenuTrigger>
