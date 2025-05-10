@@ -338,9 +338,9 @@ export default function NmcVerificationPage() {
                   <CardTitle>Verification Results</CardTitle>
                   <Badge variant={
                     verifyMutation.data.registrationStatus === 'Registered'
-                      ? 'success'
+                      ? 'completed'
                       : verifyMutation.data.registrationStatus === 'Lapsed'
-                        ? 'warning'
+                        ? 'attention-needed'
                         : 'destructive'
                   }>
                     {verifyMutation.data.registrationStatus}
