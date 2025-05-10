@@ -8,7 +8,8 @@ import {
   FileText, 
   ClipboardCheck, 
   HelpCircle,
-  Settings as SettingsIcon 
+  Settings as SettingsIcon,
+  CreditCard 
 } from 'lucide-react';
 
 type NavigationTabsProps = {
@@ -73,6 +74,13 @@ export default function NavigationTabs({ currentPath }: NavigationTabsProps) {
       icon: <HelpCircle size={16} />,
       color: "bg-gradient-to-r from-revalpro-blue/20 to-revalpro-purple/20 text-revalpro-blue",
       hoverColor: "hover:from-revalpro-blue/30 hover:to-revalpro-purple/30"
+    },
+    { 
+      href: "/subscription", 
+      label: "Subscription", 
+      icon: <CreditCard size={16} />,
+      color: "bg-revalpro-fuchsia/20 text-revalpro-fuchsia",
+      hoverColor: "hover:bg-revalpro-fuchsia/30"
     },
     { 
       href: "/settings", 
