@@ -1,7 +1,7 @@
 import { useAuth } from "@/hooks/use-auth";
 import PricingPlans from "@/components/subscription/pricing-plans";
 import { Loader2 } from "lucide-react";
-import { Navigate } from "wouter";
+import { useLocation } from "wouter";
 
 export default function SubscriptionPage() {
   const { user, isLoading } = useAuth();
@@ -15,9 +15,13 @@ export default function SubscriptionPage() {
     );
   }
 
+  const [_, setLocation] = useLocation();
+  
   // Redirect to login if not authenticated
   if (!user) {
-    return <Navigate to="/auth" />;
+    // Using setTimeout to ensure the redirect happens after rendering
+    setTimeout(() => setLocation("/auth"), 0);
+    return <div className="hidden">Redirecting...</div>;
   }
 
   return (

@@ -3,7 +3,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useStripe, useElements, PaymentElement } from "@stripe/react-stripe-js";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { useNavigate } from "wouter";
+import { useLocation } from "wouter";
 import { queryClient } from "@/lib/queryClient";
 import { Loader2 } from "lucide-react";
 
@@ -11,7 +11,7 @@ export default function CheckoutForm() {
   const stripe = useStripe();
   const elements = useElements();
   const { toast } = useToast();
-  const navigate = useNavigate();
+  const [_, setLocation] = useLocation();
   
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
@@ -52,7 +52,7 @@ export default function CheckoutForm() {
       queryClient.invalidateQueries({ queryKey: ["/api/subscription"] });
       
       // Redirect to subscription page or dashboard
-      navigate("/");
+      setLocation("/");
     }
   };
 

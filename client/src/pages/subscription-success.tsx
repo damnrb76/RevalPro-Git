@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useLocation, useNavigate } from "wouter";
+import { useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -8,8 +8,7 @@ import { queryClient } from "@/lib/queryClient";
 
 export default function SubscriptionSuccess() {
   const { toast } = useToast();
-  const navigate = useNavigate();
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
 
   // Extract the payment_intent and payment_intent_client_secret from the URL
   useEffect(() => {
@@ -74,14 +73,14 @@ export default function SubscriptionSuccess() {
         
         <div className="flex flex-col sm:flex-row justify-center gap-4">
           <Button
-            onClick={() => navigate("/")}
+            onClick={() => setLocation("/")}
             className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
           >
             Go to Dashboard
           </Button>
           <Button
             variant="outline"
-            onClick={() => navigate("/subscription")}
+            onClick={() => setLocation("/subscription")}
           >
             View Subscription Details
           </Button>

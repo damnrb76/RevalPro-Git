@@ -1,18 +1,18 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { useNavigate } from "wouter";
+import { useLocation } from "wouter";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { PlanDetails, PLAN_DETAILS, SubscriptionPlan } from "../../../shared/subscription-plans";
+import { PlanDetails, PLAN_DETAILS, SubscriptionPlan } from "@shared/subscription-plans";
 import { useAuth } from "@/hooks/use-auth";
 import { CheckIcon, XIcon } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import CheckoutForm from "./checkout-form";
+import CheckoutForm from "@/components/subscription/checkout-form";
 
 // Make sure to call loadStripe outside of a component's render
 // to avoid recreating the Stripe object on every render
@@ -21,7 +21,7 @@ const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 export default function PricingPlans() {
   const { user } = useAuth();
   const { toast } = useToast();
-  const navigate = useNavigate();
+  const [_, setLocation] = useLocation();
   const [period, setPeriod] = useState<"monthly" | "annual">("annual");
   const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlan | null>(null);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
