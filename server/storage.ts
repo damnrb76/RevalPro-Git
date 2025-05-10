@@ -43,6 +43,7 @@ export class MemStorage implements IStorage {
       username: "demouser",
       password: "hashed_hello", // Simple hash for "hello"
       email: null,
+      profilePicture: "https://api.dicebear.com/7.x/personas/svg?seed=nursehero",
       created: new Date(),
       currentPlan: "free",
       stripeCustomerId: null,
@@ -72,6 +73,9 @@ export class MemStorage implements IStorage {
       ...insertUser, 
       id,
       email: null,
+      profilePicture: insertUser.username 
+        ? `https://api.dicebear.com/7.x/personas/svg?seed=${insertUser.username}` 
+        : null,
       created: timestamp,
       currentPlan: "free",
       stripeCustomerId: null,
