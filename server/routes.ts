@@ -1,9 +1,12 @@
-import type { Express } from "express";
+import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth } from "./auth";
 import { scrypt, randomBytes } from "crypto";
 import { promisify } from "util";
+import { createCustomer, createSubscription, getSubscription, cancelSubscription, reactivateSubscription, changeSubscriptionPlan } from "./stripe";
+import { PLAN_DETAILS } from "../shared/subscription-plans";
+import Stripe from "stripe";
 
 const scryptAsync = promisify(scrypt);
 
@@ -97,6 +100,284 @@ export async function registerRoutes(app: Express): Promise<Server> {
         answer: "Yes, you can submit your application from 60 days before your application date. However, all requirements must be completed prior to submission."
       }
     ]);
+  });
+
+  // Subscription Management Endpoints
+
+  // Get available subscription plans
+  app.get("/api/subscription/plans", (req, res) => {
+    res.json(PLAN_DETAILS);
+  });
+
+  // Get current user's subscription
+  app.get("/api/subscription", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ error: "You must be logged in" });
+    }
+
+    const user = req.user;
+    const currentPlan = user.currentPlan || "free";
+    const planDetails = PLAN_DETAILS[currentPlan];
+
+    // If user has a Stripe subscription, get additional details
+    let stripeSubscription = null;
+    if (user.stripeSubscriptionId) {
+      try {
+        stripeSubscription = await getSubscription(user.stripeSubscriptionId);
+      } catch (error) {
+        console.error("Error fetching Stripe subscription:", error);
+      }
+    }
+
+    res.json({
+      currentPlan,
+      planDetails,
+      status: user.subscriptionStatus,
+      period: user.subscriptionPeriod,
+      endDate: user.subscriptionEndDate,
+      cancelAtPeriodEnd: user.cancelAtPeriodEnd,
+      stripeSubscription: stripeSubscription ? {
+        id: stripeSubscription.id,
+        status: stripeSubscription.status,
+      } : null,
+    });
+  });
+
+  // Create or update Stripe customer and start subscription
+  app.post("/api/subscription/create", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ error: "You must be logged in" });
+    }
+
+    try {
+      const { planId, period } = req.body;
+      if (!planId || !period || !["monthly", "annual"].includes(period)) {
+        return res.status(400).json({ error: "Invalid plan or period" });
+      }
+
+      const user = req.user;
+      const planDetails = PLAN_DETAILS[planId];
+      
+      if (!planDetails) {
+        return res.status(400).json({ error: "Invalid plan selected" });
+      }
+
+      // Free plan doesn't need Stripe
+      if (planId === "free") {
+        await storage.updateUserStripeInfo(user.id, {
+          currentPlan: "free",
+          subscriptionStatus: "active",
+          stripeSubscriptionId: null,
+          subscriptionPeriod: null,
+          subscriptionEndDate: null,
+          cancelAtPeriodEnd: false,
+        });
+        return res.json({ success: true, plan: "free" });
+      }
+
+      // Get price ID based on plan and period
+      const priceId = planDetails.stripePriceId[period];
+      if (!priceId) {
+        return res.status(400).json({ error: "Invalid price ID for selected plan and period" });
+      }
+
+      // Create or get customer
+      let customerId = user.stripeCustomerId;
+      if (!customerId) {
+        customerId = await createCustomer({
+          email: user.email || "unknown@example.com",
+          name: user.username,
+          userId: user.id,
+        });
+      }
+
+      // Create subscription
+      const subscription = await createSubscription({
+        customerId,
+        priceId,
+        userId: user.id,
+      });
+
+      res.json({
+        subscriptionId: subscription.subscriptionId,
+        clientSecret: subscription.clientSecret,
+      });
+    } catch (error) {
+      console.error("Error creating subscription:", error);
+      res.status(500).json({ error: "Failed to create subscription" });
+    }
+  });
+
+  // Cancel subscription
+  app.post("/api/subscription/cancel", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ error: "You must be logged in" });
+    }
+
+    try {
+      const user = req.user;
+      const { immediate } = req.body;
+
+      if (!user.stripeSubscriptionId) {
+        return res.status(400).json({ error: "No active subscription" });
+      }
+
+      await cancelSubscription(user.stripeSubscriptionId, immediate);
+
+      if (immediate) {
+        await storage.updateUserStripeInfo(user.id, {
+          subscriptionStatus: "canceled",
+          currentPlan: "free",
+          subscriptionPeriod: null,
+          subscriptionEndDate: null,
+          cancelAtPeriodEnd: false,
+        });
+      } else {
+        await storage.updateUserStripeInfo(user.id, {
+          cancelAtPeriodEnd: true,
+        });
+      }
+
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error canceling subscription:", error);
+      res.status(500).json({ error: "Failed to cancel subscription" });
+    }
+  });
+
+  // Reactivate subscription (if cancel at period end)
+  app.post("/api/subscription/reactivate", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ error: "You must be logged in" });
+    }
+
+    try {
+      const user = req.user;
+
+      if (!user.stripeSubscriptionId) {
+        return res.status(400).json({ error: "No active subscription" });
+      }
+
+      if (!user.cancelAtPeriodEnd) {
+        return res.status(400).json({ error: "Subscription is not scheduled for cancellation" });
+      }
+
+      await reactivateSubscription(user.stripeSubscriptionId);
+      await storage.updateUserStripeInfo(user.id, {
+        cancelAtPeriodEnd: false,
+      });
+
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error reactivating subscription:", error);
+      res.status(500).json({ error: "Failed to reactivate subscription" });
+    }
+  });
+
+  // Change subscription plan
+  app.post("/api/subscription/change-plan", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ error: "You must be logged in" });
+    }
+
+    try {
+      const user = req.user;
+      const { planId, period } = req.body;
+
+      if (!planId || !period || !["monthly", "annual"].includes(period)) {
+        return res.status(400).json({ error: "Invalid plan or period" });
+      }
+
+      const planDetails = PLAN_DETAILS[planId];
+      if (!planDetails) {
+        return res.status(400).json({ error: "Invalid plan selected" });
+      }
+
+      // If user is on free plan and wants to upgrade
+      if (user.currentPlan === "free" && planId !== "free") {
+        // Redirect to create subscription flow
+        return res.json({
+          redirect: true,
+          action: "create",
+          plan: planId,
+          period,
+        });
+      }
+
+      // If user wants to downgrade to free plan
+      if (planId === "free") {
+        if (!user.stripeSubscriptionId) {
+          return res.status(400).json({ error: "No active subscription to cancel" });
+        }
+
+        // Cancel subscription at period end
+        await cancelSubscription(user.stripeSubscriptionId, false);
+        await storage.updateUserStripeInfo(user.id, {
+          cancelAtPeriodEnd: true,
+        });
+
+        return res.json({ success: true });
+      }
+
+      // User wants to change to a different paid plan
+      if (!user.stripeSubscriptionId) {
+        return res.status(400).json({ error: "No active subscription to update" });
+      }
+
+      const priceId = planDetails.stripePriceId[period];
+      if (!priceId) {
+        return res.status(400).json({ error: "Invalid price ID for selected plan and period" });
+      }
+
+      await changeSubscriptionPlan(user.stripeSubscriptionId, priceId);
+      
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error changing subscription plan:", error);
+      res.status(500).json({ error: "Failed to change subscription plan" });
+    }
+  });
+
+  // Stripe webhook handler
+  app.post("/api/webhooks/stripe", async (req, res) => {
+    const sig = req.headers['stripe-signature'] as string;
+    
+    if (!process.env.STRIPE_SECRET_KEY) {
+      return res.status(500).send('Stripe configuration error');
+    }
+
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+      apiVersion: '2023-10-16' as any,
+    });
+    
+    // This is where you would validate the webhook signature
+    // if you have a webhook secret configured
+    // For testing purposes, we'll just process the event
+    
+    try {
+      // For testing, just cast the request body to an event
+      const event = req.body as Stripe.Event;
+      
+      // Handle the event based on its type
+      switch (event.type) {
+        case 'customer.subscription.created':
+        case 'customer.subscription.updated':
+        case 'customer.subscription.deleted':
+        case 'invoice.payment_succeeded':
+        case 'invoice.payment_failed':
+          // Process the event
+          console.log(`Processing webhook event: ${event.type}`);
+          // Here, you would call functions to update your database
+          // based on the subscription changes
+          break;
+        default:
+          console.log(`Unhandled event type: ${event.type}`);
+      }
+      
+      res.json({received: true});
+    } catch (err) {
+      res.status(400).send(`Webhook Error: ${err.message}`);
+    }
   });
 
   const httpServer = createServer(app);
