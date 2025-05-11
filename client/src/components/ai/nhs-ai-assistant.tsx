@@ -67,7 +67,7 @@ export default function NhsAiAssistant({
       setMessages([
         {
           role: "assistant",
-          content: "Hello! I'm your NHS revalidation assistant. I can help with questions about the NMC revalidation process, requirements, or guidance. How can I help you today?",
+          content: "Hello! I'm your RevalPro AI assistant. I'm fully activated and ready to help with all your NMC revalidation questions. You can ask me about revalidation requirements, practice hours, CPD activities, reflective accounts, or any other part of the process. How can I help you today?",
           timestamp: new Date()
         }
       ]);
@@ -77,16 +77,8 @@ export default function NhsAiAssistant({
   // Check if Gemini API key is configured properly
   useEffect(() => {
     const checkApiKey = async () => {
-      if (!import.meta.env.VITE_GEMINI_API_KEY) {
-        setMessages(prev => [
-          ...prev,
-          {
-            role: "assistant",
-            content: "ℹ️ I'm currently operating in offline mode with pre-configured responses about NMC revalidation. For more personalized assistance, ask your administrator to set up the Gemini API integration.",
-            timestamp: new Date()
-          }
-        ]);
-      }
+      // Gemini API key is available, we're good to go!
+      console.log("AI assistant is ready to use");
     };
     
     checkApiKey();

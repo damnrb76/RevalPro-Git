@@ -4,12 +4,12 @@ import { getFallbackResponse, getFallbackReflectionTemplate, getFallbackCpdSugge
 // Check if the API key exists
 const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 
-// Configure the AI model
+// Configure the AI model with optimized settings
 const defaultConfig: GenerationConfig = {
-  temperature: 0.7,
+  temperature: 0.8,  // Slightly more creative responses
   topK: 40,
   topP: 0.95,
-  maxOutputTokens: 1024,
+  maxOutputTokens: 1500,  // Allow for more detailed responses
 };
 
 // Initialize the Google Generative AI only if the API key exists
@@ -26,7 +26,19 @@ if (apiKey) {
       generationConfig: defaultConfig,
     });
     
-    console.log("Gemini AI initialized successfully");
+    // Test the model with a simple prompt to verify it's working
+    (async () => {
+      try {
+        const promptTest = "Respond with 'ok' if you can read this.";
+        const result = await model.generateContent(promptTest);
+        const text = result.response.text();
+        if (text) {
+          console.log("Gemini AI initialized successfully");
+        }
+      } catch (e) {
+        console.error("Gemini API test failed:", e);
+      }
+    })();
   } catch (error) {
     console.error("Failed to initialize Gemini AI:", error);
   }
