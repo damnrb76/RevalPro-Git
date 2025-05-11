@@ -13,7 +13,8 @@ import {
   Heart,
   Calendar,
   Link2,
-  ActivitySquare
+  ActivitySquare,
+  MessageCircle
 } from 'lucide-react';
 
 type NavigationTabsProps = {
@@ -113,6 +114,13 @@ export default function NavigationTabs({ currentPath }: NavigationTabsProps) {
       icon: <CreditCard size={16} />,
       color: "bg-revalpro-fuchsia/20 text-revalpro-fuchsia",
       hoverColor: "hover:bg-revalpro-fuchsia/30"
+    },
+    { 
+      href: "/tester-feedback", 
+      label: "Feedback Form", 
+      icon: <MessageCircle size={16} />,
+      color: "bg-amber-200 text-amber-700",
+      hoverColor: "hover:bg-amber-300"
     },
     { 
       href: "/settings", 
