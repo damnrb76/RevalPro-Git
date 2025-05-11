@@ -28,7 +28,7 @@ export default function NmcServiceStatus() {
     statusQuery.refetch();
   };
 
-  const getStatusBadge = (status: string) => {
+  const getStatusBadge = (status: 'Available' | 'Unavailable' | 'Maintenance' | string) => {
     switch (status) {
       case 'Available':
         return (
@@ -104,18 +104,18 @@ export default function NmcServiceStatus() {
                       Main website and user account services
                     </p>
                   </div>
-                  {getStatusBadge(statusQuery.data?.status || 'Unavailable')}
+                  {getStatusBadge(statusQuery.data ? statusQuery.data.status : 'Unavailable')}
                 </div>
                 
                 <div className="border-t pt-4">
                   <p className="text-sm text-muted-foreground">
-                    Last checked: {statusQuery.data?.lastChecked 
+                    Last checked: {statusQuery.data && statusQuery.data.lastChecked 
                       ? formatDateFull(new Date(statusQuery.data.lastChecked)) 
                       : "Unknown"}
                   </p>
                 </div>
                 
-                {statusQuery.data?.status === 'Maintenance' && (
+                {statusQuery.data && statusQuery.data.status === 'Maintenance' && (
                   <div className="p-4 border border-amber-200 rounded-md bg-amber-50">
                     <p className="text-amber-800">
                       NMC Online is currently undergoing scheduled maintenance. 
@@ -124,7 +124,7 @@ export default function NmcServiceStatus() {
                   </div>
                 )}
                 
-                {statusQuery.data?.status === 'Unavailable' && (
+                {statusQuery.data && statusQuery.data.status === 'Unavailable' && (
                   <div className="p-4 border border-red-200 rounded-md bg-red-50">
                     <p className="text-red-700">
                       NMC Online services appear to be unavailable at the moment.

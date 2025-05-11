@@ -143,7 +143,7 @@ export default function NavigationTabs({ currentPath }: NavigationTabsProps) {
                     {link.icon}
                     <span className="text-sm">{link.label}</span>
                     {isActive && (
-                      <span className="absolute inset-0 rounded-full animate-pulse opacity-30 bg-white"></span>
+                      <span className="absolute inset-0 rounded-full animate-pulse opacity-30 bg-white pointer-events-none"></span>
                     )}
                   </div>
                 </Link>
