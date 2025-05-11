@@ -298,7 +298,7 @@ export default function RevalidationSummary({
                   {isGenerating ? "Generating..." : "Download Revalidation Summary"}
                 </Button>
                 
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-2 gap-2 mb-2">
                   <Button 
                     variant="outline" 
                     onClick={handleDownloadCompletePack}
@@ -309,6 +309,18 @@ export default function RevalidationSummary({
                     Complete Pack
                   </Button>
                   
+                  <Link href="/summary-infographic">
+                    <Button 
+                      variant="outline" 
+                      className="w-full text-revalpro-purple border-revalpro-purple hover:bg-revalpro-grey"
+                    >
+                      <Download className="mr-2 h-4 w-4" />
+                      Infographic
+                    </Button>
+                  </Link>
+                </div>
+                
+                <div className="grid grid-cols-1 gap-2">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button 

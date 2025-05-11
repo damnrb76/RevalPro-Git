@@ -9,7 +9,8 @@ import {
   Loader2
 } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
-import { RevalidationSummaryData, generateInfographicCanvas } from '@/lib/infographic-generator';
+import { RevalidationSummaryData, generateInfographicCanvas, calculateProgress } from '@/lib/infographic-generator';
+import { RevalidationStatus } from '@shared/schema';
 import { getDaysUntil } from '@/lib/date-utils';
 
 interface RevalidationInfographicProps {
@@ -31,33 +32,8 @@ const RevalidationInfographic: React.FC<RevalidationInfographicProps> = ({ summa
     setIsGenerating(true);
 
     try {
-      // Calculate progress
-      const progress = {
-        practiceHours: {
-          required: 450,
-          completed: summaryData.practiceHours.reduce((sum, record) => sum + record.hours, 0),
-          percentage: Math.min(100, (summaryData.practiceHours.reduce((sum, record) => sum + record.hours, 0) / 450) * 100)
-        },
-        cpd: {
-          required: 35,
-          completed: summaryData.cpdRecords.reduce((sum, record) => sum + record.hours, 0),
-          percentage: Math.min(100, (summaryData.cpdRecords.reduce((sum, record) => sum + record.hours, 0) / 35) * 100)
-        },
-        feedback: {
-          required: 5,
-          completed: summaryData.feedbackRecords.length,
-          percentage: Math.min(100, (summaryData.feedbackRecords.length / 5) * 100)
-        },
-        reflectiveAccounts: {
-          required: 5,
-          completed: summaryData.reflectiveAccounts.length,
-          percentage: Math.min(100, (summaryData.reflectiveAccounts.length / 5) * 100)
-        },
-        healthDeclaration: summaryData.hasHealthDeclaration,
-        confirmation: summaryData.hasConfirmation,
-        overallPercentage: calculateOverallProgress(),
-        status: calculateStatus()
-      };
+      // Calculate progress using imported function
+      const progress = calculateProgress(summaryData);
       
       // Generate canvas with infographic
       const canvas = await generateInfographicCanvas(summaryData, progress);
@@ -119,6 +95,25 @@ const RevalidationInfographic: React.FC<RevalidationInfographicProps> = ({ summa
     if (summaryData.hasConfirmation) completed++;
 
     return Math.round((completed / TOTAL_REQUIREMENTS) * 100);
+  };
+  
+  // Determine revalidation status
+  const calculateStatus = (): RevalidationStatus => {
+    const totalPercentage = calculateOverallProgress();
+    
+    // Determine status
+    let status: RevalidationStatus = 'NOT_STARTED';
+    if (totalPercentage > 0) {
+      status = 'IN_PROGRESS';
+    }
+    if (totalPercentage === 100) {
+      status = 'COMPLETED';
+    }
+    if (summaryData.userProfile && getDaysUntil(summaryData.userProfile.expiryDate) < 60 && totalPercentage < 100) {
+      status = 'ATTENTION';
+    }
+    
+    return status;
   };
 
   const progressPercentage = calculateOverallProgress();
