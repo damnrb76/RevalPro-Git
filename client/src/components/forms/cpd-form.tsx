@@ -27,12 +27,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cpdRecordsStorage } from "@/lib/storage";
 import { insertCpdRecordSchema, type CpdRecord, CodeSectionsEnum } from "@shared/schema";
-
-// Helper function to format a date for the input field
-const formatDateForInput = (date: Date | string): string => {
-  const d = date instanceof Date ? date : new Date(date);
-  return d.toISOString().split('T')[0];
-};
+import { formatDateForInput, toDate } from "@/lib/date-utils";
 
 // Extend the schema with form validation
 const formSchema = insertCpdRecordSchema.extend({

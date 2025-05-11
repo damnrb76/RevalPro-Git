@@ -105,3 +105,25 @@ export function getRevalidationNotificationPhase(daysRemaining: number): 'urgent
   if (daysRemaining <= 90) return 'notice';     // Last 90 days
   return 'ok';                                  // More than 90 days
 }
+
+/**
+ * Format a date as YYYY-MM-DD for input fields
+ */
+export function formatDateForInput(date: Date | string): string {
+  const dateObj = typeof date === 'string' ? parseISO(date) : date;
+  if (!isValid(dateObj)) return '';
+  return format(dateObj, 'yyyy-MM-dd');
+}
+
+/**
+ * Safely convert any date representation to a Date object
+ */
+export function toDate(dateInput: string | Date): Date {
+  if (dateInput instanceof Date) return dateInput;
+  try {
+    const date = parseISO(dateInput);
+    return isValid(date) ? date : new Date();
+  } catch (error) {
+    return new Date();
+  }
+}

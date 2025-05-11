@@ -1,19 +1,21 @@
 import { ReactNode, ComponentProps } from "react";
 import { Card } from "@/components/ui/card";
-import { motion } from "framer-motion";
+import { motion, HTMLMotionProps } from "framer-motion";
 import { cn } from "@/lib/utils";
 
-const MotionCard = motion.custom(Card);
+// Create a motion component from Card
+const MotionCard = motion(Card);
 
-interface AnimatedCardProps extends ComponentProps<typeof Card> {
+interface AnimatedCardProps {
   children: ReactNode;
   delay?: number;
   className?: string;
 }
 
-export function AnimatedCard({ children, delay = 0, className, ...props }: AnimatedCardProps) {
+export function AnimatedCard({ children, delay = 0, className }: AnimatedCardProps) {
   return (
-    <MotionCard
+    <motion.div
+      className={cn("transform transition-all duration-300", className)}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ 
@@ -25,11 +27,11 @@ export function AnimatedCard({ children, delay = 0, className, ...props }: Anima
         y: -5,
         transition: { duration: 0.2 }
       }}
-      className={cn("transform transition-all duration-300", className)}
-      {...props}
     >
-      {children}
-    </MotionCard>
+      <Card className="h-full">
+        {children}
+      </Card>
+    </motion.div>
   );
 }
 
