@@ -28,6 +28,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { cpdRecordsStorage } from "@/lib/storage";
 import { insertCpdRecordSchema, type CpdRecord, CodeSectionsEnum } from "@shared/schema";
 
+// Helper function to convert date string or Date object to Date
+const toDate = (date: string | Date): Date => {
+  return date instanceof Date ? date : new Date(date);
+};
+
 // Extend the schema with form validation
 const formSchema = insertCpdRecordSchema.extend({
   date: z.string().min(1, "Date is required"),
@@ -76,7 +81,7 @@ export default function CpdForm({ initialData, onClose, onSuccess }: CpdFormProp
         await cpdRecordsStorage.update(initialData.id, {
           ...data,
           // Ensure date is properly formatted for storage
-          date: data.date instanceof Date ? data.date : new Date(data.date),
+          date: toDate(data.date),
         });
         return initialData.id;
       } else {
@@ -84,7 +89,7 @@ export default function CpdForm({ initialData, onClose, onSuccess }: CpdFormProp
         return await cpdRecordsStorage.add({
           ...data,
           // Ensure date is properly formatted for storage
-          date: data.date instanceof Date ? data.date : new Date(data.date),
+          date: toDate(data.date),
         });
       }
     },

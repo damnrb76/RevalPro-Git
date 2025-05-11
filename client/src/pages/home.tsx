@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { motion } from "framer-motion";
 import AlertBanner from "@/components/dashboard/alert-banner";
 import RevalidationSummary from "@/components/dashboard/revalidation-summary";
 import DashboardVisualizations from "@/components/dashboard/dashboard-visualizations";
@@ -8,6 +9,7 @@ import RecentActivity from "@/components/dashboard/recent-activity";
 import NmcGuidance from "@/components/dashboard/nmc-guidance";
 import FaqSection from "@/components/dashboard/faq-section";
 import NhsAiAssistant from "@/components/ai/nhs-ai-assistant";
+import { AnimatedSection } from "@/components/ui/animated-card";
 import { 
   userProfileStorage, 
   practiceHoursStorage, 
@@ -99,62 +101,90 @@ export default function Home() {
     <main className="container mx-auto px-4 py-6">
       {/* Alert Banner - show only if expiry date is available */}
       {userProfile && daysUntil !== null && daysUntil > 0 && (
-        <AlertBanner 
-          expiryDate={new Date(userProfile.expiryDate)} 
-          daysRemaining={daysUntil} 
-        />
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <AlertBanner 
+            expiryDate={new Date(userProfile.expiryDate)} 
+            daysRemaining={daysUntil} 
+          />
+        </motion.div>
       )}
       
       {/* Revalidation Summary */}
-      <RevalidationSummary 
-        userProfile={userProfile || null}
-        practiceHours={practiceHoursTotal || 0}
-        cpdHours={cpdHoursTotal || 0}
-        participatoryHours={cpdParticipatory || 0}
-        feedbackCount={feedbackCount || 0}
-        reflectionsCount={reflectionsCount || 0}
-        reflectiveDiscussionCompleted={reflectiveDiscussionCompleted || false}
-        healthDeclarationCompleted={healthDeclarationCompleted || false}
-        confirmationCompleted={confirmationCompleted || false}
-      />
+      <AnimatedSection className="mb-6">
+        <RevalidationSummary 
+          userProfile={userProfile || null}
+          practiceHours={practiceHoursTotal || 0}
+          cpdHours={cpdHoursTotal || 0}
+          participatoryHours={cpdParticipatory || 0}
+          feedbackCount={feedbackCount || 0}
+          reflectionsCount={reflectionsCount || 0}
+          reflectiveDiscussionCompleted={reflectiveDiscussionCompleted || false}
+          healthDeclarationCompleted={healthDeclarationCompleted || false}
+          confirmationCompleted={confirmationCompleted || false}
+        />
+      </AnimatedSection>
       
       {/* Dashboard Visualizations */}
-      <DashboardVisualizations 
-        userProfile={userProfile || null}
-        practiceHours={practiceHoursTotal || 0}
-        cpdHours={cpdHoursTotal || 0}
-        participatoryHours={cpdParticipatory || 0}
-        feedbackCount={feedbackCount || 0}
-        reflectionsCount={reflectionsCount || 0}
-        reflectiveDiscussionCompleted={reflectiveDiscussionCompleted || false}
-        healthDeclarationCompleted={healthDeclarationCompleted || false}
-        confirmationCompleted={confirmationCompleted || false}
-      />
+      <AnimatedSection className="mb-6">
+        <DashboardVisualizations 
+          userProfile={userProfile || null}
+          practiceHours={practiceHoursTotal || 0}
+          cpdHours={cpdHoursTotal || 0}
+          participatoryHours={cpdParticipatory || 0}
+          feedbackCount={feedbackCount || 0}
+          reflectionsCount={reflectionsCount || 0}
+          reflectiveDiscussionCompleted={reflectiveDiscussionCompleted || false}
+          healthDeclarationCompleted={healthDeclarationCompleted || false}
+          confirmationCompleted={confirmationCompleted || false}
+        />
+      </AnimatedSection>
       
       {/* Requirements Cards */}
-      <RequirementsSection 
-        practiceHours={practiceHoursTotal || 0}
-        cpdHours={cpdHoursTotal || 0}
-        participatoryHours={cpdParticipatory || 0}
-        feedbackCount={feedbackCount || 0}
-        reflectionsCount={reflectionsCount || 0}
-      />
+      <AnimatedSection className="mb-6">
+        <RequirementsSection 
+          practiceHours={practiceHoursTotal || 0}
+          cpdHours={cpdHoursTotal || 0}
+          participatoryHours={cpdParticipatory || 0}
+          feedbackCount={feedbackCount || 0}
+          reflectionsCount={reflectionsCount || 0}
+        />
+      </AnimatedSection>
       
       {/* NHS AI Assistant */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-        <div className="lg:col-span-2">
-          <RecentActivity />
+      <AnimatedSection className="mb-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <motion.div 
+            className="lg:col-span-2"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <RecentActivity />
+          </motion.div>
+          <motion.div 
+            className="lg:col-span-1"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
+            <NhsAiAssistant />
+          </motion.div>
         </div>
-        <div className="lg:col-span-1">
-          <NhsAiAssistant />
-        </div>
-      </div>
+      </AnimatedSection>
       
       {/* NMC Guidance */}
-      <NmcGuidance />
+      <AnimatedSection className="mb-6">
+        <NmcGuidance />
+      </AnimatedSection>
       
       {/* FAQ Section */}
-      <FaqSection />
+      <AnimatedSection className="mb-6">
+        <FaqSection />
+      </AnimatedSection>
     </main>
   );
 }
