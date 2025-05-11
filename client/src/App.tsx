@@ -25,6 +25,7 @@ import RevalidationDates from "@/pages/revalidation-dates";
 import NmcResources from "@/pages/nmc-resources";
 import NmcServiceStatus from "@/pages/nmc-service-status";
 import TesterFeedback from "@/pages/tester-feedback";
+import SummaryInfographic from "@/pages/summary-infographic";
 import Footer from "@/components/layout/footer";
 import NavigationTabs from "@/components/layout/navigation-tabs";
 import ProminentHeader from "@/components/layout/prominent-header";
@@ -62,6 +63,9 @@ function AppRouter() {
           
           {/* Tester Feedback */}
           <Route path="/tester-feedback" component={TesterFeedback} />
+          
+          {/* Infographic Routes */}
+          <ProtectedRoute path="/summary-infographic" component={SummaryInfographic} />
           
           {/* Subscription Routes */}
           <ProtectedRoute path="/subscription" component={SubscriptionPage} />
