@@ -209,8 +209,48 @@ export default function SettingsPage() {
                       <ProfileImageUploader
                         currentImageUrl={userProfile.profileImage || null}
                         initials={userProfile.name.split(' ').map(n => n[0]).join('')}
-                        onImageUpload={userProfileStorage.updateProfileImage}
-                        onImageRemove={userProfileStorage.removeProfileImage}
+                        onImageUpload={async (imageDataUrl) => {
+                          try {
+                            // Use the built-in method to update the profile image
+                            await userProfileStorage.updateProfileImage(imageDataUrl);
+                            
+                            // Update the auth user data to show in header
+                            const currentUser = queryClient.getQueryData(["/api/user"]);
+                            if (currentUser) {
+                              queryClient.setQueryData(["/api/user"], {
+                                ...currentUser,
+                                profilePicture: imageDataUrl
+                              });
+                            }
+                            
+                            // Refresh profile data
+                            queryClient.invalidateQueries({queryKey: ['userProfile']});
+                          } catch (error) {
+                            console.error("Error updating profile image:", error);
+                            throw error;
+                          }
+                        }}
+                        onImageRemove={async () => {
+                          try {
+                            // Use the built-in method to remove the profile image
+                            await userProfileStorage.removeProfileImage();
+                            
+                            // Update auth user data
+                            const currentUser = queryClient.getQueryData(["/api/user"]);
+                            if (currentUser) {
+                              queryClient.setQueryData(["/api/user"], {
+                                ...currentUser,
+                                profilePicture: null
+                              });
+                            }
+                            
+                            // Refresh profile data
+                            queryClient.invalidateQueries({queryKey: ['userProfile']});
+                          } catch (error) {
+                            console.error("Error removing profile image:", error);
+                            throw error;
+                          }
+                        }}
                       />
                     </div>
                     
