@@ -24,6 +24,7 @@ import NmcRegistrationCheck from "@/pages/nmc-registration-check";
 import RevalidationDates from "@/pages/revalidation-dates";
 import NmcResources from "@/pages/nmc-resources";
 import NmcServiceStatus from "@/pages/nmc-service-status";
+import TesterFeedback from "@/pages/tester-feedback";
 import Footer from "@/components/layout/footer";
 import NavigationTabs from "@/components/layout/navigation-tabs";
 import ProminentHeader from "@/components/layout/prominent-header";
@@ -58,6 +59,9 @@ function AppRouter() {
           <ProtectedRoute path="/revalidation-dates" component={RevalidationDates} />
           <ProtectedRoute path="/nmc-resources" component={NmcResources} />
           <ProtectedRoute path="/nmc-service-status" component={NmcServiceStatus} />
+          
+          {/* Tester Feedback */}
+          <Route path="/tester-feedback" component={TesterFeedback} />
           
           {/* Subscription Routes */}
           <ProtectedRoute path="/subscription" component={SubscriptionPage} />
