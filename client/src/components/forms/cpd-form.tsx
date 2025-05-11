@@ -110,7 +110,7 @@ export default function CpdForm({ initialData, onClose, onSuccess }: CpdFormProp
   
   return (
     <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[600px]">
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{initialData ? "Edit CPD Activity" : "Add CPD Activity"}</DialogTitle>
           <DialogDescription>
