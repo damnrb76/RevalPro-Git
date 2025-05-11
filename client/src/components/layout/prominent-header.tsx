@@ -56,14 +56,12 @@ const ProminentHeader: React.FC = () => {
       <div className="container mx-auto px-4 flex justify-between items-center">
         <Link href="/">
           <div className="flex items-center gap-3 cursor-pointer">
-            <div className="logo-container relative h-14 w-14 bg-white p-0.5 rounded-full shadow-md">
+            <div className="logo-container relative h-14 w-auto">
               <img 
                 src={logoPath} 
                 alt="RevalPro Logo" 
-                className="w-full h-full object-cover rounded-full"
+                className="h-full object-contain"
               />
-              {/* Animated ring */}
-              <div className="absolute inset-0 rounded-full border-2 border-revalpro-blue/40 animate-pulse"></div>
             </div>
             <div>
               <h1 className={`text-2xl font-extrabold ${!scrolled ? 'text-white' : 'logo-text'}`}>

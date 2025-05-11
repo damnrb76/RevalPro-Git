@@ -48,11 +48,11 @@ export default function Header({ logo }: HeaderProps) {
       <div className="container mx-auto px-4 py-2 flex justify-between items-center">
         <Link href="/">
           <div className="flex items-center cursor-pointer">
-            <div className="h-12 w-12 mr-3 rounded-full overflow-hidden shadow-md">
+            <div className="h-12 w-auto mr-3">
               <img 
                 src={logo} 
                 alt="RevalPro Logo" 
-                className="h-full w-full object-cover"
+                className="h-full object-contain"
               />
             </div>
             <div>
