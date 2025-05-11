@@ -10,7 +10,7 @@ import {
   DropdownMenuSeparator, 
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
-import { LogOut, User, Settings, HelpCircle, MoonStar, Sun } from "lucide-react";
+import { LogOut, User, Settings, HelpCircle, MoonStar, Sun, ChevronDown } from "lucide-react";
 import { userProfileStorage } from "@/lib/storage";
 import { useTheme } from "@/components/ui/theme-provider";
 import AssistantButton from "@/components/ai/assistant-button";
@@ -67,24 +67,29 @@ export default function Header({ logo }: HeaderProps) {
         </Link>
         
         <div className="flex items-center">
-          <div className="text-white mr-4 hidden md:block">
-            {userProfile?.name || "Welcome"}
-          </div>
-          
           <div className="mr-3 hidden sm:block">
             <AssistantButton variant="secondary" size="sm" />
           </div>
           
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="p-2 rounded-full bg-revalpro-purple text-white hover:bg-revalpro-purple/90">
-                <Avatar className="h-8 w-8 bg-revalpro-purple text-white border-2 border-white">
+              <Button variant="ghost" className="px-3 py-1.5 rounded-lg bg-white/20 text-white hover:bg-white/30 flex items-center gap-2">
+                <Avatar className="h-10 w-10 bg-revalpro-purple text-white border-2 border-white/50">
                   {userProfile?.profileImage ? (
                     <AvatarImage src={userProfile.profileImage} alt="Profile" className="object-cover" />
                   ) : (
                     <AvatarFallback>{initials}</AvatarFallback>
                   )}
                 </Avatar>
+                <div className="flex flex-col hidden md:block">
+                  <span className="text-sm font-medium">
+                    {userProfile?.name || "Welcome User"}
+                  </span>
+                  <span className="text-xs opacity-80">
+                    {userProfile?.jobTitle || "Nurse"}
+                  </span>
+                </div>
+                <ChevronDown size={16} className="ml-1" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">

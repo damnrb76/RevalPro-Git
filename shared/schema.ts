@@ -34,6 +34,7 @@ export const userProfiles = pgTable("user_profiles", {
   name: text("name").notNull(),
   registrationNumber: text("registration_number").notNull(),
   expiryDate: date("expiry_date").notNull(),
+  jobTitle: text("job_title"),
   email: text("email"),
   profileImage: text("profile_image"),
   created: timestamp("created").notNull().defaultNow(),
@@ -45,6 +46,7 @@ export const insertUserProfileSchema = createInsertSchema(userProfiles, {
   name: true,
   registrationNumber: true,
   expiryDate: true,
+  jobTitle: true,
   email: true,
   profileImage: true,
 });

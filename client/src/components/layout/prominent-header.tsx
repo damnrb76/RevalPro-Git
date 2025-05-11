@@ -77,15 +77,15 @@ const ProminentHeader: React.FC = () => {
         {user && (
           <div className="flex items-center gap-4">
             <DropdownMenu>
-              <DropdownMenuTrigger className={`flex items-center gap-2 px-3 py-1.5 rounded-full font-medium ${
+              <DropdownMenuTrigger className={`flex items-center gap-2 px-3 py-1.5 rounded-lg font-medium ${
                 scrolled 
                   ? 'bg-revalpro-blue/10 text-revalpro-blue hover:bg-revalpro-blue/20' 
                   : 'bg-white/20 text-white hover:bg-white/30'
               }`}>
-                <Avatar className="h-8 w-8 border-2 border-white/50">
+                <Avatar className="h-10 w-10 border-2 border-white/50">
                   <AvatarImage 
                     src={userProfile?.profileImage || user.profilePicture || ""} 
-                    alt={user.username} 
+                    alt={userProfile?.name || user.username} 
                   />
                   <AvatarFallback className="bg-revalpro-blue text-white">
                     {userProfile?.name 
@@ -95,7 +95,14 @@ const ProminentHeader: React.FC = () => {
                         : "UK"}
                   </AvatarFallback>
                 </Avatar>
-                <span>{user.username}</span>
+                <div className="flex flex-col">
+                  <span className="text-sm font-medium">
+                    {userProfile?.name || user.username}
+                  </span>
+                  <span className="text-xs opacity-80">
+                    {userProfile?.jobTitle || "Nurse"}
+                  </span>
+                </div>
                 <ChevronDown size={16} />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
