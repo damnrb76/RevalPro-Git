@@ -10,7 +10,10 @@ import {
   HelpCircle,
   Settings as SettingsIcon,
   CreditCard,
-  Heart
+  Heart,
+  Calendar,
+  Link2,
+  ActivitySquare
 } from 'lucide-react';
 
 type NavigationTabsProps = {
@@ -77,11 +80,32 @@ export default function NavigationTabs({ currentPath }: NavigationTabsProps) {
       hoverColor: "hover:from-revalpro-blue/30 hover:to-revalpro-purple/30"
     },
     { 
-      href: "/nmc-verification", 
-      label: "NMC Portal", 
+      href: "/nmc-registration-check", 
+      label: "Check NMC PIN", 
       icon: <Heart size={16} />,
       color: "bg-revalpro-red/20 text-revalpro-red",
       hoverColor: "hover:bg-revalpro-red/30"
+    },
+    { 
+      href: "/revalidation-dates", 
+      label: "Reval Dates", 
+      icon: <Calendar size={16} />,
+      color: "bg-revalpro-orange/20 text-revalpro-orange",
+      hoverColor: "hover:bg-revalpro-orange/30"
+    },
+    { 
+      href: "/nmc-resources", 
+      label: "NMC Links", 
+      icon: <Link2 size={16} />,
+      color: "bg-revalpro-teal/20 text-revalpro-teal",
+      hoverColor: "hover:bg-revalpro-teal/30"
+    },
+    { 
+      href: "/nmc-service-status", 
+      label: "NMC Status", 
+      icon: <ActivitySquare size={16} />,
+      color: "bg-revalpro-purple/20 text-revalpro-purple",
+      hoverColor: "hover:bg-revalpro-purple/30"
     },
     { 
       href: "/subscription", 

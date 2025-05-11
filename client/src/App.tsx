@@ -20,6 +20,10 @@ import AiAssistant from "@/pages/ai-assistant";
 import SubscriptionPage from "@/pages/subscription";
 import SubscriptionSuccess from "@/pages/subscription-success";
 import NmcVerification from "@/pages/nmc-verification";
+import NmcRegistrationCheck from "@/pages/nmc-registration-check";
+import RevalidationDates from "@/pages/revalidation-dates";
+import NmcResources from "@/pages/nmc-resources";
+import NmcServiceStatus from "@/pages/nmc-service-status";
 import Footer from "@/components/layout/footer";
 import NavigationTabs from "@/components/layout/navigation-tabs";
 import ProminentHeader from "@/components/layout/prominent-header";
@@ -47,7 +51,15 @@ function AppRouter() {
           <ProtectedRoute path="/declarations" component={Declarations} />
           <ProtectedRoute path="/settings" component={Settings} />
           <ProtectedRoute path="/ai-assistant" component={AiAssistant} />
+          
+          {/* NMC Related Routes */}
           <ProtectedRoute path="/nmc-verification" component={NmcVerification} />
+          <ProtectedRoute path="/nmc-registration-check" component={NmcRegistrationCheck} />
+          <ProtectedRoute path="/revalidation-dates" component={RevalidationDates} />
+          <ProtectedRoute path="/nmc-resources" component={NmcResources} />
+          <ProtectedRoute path="/nmc-service-status" component={NmcServiceStatus} />
+          
+          {/* Subscription Routes */}
           <ProtectedRoute path="/subscription" component={SubscriptionPage} />
           <ProtectedRoute path="/subscription/success" component={SubscriptionSuccess} />
           <Route component={NotFound} />
