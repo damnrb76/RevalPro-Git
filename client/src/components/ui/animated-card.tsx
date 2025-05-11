@@ -1,10 +1,9 @@
 import { ReactNode, ComponentProps } from "react";
 import { Card } from "@/components/ui/card";
-import { motion, HTMLMotionProps } from "framer-motion";
+import { motion, MotionProps } from "framer-motion";
 import { cn } from "@/lib/utils";
 
-// Create a motion component from Card
-const MotionCard = motion(Card);
+// No longer using motion(Card) as it's deprecated
 
 interface AnimatedCardProps {
   children: ReactNode;
