@@ -104,7 +104,7 @@ export default function HealthCharacterForm({ initialData, onClose, onSuccess }:
   
   return (
     <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[600px]">
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Health and Character Declaration</DialogTitle>
           <DialogDescription>
