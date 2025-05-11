@@ -20,7 +20,7 @@ import { formatDateFull } from "@/lib/date-utils";
 export default function NmcServiceStatus() {
   // Service status query
   const statusQuery = useQuery<ServiceStatusResponse>({
-    queryKey: ["/api/nmc/status"],
+    queryKey: ["/api/nmc/service-status"],
     refetchInterval: 300000, // Refresh every 5 minutes
   });
 

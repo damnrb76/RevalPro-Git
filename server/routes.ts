@@ -141,6 +141,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     }
   });
+  
+  // Check NMC service status
+  app.get('/api/nmc/service-status', async (req, res) => {
+    try {
+      const status = await checkNmcServiceStatus();
+      res.json(status);
+    } catch (error) {
+      console.error('Error checking NMC service status:', error);
+      res.status(500).json({ 
+        error: 'Failed to check service status',
+        status: 'Unavailable',
+        lastChecked: new Date().toISOString()
+      });
+    }
+  });
 
   // NMC guidelines endpoints (static data)
   app.get('/api/guidelines/revalidation', (req, res) => {
