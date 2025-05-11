@@ -14,7 +14,9 @@ import {
   Calendar,
   Link2,
   ActivitySquare,
-  MessageCircle
+  MessageCircle,
+  Download,
+  BarChart3
 } from 'lucide-react';
 
 type NavigationTabsProps = {
@@ -114,6 +116,13 @@ export default function NavigationTabs({ currentPath }: NavigationTabsProps) {
       icon: <CreditCard size={16} />,
       color: "bg-revalpro-fuchsia/20 text-revalpro-fuchsia",
       hoverColor: "hover:bg-revalpro-fuchsia/30"
+    },
+    { 
+      href: "/summary-infographic", 
+      label: "Export Infographic", 
+      icon: <BarChart3 size={16} />,
+      color: "bg-revalpro-orange/20 text-revalpro-orange",
+      hoverColor: "hover:bg-revalpro-orange/30"
     },
     { 
       href: "/tester-feedback", 
