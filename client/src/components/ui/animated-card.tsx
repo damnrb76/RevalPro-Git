@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
-const MotionCard = motion(Card);
+const MotionCard = motion.custom(Card);
 
 interface AnimatedCardProps extends ComponentProps<typeof Card> {
   children: ReactNode;

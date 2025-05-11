@@ -28,9 +28,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { cpdRecordsStorage } from "@/lib/storage";
 import { insertCpdRecordSchema, type CpdRecord, CodeSectionsEnum } from "@shared/schema";
 
-// Helper function to convert date string or Date object to Date
-const toDate = (date: string | Date): Date => {
-  return date instanceof Date ? date : new Date(date);
+// Helper function to format a date for the input field
+const formatDateForInput = (date: Date | string): string => {
+  const d = date instanceof Date ? date : new Date(date);
+  return d.toISOString().split('T')[0];
 };
 
 // Extend the schema with form validation
@@ -40,6 +41,7 @@ const formSchema = insertCpdRecordSchema.extend({
   hours: z.coerce.number().min(0.5, "Hours must be at least 0.5"),
   participatory: z.boolean(),
   relevanceToCode: z.string().optional(),
+  description: z.string().optional().transform(val => val || ""),
 });
 
 type CpdFormProps = {
@@ -76,21 +78,19 @@ export default function CpdForm({ initialData, onClose, onSuccess }: CpdFormProp
   // Create or update mutation
   const mutation = useMutation({
     mutationFn: async (data: z.infer<typeof formSchema>) => {
+      const formattedData = {
+        ...data,
+        // Convert the string date to a Date object for storage
+        date: new Date(data.date),
+      };
+
       if (initialData) {
         // Update existing record
-        await cpdRecordsStorage.update(initialData.id, {
-          ...data,
-          // Ensure date is properly formatted for storage
-          date: toDate(data.date),
-        });
+        await cpdRecordsStorage.update(initialData.id, formattedData);
         return initialData.id;
       } else {
         // Create new record
-        return await cpdRecordsStorage.add({
-          ...data,
-          // Ensure date is properly formatted for storage
-          date: toDate(data.date),
-        });
+        return await cpdRecordsStorage.add(formattedData);
       }
     },
     onSuccess: () => {
@@ -138,8 +138,8 @@ export default function CpdForm({ initialData, onClose, onSuccess }: CpdFormProp
                     <FormControl>
                       <Input 
                         type="date" 
-                        value={field.value instanceof Date ? field.value.toISOString().split('T')[0] : field.value}
-                        onChange={(e) => field.onChange(new Date(e.target.value))}
+                        value={field.value}
+                        onChange={field.onChange}
                         onBlur={field.onBlur}
                         ref={field.ref}
                       />
