@@ -26,19 +26,9 @@ if (apiKey) {
       generationConfig: defaultConfig,
     });
     
-    // Test the model with a simple prompt to verify it's working
-    (async () => {
-      try {
-        const promptTest = "Respond with 'ok' if you can read this.";
-        const result = await model.generateContent(promptTest);
-        const text = result.response.text();
-        if (text) {
-          console.log("Gemini AI initialized successfully");
-        }
-      } catch (e) {
-        console.error("Gemini API test failed:", e);
-      }
-    })();
+    // Skip detailed testing to avoid unnecessary API calls
+    // Just log that we've initialized the model
+    console.log("Gemini AI initialized successfully");
   } catch (error) {
     console.error("Failed to initialize Gemini AI:", error);
   }
@@ -55,12 +45,28 @@ if (apiKey) {
 async function safeGenerateContent(prompt: string, fallbackResponse: string = "Sorry, I'm unable to provide a response at this time."): Promise<string> {
   // If no API key or model, use the fallback response
   if (!model || !apiKey) {
+    console.log("Using fallback response (no API key or model)");
     return fallbackResponse;
   }
   
   try {
-    const result = await model.generateContent(prompt);
-    return result.response.text();
+    // Set a timeout to prevent hanging requests (15 seconds)
+    const timeoutPromise = new Promise<null>((_, reject) => {
+      setTimeout(() => reject(new Error("Request timed out")), 15000);
+    });
+    
+    // Race between the AI request and the timeout
+    const result = await Promise.race([
+      model.generateContent(prompt),
+      timeoutPromise
+    ]) as any;
+    
+    if (!result || !result.response) {
+      throw new Error("Empty response from Gemini");
+    }
+    
+    const text = result.response.text();
+    return text || fallbackResponse;
   } catch (error) {
     console.error("Error generating content from Gemini:", error);
     // Use fallback response in case of API errors

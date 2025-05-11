@@ -38,6 +38,13 @@ export default function NavigationTabs({ currentPath }: NavigationTabsProps) {
       hoverColor: "hover:bg-revalpro-blue/30" 
     },
     { 
+      href: "/ai-assistant", 
+      label: "AI Assistant", 
+      icon: <HelpCircle size={16} />,
+      color: "bg-gradient-to-r from-revalpro-purple/30 to-revalpro-blue/30 text-revalpro-blue font-semibold",
+      hoverColor: "hover:from-revalpro-purple/40 hover:to-revalpro-blue/40"
+    },
+    { 
       href: "/practice-hours", 
       label: "Hours", 
       icon: <Clock size={16} />,
@@ -71,13 +78,6 @@ export default function NavigationTabs({ currentPath }: NavigationTabsProps) {
       icon: <ClipboardCheck size={16} />,
       color: "bg-revalpro-pink/20 text-revalpro-pink",
       hoverColor: "hover:bg-revalpro-pink/30"
-    },
-    { 
-      href: "/ai-assistant", 
-      label: "AI Assistant", 
-      icon: <HelpCircle size={16} />,
-      color: "bg-gradient-to-r from-revalpro-blue/20 to-revalpro-purple/20 text-revalpro-blue",
-      hoverColor: "hover:from-revalpro-blue/30 hover:to-revalpro-purple/30"
     },
     { 
       href: "/nmc-registration-check", 
