@@ -29,8 +29,12 @@ import { insertPracticeHoursSchema, type PracticeHours } from "@shared/schema";
 
 // Extend the schema with form validation
 const formSchema = insertPracticeHoursSchema.extend({
-  startDate: z.string().min(1, "Start date is required"),
-  endDate: z.string().min(1, "End date is required"),
+  startDate: z.coerce.date({
+    errorMap: () => ({ message: "Start date is required" }),
+  }),
+  endDate: z.coerce.date({
+    errorMap: () => ({ message: "End date is required" }),
+  }),
   hours: z.coerce.number().min(1, "Hours must be a positive number"),
   workSetting: z.string().min(1, "Work setting is required"),
   scope: z.string().min(1, "Scope of practice is required"),
@@ -49,15 +53,15 @@ export default function PracticeHoursForm({ initialData, onClose, onSuccess }: P
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData ? {
-      startDate: new Date(initialData.startDate).toISOString().split('T')[0],
-      endDate: new Date(initialData.endDate).toISOString().split('T')[0],
+      startDate: new Date(initialData.startDate),
+      endDate: new Date(initialData.endDate),
       hours: initialData.hours,
       workSetting: initialData.workSetting,
       scope: initialData.scope,
       notes: initialData.notes || "",
     } : {
-      startDate: "",
-      endDate: "",
+      startDate: new Date(),
+      endDate: new Date(),
       hours: 0,
       workSetting: "",
       scope: "",
@@ -70,19 +74,11 @@ export default function PracticeHoursForm({ initialData, onClose, onSuccess }: P
     mutationFn: async (data: z.infer<typeof formSchema>) => {
       if (initialData) {
         // Update existing record
-        await practiceHoursStorage.update(initialData.id, {
-          ...data,
-          startDate: data.startDate,
-          endDate: data.endDate,
-        });
+        await practiceHoursStorage.update(initialData.id, data);
         return initialData.id;
       } else {
         // Create new record
-        return await practiceHoursStorage.add({
-          ...data,
-          startDate: data.startDate,
-          endDate: data.endDate,
-        });
+        return await practiceHoursStorage.add(data);
       }
     },
     onSuccess: () => {
@@ -157,7 +153,13 @@ export default function PracticeHoursForm({ initialData, onClose, onSuccess }: P
                   <FormItem>
                     <FormLabel>Start Date</FormLabel>
                     <FormControl>
-                      <Input type="date" {...field} />
+                      <Input 
+                        type="date" 
+                        value={field.value instanceof Date ? field.value.toISOString().split('T')[0] : ''}
+                        onChange={(e) => field.onChange(new Date(e.target.value))}
+                        onBlur={field.onBlur}
+                        ref={field.ref}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -171,7 +173,13 @@ export default function PracticeHoursForm({ initialData, onClose, onSuccess }: P
                   <FormItem>
                     <FormLabel>End Date</FormLabel>
                     <FormControl>
-                      <Input type="date" {...field} />
+                      <Input 
+                        type="date" 
+                        value={field.value instanceof Date ? field.value.toISOString().split('T')[0] : ''}
+                        onChange={(e) => field.onChange(new Date(e.target.value))}
+                        onBlur={field.onBlur}
+                        ref={field.ref}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
