@@ -75,14 +75,16 @@ export default function CpdForm({ initialData, onClose, onSuccess }: CpdFormProp
         // Update existing record
         await cpdRecordsStorage.update(initialData.id, {
           ...data,
-          date: new Date(data.date),
+          // Ensure date is properly formatted for storage
+          date: data.date instanceof Date ? data.date : new Date(data.date),
         });
         return initialData.id;
       } else {
         // Create new record
         return await cpdRecordsStorage.add({
           ...data,
-          date: new Date(data.date),
+          // Ensure date is properly formatted for storage
+          date: data.date instanceof Date ? data.date : new Date(data.date),
         });
       }
     },
@@ -129,7 +131,13 @@ export default function CpdForm({ initialData, onClose, onSuccess }: CpdFormProp
                   <FormItem>
                     <FormLabel>Date</FormLabel>
                     <FormControl>
-                      <Input type="date" {...field} />
+                      <Input 
+                        type="date" 
+                        value={field.value instanceof Date ? field.value.toISOString().split('T')[0] : field.value}
+                        onChange={(e) => field.onChange(new Date(e.target.value))}
+                        onBlur={field.onBlur}
+                        ref={field.ref}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
