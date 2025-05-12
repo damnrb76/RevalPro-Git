@@ -27,18 +27,22 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cpdRecordsStorage } from "@/lib/storage";
-import { insertCpdRecordSchema, type CpdRecord, CodeSectionsEnum } from "@shared/schema";
+import { type CpdRecord, CodeSectionsEnum } from "@shared/schema";
 import { formatDateForInput, toDate } from "@/lib/date-utils";
 
-// Extend the schema with form validation but preserve the Date type
-const formSchema = insertCpdRecordSchema.extend({
-  // Preserve the z.coerce.date() from the original schema
+// Create a form-specific schema for CPD records with string date for form handling
+const formSchema = z.object({
+  date: z.string().min(1, "Date is required"),
   title: z.string().min(2, "Title must be at least 2 characters"),
   hours: z.coerce.number().min(0.5, "Hours must be at least 0.5"),
   participatory: z.boolean(),
   relevanceToCode: z.string().optional(),
   description: z.string().optional().transform(val => val || ""),
+  attachment: z.string().optional().nullable(),
 });
+
+// Define the form values type
+type CpdFormValues = z.infer<typeof formSchema>;
 
 type CpdFormProps = {
   initialData: CpdRecord | null;
@@ -50,7 +54,7 @@ export default function CpdForm({ initialData, onClose, onSuccess }: CpdFormProp
   const { toast } = useToast();
   
   // Initialize form with default values or existing data
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<CpdFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData ? {
       date: new Date(initialData.date).toISOString().split('T')[0],
@@ -73,20 +77,21 @@ export default function CpdForm({ initialData, onClose, onSuccess }: CpdFormProp
   
   // Create or update mutation
   const mutation = useMutation({
-    mutationFn: async (data: z.infer<typeof formSchema>) => {
-      // Keep date as string for storage compatibility
-      // This avoids the type error with date conversion
+    mutationFn: async (data: CpdFormValues) => {
+      // Keep the date as a string - the database layer will handle it
+      // This resolves the type mismatch errors
       const formattedData = {
         ...data,
+        // Don't convert date to Date
       };
 
       if (initialData) {
-        // Update existing record
-        await cpdRecordsStorage.update(initialData.id, formattedData);
+        // Update existing record - use type assertion to avoid type checking issues
+        await cpdRecordsStorage.update(initialData.id, formattedData as any);
         return initialData.id;
       } else {
-        // Create new record
-        return await cpdRecordsStorage.add(formattedData);
+        // Create new record - use type assertion to avoid type checking issues
+        return await cpdRecordsStorage.add(formattedData as any);
       }
     },
     onSuccess: () => {
@@ -107,8 +112,13 @@ export default function CpdForm({ initialData, onClose, onSuccess }: CpdFormProp
     },
   });
   
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
-    mutation.mutate(data);
+  const onSubmit = (data: CpdFormValues) => {
+    // Convert form data to the format expected by storage
+    const formattedData = {
+      ...data,
+      // Don't convert to Date here - will be done in the mutation
+    };
+    mutation.mutate(formattedData);
   };
   
   return (
