@@ -34,7 +34,7 @@ type NavigationLink = {
 export default function NavigationTabs({ currentPath }: NavigationTabsProps) {
   const links: NavigationLink[] = [
     { 
-      href: "/", 
+      href: "/dashboard", 
       label: "Dashboard", 
       icon: <LayoutDashboard size={16} />,
       color: "bg-revalpro-blue/20 text-revalpro-blue",

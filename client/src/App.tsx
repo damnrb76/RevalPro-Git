@@ -39,7 +39,7 @@ function AppRouter() {
   const showTabs = location !== '/auth' && location !== '/landing';
   const isAuthPage = location === '/auth';
   const isLandingPage = location === '/landing';
-  const showAppHeader = !isLandingPage;
+  const showAppHeader = !isLandingPage && location !== '/';
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -47,9 +47,10 @@ function AppRouter() {
       {showTabs && <NavigationTabs currentPath={location} />}
       <div className={`flex-grow ${!isAuthPage && !isLandingPage ? 'pt-4' : ''}`}>
         <Switch>
-          <ProtectedRoute path="/landing" component={LandingPage} />
+          <Route path="/landing" component={LandingPage} />
           <Route path="/auth" component={AuthPage} />
-          <ProtectedRoute path="/" component={Home} />
+          <Route path="/" component={LandingPage} />
+          <ProtectedRoute path="/dashboard" component={Home} />
           <ProtectedRoute path="/practice-hours" component={PracticeHours} />
           <ProtectedRoute path="/cpd" component={CPD} />
           <ProtectedRoute path="/feedback" component={Feedback} />
