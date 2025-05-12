@@ -30,9 +30,9 @@ import { cpdRecordsStorage } from "@/lib/storage";
 import { insertCpdRecordSchema, type CpdRecord, CodeSectionsEnum } from "@shared/schema";
 import { formatDateForInput, toDate } from "@/lib/date-utils";
 
-// Extend the schema with form validation
+// Extend the schema with form validation but preserve the Date type
 const formSchema = insertCpdRecordSchema.extend({
-  date: z.string().min(1, "Date is required"),
+  // Preserve the z.coerce.date() from the original schema
   title: z.string().min(2, "Title must be at least 2 characters"),
   hours: z.coerce.number().min(0.5, "Hours must be at least 0.5"),
   participatory: z.boolean(),
@@ -74,10 +74,10 @@ export default function CpdForm({ initialData, onClose, onSuccess }: CpdFormProp
   // Create or update mutation
   const mutation = useMutation({
     mutationFn: async (data: z.infer<typeof formSchema>) => {
+      // Keep date as string for storage compatibility
+      // This avoids the type error with date conversion
       const formattedData = {
         ...data,
-        // Convert the string date to a Date object for storage
-        date: new Date(data.date),
       };
 
       if (initialData) {
