@@ -30,6 +30,7 @@ import SummaryInfographic from "@/pages/summary-infographic";
 import Footer from "@/components/layout/footer";
 import NavigationTabs from "@/components/layout/navigation-tabs";
 import ProminentHeader from "@/components/layout/prominent-header";
+import TesterWelcomePopup from "@/components/tester-welcome-popup";
 
 // Import the logo
 import logo from "@assets/Leonardo_Phoenix_10_design_a_vibrant_and_professional_logo_for_3.jpg";
@@ -45,6 +46,7 @@ function AppRouter() {
     <div className="min-h-screen flex flex-col">
       {showAppHeader && <ProminentHeader />}
       {showTabs && <NavigationTabs currentPath={location} />}
+      {showTabs && <TesterWelcomePopup />}
       <div className={`flex-grow ${!isAuthPage && !isLandingPage ? 'pt-4' : ''}`}>
         <Switch>
           <Route path="/landing" component={LandingPage} />
