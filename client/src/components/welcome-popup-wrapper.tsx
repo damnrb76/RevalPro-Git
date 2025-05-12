@@ -7,14 +7,15 @@ export default function WelcomePopupWrapper() {
   const [showPopup, setShowPopup] = useState(false);
   
   useEffect(() => {
-    // Only show popup when user is authenticated and no welcome has been shown this session
-    if (user && !sessionStorage.getItem("hasSeenTesterWelcome")) {
+    // Show popup when user is authenticated, always show for testing
+    if (user) {
+      console.log("User is logged in, showing welcome popup");
       // Small delay to ensure the user is fully logged in
       const timer = setTimeout(() => {
         setShowPopup(true);
-        // Mark that the welcome has been shown this session
-        sessionStorage.setItem("hasSeenTesterWelcome", "true");
-      }, 1500);
+        // During development, don't set the session storage to allow testing
+        // sessionStorage.setItem("hasSeenTesterWelcome", "true");
+      }, 800);
       
       return () => clearTimeout(timer);
     }

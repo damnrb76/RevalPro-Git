@@ -58,7 +58,7 @@ export default function LoginForm() {
   const onSubmit = async (values: LoginFormValues) => {
     loginMutation.mutate(values, {
       onSuccess: () => {
-        setLocation("/");
+        setLocation("/dashboard");
       },
     });
   };

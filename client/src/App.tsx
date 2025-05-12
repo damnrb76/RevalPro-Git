@@ -46,7 +46,6 @@ function AppRouter() {
     <div className="min-h-screen flex flex-col">
       {showAppHeader && <ProminentHeader />}
       {showTabs && <NavigationTabs currentPath={location} />}
-      <WelcomePopupWrapper />
       <div className={`flex-grow ${!isAuthPage && !isLandingPage ? 'pt-4' : ''}`}>
         <Switch>
           <Route path="/landing" component={LandingPage} />
@@ -92,6 +91,7 @@ function App() {
         <ThemeProvider defaultTheme="light" storageKey="revalpro-theme">
           <TooltipProvider>
             <AppRouter />
+            <WelcomePopupWrapper />
             <Toaster />
           </TooltipProvider>
         </ThemeProvider>
