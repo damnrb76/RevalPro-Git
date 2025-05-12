@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useLocation } from "wouter";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -13,8 +14,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Loader2 } from "lucide-react";
+import { Loader2, Eye, EyeOff } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
+import { useToast } from "@/hooks/use-toast";
 
 // Login form validation schema
 const loginSchema = z.object({
@@ -31,6 +33,8 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 export default function LoginForm() {
   const { loginMutation } = useAuth();
   const [, setLocation] = useLocation();
+  const { toast } = useToast();
+  const [showPassword, setShowPassword] = useState(false);
 
   // Initialize the form
   const form = useForm<LoginFormValues>({
@@ -40,6 +44,15 @@ export default function LoginForm() {
       password: "",
     },
   });
+  
+  // Handle forgot password
+  const handleForgotPassword = () => {
+    toast({
+      title: "Password Reset",
+      description: "If you have an account, a password reset link will be sent to your email.",
+    });
+    // In a real app, this would trigger a password reset flow
+  };
 
   // Handle form submission
   const onSubmit = async (values: LoginFormValues) => {
@@ -73,9 +86,37 @@ export default function LoginForm() {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input type="password" placeholder="••••••••" {...field} />
+                <div className="relative">
+                  <Input 
+                    type={showPassword ? "text" : "password"} 
+                    placeholder="••••••••" 
+                    {...field} 
+                    className="pr-10"
+                  />
+                  <button 
+                    type="button"
+                    className="absolute inset-y-0 right-0 flex items-center pr-3"
+                    onClick={() => setShowPassword(!showPassword)}
+                    tabIndex={-1}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4 text-gray-500" />
+                    ) : (
+                      <Eye className="h-4 w-4 text-gray-500" />
+                    )}
+                  </button>
+                </div>
               </FormControl>
-              <FormMessage />
+              <div className="flex justify-between mt-1">
+                <FormMessage />
+                <button 
+                  type="button" 
+                  onClick={handleForgotPassword}
+                  className="text-xs text-revalpro-blue hover:text-revalpro-blue/80 hover:underline"
+                >
+                  Forgot password?
+                </button>
+              </div>
             </FormItem>
           )}
         />
