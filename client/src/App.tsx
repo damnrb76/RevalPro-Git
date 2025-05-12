@@ -10,6 +10,7 @@ import { ProtectedRoute } from "@/lib/protected-route";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
 import AuthPage from "@/pages/auth-page";
+import LandingPage from "@/pages/landing";
 import PracticeHours from "@/pages/practice-hours";
 import CPD from "@/pages/cpd";
 import Feedback from "@/pages/feedback";
@@ -35,15 +36,18 @@ import logo from "@assets/Leonardo_Phoenix_10_design_a_vibrant_and_professional_
 
 function AppRouter() {
   const [location] = useLocation();
-  const showTabs = location !== '/auth';
+  const showTabs = location !== '/auth' && location !== '/landing';
   const isAuthPage = location === '/auth';
+  const isLandingPage = location === '/landing';
+  const showAppHeader = !isLandingPage;
 
   return (
     <div className="min-h-screen flex flex-col">
-      <ProminentHeader />
+      {showAppHeader && <ProminentHeader />}
       {showTabs && <NavigationTabs currentPath={location} />}
-      <div className={`flex-grow ${!isAuthPage ? 'pt-4' : ''}`}>
+      <div className={`flex-grow ${!isAuthPage && !isLandingPage ? 'pt-4' : ''}`}>
         <Switch>
+          <Route path="/landing" component={LandingPage} />
           <Route path="/auth" component={AuthPage} />
           <ProtectedRoute path="/" component={Home} />
           <ProtectedRoute path="/practice-hours" component={PracticeHours} />
@@ -73,7 +77,7 @@ function AppRouter() {
           <Route component={NotFound} />
         </Switch>
       </div>
-      <Footer logo={logo} />
+      {!isLandingPage && <Footer logo={logo} />}
     </div>
   );
 }
