@@ -47,7 +47,7 @@ function AppRouter() {
       {showTabs && <NavigationTabs currentPath={location} />}
       <div className={`flex-grow ${!isAuthPage && !isLandingPage ? 'pt-4' : ''}`}>
         <Switch>
-          <Route path="/landing" component={LandingPage} />
+          <ProtectedRoute path="/landing" component={LandingPage} />
           <Route path="/auth" component={AuthPage} />
           <ProtectedRoute path="/" component={Home} />
           <ProtectedRoute path="/practice-hours" component={PracticeHours} />
