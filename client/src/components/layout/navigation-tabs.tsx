@@ -126,7 +126,7 @@ export default function NavigationTabs({ currentPath }: NavigationTabsProps) {
     },
     { 
       href: "/tester-feedback", 
-      label: "Feedback Form", 
+      label: "Tester Feedback", 
       icon: <MessageCircle size={16} />,
       color: "bg-amber-200 text-amber-700",
       hoverColor: "hover:bg-amber-300"
