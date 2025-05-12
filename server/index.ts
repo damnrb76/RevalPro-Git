@@ -11,6 +11,15 @@ app.get('/health', (_req, res) => {
   res.status(200).send('OK');
 });
 
+// Add a root endpoint for debugging
+app.get('/_api_status', (_req, res) => {
+  res.status(200).json({
+    status: 'Running',
+    time: new Date().toISOString(),
+    env: app.get('env')
+  });
+});
+
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;

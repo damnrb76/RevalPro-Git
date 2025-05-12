@@ -20,6 +20,11 @@ async function hashPassword(password: string) {
 // Simple server to serve the static frontend
 // The actual data is stored in the browser using IndexedDB
 export async function registerRoutes(app: Express): Promise<Server> {
+  // For deployment debugging - this will help diagnose what's happening on the root URL
+  app.get('/api/ping', (_req, res) => {
+    res.json({ status: 'ok', message: 'API is running' });
+  });
+  
   // Set up authentication routes and middleware
   setupAuth(app);
   
