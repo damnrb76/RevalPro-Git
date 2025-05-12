@@ -16,23 +16,8 @@ import { MessageCircle } from "lucide-react";
 import logo from "@assets/Leonardo_Phoenix_10_design_a_vibrant_and_professional_logo_for_3.jpg";
 
 export default function TesterWelcomePopup() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   const [, navigate] = useLocation();
-
-  useEffect(() => {
-    // Check if this is the first time opening the app in this session
-    const hasSeenWelcome = sessionStorage.getItem("hasSeenTesterWelcome");
-    
-    if (!hasSeenWelcome) {
-      // Wait a moment after login before showing the popup
-      const timer = setTimeout(() => {
-        setIsOpen(true);
-        sessionStorage.setItem("hasSeenTesterWelcome", "true");
-      }, 1000);
-      
-      return () => clearTimeout(timer);
-    }
-  }, []);
 
   const handleOpenFeedbackForm = () => {
     setIsOpen(false);
