@@ -3,6 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
+import { motion } from "framer-motion";
 import { 
   Dialog, 
   DialogContent, 
@@ -114,22 +115,36 @@ export default function CpdForm({ initialData, onClose, onSuccess }: CpdFormProp
     <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{initialData ? "Edit CPD Activity" : "Add CPD Activity"}</DialogTitle>
-          <DialogDescription>
-            Record your continuing professional development activities for NMC revalidation. 
-            You need 35 hours total, including 20 hours of participatory learning.
-          </DialogDescription>
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <DialogTitle className="text-xl text-revalpro-blue">
+              {initialData ? "Edit CPD Activity" : "Add CPD Activity"}
+            </DialogTitle>
+            <DialogDescription className="text-muted-foreground">
+              Record your continuing professional development activities for NMC revalidation. 
+              You need 35 hours total, including 20 hours of participatory learning.
+            </DialogDescription>
+          </motion.div>
         </DialogHeader>
         
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+            {/* Date and Hours Section */}
+            <motion.div 
+              className="grid grid-cols-1 md:grid-cols-2 gap-4"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.1 }}
+            >
               <FormField
                 control={form.control}
                 name="date"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Date</FormLabel>
+                    <FormLabel className="text-revalpro-blue font-medium">Date</FormLabel>
                     <FormControl>
                       <Input 
                         type="date" 
@@ -137,6 +152,7 @@ export default function CpdForm({ initialData, onClose, onSuccess }: CpdFormProp
                         onChange={field.onChange}
                         onBlur={field.onBlur}
                         ref={field.ref}
+                        className="focus-visible:ring-2 ring-revalpro-blue/20 transition-all"
                       />
                     </FormControl>
                     <FormMessage />
@@ -149,12 +165,13 @@ export default function CpdForm({ initialData, onClose, onSuccess }: CpdFormProp
                 name="hours"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Number of Hours</FormLabel>
+                    <FormLabel className="text-revalpro-blue font-medium">Number of Hours</FormLabel>
                     <FormControl>
                       <Input 
                         type="number" 
                         min="0.5" 
-                        step="0.5" 
+                        step="0.5"
+                        className="focus-visible:ring-2 ring-revalpro-blue/20 transition-all"
                         {...field} 
                       />
                     </FormControl>
@@ -162,110 +179,157 @@ export default function CpdForm({ initialData, onClose, onSuccess }: CpdFormProp
                   </FormItem>
                 )}
               />
-            </div>
+            </motion.div>
             
-            <FormField
-              control={form.control}
-              name="title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Activity Title</FormLabel>
-                  <FormControl>
-                    <Input placeholder="e.g., Infection Control Workshop" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Textarea 
-                      placeholder="Describe what you did and what you learned" 
-                      className="resize-none min-h-[100px]" 
-                      {...field} 
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <FormField
-              control={form.control}
-              name="participatory"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <FormLabel>Participatory Learning</FormLabel>
-                    <FormDescription>
-                      Check this if the activity involved learning with other professionals 
-                      (e.g., attending a workshop, conference, or group discussion)
-                    </FormDescription>
-                  </div>
-                </FormItem>
-              )}
-            />
-            
-            <FormField
-              control={form.control}
-              name="relevanceToCode"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Relevance to The Code</FormLabel>
-                  <Select 
-                    onValueChange={field.onChange} 
-                    defaultValue={field.value}
-                  >
+            {/* Activity Title */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.2 }}
+            >
+              <FormField
+                control={form.control}
+                name="title"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-revalpro-blue font-medium">Activity Title</FormLabel>
                     <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select which part of The Code this relates to" />
-                      </SelectTrigger>
+                      <Input 
+                        placeholder="e.g., Infection Control Workshop" 
+                        className="focus-visible:ring-2 ring-revalpro-blue/20 transition-all"
+                        {...field} 
+                      />
                     </FormControl>
-                    <SelectContent>
-                      <SelectItem value="">Not specified</SelectItem>
-                      {Object.values(CodeSectionsEnum).map((section) => (
-                        <SelectItem key={section} value={section}>
-                          {section}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormDescription>
-                    Select which part of The Code your activity relates to (optional)
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </motion.div>
             
-            <DialogFooter>
-              <Button 
-                type="button" 
-                variant="outline" 
-                onClick={onClose}
-                disabled={mutation.isPending}
-              >
-                Cancel
-              </Button>
-              <Button 
-                type="submit"
-                disabled={mutation.isPending}
-              >
-                {mutation.isPending ? "Saving..." : initialData ? "Update" : "Save"}
-              </Button>
-            </DialogFooter>
+            {/* Description */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.3 }}
+            >
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-revalpro-blue font-medium">Description</FormLabel>
+                    <FormControl>
+                      <Textarea 
+                        placeholder="Describe what you did and what you learned" 
+                        className="resize-none min-h-[100px] focus-visible:ring-2 ring-revalpro-blue/20 transition-all" 
+                        {...field} 
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </motion.div>
+            
+            {/* Participatory Learning */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.4 }}
+            >
+              <FormField
+                control={form.control}
+                name="participatory"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 border-revalpro-teal/30 hover:border-revalpro-teal/50 transition-colors">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        className="data-[state=checked]:bg-revalpro-teal data-[state=checked]:text-white"
+                      />
+                    </FormControl>
+                    <div className="space-y-1 leading-none">
+                      <FormLabel className="text-revalpro-teal font-medium">Participatory Learning</FormLabel>
+                      <FormDescription>
+                        Check this if the activity involved learning with other professionals 
+                        (e.g., attending a workshop, conference, or group discussion)
+                      </FormDescription>
+                    </div>
+                  </FormItem>
+                )}
+              />
+            </motion.div>
+            
+            {/* Relevance to The Code */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.5 }}
+            >
+              <FormField
+                control={form.control}
+                name="relevanceToCode"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-revalpro-blue font-medium">Relevance to The Code</FormLabel>
+                    <Select 
+                      onValueChange={field.onChange} 
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger className="focus:ring-2 ring-revalpro-blue/20 transition-all">
+                          <SelectValue placeholder="Select which part of The Code this relates to" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="">Not specified</SelectItem>
+                        {Object.values(CodeSectionsEnum).map((section) => (
+                          <SelectItem key={section} value={section}>
+                            {section}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormDescription>
+                      Select which part of The Code your activity relates to (optional)
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </motion.div>
+            
+            {/* Footer Buttons */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.6 }}
+            >
+              <DialogFooter className="gap-2 sm:gap-0 pt-2">
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={onClose}
+                  disabled={mutation.isPending}
+                  className="border-gray-300 hover:bg-gray-100"
+                >
+                  Cancel
+                </Button>
+                <motion.div
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                >
+                  <Button 
+                    type="submit"
+                    disabled={mutation.isPending}
+                    className="bg-gradient-to-r from-revalpro-blue to-revalpro-teal text-white hover:from-revalpro-blue/90 hover:to-revalpro-teal/90"
+                  >
+                    {mutation.isPending ? "Saving..." : initialData ? "Update" : "Save"}
+                  </Button>
+                </motion.div>
+              </DialogFooter>
+            </motion.div>
           </form>
         </Form>
       </DialogContent>

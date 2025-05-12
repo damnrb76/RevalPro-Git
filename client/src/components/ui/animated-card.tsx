@@ -1,9 +1,7 @@
-import { ReactNode, ComponentProps } from "react";
+import { ReactNode } from "react";
 import { Card } from "@/components/ui/card";
-import { motion, MotionProps } from "framer-motion";
+import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-
-// No longer using motion(Card) as it's deprecated
 
 interface AnimatedCardProps {
   children: ReactNode;
@@ -11,21 +9,56 @@ interface AnimatedCardProps {
   className?: string;
 }
 
+// Animation variants for better performance and code organization
+const fadeInUpVariant = {
+  hidden: { opacity: 0, y: 20 },
+  visible: (delay: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.5,
+      delay,
+      ease: "easeOut"
+    }
+  })
+};
+
+const fadeInVariant = {
+  hidden: { opacity: 0 },
+  visible: (delay: number) => ({
+    opacity: 1,
+    transition: {
+      duration: 0.5,
+      delay,
+      ease: "easeOut"
+    }
+  })
+};
+
+const fadeInSectionVariant = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6
+    }
+  }
+};
+
 export function AnimatedCard({ children, delay = 0, className }: AnimatedCardProps) {
   return (
     <motion.div
-      className={cn("transform transition-all duration-300", className)}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ 
-        duration: 0.5, 
-        delay: delay,
-        ease: "easeOut" 
-      }}
+      className={cn("transform", className)}
+      variants={fadeInUpVariant}
+      initial="hidden"
+      animate="visible"
+      custom={delay}
       whileHover={{ 
         y: -5,
         transition: { duration: 0.2 }
       }}
+      layout // Added for smoother layout animations
     >
       <Card className="h-full">
         {children}
@@ -37,14 +70,12 @@ export function AnimatedCard({ children, delay = 0, className }: AnimatedCardPro
 export function AnimatedContainer({ children, delay = 0, className }: AnimatedCardProps) {
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ 
-        duration: 0.5, 
-        delay: delay,
-        ease: "easeOut" 
-      }}
+      variants={fadeInVariant}
+      initial="hidden"
+      animate="visible"
+      custom={delay}
       className={className}
+      layout // Added for smoother layout animations
     >
       {children}
     </motion.div>
@@ -57,6 +88,11 @@ export function AnimatedButton({ children, className }: { children: ReactNode, c
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.98 }}
       className={className}
+      transition={{ 
+        type: "spring", 
+        stiffness: 400, 
+        damping: 17 
+      }}
     >
       {children}
     </motion.div>
@@ -66,10 +102,11 @@ export function AnimatedButton({ children, className }: { children: ReactNode, c
 export function AnimatedSection({ children, className }: { children: ReactNode, className?: string }) {
   return (
     <motion.section
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
+      variants={fadeInSectionVariant}
+      initial="hidden"
+      animate="visible"
       className={className}
+      layout // Added for smoother layout animations
     >
       {children}
     </motion.section>

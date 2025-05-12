@@ -1,5 +1,6 @@
 import { Link } from "wouter";
 import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
 import { 
   LayoutDashboard, 
   Clock, 
@@ -15,7 +16,6 @@ import {
   Link2,
   ActivitySquare,
   MessageCircle,
-  Download,
   BarChart3
 } from 'lucide-react';
 
@@ -147,24 +147,67 @@ export default function NavigationTabs({ currentPath }: NavigationTabsProps) {
           {links.map((link) => {
             const isActive = currentPath === link.href;
             return (
-              <div key={link.href} className="mr-2">
+              <motion.div 
+                key={link.href} 
+                className="mr-2"
+                initial={{ opacity: 0, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ 
+                  type: "spring", 
+                  stiffness: 260, 
+                  damping: 20, 
+                  delay: Math.random() * 0.2 // Staggered appearance
+                }}
+                whileHover={{ 
+                  scale: 1.05,
+                  transition: { duration: 0.2 }
+                }}
+                whileTap={{ scale: 0.95 }}
+              >
                 <Link href={link.href}>
                   <div 
                     className={cn(
-                      "px-3 py-2 rounded-full font-medium transition-all duration-300 cursor-pointer inline-flex items-center gap-1.5",
+                      "px-3 py-2 rounded-full font-medium transition-all duration-300 cursor-pointer inline-flex items-center gap-1.5 relative overflow-hidden",
                       isActive
                         ? `${link.color} ring-2 ring-offset-1 shadow-sm`
                         : `text-gray-600 hover:${link.color.split(' ')[0]} ${link.hoverColor}`
                     )}
                   >
-                    {link.icon}
+                    <motion.span
+                      animate={{ 
+                        rotate: isActive ? [0, 10, -10, 0] : 0,
+                        scale: isActive ? [1, 1.2, 1] : 1
+                      }}
+                      transition={{ 
+                        duration: 0.5, 
+                        ease: "easeInOut", 
+                        delay: 0.1 
+                      }}
+                      className="inline-flex"
+                    >
+                      {link.icon}
+                    </motion.span>
                     <span className="text-sm">{link.label}</span>
+                    
                     {isActive && (
-                      <span className="absolute inset-0 rounded-full animate-pulse opacity-30 bg-white pointer-events-none"></span>
+                      <motion.div
+                        className="absolute inset-0 bg-white pointer-events-none rounded-full"
+                        initial={{ opacity: 0 }}
+                        animate={{ 
+                          opacity: [0, 0.2, 0],
+                          scale: [0.8, 1.2, 1] 
+                        }}
+                        transition={{ 
+                          duration: 2, 
+                          ease: "easeInOut", 
+                          repeat: Infinity,
+                          repeatType: "reverse" 
+                        }}
+                      />
                     )}
                   </div>
                 </Link>
-              </div>
+              </motion.div>
             );
           })}
         </div>
