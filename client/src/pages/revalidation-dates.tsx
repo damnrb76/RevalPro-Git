@@ -30,7 +30,7 @@ export default function RevalidationDates() {
   // Dates calculation mutation
   const datesMutation = useMutation({
     mutationFn: async (date: string) => {
-      const res = await apiRequest("POST", "/api/nmc/dates", { expiryDate: date });
+      const res = await apiRequest("POST", "/api/nmc/important-dates", { expiryDate: date });
       return await res.json();
     },
     onError: (error) => {
