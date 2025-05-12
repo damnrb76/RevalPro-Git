@@ -284,3 +284,15 @@ export const CodeSectionsEnum = {
 } as const;
 
 export type CodeSection = typeof CodeSectionsEnum[keyof typeof CodeSectionsEnum];
+
+// Define different reflective models for nursing reflection
+export const ReflectiveModelEnum = {
+  STANDARD: "Standard NMC",
+  GIBBS: "Gibbs Reflective Cycle",
+  JOHNS: "Johns' Model of Reflection",
+  DRISCOLL: "Driscoll's What? Model",
+  KOLB: "Kolb's Learning Cycle",
+  ROLFE: "Rolfe's Framework",
+} as const;
+
+export type ReflectiveModel = typeof ReflectiveModelEnum[keyof typeof ReflectiveModelEnum];
