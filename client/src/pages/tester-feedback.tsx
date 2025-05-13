@@ -193,26 +193,30 @@ export default function TesterFeedbackPage() {
 
   return (
     <div className="container mx-auto py-8 px-4 max-w-3xl">
-      <h1 className="text-3xl font-bold mb-2 text-revalpro-blue">RevalPro Tester Feedback</h1>
-      <p className="text-muted-foreground mb-6">
-        Your feedback helps us improve the app for all NHS professionals.
-      </p>
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h1 className="text-3xl font-bold mb-2 text-revalpro-blue">RevalPro Tester Feedback</h1>
+          <p className="text-muted-foreground">
+            Your feedback helps us improve the app for all NHS professionals.
+          </p>
+        </div>
+        <Button 
+          variant="outline" 
+          className="border-revalpro-blue text-revalpro-blue hover:bg-revalpro-blue/10"
+          onClick={() => setShowAdminView(!showAdminView)}
+        >
+          {showAdminView ? "Exit Admin Mode" : "Admin View"}
+        </Button>
+      </div>
 
       {showAdminView ? (
         // Admin view for feedback management
         <Card className="border-revalpro-blue/20">
           <CardHeader className="bg-gradient-to-r from-revalpro-purple/20 to-revalpro-blue/20">
-            <div className="flex justify-between items-center">
-              <div>
-                <CardTitle>Feedback Management</CardTitle>
-                <CardDescription>
-                  Review and export tester feedback
-                </CardDescription>
-              </div>
-              <Button variant="outline" onClick={() => setShowAdminView(false)}>
-                Back to Form
-              </Button>
-            </div>
+            <CardTitle>Feedback Management</CardTitle>
+            <CardDescription>
+              Review and export tester feedback
+            </CardDescription>
           </CardHeader>
           <CardContent className="pt-6">
             <div className="flex justify-between items-center mb-4">
@@ -221,10 +225,10 @@ export default function TesterFeedbackPage() {
               </div>
               <div className="flex gap-2">
                 <Button
-                  variant="outline"
+                  variant="default"
                   onClick={exportFeedback}
                   disabled={feedbackList.length === 0}
-                  className="flex items-center gap-1"
+                  className="flex items-center gap-1 bg-revalpro-blue hover:bg-revalpro-blue/90"
                 >
                   <Download size={16} />
                   Export CSV
