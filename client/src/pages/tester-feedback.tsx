@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/use-auth";
 import { Download } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
@@ -20,8 +21,12 @@ interface FeedbackSubmission {
   timestamp: string;
 }
 
+// List of admin usernames who can see the admin button
+const ADMIN_USERNAMES = ['demouser', 'admin', 'damon', 'dan'];
+
 export default function TesterFeedbackPage() {
   const { toast } = useToast();
+  const { user } = useAuth();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [feedbackType, setFeedbackType] = useState("general");
@@ -31,6 +36,16 @@ export default function TesterFeedbackPage() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [showAdminView, setShowAdminView] = useState(false);
   const [feedbackList, setFeedbackList] = useState<FeedbackSubmission[]>([]);
+  
+  // Check if current user is an admin
+  const isAdmin = user && ADMIN_USERNAMES.includes(user.username);
+  
+  // Safety check - immediately exit admin view if user is not an admin
+  useEffect(() => {
+    if (!isAdmin && showAdminView) {
+      setShowAdminView(false);
+    }
+  }, [isAdmin, showAdminView]);
 
   // Load existing feedback on component mount
   useEffect(() => {
@@ -158,8 +173,11 @@ export default function TesterFeedbackPage() {
     }
   };
 
-  // Trigger admin view with double shift + A key combination
+  // Trigger admin view with double shift + A key combination (only for admins)
   useEffect(() => {
+    // Only set up keyboard shortcut if user is an admin
+    if (!isAdmin) return;
+    
     let shiftPressed = false;
     let shiftCount = 0;
     
@@ -189,7 +207,7 @@ export default function TesterFeedbackPage() {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, []);
+  }, [isAdmin]);
 
   return (
     <div className="container mx-auto py-8 px-4 max-w-3xl">
@@ -200,13 +218,15 @@ export default function TesterFeedbackPage() {
             Your feedback helps us improve the app for all NHS professionals.
           </p>
         </div>
-        <Button 
-          variant="outline" 
-          className="border-revalpro-blue text-revalpro-blue hover:bg-revalpro-blue/10"
-          onClick={() => setShowAdminView(!showAdminView)}
-        >
-          {showAdminView ? "Exit Admin Mode" : "Admin View"}
-        </Button>
+        {isAdmin && (
+          <Button 
+            variant="outline" 
+            className="border-revalpro-blue text-revalpro-blue hover:bg-revalpro-blue/10"
+            onClick={() => setShowAdminView(!showAdminView)}
+          >
+            {showAdminView ? "Exit Admin Mode" : "Admin View"}
+          </Button>
+        )}
       </div>
 
       {showAdminView ? (
