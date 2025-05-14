@@ -3,11 +3,11 @@ import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { ArrowRight, Check, Shield, Clock, Award, BookOpen, Users, MessageSquare, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import logo from "@assets/Leonardo_Phoenix_10_design_a_vibrant_and_professional_logo_for_3.jpg";
 
 export default function LandingPage() {
-  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-blue-50">
@@ -64,9 +64,9 @@ export default function LandingPage() {
               <Button 
                 variant="outline" 
                 className="border-gray-300 text-gray-700 hover:bg-gray-100 w-full sm:w-auto"
-                onClick={() => setIsVideoPlaying(true)}
+                onClick={() => setIsGalleryOpen(true)}
               >
-                Watch Demo
+                Take a Sneak Peek
               </Button>
             </div>
           </motion.div>
@@ -425,25 +425,119 @@ export default function LandingPage() {
         </div>
       </footer>
       
-      {/* Video Demo Modal */}
-      <Dialog open={isVideoPlaying} onOpenChange={setIsVideoPlaying}>
+      {/* Features Gallery Modal */}
+      <Dialog open={isGalleryOpen} onOpenChange={setIsGalleryOpen}>
         <DialogContent className="sm:max-w-4xl max-h-[90vh] overflow-hidden p-0 gap-0">
           <div className="flex justify-between items-center p-4 bg-gradient-to-r from-revalpro-blue to-revalpro-teal">
-            <DialogTitle className="text-white">RevalPro Demo Video</DialogTitle>
-            <Button variant="ghost" size="icon" onClick={() => setIsVideoPlaying(false)} className="text-white hover:bg-white/20">
+            <div>
+              <DialogTitle className="text-white">RevalPro Features Gallery</DialogTitle>
+              <DialogDescription className="text-white/80 mt-1">
+                Explore the key features of our NMC revalidation platform
+              </DialogDescription>
+            </div>
+            <Button variant="ghost" size="icon" onClick={() => setIsGalleryOpen(false)} className="text-white hover:bg-white/20">
               <X className="h-4 w-4" />
             </Button>
           </div>
-          <div className="aspect-video bg-gray-100 flex items-center justify-center p-8 text-center">
-            <div>
-              <div className="mx-auto w-24 h-24 mb-6 rounded-full bg-revalpro-blue/10 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-revalpro-blue"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
-              </div>
-              <h3 className="text-2xl font-bold text-gray-800 mb-2">Demo Video Coming Soon</h3>
-              <p className="text-gray-600 max-w-md">
-                We're currently creating a comprehensive demo video showcasing all the features of RevalPro.
-                Check back soon to see how the application can help with your NMC revalidation journey!
+          <div className="bg-gray-50 p-6 overflow-y-auto max-h-[70vh]">
+            {/* Gallery Introduction */}
+            <div className="text-center mb-8">
+              <h3 className="text-2xl font-bold text-gray-800 mb-3">Explore RevalPro Features</h3>
+              <p className="text-gray-600 max-w-2xl mx-auto">
+                Take a tour of the key elements that make RevalPro the perfect tool for your NMC revalidation journey.
+                Each screenshot highlights features designed to simplify and streamline your revalidation process.
               </p>
+            </div>
+            
+            {/* Gallery */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Dashboard */}
+              <div className="bg-white rounded-lg shadow-md overflow-hidden">
+                <div className="aspect-video bg-gradient-to-br from-revalpro-blue/10 to-revalpro-teal/10 flex items-center justify-center p-8">
+                  <div className="text-6xl text-revalpro-blue/30">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" /><path d="M9 9h.01" /><path d="M9 12h.01" /><path d="M9 15h.01" /><path d="M12 9h3" /><path d="M12 12h3" /><path d="M12 15h3" /></svg>
+                  </div>
+                </div>
+                <div className="p-4">
+                  <h4 className="font-bold text-lg mb-1">Dashboard Overview</h4>
+                  <p className="text-gray-600 text-sm">Track your revalidation progress with our intuitive dashboard. Visual indicators show your compliance with each NMC requirement.</p>
+                </div>
+              </div>
+              
+              {/* Practice Hours */}
+              <div className="bg-white rounded-lg shadow-md overflow-hidden">
+                <div className="aspect-video bg-gradient-to-br from-revalpro-green/10 to-revalpro-blue/10 flex items-center justify-center p-8">
+                  <div className="text-6xl text-revalpro-green/30">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  </div>
+                </div>
+                <div className="p-4">
+                  <h4 className="font-bold text-lg mb-1">Practice Hours Tracker</h4>
+                  <p className="text-gray-600 text-sm">Log your nursing practice hours and track your progress toward the 450-hour requirement, with breakdowns by category and setting.</p>
+                </div>
+              </div>
+              
+              {/* CPD Records */}
+              <div className="bg-white rounded-lg shadow-md overflow-hidden">
+                <div className="aspect-video bg-gradient-to-br from-revalpro-teal/10 to-revalpro-purple/10 flex items-center justify-center p-8">
+                  <div className="text-6xl text-revalpro-teal/30">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                  </div>
+                </div>
+                <div className="p-4">
+                  <h4 className="font-bold text-lg mb-1">CPD Management</h4>
+                  <p className="text-gray-600 text-sm">Record and organize your CPD activities, with automatic calculation of hours and distinction between participatory and self-directed learning.</p>
+                </div>
+              </div>
+              
+              {/* Reflective Accounts */}
+              <div className="bg-white rounded-lg shadow-md overflow-hidden">
+                <div className="aspect-video bg-gradient-to-br from-revalpro-red/10 to-revalpro-orange/10 flex items-center justify-center p-8">
+                  <div className="text-6xl text-revalpro-red/30">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"/></svg>
+                  </div>
+                </div>
+                <div className="p-4">
+                  <h4 className="font-bold text-lg mb-1">Reflective Accounts</h4>
+                  <p className="text-gray-600 text-sm">Create structured reflective accounts using various nursing models. AI tools help you craft meaningful reflections based on your experiences.</p>
+                </div>
+              </div>
+              
+              {/* Feedback Collection */}
+              <div className="bg-white rounded-lg shadow-md overflow-hidden">
+                <div className="aspect-video bg-gradient-to-br from-revalpro-purple/10 to-revalpro-blue/10 flex items-center justify-center p-8">
+                  <div className="text-6xl text-revalpro-purple/30">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4c0-1.1.9-2 2-2h8a2 2 0 0 1 2 2v5Z"/><path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"/></svg>
+                  </div>
+                </div>
+                <div className="p-4">
+                  <h4 className="font-bold text-lg mb-1">Feedback Collection</h4>
+                  <p className="text-gray-600 text-sm">Gather and organize practice-related feedback from patients, colleagues, and managers. Export collected feedback for your revalidation portfolio.</p>
+                </div>
+              </div>
+              
+              {/* NMC Verification */}
+              <div className="bg-white rounded-lg shadow-md overflow-hidden">
+                <div className="aspect-video bg-gradient-to-br from-revalpro-blue/10 to-revalpro-teal/10 flex items-center justify-center p-8">
+                  <div className="text-6xl text-revalpro-blue/30">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>
+                  </div>
+                </div>
+                <div className="p-4">
+                  <h4 className="font-bold text-lg mb-1">NMC Verification</h4>
+                  <p className="text-gray-600 text-sm">Check your NMC registration status and important revalidation dates. Receive timely notifications as your submission deadline approaches.</p>
+                </div>
+              </div>
+            </div>
+            
+            {/* Call to Action */}
+            <div className="mt-8 text-center">
+              <p className="text-gray-500 mb-4">Ready to experience these features yourself?</p>
+              <Link href="/auth">
+                <Button className="bg-gradient-to-r from-revalpro-blue to-revalpro-teal hover:from-revalpro-blue/90 hover:to-revalpro-teal/90 text-white">
+                  Get Started Free
+                </Button>
+              </Link>
             </div>
           </div>
         </DialogContent>
