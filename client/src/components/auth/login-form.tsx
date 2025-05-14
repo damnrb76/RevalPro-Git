@@ -138,9 +138,19 @@ export default function LoginForm() {
           )}
         </Button>
 
-        {/* Create Account Link */}
-        <div className="text-sm text-muted-foreground text-center">
+        {/* Login Options */}
+        <div className="text-sm text-muted-foreground text-center space-y-2">
           <p>Don't have an account? <a href="/auth?tab=register" className="text-revalpro-blue hover:underline">Create one</a></p>
+          <p className="text-xs">or try the <button 
+            type="button"
+            onClick={() => {
+              form.setValue("username", "demouser");
+              form.setValue("password", "hello");
+            }}
+            className="text-revalpro-teal hover:underline text-xs"
+          >
+            demo account
+          </button></p>
         </div>
       </form>
     </Form>
