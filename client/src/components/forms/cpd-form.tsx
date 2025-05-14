@@ -34,7 +34,10 @@ import { formatDateForInput, toDate } from "@/lib/date-utils";
 const formSchema = z.object({
   date: z.string().min(1, "Date is required"),
   title: z.string().min(2, "Title must be at least 2 characters"),
-  hours: z.coerce.number().min(0.5, "Hours must be at least 0.5"),
+  hours: z.union([
+    z.literal(''),
+    z.number().min(0.5, "Hours must be at least 0.5")
+  ]).transform(val => val === '' ? 0.5 : val),
   participatory: z.boolean(),
   relevanceToCode: z.string().optional(),
   description: z.string().optional().transform(val => val || ""),
@@ -182,7 +185,14 @@ export default function CpdForm({ initialData, onClose, onSuccess }: CpdFormProp
                         min="0.5" 
                         step="0.5"
                         className="focus-visible:ring-2 ring-revalpro-blue/20 transition-all"
-                        {...field} 
+                        value={field.value}
+                        onChange={(e) => {
+                          // Parse the value as a number and update the field
+                          const value = e.target.value === '' ? '' : parseFloat(e.target.value);
+                          field.onChange(value);
+                        }}
+                        onBlur={field.onBlur}
+                        name={field.name}
                       />
                     </FormControl>
                     <FormMessage />
