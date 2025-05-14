@@ -1,10 +1,161 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
-import { ArrowRight, Check, Shield, Clock, Award, BookOpen, Users, MessageSquare, X } from "lucide-react";
+import { ArrowRight, Check, Shield, Clock, Award, BookOpen, Users, MessageSquare, X, ChevronLeft, ChevronRight, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import logo from "@assets/Leonardo_Phoenix_10_design_a_vibrant_and_professional_logo_for_3.jpg";
+import dashboardScreenshot from "@assets/Screenshot_20250512_165421_Replit.jpg";
+import cpdFormScreenshot from "@assets/Screenshot_20250512_182025_Replit.jpg";
+import reportsScreenshot from "@assets/Screenshot_20250512_213835_Replit.jpg";
+
+// Demo presentation component
+function AppDemoPresentation() {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
+  
+  const slides = [
+    {
+      image: dashboardScreenshot,
+      title: "Your Revalidation Dashboard",
+      description: "Track all your revalidation requirements in one place",
+      highlights: [
+        "Visual progress indicators",
+        "Upcoming deadlines",
+        "Quick access to all sections"
+      ]
+    },
+    {
+      image: cpdFormScreenshot,
+      title: "Easy CPD Recording",
+      description: "Log your continuing professional development activities",
+      highlights: [
+        "Track participatory learning",
+        "Categorize by specialty",
+        "Add reflections for each activity"
+      ]
+    },
+    {
+      image: reportsScreenshot,
+      title: "Comprehensive Reports",
+      description: "Generate NMC-ready documentation",
+      highlights: [
+        "One-click PDF generation",
+        "Ready for submission",
+        "Share with your confirmer"
+      ]
+    }
+  ];
+  
+  // Auto-advance slides
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!isAnimating) {
+        nextSlide();
+      }
+    }, 5000);
+    
+    return () => clearTimeout(timer);
+  }, [currentSlide, isAnimating]);
+  
+  const nextSlide = () => {
+    if (isAnimating) return;
+    
+    setIsAnimating(true);
+    setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
+    setTimeout(() => setIsAnimating(false), 500);
+  };
+  
+  const prevSlide = () => {
+    if (isAnimating) return;
+    
+    setIsAnimating(true);
+    setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
+    setTimeout(() => setIsAnimating(false), 500);
+  };
+  
+  return (
+    <div className="w-full h-full relative flex flex-col">
+      {/* Slide image */}
+      <div className="flex-1 overflow-hidden relative">
+        {slides.map((slide, index) => (
+          <div 
+            key={index}
+            className={`absolute inset-0 transition-opacity duration-500 ${
+              currentSlide === index 
+                ? "opacity-100 z-10" 
+                : "opacity-0 z-0"
+            }`}
+          >
+            <img 
+              src={slide.image} 
+              alt={slide.title} 
+              className="w-full h-full object-contain" 
+            />
+            
+            {/* Content overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-6 text-white">
+              <h3 className="text-2xl font-bold mb-2">{slide.title}</h3>
+              <p className="text-white/80 mb-4">{slide.description}</p>
+              
+              <ul className="space-y-1">
+                {slide.highlights.map((highlight, i) => (
+                  <motion.li 
+                    key={i} 
+                    className="flex items-center"
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.1 * i }}
+                  >
+                    <CheckCircle2 className="h-4 w-4 text-revalpro-green mr-2" />
+                    <span>{highlight}</span>
+                  </motion.li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        ))}
+      </div>
+      
+      {/* Navigation controls */}
+      <div className="absolute bottom-4 right-4 flex space-x-2 z-20">
+        <Button 
+          variant="outline" 
+          size="icon" 
+          className="rounded-full bg-white/20 hover:bg-white/40 border-0 backdrop-blur-sm"
+          onClick={prevSlide}
+        >
+          <ChevronLeft className="w-5 h-5 text-white" />
+        </Button>
+        <Button 
+          variant="outline" 
+          size="icon" 
+          className="rounded-full bg-white/20 hover:bg-white/40 border-0 backdrop-blur-sm"
+          onClick={nextSlide}
+        >
+          <ChevronRight className="w-5 h-5 text-white" />
+        </Button>
+      </div>
+      
+      {/* Progress indicators */}
+      <div className="absolute bottom-4 left-0 right-0 flex justify-center space-x-2 z-20">
+        {slides.map((_, index) => (
+          <button
+            key={index}
+            className={`w-2.5 h-2.5 rounded-full ${
+              currentSlide === index ? "bg-white" : "bg-white/30"
+            }`}
+            onClick={() => {
+              setIsAnimating(true);
+              setCurrentSlide(index);
+              setTimeout(() => setIsAnimating(false), 500);
+            }}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export default function LandingPage() {
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
@@ -471,13 +622,8 @@ export default function LandingPage() {
               <X className="h-4 w-4" />
             </Button>
           </div>
-          <div className="relative aspect-video w-full">
-            <iframe 
-              src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1" 
-              className="absolute top-0 left-0 w-full h-full" 
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-              allowFullScreen
-            ></iframe>
+          <div className="relative aspect-video w-full bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden">
+            <AppDemoPresentation />
           </div>
         </DialogContent>
       </Dialog>
