@@ -58,6 +58,8 @@ export default function LoginForm() {
   const onSubmit = async (values: LoginFormValues) => {
     loginMutation.mutate(values, {
       onSuccess: () => {
+        // Scroll to top before redirecting
+        window.scrollTo(0, 0);
         setLocation("/dashboard");
       },
     });
@@ -136,11 +138,9 @@ export default function LoginForm() {
           )}
         </Button>
 
-        {/* Demo Account Info */}
+        {/* Create Account Link */}
         <div className="text-sm text-muted-foreground text-center">
-          <p>Demo Account</p>
-          <p>Username: <span className="font-mono">demouser</span></p>
-          <p>Password: <span className="font-mono">hello</span></p>
+          <p>Don't have an account? <a href="/auth?tab=register" className="text-revalpro-blue hover:underline">Create one</a></p>
         </div>
       </form>
     </Form>
