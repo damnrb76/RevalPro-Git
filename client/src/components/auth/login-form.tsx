@@ -146,6 +146,10 @@ export default function LoginForm() {
             onClick={() => {
               form.setValue("username", "demouser");
               form.setValue("password", "hello");
+              // Submit the form after a short delay to ensure values are set
+              setTimeout(() => {
+                form.handleSubmit(onSubmit)();
+              }, 100);
             }}
             className="text-revalpro-teal hover:underline text-xs"
           >
