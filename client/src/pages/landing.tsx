@@ -1,161 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
-import { ArrowRight, Check, Shield, Clock, Award, BookOpen, Users, MessageSquare, X, ChevronLeft, ChevronRight, CheckCircle2 } from "lucide-react";
+import { ArrowRight, Check, Shield, Clock, Award, BookOpen, Users, MessageSquare, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import logo from "@assets/Leonardo_Phoenix_10_design_a_vibrant_and_professional_logo_for_3.jpg";
-import dashboardScreenshot from "@assets/Screenshot_20250512_165421_Replit.jpg";
-import cpdFormScreenshot from "@assets/Screenshot_20250512_182025_Replit.jpg";
-import reportsScreenshot from "@assets/Screenshot_20250512_213835_Replit.jpg";
-
-// Demo presentation component
-function AppDemoPresentation() {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
-  
-  const slides = [
-    {
-      image: dashboardScreenshot,
-      title: "Your Revalidation Dashboard",
-      description: "Track all your revalidation requirements in one place",
-      highlights: [
-        "Visual progress indicators",
-        "Upcoming deadlines",
-        "Quick access to all sections"
-      ]
-    },
-    {
-      image: cpdFormScreenshot,
-      title: "Easy CPD Recording",
-      description: "Log your continuing professional development activities",
-      highlights: [
-        "Track participatory learning",
-        "Categorize by specialty",
-        "Add reflections for each activity"
-      ]
-    },
-    {
-      image: reportsScreenshot,
-      title: "Comprehensive Reports",
-      description: "Generate NMC-ready documentation",
-      highlights: [
-        "One-click PDF generation",
-        "Ready for submission",
-        "Share with your confirmer"
-      ]
-    }
-  ];
-  
-  // Auto-advance slides
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (!isAnimating) {
-        nextSlide();
-      }
-    }, 5000);
-    
-    return () => clearTimeout(timer);
-  }, [currentSlide, isAnimating]);
-  
-  const nextSlide = () => {
-    if (isAnimating) return;
-    
-    setIsAnimating(true);
-    setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
-    setTimeout(() => setIsAnimating(false), 500);
-  };
-  
-  const prevSlide = () => {
-    if (isAnimating) return;
-    
-    setIsAnimating(true);
-    setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
-    setTimeout(() => setIsAnimating(false), 500);
-  };
-  
-  return (
-    <div className="w-full h-full relative flex flex-col">
-      {/* Slide image */}
-      <div className="flex-1 overflow-hidden relative">
-        {slides.map((slide, index) => (
-          <div 
-            key={index}
-            className={`absolute inset-0 transition-opacity duration-500 ${
-              currentSlide === index 
-                ? "opacity-100 z-10" 
-                : "opacity-0 z-0"
-            }`}
-          >
-            <img 
-              src={slide.image} 
-              alt={slide.title} 
-              className="w-full h-full object-contain" 
-            />
-            
-            {/* Content overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-6 text-white">
-              <h3 className="text-2xl font-bold mb-2">{slide.title}</h3>
-              <p className="text-white/80 mb-4">{slide.description}</p>
-              
-              <ul className="space-y-1">
-                {slide.highlights.map((highlight, i) => (
-                  <motion.li 
-                    key={i} 
-                    className="flex items-center"
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.1 * i }}
-                  >
-                    <CheckCircle2 className="h-4 w-4 text-revalpro-green mr-2" />
-                    <span>{highlight}</span>
-                  </motion.li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        ))}
-      </div>
-      
-      {/* Navigation controls */}
-      <div className="absolute bottom-4 right-4 flex space-x-2 z-20">
-        <Button 
-          variant="outline" 
-          size="icon" 
-          className="rounded-full bg-white/20 hover:bg-white/40 border-0 backdrop-blur-sm"
-          onClick={prevSlide}
-        >
-          <ChevronLeft className="w-5 h-5 text-white" />
-        </Button>
-        <Button 
-          variant="outline" 
-          size="icon" 
-          className="rounded-full bg-white/20 hover:bg-white/40 border-0 backdrop-blur-sm"
-          onClick={nextSlide}
-        >
-          <ChevronRight className="w-5 h-5 text-white" />
-        </Button>
-      </div>
-      
-      {/* Progress indicators */}
-      <div className="absolute bottom-4 left-0 right-0 flex justify-center space-x-2 z-20">
-        {slides.map((_, index) => (
-          <button
-            key={index}
-            className={`w-2.5 h-2.5 rounded-full ${
-              currentSlide === index ? "bg-white" : "bg-white/30"
-            }`}
-            onClick={() => {
-              setIsAnimating(true);
-              setCurrentSlide(index);
-              setTimeout(() => setIsAnimating(false), 500);
-            }}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
 
 export default function LandingPage() {
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
@@ -509,74 +358,38 @@ export default function LandingPage() {
         </div>
       </section>
       
-      {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-revalpro-blue to-revalpro-teal text-white">
-        <div className="container mx-auto px-4 text-center">
-          <motion.h2 
-            className="text-3xl md:text-4xl font-bold mb-4"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-          >
-            Ready to Simplify Your Revalidation?
-          </motion.h2>
-          <motion.p 
-            className="text-xl mb-8 max-w-3xl mx-auto opacity-90"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-          >
-            Join thousands of UK nurses who trust RevalPro to manage their revalidation requirements efficiently and securely.
-          </motion.p>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
-            <Link href="/auth">
-              <Button className="bg-white text-revalpro-blue hover:bg-gray-100 font-semibold px-8 py-6 text-lg">
-                Create Your Free Account
-              </Button>
-            </Link>
-          </motion.div>
-        </div>
-      </section>
-      
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
+      <footer className="bg-gray-900 text-white py-16">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div>
-              <div className="flex items-center mb-4">
+              <div className="flex items-center mb-6">
                 <img 
                   src={logo} 
                   alt="RevalPro Logo" 
-                  className="h-10 w-auto mr-2" 
+                  className="h-10 w-auto mr-3" 
                 />
-                <h3 className="text-xl font-bold">RevalPro</h3>
+                <h2 className="text-xl font-bold text-white">RevalPro</h2>
               </div>
-              <p className="text-gray-400">
-                Simplifying NMC revalidation for UK nurses with secure, user-friendly tools.
+              <p className="text-gray-400 mb-6">
+                The UK's leading NMC revalidation platform designed by nurses, for nurses.
               </p>
             </div>
             <div>
-              <h4 className="text-lg font-semibold mb-4">Product</h4>
+              <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
               <ul className="space-y-2">
                 <li><a href="#features" className="text-gray-400 hover:text-white transition-colors">Features</a></li>
+                <li><a href="#testimonials" className="text-gray-400 hover:text-white transition-colors">Testimonials</a></li>
                 <li><a href="#pricing" className="text-gray-400 hover:text-white transition-colors">Pricing</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Documentation</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Release Notes</a></li>
+                <li><Link href="/auth" className="text-gray-400 hover:text-white transition-colors">Login</Link></li>
               </ul>
             </div>
             <div>
-              <h4 className="text-lg font-semibold mb-4">Company</h4>
+              <h4 className="text-lg font-semibold mb-4">Resources</h4>
               <ul className="space-y-2">
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">About Us</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Careers</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Blog</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Guides</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Support</a></li>
                 <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Terms of Service</a></li>
               </ul>
             </div>
@@ -612,7 +425,6 @@ export default function LandingPage() {
         </div>
       </footer>
       
-      {/* Video Modal */}
       {/* Video Demo Modal */}
       <Dialog open={isVideoPlaying} onOpenChange={setIsVideoPlaying}>
         <DialogContent className="sm:max-w-4xl max-h-[90vh] overflow-hidden p-0 gap-0">
@@ -622,8 +434,17 @@ export default function LandingPage() {
               <X className="h-4 w-4" />
             </Button>
           </div>
-          <div className="relative aspect-video w-full bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden">
-            <AppDemoPresentation />
+          <div className="aspect-video bg-gray-100 flex items-center justify-center p-8 text-center">
+            <div>
+              <div className="mx-auto w-24 h-24 mb-6 rounded-full bg-revalpro-blue/10 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-revalpro-blue"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+              </div>
+              <h3 className="text-2xl font-bold text-gray-800 mb-2">Demo Video Coming Soon</h3>
+              <p className="text-gray-600 max-w-md">
+                We're currently creating a comprehensive demo video showcasing all the features of RevalPro.
+                Check back soon to see how the application can help with your NMC revalidation journey!
+              </p>
+            </div>
           </div>
         </DialogContent>
       </Dialog>
