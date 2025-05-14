@@ -18,11 +18,8 @@ export default function LandingPage() {
             <img 
               src={logo} 
               alt="RevalPro Logo" 
-              className="h-12 w-auto mr-3" 
+              className="h-16 w-auto" 
             />
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-revalpro-blue to-revalpro-teal bg-clip-text text-transparent">
-              RevalPro
-            </h1>
           </div>
           <div className="hidden md:flex items-center space-x-6">
             <a href="#features" className="text-gray-600 hover:text-revalpro-blue transition-colors">Features</a>
@@ -367,9 +364,8 @@ export default function LandingPage() {
                 <img 
                   src={logo} 
                   alt="RevalPro Logo" 
-                  className="h-10 w-auto mr-3" 
+                  className="h-14 w-auto" 
                 />
-                <h2 className="text-xl font-bold text-white">RevalPro</h2>
               </div>
               <p className="text-gray-400 mb-6">
                 The UK's leading NMC revalidation platform designed by nurses, for nurses.
