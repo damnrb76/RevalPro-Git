@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
-import { ArrowRight, Check, Shield, Clock, Award, BookOpen, Users, MessageSquare } from "lucide-react";
+import { ArrowRight, Check, Shield, Clock, Award, BookOpen, Users, MessageSquare, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import logo from "@assets/Leonardo_Phoenix_10_design_a_vibrant_and_professional_logo_for_3.jpg";
 
 export default function LandingPage() {
@@ -461,27 +462,25 @@ export default function LandingPage() {
       </footer>
       
       {/* Video Modal */}
-      {isVideoPlaying && (
-        <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full">
-            <div className="p-4 flex justify-between items-center border-b">
-              <h3 className="text-lg font-semibold">RevalPro Demo</h3>
-              <button 
-                className="text-gray-500 hover:text-gray-700"
-                onClick={() => setIsVideoPlaying(false)}
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>
-              </button>
-            </div>
-            <div className="aspect-video bg-gray-100 flex items-center justify-center">
-              <div className="text-center p-8">
-                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mx-auto mb-4 text-gray-400"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
-                <p className="text-gray-500">Demo video would play here</p>
-              </div>
-            </div>
+      {/* Video Demo Modal */}
+      <Dialog open={isVideoPlaying} onOpenChange={setIsVideoPlaying}>
+        <DialogContent className="sm:max-w-4xl max-h-[90vh] overflow-hidden p-0 gap-0">
+          <div className="flex justify-between items-center p-4 bg-gradient-to-r from-revalpro-blue to-revalpro-teal">
+            <DialogTitle className="text-white">RevalPro Demo Video</DialogTitle>
+            <Button variant="ghost" size="icon" onClick={() => setIsVideoPlaying(false)} className="text-white hover:bg-white/20">
+              <X className="h-4 w-4" />
+            </Button>
           </div>
-        </div>
-      )}
+          <div className="relative aspect-video w-full">
+            <iframe 
+              src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1" 
+              className="absolute top-0 left-0 w-full h-full" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+              allowFullScreen
+            ></iframe>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
