@@ -34,6 +34,9 @@ import { downloadRevalidationPack } from "@/lib/pdf-generator";
 export default function SummaryInfographicPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [summaryData, setSummaryData] = useState<RevalidationSummaryData | null>(null);
+  
+  // Preview demo data for NMC-compliant document generation
+  const [previewMode, setPreviewMode] = useState(true); // Set to true for demo purposes
 
   // Fetch all data needed for the summary
   const { data: userProfile } = useQuery({
@@ -73,6 +76,69 @@ export default function SummaryInfographicPage() {
 
   // Prepare summary data once all queries are resolved
   useEffect(() => {
+    // For preview mode, use sample data
+    if (previewMode) {
+      // Demo data for NMC document preview
+      const demoUser = {
+        id: 1,
+        username: "demouser",
+        name: "Sarah Johnson",
+        registrationNumber: "98X1234E",
+        email: "demo@example.com",
+        profilePicture: null,
+        jobTitle: "Registered Nurse",
+        specialties: ["Adult Nursing"],
+        expiryDate: "2026-05-15",
+        created: new Date(),
+        password: "hashed_password",
+        stripeCustomerId: null,
+        stripeSubscriptionId: null,
+        subscriptionStatus: "free",
+        currentPlan: "free",
+        subscriptionPeriod: null,
+        subscriptionEndDate: null,
+        cancelAtPeriodEnd: false
+      };
+
+      const demoPracticeHours = [
+        { id: 1, userId: 1, workSetting: "Hospital", scope: "Adult Nursing", startDate: "2023-05-01", endDate: "2024-04-30", hours: 300, created: new Date() },
+        { id: 2, userId: 1, workSetting: "Community Care", scope: "Adult Nursing", startDate: "2023-06-15", endDate: "2024-03-15", hours: 200, created: new Date() }
+      ];
+      
+      const demoCpdRecords = [
+        { id: 1, userId: 1, title: "Infection Control Workshop", date: "2024-01-15", hours: 10, participatory: true, description: "Workshop on latest infection control practices", created: new Date(), relevanceToCode: "Preserve Safety", attachment: null },
+        { id: 2, userId: 1, title: "Medication Management Course", date: "2024-02-20", hours: 8, participatory: true, description: "Online course on medication safety", created: new Date(), relevanceToCode: "Preserve Safety", attachment: null },
+        { id: 3, userId: 1, title: "Clinical Skills Update", date: "2024-03-10", hours: 12, participatory: true, description: "Hands-on clinical skills refresher", created: new Date(), relevanceToCode: "Practise Effectively", attachment: null },
+        { id: 4, userId: 1, title: "Professional Ethics Study", date: "2024-04-05", hours: 6, participatory: false, description: "Self-directed learning on ethical practice", created: new Date(), relevanceToCode: "Promote Professionalism", attachment: null }
+      ];
+      
+      setSummaryData({
+        userProfile: demoUser,
+        practiceHours: demoPracticeHours,
+        cpdRecords: demoCpdRecords,
+        feedbackRecords: [
+          { id: 1, userId: 1, date: "2024-01-10", source: "Patient", content: "Excellent care provided during my stay", reflection: "Positive feedback on communication skills", created: new Date(), attachment: null },
+          { id: 2, userId: 1, date: "2024-02-15", source: "Colleague", content: "Great teamwork during emergency situation", reflection: "Showed good crisis management", created: new Date(), attachment: null },
+          { id: 3, userId: 1, date: "2024-03-20", source: "Manager", content: "Demonstrated leadership in team meetings", reflection: "Developing leadership capabilities", created: new Date(), attachment: null },
+          { id: 4, userId: 1, date: "2024-04-05", source: "Student", content: "Excellent mentorship and teaching", reflection: "Effective teaching methods", created: new Date(), attachment: null },
+          { id: 5, userId: 1, date: "2024-04-25", source: "Patient Family", content: "Compassionate care provided to my mother", reflection: "Importance of family-centered care", created: new Date(), attachment: null }
+        ],
+        reflectiveAccounts: [
+          { id: 1, userId: 1, title: "Managing Complex Care", date: "2024-01-20", description: "Reflection on caring for patient with multiple conditions", reflectiveModel: "Gibbs", experience: "Coordinated care for elderly patient with multiple comorbidities", natureOfExperience: "Clinical", whatLearned: "Importance of interdisciplinary approach", howChanged: "Now regularly consult with specialist teams", created: new Date(), attachment: null, codeRelation: "Prioritise People" },
+          { id: 2, userId: 1, title: "Communication Challenge", date: "2024-02-25", description: "Reflection on difficult conversation with family", reflectiveModel: "Johns", experience: "Had to explain poor prognosis to patient's family", natureOfExperience: "Communication", whatLearned: "Techniques for sensitive discussions", howChanged: "Improved approach to difficult conversations", created: new Date(), attachment: null, codeRelation: "Practise Effectively" },
+          { id: 3, userId: 1, title: "Medication Error Prevention", date: "2024-03-15", description: "Reflection on near-miss incident", reflectiveModel: "Driscoll", experience: "Identified potential medication error before administration", natureOfExperience: "Safety", whatLearned: "Importance of double-checking", howChanged: "Implemented personal safety checklist", created: new Date(), attachment: null, codeRelation: "Preserve Safety" },
+          { id: 4, userId: 1, title: "Patient Advocacy", date: "2024-04-01", description: "Reflection on advocating for patient needs", reflectiveModel: "Gibbs", experience: "Advocated for patient's cultural needs during care", natureOfExperience: "Advocacy", whatLearned: "Cultural competence in care planning", howChanged: "Now consider cultural factors in all assessments", created: new Date(), attachment: null, codeRelation: "Prioritise People" },
+          { id: 5, userId: 1, title: "Team Conflict Resolution", date: "2024-04-20", description: "Reflection on resolving team disagreement", reflectiveModel: "Kolb", experience: "Mediated disagreement between healthcare professionals", natureOfExperience: "Teamwork", whatLearned: "Conflict resolution strategies", howChanged: "Better equipped to handle team dynamics", created: new Date(), attachment: null, codeRelation: "Promote Professionalism" }
+        ],
+        hasHealthDeclaration: true,
+        hasConfirmation: true,
+        lastUpdated: new Date()
+      });
+      setIsLoading(false);
+      return;
+    }
+    
+    // Regular data loading for non-preview mode
     if (
       userProfile !== undefined &&
       practiceHours !== undefined &&
