@@ -62,35 +62,98 @@ function addNmcHeader(doc: jsPDF, title: string) {
 
 /**
  * Add a section header to the PDF
+ * Follows NMC template style with grey background and blue text
  */
 function addSectionHeader(doc: jsPDF, title: string, y: number) {
-  doc.setFillColor(NMC_BLUE[0], NMC_BLUE[1], NMC_BLUE[2]);
-  doc.rect(20, y, 170, 8, 'F');
-  doc.setTextColor(255, 255, 255);
-  doc.setFontSize(12);
-  doc.text(title, 25, y + 5.5);
+  // Use light grey background for section headers (NMC style)
+  doc.setFillColor(240, 240, 240);
+  doc.rect(20, y, 170, 10, 'F');
+  
+  // Use NMC blue text for the header
+  doc.setTextColor(NMC_BLUE[0], NMC_BLUE[1], NMC_BLUE[2]);
+  doc.setFontSize(11);
+  doc.setFont('helvetica', 'bold');
+  doc.text(title, 25, y + 6.5);
+  
+  // Reset text format
   doc.setTextColor(0, 0, 0);
   doc.setFontSize(10);
-  return y + 12; // Return next Y position
+  doc.setFont('helvetica', 'normal');
+  
+  return y + 14; // Return next Y position with more spacing
+}
+
+/**
+ * Add NMC-styled footer with page numbers to all pages
+ */
+function addNmcFooter(doc: jsPDF) {
+  const totalPages = doc.getNumberOfPages();
+  for (let i = 1; i <= totalPages; i++) {
+    doc.setPage(i);
+    
+    // Add horizontal line at bottom of page (NMC style)
+    doc.setDrawColor(NMC_BLUE[0], NMC_BLUE[1], NMC_BLUE[2]);
+    doc.setLineWidth(0.5);
+    doc.line(20, doc.internal.pageSize.getHeight() - 20, 
+             doc.internal.pageSize.getWidth() - 20, 
+             doc.internal.pageSize.getHeight() - 20);
+    
+    // Add page numbers in NMC format
+    doc.setFontSize(8);
+    doc.setTextColor(NMC_BLUE[0], NMC_BLUE[1], NMC_BLUE[2]);
+    doc.text(
+      `Page ${i} of ${totalPages}`,
+      20,
+      doc.internal.pageSize.getHeight() - 12
+    );
+    
+    // Add date on right side (NMC style)
+    doc.text(
+      `Generated: ${formatDateFull(new Date())}`,
+      doc.internal.pageSize.getWidth() - 20,
+      doc.internal.pageSize.getHeight() - 12,
+      { align: 'right' }
+    );
+    
+    // Reset text color
+    doc.setTextColor(0, 0, 0);
+  }
 }
 
 /**
  * Add a field label and value to the PDF
+ * Follows NMC form format with proper field styling
  */
 function addField(doc: jsPDF, label: string, value: string, x: number, y: number, width = 80) {
-  doc.setFontSize(9);
+  // Use NMC blue for field labels
+  doc.setFontSize(10);
   doc.setFont('helvetica', 'bold');
+  doc.setTextColor(NMC_BLUE[0], NMC_BLUE[1], NMC_BLUE[2]);
   doc.text(label, x, y);
-  doc.setFont('helvetica', 'normal');
+  
+  // Add light grey box for value (common in NMC forms)
+  const valueY = y + 3;
+  doc.setDrawColor(200, 200, 200);
+  doc.setFillColor(252, 252, 252);
   
   // Handle multiline text for value
   const splitValue = doc.splitTextToSize(value || 'Not provided', width);
-  doc.text(splitValue, x, y + 5);
+  const lines = splitValue.length;
+  const boxHeight = lines * 5 + 6;
+  
+  // Draw box for value with rounded corners
+  doc.roundedRect(x, valueY, width + 5, boxHeight, 1, 1, 'FD');
+  
+  // Add value text
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(0, 0, 0);
+  doc.text(splitValue, x + 3, valueY + 5);
+  
+  // Reset text color
+  doc.setTextColor(0, 0, 0);
   
   // Calculate next Y position based on number of lines
-  const lineHeight = 5;
-  const lines = splitValue.length;
-  return y + (lineHeight * (lines + 1)) + 2;
+  return y + boxHeight + 8;
 }
 
 /**
