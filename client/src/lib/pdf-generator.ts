@@ -801,7 +801,13 @@ export async function generateConfirmationPdf(): Promise<jsPDF> {
  */
 export async function downloadRevalidationPack(): Promise<void> {
   try {
-    // Create all individual documents
+    // Show user feedback that the process is starting
+    const toast = document.createElement('div');
+    toast.className = 'fixed bottom-4 right-4 bg-revalpro-blue text-white px-4 py-2 rounded shadow-lg z-50';
+    toast.textContent = 'Generating NMC-format documents...';
+    document.body.appendChild(toast);
+    
+    // Create all individual documents with NMC-compliant formatting
     const practiceHoursPdf = await generatePracticeHoursPdf();
     const cpdPdf = await generateCpdRecordsPdf();
     const feedbackPdf = await generateFeedbackPdf();
@@ -835,15 +841,23 @@ export async function downloadRevalidationPack(): Promise<void> {
       }
     };
     
-    // Add cover page
+    // Add NMC-styled cover page
     const data = await exportAllData();
     const userProfile = data.userProfile[0] as UserProfile | undefined;
     
+    // NMC header
     combinedPdf.setFontSize(24);
     combinedPdf.setTextColor(NMC_BLUE[0], NMC_BLUE[1], NMC_BLUE[2]);
-    combinedPdf.text("RevalPro", 105, 40, { align: 'center' });
+    combinedPdf.setFont('helvetica', 'bold');
+    combinedPdf.text("Nursing & Midwifery Council", 105, 40, { align: 'center' });
     
-    combinedPdf.setFontSize(20);
+    // Horizontal line
+    combinedPdf.setDrawColor(NMC_BLUE[0], NMC_BLUE[1], NMC_BLUE[2]);
+    combinedPdf.setLineWidth(1);
+    combinedPdf.line(50, 50, 160, 50);
+    
+    // Title
+    combinedPdf.setFontSize(22);
     combinedPdf.text("Complete Revalidation Documentation", 105, 60, { align: 'center' });
     
     combinedPdf.setFontSize(14);
@@ -890,11 +904,25 @@ export async function downloadRevalidationPack(): Promise<void> {
     const url = URL.createObjectURL(pdfOutput);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `complete-revalidation-pack-${formatDateShort(new Date()).replace(/\//g, '-')}.pdf`;
+    a.download = `nmc-revalidation-pack-${formatDateShort(new Date()).replace(/\//g, '-')}.pdf`;
     
     // Trigger download
     document.body.appendChild(a);
     a.click();
+    
+    // Update toast to confirm completion
+    if (document.body.querySelector('.fixed.bottom-4.right-4')) {
+      const toast = document.body.querySelector('.fixed.bottom-4.right-4') as HTMLElement;
+      toast.textContent = 'NMC-compliant documents created successfully!';
+      toast.className = 'fixed bottom-4 right-4 bg-green-600 text-white px-4 py-2 rounded shadow-lg z-50';
+      
+      // Remove toast after 3 seconds
+      setTimeout(() => {
+        if (toast && toast.parentNode) {
+          toast.parentNode.removeChild(toast);
+        }
+      }, 3000);
+    }
     
     // Cleanup
     setTimeout(() => {
@@ -904,6 +932,21 @@ export async function downloadRevalidationPack(): Promise<void> {
     
   } catch (error) {
     console.error("Error generating PDF pack:", error);
+    
+    // Show error message
+    if (document.body.querySelector('.fixed.bottom-4.right-4')) {
+      const toast = document.body.querySelector('.fixed.bottom-4.right-4') as HTMLElement;
+      toast.textContent = 'Error creating NMC documents. Please try again.';
+      toast.className = 'fixed bottom-4 right-4 bg-red-600 text-white px-4 py-2 rounded shadow-lg z-50';
+      
+      // Remove toast after 4 seconds
+      setTimeout(() => {
+        if (toast && toast.parentNode) {
+          toast.parentNode.removeChild(toast);
+        }
+      }, 4000);
+    }
+    
     throw new Error("Failed to generate revalidation pack");
   }
 }
