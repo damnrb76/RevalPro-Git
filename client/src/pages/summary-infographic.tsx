@@ -9,14 +9,27 @@ import {
   feedbackRecordsStorage, 
   reflectiveAccountsStorage,
   healthDeclarationStorage,
-  confirmationStorage
+  confirmationStorage,
+  exportAllData
 } from "@/lib/storage";
 import { RevalidationSummaryData } from "@/lib/infographic-generator";
-import { PlusCircle, Share, FileImage, ChevronLeft } from "lucide-react";
+import { 
+  PlusCircle, 
+  Share, 
+  FileImage, 
+  ChevronLeft,
+  Download, 
+  Printer, 
+  FileJson, 
+  FileText,
+  PackageOpen,
+  Upload
+} from "lucide-react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
+import { downloadRevalidationPack } from "@/lib/pdf-generator";
 
 export default function SummaryInfographicPage() {
   const [isLoading, setIsLoading] = useState(true);
@@ -143,37 +156,86 @@ export default function SummaryInfographicPage() {
       )}
 
       <div className="mt-8 pt-6 border-t border-gray-200">
-        <h2 className="text-lg font-medium mb-4">Additional Options</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        <h2 className="text-xl font-bold mb-6 text-revalpro-blue">Download Revalidation Summary</h2>
+        
+        <div className="mb-8">
+          <Button
+            variant="default"
+            size="lg"
+            className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-revalpro-blue to-revalpro-teal text-white"
+            onClick={() => downloadRevalidationPack()}
+          >
+            <Download className="h-5 w-5" />
+            <span>Download Revalidation Summary</span>
+          </Button>
+        </div>
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
           <Button
             variant="outline"
-            className="flex items-center justify-center gap-2 h-auto py-4"
-            onClick={() => window.print()}
+            className="flex items-center justify-center gap-2 h-auto py-4 border-2"
+            onClick={() => downloadRevalidationPack()}
           >
-            <FileImage className="h-5 w-5" />
+            <Printer className="h-5 w-5 text-revalpro-blue" />
             <div className="text-left">
-              <div>Print Summary</div>
-              <div className="text-xs text-gray-500">Create a physical copy</div>
+              <div className="font-medium">Complete Pack</div>
+              <div className="text-xs text-gray-500">All NMC forms bundled</div>
             </div>
           </Button>
           
           <Button 
             variant="outline" 
-            className="flex items-center justify-center gap-2 h-auto py-4"
+            className="flex items-center justify-center gap-2 h-auto py-4 border-2"
             onClick={() => {
-              // Copy current URL
-              navigator.clipboard.writeText(window.location.href);
-              // Alert user
-              alert('Link copied to clipboard!');
+              // Handle infographic download
+              window.print();
             }}
           >
-            <Share className="h-5 w-5" />
+            <Upload className="h-5 w-5 text-revalpro-purple" />
             <div className="text-left">
-              <div>Share Link</div>
-              <div className="text-xs text-gray-500">Copy URL to clipboard</div>
+              <div className="font-medium">Infographic</div>
+              <div className="text-xs text-gray-500">Visual progress summary</div>
             </div>
           </Button>
         </div>
+        
+        <Button
+          variant="outline"
+          className="w-full flex items-center justify-center gap-2 h-auto py-4 mb-4 border-2"
+          onClick={() => {
+            // Handle form-only download (NMC format)
+            downloadRevalidationPack();
+          }}
+        >
+          <FileText className="h-5 w-5 text-revalpro-teal" />
+          <div className="text-left">
+            <div className="font-medium">Export Form</div>
+            <div className="text-xs text-gray-500">Official NMC format documents</div>
+          </div>
+        </Button>
+        
+        <Button
+          variant="secondary"
+          className="w-full flex items-center justify-center gap-2 h-auto py-4 bg-gray-100"
+          onClick={async () => {
+            // Export raw data as JSON
+            const data = await exportAllData();
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `revalidation-data-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+          }}
+        >
+          <FileJson className="h-5 w-5 text-gray-600" />
+          <div className="text-left">
+            <div className="font-medium">Export Raw Data (JSON)</div>
+            <div className="text-xs text-gray-500">For backup or transferring</div>
+          </div>
+        </Button>
       </div>
     </main>
   );
