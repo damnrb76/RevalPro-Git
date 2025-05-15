@@ -77,6 +77,104 @@ export default function SummaryInfographicPage() {
   });
 
   // Prepare summary data once all queries are resolved
+  // Define handlers for PDF generation in preview mode
+  const handlePreviewDownload = async () => {
+    try {
+      if (!summaryData) return;
+      
+      // Create a manually structured export data object from our demo data
+      const exportData = {
+        userProfile: [summaryData.userProfile],
+        practiceHours: summaryData.practiceHours,
+        cpdRecords: summaryData.cpdRecords,
+        feedbackRecords: summaryData.feedbackRecords,
+        reflectiveAccounts: summaryData.reflectiveAccounts,
+        reflectiveDiscussion: [{
+          id: 1,
+          date: new Date().toISOString().split('T')[0],
+          discussionWith: "Jane Smith, Senior Nurse",
+          registrationNumber: "92Y4567Z",
+          notes: "Discussed reflective accounts and professional development",
+          completed: true,
+          created: new Date()
+        }],
+        healthDeclaration: [{
+          id: 1,
+          date: new Date().toISOString().split('T')[0],
+          completed: summaryData.hasHealthDeclaration,
+          created: new Date()
+        }],
+        confirmation: [{
+          id: 1,
+          date: new Date().toISOString().split('T')[0],
+          confirmerName: "Dr. Robert Williams",
+          confirmerEmail: "r.williams@nhs.uk",
+          confirmerProfession: "Consultant",
+          relationshipToYou: "Clinical supervisor",
+          confirmerStatement: "I confirm that the nurse has met the requirements for revalidation",
+          confirmerOrganization: "NHS Foundation Trust",
+          completed: summaryData.hasConfirmation,
+          created: new Date()
+        }]
+      };
+      
+      // Use the export data directly to generate PDFs
+      const doc = new jsPDF();
+      let y = 20;
+      
+      // Header
+      doc.setFontSize(14);
+      doc.setTextColor(0, 0, 0);
+      doc.text("NMC Revalidation Documentation Pack (DEMO)", 20, y);
+      y += 10;
+      
+      doc.setFontSize(10);
+      doc.text("This is a preview of the PDF generation using sample data.", 20, y);
+      y += 10;
+      
+      doc.text("Nurse: " + summaryData.userProfile.name, 20, y);
+      y += 7;
+      doc.text("NMC PIN: " + summaryData.userProfile.registrationNumber, 20, y);
+      y += 7;
+      doc.text("Expiry Date: " + summaryData.userProfile.expiryDate, 20, y);
+      y += 15;
+      
+      doc.setFontSize(12);
+      doc.text("Sample Data Overview:", 20, y);
+      y += 10;
+      
+      doc.setFontSize(10);
+      doc.text("• Practice Hours: " + summaryData.practiceHours.reduce((sum, h) => sum + h.hours, 0) + " hours", 20, y);
+      y += 7;
+      doc.text("• CPD Activities: " + summaryData.cpdRecords.length + " records", 20, y);
+      y += 7;
+      doc.text("• Feedback Records: " + summaryData.feedbackRecords.length + " pieces of feedback", 20, y);
+      y += 7;
+      doc.text("• Reflective Accounts: " + summaryData.reflectiveAccounts.length + " accounts", 20, y);
+      y += 20;
+      
+      doc.setTextColor(0, 0, 150);
+      doc.text("This is a demonstration of the NMC-compliant document generation", 20, y);
+      y += 7;
+      doc.text("For a full NMC application pack, please create an account and enter your data", 20, y);
+      
+      doc.save("revalidation-preview.pdf");
+      
+      toast({
+        title: "Preview Generated",
+        description: "Demo PDF has been generated with sample data",
+        variant: "default",
+      });
+    } catch (error) {
+      console.error("Error generating preview PDF:", error);
+      toast({
+        title: "Error",
+        description: "Failed to generate preview PDF. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+  
   useEffect(() => {
     // For preview mode, use sample data
     if (previewMode) {
