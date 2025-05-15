@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet";
 import { useToast } from "@/hooks/use-toast";
+import jsPDF from 'jspdf';
 import RevalidationInfographic from "@/components/infographic/revalidation-infographic";
 import { 
   userProfileStorage, 
@@ -80,7 +81,14 @@ export default function SummaryInfographicPage() {
   // Define handlers for PDF generation in preview mode
   const handlePreviewDownload = async () => {
     try {
-      if (!summaryData) return;
+      if (!summaryData || !summaryData.userProfile) {
+        toast({
+          title: "Error",
+          description: "Cannot generate preview without sample data",
+          variant: "destructive",
+        });
+        return;
+      }
       
       // Create a manually structured export data object from our demo data
       const exportData = {
@@ -132,11 +140,11 @@ export default function SummaryInfographicPage() {
       doc.text("This is a preview of the PDF generation using sample data.", 20, y);
       y += 10;
       
-      doc.text("Nurse: " + summaryData.userProfile.name, 20, y);
+      doc.text("Nurse: " + (summaryData.userProfile?.name || "Sarah Johnson"), 20, y);
       y += 7;
-      doc.text("NMC PIN: " + summaryData.userProfile.registrationNumber, 20, y);
+      doc.text("NMC PIN: " + (summaryData.userProfile?.registrationNumber || "98X1234E"), 20, y);
       y += 7;
-      doc.text("Expiry Date: " + summaryData.userProfile.expiryDate, 20, y);
+      doc.text("Expiry Date: " + (summaryData.userProfile?.expiryDate || "2026-05-15"), 20, y);
       y += 15;
       
       doc.setFontSize(12);
@@ -453,7 +461,7 @@ export default function SummaryInfographicPage() {
             variant="default"
             size="lg"
             className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-revalpro-blue to-revalpro-teal text-white"
-            onClick={() => downloadRevalidationPack()}
+            onClick={previewMode ? handlePreviewDownload : () => downloadRevalidationPack()}
           >
             <Download className="h-5 w-5" />
             <span>Download Revalidation Summary</span>
@@ -464,7 +472,7 @@ export default function SummaryInfographicPage() {
           <Button
             variant="outline"
             className="flex items-center justify-center gap-2 h-auto py-4 border-2"
-            onClick={() => downloadRevalidationPack()}
+            onClick={previewMode ? handlePreviewDownload : () => downloadRevalidationPack()}
           >
             <Printer className="h-5 w-5 text-revalpro-blue" />
             <div className="text-left">
@@ -492,10 +500,7 @@ export default function SummaryInfographicPage() {
         <Button
           variant="outline"
           className="w-full flex items-center justify-center gap-2 h-auto py-4 mb-4 border-2"
-          onClick={() => {
-            // Handle form-only download (NMC format)
-            downloadRevalidationPack();
-          }}
+          onClick={previewMode ? handlePreviewDownload : () => downloadRevalidationPack()}
         >
           <FileText className="h-5 w-5 text-revalpro-teal" />
           <div className="text-left">
