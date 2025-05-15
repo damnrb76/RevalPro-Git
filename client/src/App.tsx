@@ -73,8 +73,8 @@ function AppRouter() {
           {/* Tester Feedback */}
           <Route path="/tester-feedback" component={TesterFeedback} />
           
-          {/* Infographic Routes */}
-          <ProtectedRoute path="/summary-infographic" component={SummaryInfographic} />
+          {/* Infographic Routes - Changed to regular Route for preview */}
+          <Route path="/summary-infographic" component={SummaryInfographic} />
           
           {/* Subscription Routes */}
           <ProtectedRoute path="/subscription" component={SubscriptionPage} />

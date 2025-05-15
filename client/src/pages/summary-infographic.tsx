@@ -81,28 +81,18 @@ export default function SummaryInfographicPage() {
       // Demo data for NMC document preview
       const demoUser = {
         id: 1,
-        username: "demouser",
         name: "Sarah Johnson",
         registrationNumber: "98X1234E",
-        email: "demo@example.com",
-        profilePicture: null,
-        jobTitle: "Registered Nurse",
-        specialties: ["Adult Nursing"],
         expiryDate: "2026-05-15",
-        created: new Date(),
-        password: "hashed_password",
-        stripeCustomerId: null,
-        stripeSubscriptionId: null,
-        subscriptionStatus: "free",
-        currentPlan: "free",
-        subscriptionPeriod: null,
-        subscriptionEndDate: null,
-        cancelAtPeriodEnd: false
+        jobTitle: "Registered Nurse",
+        email: "demo@example.com",
+        profileImage: null,
+        created: new Date()
       };
 
       const demoPracticeHours = [
-        { id: 1, userId: 1, workSetting: "Hospital", scope: "Adult Nursing", startDate: "2023-05-01", endDate: "2024-04-30", hours: 300, created: new Date() },
-        { id: 2, userId: 1, workSetting: "Community Care", scope: "Adult Nursing", startDate: "2023-06-15", endDate: "2024-03-15", hours: 200, created: new Date() }
+        { id: 1, workSetting: "Hospital", scope: "Adult Nursing", startDate: "2023-05-01", endDate: "2024-04-30", hours: 300, created: new Date(), notes: "Regular shifts on ward 5B" },
+        { id: 2, workSetting: "Community Care", scope: "Adult Nursing", startDate: "2023-06-15", endDate: "2024-03-15", hours: 200, created: new Date(), notes: "District nursing rotation" }
       ];
       
       const demoCpdRecords = [
@@ -167,7 +157,8 @@ export default function SummaryInfographicPage() {
     feedbackRecords,
     reflectiveAccounts,
     healthDeclarations,
-    confirmations
+    confirmations,
+    previewMode
   ]);
 
   return (
