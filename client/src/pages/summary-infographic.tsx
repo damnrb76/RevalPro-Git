@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet";
+import { useToast } from "@/hooks/use-toast";
 import RevalidationInfographic from "@/components/infographic/revalidation-infographic";
 import { 
   userProfileStorage, 
@@ -34,6 +35,7 @@ import { downloadRevalidationPack } from "@/lib/pdf-generator";
 export default function SummaryInfographicPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [summaryData, setSummaryData] = useState<RevalidationSummaryData | null>(null);
+  const { toast } = useToast();
   
   // Preview demo data for NMC-compliant document generation
   const [previewMode, setPreviewMode] = useState(true); // Set to true for demo purposes
@@ -96,30 +98,153 @@ export default function SummaryInfographicPage() {
       ];
       
       const demoCpdRecords = [
-        { id: 1, userId: 1, title: "Infection Control Workshop", date: "2024-01-15", hours: 10, participatory: true, description: "Workshop on latest infection control practices", created: new Date(), relevanceToCode: "Preserve Safety", attachment: null },
-        { id: 2, userId: 1, title: "Medication Management Course", date: "2024-02-20", hours: 8, participatory: true, description: "Online course on medication safety", created: new Date(), relevanceToCode: "Preserve Safety", attachment: null },
-        { id: 3, userId: 1, title: "Clinical Skills Update", date: "2024-03-10", hours: 12, participatory: true, description: "Hands-on clinical skills refresher", created: new Date(), relevanceToCode: "Practise Effectively", attachment: null },
-        { id: 4, userId: 1, title: "Professional Ethics Study", date: "2024-04-05", hours: 6, participatory: false, description: "Self-directed learning on ethical practice", created: new Date(), relevanceToCode: "Promote Professionalism", attachment: null }
+        { id: 1, title: "Infection Control Workshop", date: "2024-01-15", hours: 10, participatory: true, description: "Workshop on latest infection control practices", created: new Date(), relevanceToCode: "Preserve Safety", attachment: null },
+        { id: 2, title: "Medication Management Course", date: "2024-02-20", hours: 8, participatory: true, description: "Online course on medication safety", created: new Date(), relevanceToCode: "Preserve Safety", attachment: null },
+        { id: 3, title: "Clinical Skills Update", date: "2024-03-10", hours: 12, participatory: true, description: "Hands-on clinical skills refresher", created: new Date(), relevanceToCode: "Practise Effectively", attachment: null },
+        { id: 4, title: "Professional Ethics Study", date: "2024-04-05", hours: 6, participatory: false, description: "Self-directed learning on ethical practice", created: new Date(), relevanceToCode: "Promote Professionalism", attachment: null }
       ];
+      
+      const demoFeedbackRecords = [
+        { id: 1, date: "2024-01-10", source: "Patient", content: "Excellent care provided during my stay", reflection: "Positive feedback on communication skills", created: new Date(), attachment: null },
+        { id: 2, date: "2024-02-15", source: "Colleague", content: "Great teamwork during emergency situation", reflection: "Showed good crisis management", created: new Date(), attachment: null },
+        { id: 3, date: "2024-03-20", source: "Manager", content: "Demonstrated leadership in team meetings", reflection: "Developing leadership capabilities", created: new Date(), attachment: null },
+        { id: 4, date: "2024-04-05", source: "Student", content: "Excellent mentorship and teaching", reflection: "Effective teaching methods", created: new Date(), attachment: null },
+        { id: 5, date: "2024-04-25", source: "Patient Family", content: "Compassionate care provided to my mother", reflection: "Importance of family-centered care", created: new Date(), attachment: null }
+      ];
+      
+      const demoReflectiveAccounts = [
+        { 
+          id: 1, 
+          title: "Managing Complex Care", 
+          date: "2024-01-20", 
+          description: "Reflection on caring for patient with multiple conditions", 
+          reflectiveModel: "Gibbs", 
+          experience: "Coordinated care for elderly patient with multiple comorbidities", 
+          natureOfExperience: "Clinical", 
+          whatLearned: "Importance of interdisciplinary approach", 
+          howChanged: "Now regularly consult with specialist teams", 
+          created: new Date(),
+          feelings: "Initially overwhelmed by complexity",
+          evaluation: "Successful coordination of multiple services",
+          analysis: "Needed better communication channels",
+          conclusion: "Teamwork essential for complex cases",
+          actionPlan: "Develop care coordination checklist",
+          aesthetic: null,
+          personal: null,
+          ethics: null,
+          empirics: null,
+          reflexivity: null,
+          codeRelation: "Prioritise People" 
+        },
+        { 
+          id: 2, 
+          title: "Communication Challenge", 
+          date: "2024-02-25", 
+          description: "Reflection on difficult conversation with family", 
+          reflectiveModel: "Johns", 
+          experience: "Had to explain poor prognosis to patient's family", 
+          natureOfExperience: "Communication", 
+          whatLearned: "Techniques for sensitive discussions", 
+          howChanged: "Improved approach to difficult conversations", 
+          created: new Date(),
+          feelings: null,
+          evaluation: null,
+          analysis: null,
+          conclusion: null,
+          actionPlan: null,
+          aesthetic: "Created calm environment for discussion",
+          personal: "Emotionally challenging but rewarding",
+          ethics: "Honesty while maintaining hope",
+          empirics: "Applied evidence-based communication methods",
+          reflexivity: "Recognized own discomfort with difficult news",
+          codeRelation: "Practise Effectively" 
+        },
+        { 
+          id: 3, 
+          title: "Medication Error Prevention", 
+          date: "2024-03-15", 
+          description: "Reflection on near-miss incident", 
+          reflectiveModel: "Driscoll", 
+          experience: "Identified potential medication error before administration", 
+          natureOfExperience: "Safety", 
+          whatLearned: "Importance of double-checking", 
+          howChanged: "Implemented personal safety checklist", 
+          created: new Date(),
+          feelings: "Concerned but relieved error was caught",
+          evaluation: "Prevented potential patient harm",
+          analysis: "System vulnerability identified",
+          conclusion: "Multiple verification steps needed",
+          actionPlan: "Share experience with team for learning",
+          aesthetic: null,
+          personal: null,
+          ethics: null,
+          empirics: null,
+          reflexivity: null,
+          codeRelation: "Preserve Safety" 
+        },
+        { 
+          id: 4, 
+          title: "Patient Advocacy", 
+          date: "2024-04-01", 
+          description: "Reflection on advocating for patient needs", 
+          reflectiveModel: "Gibbs", 
+          experience: "Advocated for patient's cultural needs during care", 
+          natureOfExperience: "Advocacy", 
+          whatLearned: "Cultural competence in care planning", 
+          howChanged: "Now consider cultural factors in all assessments", 
+          created: new Date(),
+          feelings: "Proud to represent patient's voice",
+          evaluation: "Successfully adapted care plan",
+          analysis: "Cultural barriers in standard procedures",
+          conclusion: "Personalization improves outcomes",
+          actionPlan: "Develop cultural competence resources",
+          aesthetic: null,
+          personal: null,
+          ethics: null,
+          empirics: null,
+          reflexivity: null,
+          codeRelation: "Prioritise People" 
+        },
+        { 
+          id: 5, 
+          title: "Team Conflict Resolution", 
+          date: "2024-04-20", 
+          description: "Reflection on resolving team disagreement", 
+          reflectiveModel: "Kolb", 
+          experience: "Mediated disagreement between healthcare professionals", 
+          natureOfExperience: "Teamwork", 
+          whatLearned: "Conflict resolution strategies", 
+          howChanged: "Better equipped to handle team dynamics", 
+          created: new Date(),
+          feelings: "Initially uncomfortable with confrontation",
+          evaluation: "Successfully restored team harmony",
+          analysis: "Communication breakdown was root cause",
+          conclusion: "Mediation skills are vital in healthcare",
+          actionPlan: "Practice active listening techniques",
+          aesthetic: null,
+          personal: null,
+          ethics: null,
+          empirics: null,
+          reflexivity: null,
+          codeRelation: "Promote Professionalism" 
+        }
+      ];
+      
+      // Add a preview notice
+      if (previewMode) {
+        toast({
+          title: "Preview Mode",
+          description: "Showing demo data for NMC document template preview",
+          variant: "default",
+        });
+      }
       
       setSummaryData({
         userProfile: demoUser,
         practiceHours: demoPracticeHours,
         cpdRecords: demoCpdRecords,
-        feedbackRecords: [
-          { id: 1, userId: 1, date: "2024-01-10", source: "Patient", content: "Excellent care provided during my stay", reflection: "Positive feedback on communication skills", created: new Date(), attachment: null },
-          { id: 2, userId: 1, date: "2024-02-15", source: "Colleague", content: "Great teamwork during emergency situation", reflection: "Showed good crisis management", created: new Date(), attachment: null },
-          { id: 3, userId: 1, date: "2024-03-20", source: "Manager", content: "Demonstrated leadership in team meetings", reflection: "Developing leadership capabilities", created: new Date(), attachment: null },
-          { id: 4, userId: 1, date: "2024-04-05", source: "Student", content: "Excellent mentorship and teaching", reflection: "Effective teaching methods", created: new Date(), attachment: null },
-          { id: 5, userId: 1, date: "2024-04-25", source: "Patient Family", content: "Compassionate care provided to my mother", reflection: "Importance of family-centered care", created: new Date(), attachment: null }
-        ],
-        reflectiveAccounts: [
-          { id: 1, userId: 1, title: "Managing Complex Care", date: "2024-01-20", description: "Reflection on caring for patient with multiple conditions", reflectiveModel: "Gibbs", experience: "Coordinated care for elderly patient with multiple comorbidities", natureOfExperience: "Clinical", whatLearned: "Importance of interdisciplinary approach", howChanged: "Now regularly consult with specialist teams", created: new Date(), attachment: null, codeRelation: "Prioritise People" },
-          { id: 2, userId: 1, title: "Communication Challenge", date: "2024-02-25", description: "Reflection on difficult conversation with family", reflectiveModel: "Johns", experience: "Had to explain poor prognosis to patient's family", natureOfExperience: "Communication", whatLearned: "Techniques for sensitive discussions", howChanged: "Improved approach to difficult conversations", created: new Date(), attachment: null, codeRelation: "Practise Effectively" },
-          { id: 3, userId: 1, title: "Medication Error Prevention", date: "2024-03-15", description: "Reflection on near-miss incident", reflectiveModel: "Driscoll", experience: "Identified potential medication error before administration", natureOfExperience: "Safety", whatLearned: "Importance of double-checking", howChanged: "Implemented personal safety checklist", created: new Date(), attachment: null, codeRelation: "Preserve Safety" },
-          { id: 4, userId: 1, title: "Patient Advocacy", date: "2024-04-01", description: "Reflection on advocating for patient needs", reflectiveModel: "Gibbs", experience: "Advocated for patient's cultural needs during care", natureOfExperience: "Advocacy", whatLearned: "Cultural competence in care planning", howChanged: "Now consider cultural factors in all assessments", created: new Date(), attachment: null, codeRelation: "Prioritise People" },
-          { id: 5, userId: 1, title: "Team Conflict Resolution", date: "2024-04-20", description: "Reflection on resolving team disagreement", reflectiveModel: "Kolb", experience: "Mediated disagreement between healthcare professionals", natureOfExperience: "Teamwork", whatLearned: "Conflict resolution strategies", howChanged: "Better equipped to handle team dynamics", created: new Date(), attachment: null, codeRelation: "Promote Professionalism" }
-        ],
+        feedbackRecords: demoFeedbackRecords,
+        reflectiveAccounts: demoReflectiveAccounts,
         hasHealthDeclaration: true,
         hasConfirmation: true,
         lastUpdated: new Date()
@@ -158,7 +283,8 @@ export default function SummaryInfographicPage() {
     reflectiveAccounts,
     healthDeclarations,
     confirmations,
-    previewMode
+    previewMode,
+    toast
   ]);
 
   return (
@@ -170,6 +296,15 @@ export default function SummaryInfographicPage() {
           content="Generate and download a visual summary of your NMC revalidation progress." 
         />
       </Helmet>
+      
+      {previewMode && (
+        <Alert className="mb-4 bg-blue-50 border-blue-200">
+          <AlertTitle className="text-blue-700">Preview Mode</AlertTitle>
+          <AlertDescription>
+            You are viewing sample data to preview the PDF generation feature. The "Download" buttons will generate NMC-compliant documentation formats.
+          </AlertDescription>
+        </Alert>
+      )}
 
       <div className="mb-6">
         <Link href="/" className="inline-flex items-center text-revalpro-blue hover:underline mb-2">
