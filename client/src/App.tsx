@@ -5,7 +5,7 @@ import { ThemeProvider } from "@/components/ui/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/hooks/use-auth";
-import { MenuLayoutProvider } from "@/hooks/use-menu-layout";
+import { MenuLayoutProvider, useMenuLayout } from "@/hooks/use-menu-layout";
 import { ProtectedRoute } from "@/lib/protected-route";
 
 import NotFound from "@/pages/not-found";
@@ -38,13 +38,15 @@ import logo from "@assets/Leonardo_Phoenix_10_design_a_vibrant_and_professional_
 
 function AppRouter() {
   const [location] = useLocation();
+  const { layout } = useMenuLayout();
+  const isVerticalMenu = layout === "vertical";
   const showTabs = location !== '/auth' && location !== '/landing';
   const isAuthPage = location === '/auth';
   const isLandingPage = location === '/landing';
   const showAppHeader = !isLandingPage && location !== '/';
   
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className={`min-h-screen flex flex-col ${isVerticalMenu && showTabs ? 'pl-64' : ''}`}>
       {showAppHeader && <ProminentHeader />}
       {showTabs && <NavigationTabs currentPath={location} />}
       <div className={`flex-grow ${!isAuthPage && !isLandingPage ? 'pt-4' : ''}`}>
@@ -80,7 +82,7 @@ function AppRouter() {
           <Route component={NotFound} />
         </Switch>
       </div>
-      {!isLandingPage && <Footer logo={logo} />}
+      {!isLandingPage && <Footer logo={logo} className={isVerticalMenu && showTabs ? 'ml-64' : ''} />}
     </div>
   );
 }
@@ -89,13 +91,15 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <ThemeProvider defaultTheme="light" storageKey="revalpro-theme">
-          <TooltipProvider>
-            <AppRouter />
-            <WelcomePopupWrapper />
-            <Toaster />
-          </TooltipProvider>
-        </ThemeProvider>
+        <MenuLayoutProvider>
+          <ThemeProvider defaultTheme="light" storageKey="revalpro-theme">
+            <TooltipProvider>
+              <AppRouter />
+              <WelcomePopupWrapper />
+              <Toaster />
+            </TooltipProvider>
+          </ThemeProvider>
+        </MenuLayoutProvider>
       </AuthProvider>
     </QueryClientProvider>
   );

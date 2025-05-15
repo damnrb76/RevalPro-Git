@@ -1,12 +1,14 @@
 import { Link } from "wouter";
+import { cn } from "@/lib/utils";
 
 type FooterProps = {
   logo: string;
+  className?: string;
 };
 
-export default function Footer({ logo }: FooterProps) {
+export default function Footer({ logo, className }: FooterProps) {
   return (
-    <footer className="bg-gradient-to-r from-revalpro-dark-blue to-revalpro-blue text-white mt-12 py-8">
+    <footer className={cn("bg-gradient-to-r from-revalpro-dark-blue to-revalpro-blue text-white mt-12 py-8", className)}>
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
