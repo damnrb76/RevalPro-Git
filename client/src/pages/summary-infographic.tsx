@@ -79,105 +79,176 @@ export default function SummaryInfographicPage() {
 
   // Prepare summary data once all queries are resolved
   // Define handlers for PDF generation in preview mode
-  const handlePreviewDownload = async () => {
+  // Generate a visual infographic preview
+  const generateInfographicPreview = () => {
     try {
-      if (!summaryData || !summaryData.userProfile) {
-        toast({
-          title: "Error",
-          description: "Cannot generate preview without sample data",
-          variant: "destructive",
-        });
-        return;
-      }
+      // Create a visual infographic PDF
+      const doc = new jsPDF();
       
-      // Create a manually structured export data object from our demo data
-      const exportData = {
-        userProfile: [summaryData.userProfile],
-        practiceHours: summaryData.practiceHours,
-        cpdRecords: summaryData.cpdRecords,
-        feedbackRecords: summaryData.feedbackRecords,
-        reflectiveAccounts: summaryData.reflectiveAccounts,
-        reflectiveDiscussion: [{
-          id: 1,
-          date: new Date().toISOString().split('T')[0],
-          discussionWith: "Jane Smith, Senior Nurse",
-          registrationNumber: "92Y4567Z",
-          notes: "Discussed reflective accounts and professional development",
-          completed: true,
-          created: new Date()
-        }],
-        healthDeclaration: [{
-          id: 1,
-          date: new Date().toISOString().split('T')[0],
-          completed: summaryData.hasHealthDeclaration,
-          created: new Date()
-        }],
-        confirmation: [{
-          id: 1,
-          date: new Date().toISOString().split('T')[0],
-          confirmerName: "Dr. Robert Williams",
-          confirmerEmail: "r.williams@nhs.uk",
-          confirmerProfession: "Consultant",
-          relationshipToYou: "Clinical supervisor",
-          confirmerStatement: "I confirm that the nurse has met the requirements for revalidation",
-          confirmerOrganization: "NHS Foundation Trust",
-          completed: summaryData.hasConfirmation,
-          created: new Date()
-        }]
+      // Add RevalPro header
+      doc.setFontSize(22);
+      doc.setTextColor(41, 98, 255); // RevalPro blue
+      doc.setFont('helvetica', 'bold');
+      doc.text("RevalPro", 105, 20, { align: 'center' });
+      
+      doc.setFontSize(16);
+      doc.setTextColor(0, 0, 0);
+      doc.text("Revalidation Progress Infographic", 105, 30, { align: 'center' });
+      
+      // Add nurse details
+      doc.setFontSize(12);
+      doc.text("Sarah Johnson (PIN: 98X1234E)", 105, 40, { align: 'center' });
+      doc.text("Revalidation Due: 15 May 2026", 105, 48, { align: 'center' });
+      
+      // Add progress visualization
+      // Create heading
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(14);
+      doc.text("Revalidation Requirements Progress", 20, 65);
+      
+      // Progress bars
+      const drawProgressBar = (y, label, progress, color) => {
+        doc.setDrawColor(220, 220, 220);
+        doc.setFillColor(220, 220, 220);
+        doc.roundedRect(70, y, 100, 10, 3, 3, 'F');
+        
+        doc.setFillColor(...color);
+        doc.setDrawColor(...color);
+        doc.roundedRect(70, y, progress, 10, 3, 3, 'F');
+        
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(10);
+        doc.setTextColor(0, 0, 0);
+        doc.text(label, 65, y + 7, { align: 'right' });
+        
+        doc.setFont('helvetica', 'bold');
+        doc.text(`${progress}%`, 175, y + 7);
       };
       
-      // Use the export data directly to generate PDFs
-      const doc = new jsPDF();
-      let y = 20;
+      drawProgressBar(75, "Practice Hours:", 100, [41, 98, 255]); // Blue
+      drawProgressBar(95, "CPD Hours:", 100, [0, 184, 148]); // Teal
+      drawProgressBar(115, "Feedback:", 100, [238, 82, 83]); // Red
+      drawProgressBar(135, "Reflections:", 100, [254, 164, 127]); // Orange
+      drawProgressBar(155, "Health Declaration:", 100, [46, 134, 193]); // Blue
+      drawProgressBar(175, "Confirmation:", 100, [155, 89, 182]); // Purple
       
-      // Header
+      // Add summary section
+      doc.setFont('helvetica', 'bold');
       doc.setFontSize(14);
-      doc.setTextColor(0, 0, 0);
-      doc.text("NMC Revalidation Documentation Pack (DEMO)", 20, y);
-      y += 10;
+      doc.text("Summary of Achievements", 20, 200);
       
+      doc.setFont('helvetica', 'normal');
       doc.setFontSize(10);
-      doc.text("This is a preview of the PDF generation using sample data.", 20, y);
-      y += 10;
+      doc.text("• Practice Hours: 500 hours completed (minimum: 450)", 25, 215);
+      doc.text("• CPD Activities: 36 hours completed (minimum: 35)", 25, 225);
+      doc.text("• Participatory Learning: 30 hours completed (minimum: 20)", 25, 235);
+      doc.text("• Feedback Records: 5 pieces collected (minimum: 5)", 25, 245);
+      doc.text("• Reflective Accounts: 5 accounts written (minimum: 5)", 25, 255);
+      doc.text("• Discussion: Completed with Jane Smith, Senior Nurse", 25, 265);
+      doc.text("• Health Declaration: Completed on 10 May 2025", 25, 275);
+      doc.text("• Confirmation: Confirmed by Dr. Robert Williams", 25, 285);
       
-      doc.text("Nurse: " + (summaryData.userProfile?.name || "Sarah Johnson"), 20, y);
-      y += 7;
-      doc.text("NMC PIN: " + (summaryData.userProfile?.registrationNumber || "98X1234E"), 20, y);
-      y += 7;
-      doc.text("Expiry Date: " + (summaryData.userProfile?.expiryDate || "2026-05-15"), 20, y);
-      y += 15;
+      // Add footer with preview notice
+      doc.setFont('helvetica', 'italic');
+      doc.setFontSize(9);
+      doc.setTextColor(150, 150, 150);
+      doc.text("This is a preview infographic generated by RevalPro", 105, 295, { align: 'center' });
       
-      doc.setFontSize(12);
-      doc.text("Sample Data Overview:", 20, y);
-      y += 10;
-      
-      doc.setFontSize(10);
-      doc.text("• Practice Hours: " + summaryData.practiceHours.reduce((sum, h) => sum + h.hours, 0) + " hours", 20, y);
-      y += 7;
-      doc.text("• CPD Activities: " + summaryData.cpdRecords.length + " records", 20, y);
-      y += 7;
-      doc.text("• Feedback Records: " + summaryData.feedbackRecords.length + " pieces of feedback", 20, y);
-      y += 7;
-      doc.text("• Reflective Accounts: " + summaryData.reflectiveAccounts.length + " accounts", 20, y);
-      y += 20;
-      
-      doc.setTextColor(0, 0, 150);
-      doc.text("This is a demonstration of the NMC-compliant document generation", 20, y);
-      y += 7;
-      doc.text("For a full NMC application pack, please create an account and enter your data", 20, y);
-      
-      doc.save("revalidation-preview.pdf");
+      // Save the PDF
+      doc.save("revalidation-infographic.pdf");
       
       toast({
-        title: "Preview Generated",
-        description: "Demo PDF has been generated with sample data",
+        title: "Preview Infographic Generated",
+        description: "Sample visual summary has been downloaded",
         variant: "default",
       });
     } catch (error) {
-      console.error("Error generating preview PDF:", error);
+      console.error("Error generating infographic:", error);
       toast({
         title: "Error",
-        description: "Failed to generate preview PDF. Please try again.",
+        description: "Failed to generate infographic",
+        variant: "destructive",
+      });
+    }
+  };
+  
+  // A simpler preview PDF generator to avoid errors
+  const handlePreviewDownload = () => {
+    try {
+      // Create a basic preview PDF
+      const doc = new jsPDF();
+      
+      // Add NMC-styled header
+      doc.setFontSize(16);
+      doc.setTextColor(0, 84, 164); // NMC Blue
+      doc.setFont('helvetica', 'bold');
+      doc.text("Nursing & Midwifery Council", 20, 20);
+      
+      // Add horizontal line
+      doc.setDrawColor(0, 84, 164);
+      doc.setLineWidth(0.8);
+      doc.line(20, 25, 190, 25);
+      
+      // Add title
+      doc.setFontSize(14);
+      doc.text("Revalidation Documentation (Preview)", 20, 35);
+      
+      // Add nurse details section
+      doc.setFontSize(12);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(0, 0, 0);
+      doc.text("Nurse Details", 20, 50);
+      
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(10);
+      doc.text("Name: Sarah Johnson", 25, 60);
+      doc.text("NMC PIN: 98X1234E", 25, 68);
+      doc.text("Expiry Date: 15 May 2026", 25, 76);
+      
+      // Add practice hours section
+      doc.setFontSize(12);
+      doc.setFont('helvetica', 'bold');
+      doc.text("Practice Hours", 20, 90);
+      
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(10);
+      doc.text("Total Hours: 500 (Requirement: 450 hours)", 25, 100);
+      doc.text("• Hospital: 300 hours (Adult Nursing)", 25, 108);
+      doc.text("• Community Care: 200 hours (Adult Nursing)", 25, 116);
+      
+      // Add CPD section
+      doc.setFontSize(12);
+      doc.setFont('helvetica', 'bold');
+      doc.text("Continuing Professional Development (CPD)", 20, 130);
+      
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(10);
+      doc.text("Total CPD Hours: 36 (Requirement: 35 hours)", 25, 140);
+      doc.text("Participatory Hours: 30 (Requirement: 20 hours)", 25, 148);
+      doc.text("• Infection Control Workshop (10 hours)", 25, 156);
+      doc.text("• Medication Management Course (8 hours)", 25, 164);
+      doc.text("• Clinical Skills Update (12 hours)", 25, 172);
+      doc.text("• Professional Ethics Study (6 hours)", 25, 180);
+      
+      // Add footer with preview notice
+      doc.setFont('helvetica', 'italic');
+      doc.setFontSize(9);
+      doc.setTextColor(150, 150, 150);
+      doc.text("This is a preview document generated by RevalPro", 105, 280, { align: 'center' });
+      
+      // Save the PDF
+      doc.save("revalidation-preview.pdf");
+      
+      toast({
+        title: "Preview PDF Generated",
+        description: "Sample NMC-styled document has been downloaded",
+        variant: "default",
+      });
+    } catch (error) {
+      console.error("Error generating preview:", error);
+      toast({
+        title: "Error",
+        description: "Failed to generate preview PDF",
         variant: "destructive",
       });
     }
@@ -484,7 +555,7 @@ export default function SummaryInfographicPage() {
           <Button 
             variant="outline" 
             className="flex items-center justify-center gap-2 h-auto py-4 border-2"
-            onClick={() => {
+            onClick={previewMode ? generateInfographicPreview : () => {
               // Handle infographic download
               window.print();
             }}
