@@ -1,10 +1,90 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { ArrowRight, Check, Shield, Clock, Award, BookOpen, Users, MessageSquare, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import logo from "@assets/Leonardo_Phoenix_10_design_a_vibrant_and_professional_logo_for_3.jpg";
+
+// Import app screenshots for the carousel
+import practiceHoursImg from "@assets/Screenshot_20250512_165421_Replit.jpg";
+import cpdRecordsImg from "@assets/Screenshot_20250512_182025_Replit.jpg";
+import reflectionImg from "@assets/Screenshot_20250512_213835_Replit.jpg";
+import dashboardImg from "@assets/Screenshot_20250516_003058_Samsung Internet.jpg";
+
+function DynamicScreenshotCarousel() {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  
+  const screenshots = [
+    {
+      image: dashboardImg,
+      title: "Dashboard Overview",
+      description: "Track your revalidation progress with visual indicators"
+    },
+    {
+      image: practiceHoursImg,
+      title: "Practice Hours Tracker",
+      description: "Record and categorize your nursing practice hours"
+    },
+    {
+      image: cpdRecordsImg,
+      title: "CPD Activities",
+      description: "Log your continuing professional development"
+    },
+    {
+      image: reflectionImg,
+      title: "Reflective Accounts",
+      description: "Create reflections using popular nursing models"
+    }
+  ];
+  
+  useEffect(() => {
+    // Auto-rotate through screenshots every 4 seconds
+    const interval = setInterval(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % screenshots.length);
+    }, 4000);
+    
+    return () => clearInterval(interval);
+  }, []);
+  
+  return (
+    <div className="relative rounded-2xl shadow-2xl overflow-hidden border-4 border-white h-[350px] md:h-[450px]">
+      {screenshots.map((screenshot, index) => (
+        <motion.div
+          key={index}
+          className="absolute inset-0"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: currentIndex === index ? 1 : 0 }}
+          transition={{ duration: 0.7 }}
+        >
+          <img 
+            src={screenshot.image} 
+            alt={screenshot.title} 
+            className="w-full h-full object-cover object-top"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end">
+            <div className="p-6 text-white w-full">
+              <div className="flex justify-between items-center">
+                <div>
+                  <h3 className="font-bold text-xl">{screenshot.title}</h3>
+                  <p className="font-medium text-sm text-gray-200">{screenshot.description}</p>
+                </div>
+                <div className="flex gap-1.5">
+                  {screenshots.map((_, i) => (
+                    <div 
+                      key={i}
+                      className={`w-2 h-2 rounded-full ${currentIndex === i ? 'bg-white' : 'bg-white/40'}`}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      ))}
+    </div>
+  );
+}
 
 export default function LandingPage() {
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
@@ -74,18 +154,7 @@ export default function LandingPage() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <div className="relative rounded-2xl shadow-2xl overflow-hidden border-4 border-white">
-              <img 
-                src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" 
-                alt="RevalPro Dashboard" 
-                className="w-full h-auto"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end">
-                <div className="p-6 text-white">
-                  <p className="font-medium">Intuitive dashboard to track your revalidation progress</p>
-                </div>
-              </div>
-            </div>
+            <DynamicScreenshotCarousel />
           </motion.div>
         </div>
       </header>
