@@ -3,7 +3,8 @@ import { getFallbackResponse, getFallbackReflectionTemplate, getFallbackCpdSugge
 
 // Initialize OpenAI with the API key from environment variables
 // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
-const apiKey = import.meta.env.OPENAI_API_KEY;
+// Try both environment variable formats since we're in a browser context
+const apiKey = import.meta.env.VITE_OPENAI_API_KEY || import.meta.env.OPENAI_API_KEY;
 
 // Create OpenAI instance with proper error handling
 let openai: OpenAI | null = null;
