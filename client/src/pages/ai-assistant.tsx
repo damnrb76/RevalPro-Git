@@ -34,7 +34,7 @@ export default function AiAssistantPage() {
             <CardHeader>
               <CardTitle className="text-revalpro-dark-blue">About This Assistant</CardTitle>
               <CardDescription>
-                Powered by Gemini AI, built for NHS professionals
+                Powered by OpenAI GPT-4o, built for NHS professionals
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">

@@ -9,7 +9,7 @@ import {
   getRevalidationAdvice, 
   generateReflectiveTemplate,
   suggestCpdActivities
-} from "@/lib/gemini-service";
+} from "@/lib/openai-service";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
