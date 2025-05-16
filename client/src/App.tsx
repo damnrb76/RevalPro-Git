@@ -28,6 +28,7 @@ import NmcResources from "@/pages/nmc-resources";
 import NmcServiceStatus from "@/pages/nmc-service-status";
 import TesterFeedback from "@/pages/tester-feedback";
 import SummaryInfographic from "@/pages/summary-infographic";
+import SneakPeekPage from "@/pages/sneak-peek";
 import Footer from "@/components/layout/footer";
 import NavigationTabs from "@/components/layout/navigation-tabs";
 import ProminentHeader from "@/components/layout/prominent-header";
@@ -75,6 +76,9 @@ function AppRouter() {
           
           {/* Infographic Routes - Changed to regular Route for preview */}
           <Route path="/summary-infographic" component={SummaryInfographic} />
+          
+          {/* Sneak Peek Page */}
+          <Route path="/sneak-peek" component={SneakPeekPage} />
           
           {/* Subscription Routes */}
           <ProtectedRoute path="/subscription" component={SubscriptionPage} />

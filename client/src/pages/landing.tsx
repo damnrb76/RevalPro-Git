@@ -138,13 +138,14 @@ export default function LandingPage() {
                   Get Started Free <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
-              <Button 
-                variant="outline" 
-                className="border-gray-300 text-gray-700 hover:bg-gray-100 w-full sm:w-auto"
-                onClick={() => setIsGalleryOpen(true)}
-              >
-                Take a Sneak Peek
-              </Button>
+              <Link href="/sneak-peek">
+                <Button 
+                  variant="outline" 
+                  className="border-gray-300 text-gray-700 hover:bg-gray-100 w-full sm:w-auto"
+                >
+                  Take a Sneak Peek
+                </Button>
+              </Link>
             </div>
           </motion.div>
           
