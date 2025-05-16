@@ -79,6 +79,108 @@ export default function SummaryInfographicPage() {
 
   // Prepare summary data once all queries are resolved
   // Define handlers for PDF generation in preview mode
+  // Generate a JSON preview file with sample data
+  const handleJsonPreviewDownload = () => {
+    try {
+      // Create sample data in JSON format
+      const sampleData = {
+        userProfile: {
+          id: 1,
+          name: "Sarah Johnson",
+          registrationNumber: "98X1234E",
+          expiryDate: "2026-05-15",
+          specialty: "Adult Nursing",
+          jobTitle: "Senior Staff Nurse",
+          email: "sjohnson@example.com",
+          created: new Date().toISOString()
+        },
+        practiceHours: [
+          {
+            id: 1,
+            startDate: "2023-05-15",
+            endDate: "2024-05-15",
+            hours: 300,
+            setting: "Hospital",
+            scope: "Adult Nursing",
+            notes: "Full-time hospital work on respiratory ward",
+            created: new Date().toISOString()
+          },
+          {
+            id: 2,
+            startDate: "2024-05-16",
+            endDate: "2025-05-15",
+            hours: 200,
+            setting: "Community Care",
+            scope: "Adult Nursing",
+            notes: "Part-time community nursing",
+            created: new Date().toISOString()
+          }
+        ],
+        cpdRecords: [
+          {
+            id: 1,
+            title: "Infection Control Workshop",
+            date: "2023-08-12",
+            hours: 10,
+            participatory: true,
+            description: "Advanced infection control techniques and protocols",
+            learningOutcomes: "Improved knowledge of hospital infection control procedures",
+            reflection: "Will implement new handwashing techniques on ward",
+            created: new Date().toISOString()
+          },
+          {
+            id: 2,
+            title: "Medication Management Course",
+            date: "2024-02-22",
+            hours: 8,
+            participatory: true,
+            description: "Safe medication administration and management",
+            learningOutcomes: "Better understanding of medication side effects and interactions",
+            reflection: "Plan to create medication safety reference guide for team",
+            created: new Date().toISOString()
+          }
+        ],
+        reflectiveAccounts: [
+          {
+            id: 1,
+            title: "Managing a Critical Situation",
+            date: "2024-01-15",
+            codeSection: "PRIORITISE_PEOPLE",
+            experience: "Managed emergency situation with patient in respiratory distress",
+            reflectiveModel: "GIBBS",
+            reflection: "Responded quickly but identified areas for improvement in team communication",
+            learningOutcome: "Will practice clearer communication techniques for emergency situations",
+            created: new Date().toISOString()
+          }
+        ]
+      };
+
+      // Convert to JSON and download
+      const blob = new Blob([JSON.stringify(sampleData, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "revalidation-data-sample.json";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      toast({
+        title: "Sample JSON Generated",
+        description: "Sample data file has been downloaded",
+        variant: "default",
+      });
+    } catch (error) {
+      console.error("Error generating JSON:", error);
+      toast({
+        title: "Error",
+        description: "Failed to generate sample JSON",
+        variant: "destructive",
+      });
+    }
+  };
+
   // Generate a visual infographic preview
   const generateInfographicPreview = () => {
     try {
@@ -107,13 +209,13 @@ export default function SummaryInfographicPage() {
       doc.text("Revalidation Requirements Progress", 20, 65);
       
       // Progress bars
-      const drawProgressBar = (y, label, progress, color) => {
+      const drawProgressBar = (y: number, label: string, progress: number, color: [number, number, number]) => {
         doc.setDrawColor(220, 220, 220);
         doc.setFillColor(220, 220, 220);
         doc.roundedRect(70, y, 100, 10, 3, 3, 'F');
         
-        doc.setFillColor(...color);
-        doc.setDrawColor(...color);
+        doc.setFillColor(color[0], color[1], color[2]);
+        doc.setDrawColor(color[0], color[1], color[2]);
         doc.roundedRect(70, y, progress, 10, 3, 3, 'F');
         
         doc.setFont('helvetica', 'normal');
@@ -583,7 +685,7 @@ export default function SummaryInfographicPage() {
         <Button
           variant="secondary"
           className="w-full flex items-center justify-center gap-2 h-auto py-4 bg-gray-100"
-          onClick={async () => {
+          onClick={previewMode ? handleJsonPreviewDownload : async () => {
             // Export raw data as JSON
             const data = await exportAllData();
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
