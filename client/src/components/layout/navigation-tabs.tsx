@@ -152,8 +152,8 @@ export default function NavigationTabs({ currentPath }: NavigationTabsProps) {
   if (isVertical) {
     return (
       <div className="flex h-screen">
-        <nav className="bg-white shadow-md w-64 flex-shrink-0 h-full fixed top-0 pt-16 z-10">
-          <div className="container h-full overflow-y-auto hide-scrollbar">
+        <nav className="bg-white shadow-md w-64 flex-shrink-0 h-full fixed left-0 top-0 pt-16 z-10">
+          <div className="h-full overflow-y-auto hide-scrollbar">
             <div className="flex justify-end py-2 px-4">
               <Tooltip>
                 <TooltipTrigger asChild>
