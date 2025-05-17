@@ -53,9 +53,13 @@ function AppRouter() {
       {showTabs && <NavigationTabs currentPath={location} />}
       <div className={`flex-grow ${!isAuthPage && !isLandingPage ? 'pt-4' : ''}`}>
         <Switch>
+          {/* Coming Soon Page - For main domain */}
+          <Route path="/" component={ComingSoonPage} />
+          
+          {/* Original Routes - Still accessible on the Replit domain */}
           <Route path="/landing" component={LandingPage} />
           <Route path="/auth" component={AuthPage} />
-          <Route path="/" component={LandingPage} />
+          <Route path="/original" component={LandingPage} />
           <ProtectedRoute path="/dashboard" component={Home} />
           <ProtectedRoute path="/practice-hours" component={PracticeHours} />
           <ProtectedRoute path="/cpd" component={CPD} />
