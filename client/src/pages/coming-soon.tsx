@@ -2,37 +2,6 @@ import { Helmet } from "react-helmet";
 import { useState, useEffect } from "react";
 
 export default function ComingSoonPage() {
-  // Countdown timer state
-  const [countdown, setCountdown] = useState({
-    days: 0,
-    hours: 0,
-    minutes: 0,
-    seconds: 0
-  });
-  
-  // Set launch date to 30 days from now
-  useEffect(() => {
-    const launchDate = new Date();
-    launchDate.setDate(launchDate.getDate() + 30);
-    
-    const timer = setInterval(() => {
-      const now = new Date().getTime();
-      const distance = launchDate.getTime() - now;
-      
-      setCountdown({
-        days: Math.floor(distance / (1000 * 60 * 60 * 24)),
-        hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
-        minutes: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
-        seconds: Math.floor((distance % (1000 * 60)) / 1000)
-      });
-      
-      if (distance < 0) {
-        clearInterval(timer);
-      }
-    }, 1000);
-    
-    return () => clearInterval(timer);
-  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex flex-col items-center justify-center p-4">
@@ -59,32 +28,15 @@ export default function ComingSoonPage() {
         Stay tuned!
       </p>
       
-      {/* Countdown Timer */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 mb-12">
-        <div className="flex flex-col items-center">
-          <div className="text-3xl md:text-5xl font-bold text-blue-600 mb-1">
-            {countdown.days}
-          </div>
-          <div className="text-sm uppercase text-gray-500">Days</div>
-        </div>
-        <div className="flex flex-col items-center">
-          <div className="text-3xl md:text-5xl font-bold text-blue-600 mb-1">
-            {countdown.hours}
-          </div>
-          <div className="text-sm uppercase text-gray-500">Hours</div>
-        </div>
-        <div className="flex flex-col items-center">
-          <div className="text-3xl md:text-5xl font-bold text-blue-600 mb-1">
-            {countdown.minutes}
-          </div>
-          <div className="text-sm uppercase text-gray-500">Minutes</div>
-        </div>
-        <div className="flex flex-col items-center">
-          <div className="text-3xl md:text-5xl font-bold text-blue-600 mb-1">
-            {countdown.seconds}
-          </div>
-          <div className="text-sm uppercase text-gray-500">Seconds</div>
-        </div>
+      {/* Launch Announcement */}
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 max-w-2xl w-full text-center mb-12">
+        <h2 className="text-xl md:text-2xl font-semibold text-blue-700 mb-2">
+          Launching Soon
+        </h2>
+        <p className="text-gray-700">
+          We're working hard to bring you the best NMC revalidation experience.
+          Our platform will be available in the coming weeks.
+        </p>
       </div>
       
       {/* Features Preview */}
