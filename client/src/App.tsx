@@ -29,6 +29,7 @@ import NmcServiceStatus from "@/pages/nmc-service-status";
 import TesterFeedback from "@/pages/tester-feedback";
 import SummaryInfographic from "@/pages/summary-infographic";
 import SneakPeekPage from "@/pages/sneak-peek";
+import ComingSoonPage from "@/pages/coming-soon";
 import Footer from "@/components/layout/footer";
 import NavigationTabs from "@/components/layout/navigation-tabs";
 import ProminentHeader from "@/components/layout/prominent-header";
