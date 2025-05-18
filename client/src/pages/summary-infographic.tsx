@@ -310,7 +310,7 @@ export default function SummaryInfographicPage() {
   // A simpler preview PDF generator to avoid errors
   const handlePreviewDownload = () => {
     try {
-      // Create a basic preview PDF
+      // Create a basic preview PDF with simplified structure to ensure reliable download
       const doc = new jsPDF();
 
       // Add NMC-styled header
@@ -365,6 +365,17 @@ export default function SummaryInfographicPage() {
       doc.text("• Clinical Skills Update (12 hours)", 25, 172);
       doc.text("• Professional Ethics Study (6 hours)", 25, 180);
 
+      // Add reflective accounts section
+      doc.setFontSize(12);
+      doc.setFont("helvetica", "bold");
+      doc.text("Reflective Accounts", 20, 195);
+
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(10);
+      doc.text("• 5 reflective accounts completed (Requirement: 5)", 25, 205);
+      doc.text("• Each reflection linked to NMC Code sections", 25, 213);
+      doc.text("• Reflective discussion completed", 25, 221);
+
       // Add footer with preview notice
       doc.setFont("helvetica", "italic");
       doc.setFontSize(9);
@@ -373,19 +384,19 @@ export default function SummaryInfographicPage() {
         align: "center",
       });
 
-      // Save the PDF
+      // Directly trigger the download using a simpler approach
       doc.save("revalidation-preview.pdf");
 
       toast({
         title: "Preview PDF Generated",
-        description: "Sample NMC-styled document has been downloaded",
+        description: "Sample NMC-styled document has been downloaded to your device",
         variant: "default",
       });
     } catch (error) {
       console.error("Error generating preview:", error);
       toast({
         title: "Error",
-        description: "Failed to generate preview PDF",
+        description: "Failed to generate preview PDF. Please try again.",
         variant: "destructive",
       });
     }
