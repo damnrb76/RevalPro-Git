@@ -53,10 +53,53 @@ export default function ColorPaletteSelector() {
     const palette = colorPalettes.find(p => p.id === selectedPalette);
     if (!palette) return;
     
-    // Apply the color variables to the document root
-    document.documentElement.style.setProperty('--palette-primary', palette.colors[0]);
-    document.documentElement.style.setProperty('--palette-secondary', palette.colors[1]);
-    document.documentElement.style.setProperty('--palette-accent', palette.colors[2]);
+    // Apply the color variables to the document root with HSL values
+    const convertHexToHSL = (hex: string) => {
+      // Remove the # from the beginning
+      hex = hex.replace(/^#/, '');
+      
+      // Parse the RGB values
+      let r = parseInt(hex.substring(0, 2), 16) / 255;
+      let g = parseInt(hex.substring(2, 4), 16) / 255;
+      let b = parseInt(hex.substring(4, 6), 16) / 255;
+      
+      // Find the min and max values to calculate lightness
+      const max = Math.max(r, g, b);
+      const min = Math.min(r, g, b);
+      let h, s, l = (max + min) / 2;
+      
+      if (max === min) {
+        h = s = 0; // achromatic
+      } else {
+        const d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        
+        switch (max) {
+          case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+          case g: h = (b - r) / d + 2; break;
+          case b: h = (r - g) / d + 4; break;
+          default: h = 0;
+        }
+        
+        h /= 6;
+      }
+      
+      return {
+        h: Math.round(h * 360),
+        s: Math.round(s * 100),
+        l: Math.round(l * 100)
+      };
+    };
+    
+    // Convert hex colors to HSL values
+    const primaryHSL = convertHexToHSL(palette.colors[0]);
+    const secondaryHSL = convertHexToHSL(palette.colors[1]);
+    const accentHSL = convertHexToHSL(palette.colors[2]);
+    
+    // Apply HSL values to CSS variables in the format Tailwind expects
+    document.documentElement.style.setProperty('--revalpro-blue', `${primaryHSL.h} ${primaryHSL.s}% ${primaryHSL.l}%`);
+    document.documentElement.style.setProperty('--revalpro-dark-blue', `${accentHSL.h} ${accentHSL.s}% ${accentHSL.l}%`);
+    document.documentElement.style.setProperty('--revalpro-teal', `${secondaryHSL.h} ${secondaryHSL.s}% ${secondaryHSL.l}%`);
     
     // Add a data attribute for potential CSS targeting
     document.documentElement.setAttribute('data-color-palette', selectedPalette);
