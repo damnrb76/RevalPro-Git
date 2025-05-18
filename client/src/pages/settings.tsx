@@ -12,7 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useTheme } from "@/components/ui/theme-provider";
 import { 
   AlertTriangle, Download, Upload, Trash2, 
-  Moon, Sun, Info, Shield, User
+  Moon, Sun, Info, Shield, User, Palette
 } from "lucide-react";
 import { 
   userProfileStorage, 
@@ -25,6 +25,7 @@ import {
 import { downloadRawData, downloadSummaryReport } from "@/lib/pdf-generator";
 import UserProfileForm from "@/components/forms/user-profile-form";
 import ProfileImageUploader from "@/components/profile/profile-image-uploader";
+import ColorPaletteSelector from "@/components/layout/color-palette-selector";
 import type { UserProfile } from "@shared/schema";
 
 export default function SettingsPage() {
@@ -412,6 +413,20 @@ export default function SettingsPage() {
                   >
                     <Moon className="h-5 w-5" />
                   </Button>
+                </div>
+              </div>
+              
+              <Separator />
+              
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label className="text-base">Color Palette</Label>
+                  <p className="text-sm text-nhs-dark-grey">
+                    Choose your preferred color theme for the application
+                  </p>
+                </div>
+                <div>
+                  <ColorPaletteSelector />
                 </div>
               </div>
               
