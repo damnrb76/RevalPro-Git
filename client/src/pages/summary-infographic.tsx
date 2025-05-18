@@ -2,30 +2,30 @@ import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet";
 import { useToast } from "@/hooks/use-toast";
-import jsPDF from 'jspdf';
+import jsPDF from "jspdf";
 import RevalidationInfographic from "@/components/infographic/revalidation-infographic";
-import { 
-  userProfileStorage, 
-  practiceHoursStorage, 
-  cpdRecordsStorage, 
-  feedbackRecordsStorage, 
+import {
+  userProfileStorage,
+  practiceHoursStorage,
+  cpdRecordsStorage,
+  feedbackRecordsStorage,
   reflectiveAccountsStorage,
   healthDeclarationStorage,
   confirmationStorage,
-  exportAllData
+  exportAllData,
 } from "@/lib/storage";
 import { RevalidationSummaryData } from "@/lib/infographic-generator";
-import { 
-  PlusCircle, 
-  Share, 
-  FileImage, 
+import {
+  PlusCircle,
+  Share,
+  FileImage,
   ChevronLeft,
-  Download, 
-  Printer, 
-  FileJson, 
+  Download,
+  Printer,
+  FileJson,
   FileText,
   PackageOpen,
-  Upload
+  Upload,
 } from "lucide-react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
@@ -35,45 +35,46 @@ import { downloadRevalidationPack } from "@/lib/pdf-generator";
 
 export default function SummaryInfographicPage() {
   const [isLoading, setIsLoading] = useState(true);
-  const [summaryData, setSummaryData] = useState<RevalidationSummaryData | null>(null);
+  const [summaryData, setSummaryData] =
+    useState<RevalidationSummaryData | null>(null);
   const { toast } = useToast();
-  
+
   // Preview demo data for NMC-compliant document generation
   const [previewMode, setPreviewMode] = useState(true); // Set to true for demo purposes
 
   // Fetch all data needed for the summary
   const { data: userProfile } = useQuery({
-    queryKey: ['userProfile'],
+    queryKey: ["userProfile"],
     queryFn: async () => userProfileStorage.getCurrent(),
   });
 
   const { data: practiceHours } = useQuery({
-    queryKey: ['practiceHours'],
+    queryKey: ["practiceHours"],
     queryFn: async () => practiceHoursStorage.getAll(),
   });
 
   const { data: cpdRecords } = useQuery({
-    queryKey: ['cpdRecords'],
+    queryKey: ["cpdRecords"],
     queryFn: async () => cpdRecordsStorage.getAll(),
   });
 
   const { data: feedbackRecords } = useQuery({
-    queryKey: ['feedbackRecords'],
+    queryKey: ["feedbackRecords"],
     queryFn: async () => feedbackRecordsStorage.getAll(),
   });
 
   const { data: reflectiveAccounts } = useQuery({
-    queryKey: ['reflectiveAccounts'],
+    queryKey: ["reflectiveAccounts"],
     queryFn: async () => reflectiveAccountsStorage.getAll(),
   });
 
   const { data: healthDeclarations } = useQuery({
-    queryKey: ['healthDeclarations'],
+    queryKey: ["healthDeclarations"],
     queryFn: async () => healthDeclarationStorage.getAll(),
   });
 
   const { data: confirmations } = useQuery({
-    queryKey: ['confirmations'],
+    queryKey: ["confirmations"],
     queryFn: async () => confirmationStorage.getAll(),
   });
 
@@ -92,7 +93,7 @@ export default function SummaryInfographicPage() {
           specialty: "Adult Nursing",
           jobTitle: "Senior Staff Nurse",
           email: "sjohnson@example.com",
-          created: new Date().toISOString()
+          created: new Date().toISOString(),
         },
         practiceHours: [
           {
@@ -103,7 +104,7 @@ export default function SummaryInfographicPage() {
             setting: "Hospital",
             scope: "Adult Nursing",
             notes: "Full-time hospital work on respiratory ward",
-            created: new Date().toISOString()
+            created: new Date().toISOString(),
           },
           {
             id: 2,
@@ -113,8 +114,8 @@ export default function SummaryInfographicPage() {
             setting: "Community Care",
             scope: "Adult Nursing",
             notes: "Part-time community nursing",
-            created: new Date().toISOString()
-          }
+            created: new Date().toISOString(),
+          },
         ],
         cpdRecords: [
           {
@@ -124,9 +125,10 @@ export default function SummaryInfographicPage() {
             hours: 10,
             participatory: true,
             description: "Advanced infection control techniques and protocols",
-            learningOutcomes: "Improved knowledge of hospital infection control procedures",
+            learningOutcomes:
+              "Improved knowledge of hospital infection control procedures",
             reflection: "Will implement new handwashing techniques on ward",
-            created: new Date().toISOString()
+            created: new Date().toISOString(),
           },
           {
             id: 2,
@@ -135,10 +137,12 @@ export default function SummaryInfographicPage() {
             hours: 8,
             participatory: true,
             description: "Safe medication administration and management",
-            learningOutcomes: "Better understanding of medication side effects and interactions",
-            reflection: "Plan to create medication safety reference guide for team",
-            created: new Date().toISOString()
-          }
+            learningOutcomes:
+              "Better understanding of medication side effects and interactions",
+            reflection:
+              "Plan to create medication safety reference guide for team",
+            created: new Date().toISOString(),
+          },
         ],
         reflectiveAccounts: [
           {
@@ -146,17 +150,22 @@ export default function SummaryInfographicPage() {
             title: "Managing a Critical Situation",
             date: "2024-01-15",
             codeSection: "PRIORITISE_PEOPLE",
-            experience: "Managed emergency situation with patient in respiratory distress",
+            experience:
+              "Managed emergency situation with patient in respiratory distress",
             reflectiveModel: "GIBBS",
-            reflection: "Responded quickly but identified areas for improvement in team communication",
-            learningOutcome: "Will practice clearer communication techniques for emergency situations",
-            created: new Date().toISOString()
-          }
-        ]
+            reflection:
+              "Responded quickly but identified areas for improvement in team communication",
+            learningOutcome:
+              "Will practice clearer communication techniques for emergency situations",
+            created: new Date().toISOString(),
+          },
+        ],
       };
 
       // Convert to JSON and download
-      const blob = new Blob([JSON.stringify(sampleData, null, 2)], { type: "application/json" });
+      const blob = new Blob([JSON.stringify(sampleData, null, 2)], {
+        type: "application/json",
+      });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
@@ -165,7 +174,7 @@ export default function SummaryInfographicPage() {
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      
+
       toast({
         title: "Sample JSON Generated",
         description: "Sample data file has been downloaded",
@@ -186,79 +195,103 @@ export default function SummaryInfographicPage() {
     try {
       // Create a visual infographic PDF
       const doc = new jsPDF();
-      
+
       // Add RevalPro header
       doc.setFontSize(22);
       doc.setTextColor(41, 98, 255); // RevalPro blue
-      doc.setFont('helvetica', 'bold');
-      doc.text("RevalPro", 105, 20, { align: 'center' });
-      
+      doc.setFont("helvetica", "bold");
+      doc.text("RevalPro", 105, 20, { align: "center" });
+
       doc.setFontSize(16);
       doc.setTextColor(0, 0, 0);
-      doc.text("Revalidation Progress Infographic", 105, 30, { align: 'center' });
-      
+      doc.text("Revalidation Progress Infographic", 105, 30, {
+        align: "center",
+      });
+
       // Add nurse details
       doc.setFontSize(12);
-      doc.text("Sarah Johnson (PIN: 98X1234E)", 105, 40, { align: 'center' });
-      doc.text("Revalidation Due: 15 May 2026", 105, 48, { align: 'center' });
-      
+      doc.text("Sarah Johnson (PIN: 98X1234E)", 105, 40, { align: "center" });
+      doc.text("Revalidation Due: 15 May 2026", 105, 48, { align: "center" });
+
       // Add progress visualization
       // Create heading
-      doc.setFont('helvetica', 'bold');
+      doc.setFont("helvetica", "bold");
       doc.setFontSize(14);
       doc.text("Revalidation Requirements Progress", 20, 65);
-      
+
       // Progress bars
-      const drawProgressBar = (y: number, label: string, progress: number, color: [number, number, number]) => {
+      const drawProgressBar = (
+        y: number,
+        label: string,
+        progress: number,
+        color: [number, number, number],
+      ) => {
         doc.setDrawColor(220, 220, 220);
         doc.setFillColor(220, 220, 220);
-        doc.roundedRect(70, y, 100, 10, 3, 3, 'F');
-        
+        doc.roundedRect(70, y, 100, 10, 3, 3, "F");
+
         doc.setFillColor(color[0], color[1], color[2]);
         doc.setDrawColor(color[0], color[1], color[2]);
-        doc.roundedRect(70, y, progress, 10, 3, 3, 'F');
-        
-        doc.setFont('helvetica', 'normal');
+        doc.roundedRect(70, y, progress, 10, 3, 3, "F");
+
+        doc.setFont("helvetica", "normal");
         doc.setFontSize(10);
         doc.setTextColor(0, 0, 0);
-        doc.text(label, 65, y + 7, { align: 'right' });
-        
-        doc.setFont('helvetica', 'bold');
+        doc.text(label, 65, y + 7, { align: "right" });
+
+        doc.setFont("helvetica", "bold");
         doc.text(`${progress}%`, 175, y + 7);
       };
-      
+
       drawProgressBar(75, "Practice Hours:", 100, [41, 98, 255]); // Blue
       drawProgressBar(95, "CPD Hours:", 100, [0, 184, 148]); // Teal
       drawProgressBar(115, "Feedback:", 100, [238, 82, 83]); // Red
       drawProgressBar(135, "Reflections:", 100, [254, 164, 127]); // Orange
       drawProgressBar(155, "Health Declaration:", 100, [46, 134, 193]); // Blue
       drawProgressBar(175, "Confirmation:", 100, [155, 89, 182]); // Purple
-      
+
       // Add summary section
-      doc.setFont('helvetica', 'bold');
+      doc.setFont("helvetica", "bold");
       doc.setFontSize(14);
       doc.text("Summary of Achievements", 20, 200);
-      
-      doc.setFont('helvetica', 'normal');
+
+      doc.setFont("helvetica", "normal");
       doc.setFontSize(10);
       doc.text("• Practice Hours: 500 hours completed (minimum: 450)", 25, 215);
       doc.text("• CPD Activities: 36 hours completed (minimum: 35)", 25, 225);
-      doc.text("• Participatory Learning: 30 hours completed (minimum: 20)", 25, 235);
+      doc.text(
+        "• Participatory Learning: 30 hours completed (minimum: 20)",
+        25,
+        235,
+      );
       doc.text("• Feedback Records: 5 pieces collected (minimum: 5)", 25, 245);
-      doc.text("• Reflective Accounts: 5 accounts written (minimum: 5)", 25, 255);
-      doc.text("• Discussion: Completed with Jane Smith, Senior Nurse", 25, 265);
+      doc.text(
+        "• Reflective Accounts: 5 accounts written (minimum: 5)",
+        25,
+        255,
+      );
+      doc.text(
+        "• Discussion: Completed with Jane Smith, Senior Nurse",
+        25,
+        265,
+      );
       doc.text("• Health Declaration: Completed on 10 May 2025", 25, 275);
       doc.text("• Confirmation: Confirmed by Dr. Robert Williams", 25, 285);
-      
+
       // Add footer with preview notice
-      doc.setFont('helvetica', 'italic');
+      doc.setFont("helvetica", "italic");
       doc.setFontSize(9);
       doc.setTextColor(150, 150, 150);
-      doc.text("This is a preview infographic generated by RevalPro", 105, 295, { align: 'center' });
-      
+      doc.text(
+        "This is a preview infographic generated by RevalPro",
+        105,
+        295,
+        { align: "center" },
+      );
+
       // Save the PDF
       doc.save("revalidation-infographic.pdf");
-      
+
       toast({
         title: "Preview Infographic Generated",
         description: "Sample visual summary has been downloaded",
@@ -273,57 +306,57 @@ export default function SummaryInfographicPage() {
       });
     }
   };
-  
+
   // A simpler preview PDF generator to avoid errors
   const handlePreviewDownload = () => {
     try {
       // Create a basic preview PDF
       const doc = new jsPDF();
-      
+
       // Add NMC-styled header
       doc.setFontSize(16);
       doc.setTextColor(0, 84, 164); // NMC Blue
-      doc.setFont('helvetica', 'bold');
+      doc.setFont("helvetica", "bold");
       doc.text("Nursing & Midwifery Council", 20, 20);
-      
+
       // Add horizontal line
       doc.setDrawColor(0, 84, 164);
       doc.setLineWidth(0.8);
       doc.line(20, 25, 190, 25);
-      
+
       // Add title
       doc.setFontSize(14);
       doc.text("Revalidation Documentation (Preview)", 20, 35);
-      
+
       // Add nurse details section
       doc.setFontSize(12);
-      doc.setFont('helvetica', 'bold');
+      doc.setFont("helvetica", "bold");
       doc.setTextColor(0, 0, 0);
       doc.text("Nurse Details", 20, 50);
-      
-      doc.setFont('helvetica', 'normal');
+
+      doc.setFont("helvetica", "normal");
       doc.setFontSize(10);
       doc.text("Name: Sarah Johnson", 25, 60);
       doc.text("NMC PIN: 98X1234E", 25, 68);
       doc.text("Expiry Date: 15 May 2026", 25, 76);
-      
+
       // Add practice hours section
       doc.setFontSize(12);
-      doc.setFont('helvetica', 'bold');
+      doc.setFont("helvetica", "bold");
       doc.text("Practice Hours", 20, 90);
-      
-      doc.setFont('helvetica', 'normal');
+
+      doc.setFont("helvetica", "normal");
       doc.setFontSize(10);
       doc.text("Total Hours: 500 (Requirement: 450 hours)", 25, 100);
       doc.text("• Hospital: 300 hours (Adult Nursing)", 25, 108);
       doc.text("• Community Care: 200 hours (Adult Nursing)", 25, 116);
-      
+
       // Add CPD section
       doc.setFontSize(12);
-      doc.setFont('helvetica', 'bold');
+      doc.setFont("helvetica", "bold");
       doc.text("Continuing Professional Development (CPD)", 20, 130);
-      
-      doc.setFont('helvetica', 'normal');
+
+      doc.setFont("helvetica", "normal");
       doc.setFontSize(10);
       doc.text("Total CPD Hours: 36 (Requirement: 35 hours)", 25, 140);
       doc.text("Participatory Hours: 30 (Requirement: 20 hours)", 25, 148);
@@ -331,16 +364,18 @@ export default function SummaryInfographicPage() {
       doc.text("• Medication Management Course (8 hours)", 25, 164);
       doc.text("• Clinical Skills Update (12 hours)", 25, 172);
       doc.text("• Professional Ethics Study (6 hours)", 25, 180);
-      
+
       // Add footer with preview notice
-      doc.setFont('helvetica', 'italic');
+      doc.setFont("helvetica", "italic");
       doc.setFontSize(9);
       doc.setTextColor(150, 150, 150);
-      doc.text("This is a preview document generated by RevalPro", 105, 280, { align: 'center' });
-      
+      doc.text("This is a preview document generated by RevalPro", 105, 280, {
+        align: "center",
+      });
+
       // Save the PDF
       doc.save("revalidation-preview.pdf");
-      
+
       toast({
         title: "Preview PDF Generated",
         description: "Sample NMC-styled document has been downloaded",
@@ -355,7 +390,7 @@ export default function SummaryInfographicPage() {
       });
     }
   };
-  
+
   useEffect(() => {
     // For preview mode, use sample data
     if (previewMode) {
@@ -368,40 +403,140 @@ export default function SummaryInfographicPage() {
         jobTitle: "Registered Nurse",
         email: "demo@example.com",
         profileImage: null,
-        created: new Date()
+        created: new Date(),
       };
 
       const demoPracticeHours = [
-        { id: 1, workSetting: "Hospital", scope: "Adult Nursing", startDate: "2023-05-01", endDate: "2024-04-30", hours: 300, created: new Date(), notes: "Regular shifts on ward 5B" },
-        { id: 2, workSetting: "Community Care", scope: "Adult Nursing", startDate: "2023-06-15", endDate: "2024-03-15", hours: 200, created: new Date(), notes: "District nursing rotation" }
+        {
+          id: 1,
+          workSetting: "Hospital",
+          scope: "Adult Nursing",
+          startDate: "2023-05-01",
+          endDate: "2024-04-30",
+          hours: 300,
+          created: new Date(),
+          notes: "Regular shifts on ward 5B",
+        },
+        {
+          id: 2,
+          workSetting: "Community Care",
+          scope: "Adult Nursing",
+          startDate: "2023-06-15",
+          endDate: "2024-03-15",
+          hours: 200,
+          created: new Date(),
+          notes: "District nursing rotation",
+        },
       ];
-      
+
       const demoCpdRecords = [
-        { id: 1, title: "Infection Control Workshop", date: "2024-01-15", hours: 10, participatory: true, description: "Workshop on latest infection control practices", created: new Date(), relevanceToCode: "Preserve Safety", attachment: null },
-        { id: 2, title: "Medication Management Course", date: "2024-02-20", hours: 8, participatory: true, description: "Online course on medication safety", created: new Date(), relevanceToCode: "Preserve Safety", attachment: null },
-        { id: 3, title: "Clinical Skills Update", date: "2024-03-10", hours: 12, participatory: true, description: "Hands-on clinical skills refresher", created: new Date(), relevanceToCode: "Practise Effectively", attachment: null },
-        { id: 4, title: "Professional Ethics Study", date: "2024-04-05", hours: 6, participatory: false, description: "Self-directed learning on ethical practice", created: new Date(), relevanceToCode: "Promote Professionalism", attachment: null }
+        {
+          id: 1,
+          title: "Infection Control Workshop",
+          date: "2024-01-15",
+          hours: 10,
+          participatory: true,
+          description: "Workshop on latest infection control practices",
+          created: new Date(),
+          relevanceToCode: "Preserve Safety",
+          attachment: null,
+        },
+        {
+          id: 2,
+          title: "Medication Management Course",
+          date: "2024-02-20",
+          hours: 8,
+          participatory: true,
+          description: "Online course on medication safety",
+          created: new Date(),
+          relevanceToCode: "Preserve Safety",
+          attachment: null,
+        },
+        {
+          id: 3,
+          title: "Clinical Skills Update",
+          date: "2024-03-10",
+          hours: 12,
+          participatory: true,
+          description: "Hands-on clinical skills refresher",
+          created: new Date(),
+          relevanceToCode: "Practise Effectively",
+          attachment: null,
+        },
+        {
+          id: 4,
+          title: "Professional Ethics Study",
+          date: "2024-04-05",
+          hours: 6,
+          participatory: false,
+          description: "Self-directed learning on ethical practice",
+          created: new Date(),
+          relevanceToCode: "Promote Professionalism",
+          attachment: null,
+        },
       ];
-      
+
       const demoFeedbackRecords = [
-        { id: 1, date: "2024-01-10", source: "Patient", content: "Excellent care provided during my stay", reflection: "Positive feedback on communication skills", created: new Date(), attachment: null },
-        { id: 2, date: "2024-02-15", source: "Colleague", content: "Great teamwork during emergency situation", reflection: "Showed good crisis management", created: new Date(), attachment: null },
-        { id: 3, date: "2024-03-20", source: "Manager", content: "Demonstrated leadership in team meetings", reflection: "Developing leadership capabilities", created: new Date(), attachment: null },
-        { id: 4, date: "2024-04-05", source: "Student", content: "Excellent mentorship and teaching", reflection: "Effective teaching methods", created: new Date(), attachment: null },
-        { id: 5, date: "2024-04-25", source: "Patient Family", content: "Compassionate care provided to my mother", reflection: "Importance of family-centered care", created: new Date(), attachment: null }
+        {
+          id: 1,
+          date: "2024-01-10",
+          source: "Patient",
+          content: "Excellent care provided during my stay",
+          reflection: "Positive feedback on communication skills",
+          created: new Date(),
+          attachment: null,
+        },
+        {
+          id: 2,
+          date: "2024-02-15",
+          source: "Colleague",
+          content: "Great teamwork during emergency situation",
+          reflection: "Showed good crisis management",
+          created: new Date(),
+          attachment: null,
+        },
+        {
+          id: 3,
+          date: "2024-03-20",
+          source: "Manager",
+          content: "Demonstrated leadership in team meetings",
+          reflection: "Developing leadership capabilities",
+          created: new Date(),
+          attachment: null,
+        },
+        {
+          id: 4,
+          date: "2024-04-05",
+          source: "Student",
+          content: "Excellent mentorship and teaching",
+          reflection: "Effective teaching methods",
+          created: new Date(),
+          attachment: null,
+        },
+        {
+          id: 5,
+          date: "2024-04-25",
+          source: "Patient Family",
+          content: "Compassionate care provided to my mother",
+          reflection: "Importance of family-centered care",
+          created: new Date(),
+          attachment: null,
+        },
       ];
-      
+
       const demoReflectiveAccounts = [
-        { 
-          id: 1, 
-          title: "Managing Complex Care", 
-          date: "2024-01-20", 
-          description: "Reflection on caring for patient with multiple conditions", 
-          reflectiveModel: "Gibbs", 
-          experience: "Coordinated care for elderly patient with multiple comorbidities", 
-          natureOfExperience: "Clinical", 
-          whatLearned: "Importance of interdisciplinary approach", 
-          howChanged: "Now regularly consult with specialist teams", 
+        {
+          id: 1,
+          title: "Managing Complex Care",
+          date: "2024-01-20",
+          description:
+            "Reflection on caring for patient with multiple conditions",
+          reflectiveModel: "Gibbs",
+          experience:
+            "Coordinated care for elderly patient with multiple comorbidities",
+          natureOfExperience: "Clinical",
+          whatLearned: "Importance of interdisciplinary approach",
+          howChanged: "Now regularly consult with specialist teams",
           created: new Date(),
           feelings: "Initially overwhelmed by complexity",
           evaluation: "Successful coordination of multiple services",
@@ -413,18 +548,18 @@ export default function SummaryInfographicPage() {
           ethics: null,
           empirics: null,
           reflexivity: null,
-          codeRelation: "Prioritise People" 
+          codeRelation: "Prioritise People",
         },
-        { 
-          id: 2, 
-          title: "Communication Challenge", 
-          date: "2024-02-25", 
-          description: "Reflection on difficult conversation with family", 
-          reflectiveModel: "Johns", 
-          experience: "Had to explain poor prognosis to patient's family", 
-          natureOfExperience: "Communication", 
-          whatLearned: "Techniques for sensitive discussions", 
-          howChanged: "Improved approach to difficult conversations", 
+        {
+          id: 2,
+          title: "Communication Challenge",
+          date: "2024-02-25",
+          description: "Reflection on difficult conversation with family",
+          reflectiveModel: "Johns",
+          experience: "Had to explain poor prognosis to patient's family",
+          natureOfExperience: "Communication",
+          whatLearned: "Techniques for sensitive discussions",
+          howChanged: "Improved approach to difficult conversations",
           created: new Date(),
           feelings: null,
           evaluation: null,
@@ -436,18 +571,19 @@ export default function SummaryInfographicPage() {
           ethics: "Honesty while maintaining hope",
           empirics: "Applied evidence-based communication methods",
           reflexivity: "Recognized own discomfort with difficult news",
-          codeRelation: "Practise Effectively" 
+          codeRelation: "Practise Effectively",
         },
-        { 
-          id: 3, 
-          title: "Medication Error Prevention", 
-          date: "2024-03-15", 
-          description: "Reflection on near-miss incident", 
-          reflectiveModel: "Driscoll", 
-          experience: "Identified potential medication error before administration", 
-          natureOfExperience: "Safety", 
-          whatLearned: "Importance of double-checking", 
-          howChanged: "Implemented personal safety checklist", 
+        {
+          id: 3,
+          title: "Medication Error Prevention",
+          date: "2024-03-15",
+          description: "Reflection on near-miss incident",
+          reflectiveModel: "Driscoll",
+          experience:
+            "Identified potential medication error before administration",
+          natureOfExperience: "Safety",
+          whatLearned: "Importance of double-checking",
+          howChanged: "Implemented personal safety checklist",
           created: new Date(),
           feelings: "Concerned but relieved error was caught",
           evaluation: "Prevented potential patient harm",
@@ -459,18 +595,18 @@ export default function SummaryInfographicPage() {
           ethics: null,
           empirics: null,
           reflexivity: null,
-          codeRelation: "Preserve Safety" 
+          codeRelation: "Preserve Safety",
         },
-        { 
-          id: 4, 
-          title: "Patient Advocacy", 
-          date: "2024-04-01", 
-          description: "Reflection on advocating for patient needs", 
-          reflectiveModel: "Gibbs", 
-          experience: "Advocated for patient's cultural needs during care", 
-          natureOfExperience: "Advocacy", 
-          whatLearned: "Cultural competence in care planning", 
-          howChanged: "Now consider cultural factors in all assessments", 
+        {
+          id: 4,
+          title: "Patient Advocacy",
+          date: "2024-04-01",
+          description: "Reflection on advocating for patient needs",
+          reflectiveModel: "Gibbs",
+          experience: "Advocated for patient's cultural needs during care",
+          natureOfExperience: "Advocacy",
+          whatLearned: "Cultural competence in care planning",
+          howChanged: "Now consider cultural factors in all assessments",
           created: new Date(),
           feelings: "Proud to represent patient's voice",
           evaluation: "Successfully adapted care plan",
@@ -482,18 +618,18 @@ export default function SummaryInfographicPage() {
           ethics: null,
           empirics: null,
           reflexivity: null,
-          codeRelation: "Prioritise People" 
+          codeRelation: "Prioritise People",
         },
-        { 
-          id: 5, 
-          title: "Team Conflict Resolution", 
-          date: "2024-04-20", 
-          description: "Reflection on resolving team disagreement", 
-          reflectiveModel: "Kolb", 
-          experience: "Mediated disagreement between healthcare professionals", 
-          natureOfExperience: "Teamwork", 
-          whatLearned: "Conflict resolution strategies", 
-          howChanged: "Better equipped to handle team dynamics", 
+        {
+          id: 5,
+          title: "Team Conflict Resolution",
+          date: "2024-04-20",
+          description: "Reflection on resolving team disagreement",
+          reflectiveModel: "Kolb",
+          experience: "Mediated disagreement between healthcare professionals",
+          natureOfExperience: "Teamwork",
+          whatLearned: "Conflict resolution strategies",
+          howChanged: "Better equipped to handle team dynamics",
           created: new Date(),
           feelings: "Initially uncomfortable with confrontation",
           evaluation: "Successfully restored team harmony",
@@ -505,10 +641,10 @@ export default function SummaryInfographicPage() {
           ethics: null,
           empirics: null,
           reflexivity: null,
-          codeRelation: "Promote Professionalism" 
-        }
+          codeRelation: "Promote Professionalism",
+        },
       ];
-      
+
       // Add a preview notice
       if (previewMode) {
         toast({
@@ -517,7 +653,7 @@ export default function SummaryInfographicPage() {
           variant: "default",
         });
       }
-      
+
       setSummaryData({
         userProfile: demoUser,
         practiceHours: demoPracticeHours,
@@ -526,12 +662,12 @@ export default function SummaryInfographicPage() {
         reflectiveAccounts: demoReflectiveAccounts,
         hasHealthDeclaration: true,
         hasConfirmation: true,
-        lastUpdated: new Date()
+        lastUpdated: new Date(),
       });
       setIsLoading(false);
       return;
     }
-    
+
     // Regular data loading for non-preview mode
     if (
       userProfile !== undefined &&
@@ -550,7 +686,7 @@ export default function SummaryInfographicPage() {
         reflectiveAccounts: reflectiveAccounts || [],
         hasHealthDeclaration: (healthDeclarations || []).length > 0,
         hasConfirmation: (confirmations || []).length > 0,
-        lastUpdated: new Date()
+        lastUpdated: new Date(),
       });
       setIsLoading(false);
     }
@@ -563,36 +699,44 @@ export default function SummaryInfographicPage() {
     healthDeclarations,
     confirmations,
     previewMode,
-    toast
+    toast,
   ]);
 
   return (
     <main className="container mx-auto px-4 py-6 max-w-5xl">
       <Helmet>
         <title>Revalidation Summary Infographic | RevalPro</title>
-        <meta 
-          name="description" 
-          content="Generate and download a visual summary of your NMC revalidation progress." 
+        <meta
+          name="description"
+          content="Generate and download a visual summary of your NMC revalidation progress."
         />
       </Helmet>
-      
+
       {previewMode && (
         <Alert className="mb-4 bg-blue-50 border-blue-200">
           <AlertTitle className="text-blue-700">Preview Mode</AlertTitle>
           <AlertDescription>
-            You are viewing sample data to preview the PDF generation feature. The "Download" buttons will generate NMC-compliant documentation formats.
+            You are viewing sample data to preview the PDF generation feature.
+            The "Download" buttons will generate NMC-compliant documentation
+            formats.
           </AlertDescription>
         </Alert>
       )}
 
       <div className="mb-6">
-        <Link href="/" className="inline-flex items-center text-revalpro-blue hover:underline mb-2">
+        <Link
+          href="/"
+          className="inline-flex items-center text-revalpro-blue hover:underline mb-2"
+        >
           <ChevronLeft className="h-4 w-4 mr-1" />
           Back to Dashboard
         </Link>
-        <h1 className="text-2xl font-bold text-revalpro-dark mb-2">Revalidation Summary Infographic</h1>
+        <h1 className="text-2xl font-bold text-revalpro-dark mb-2">
+          Revalidation Summary Infographic
+        </h1>
         <p className="text-muted-foreground">
-          Generate a professional infographic of your revalidation progress to save, print, or share
+          Generate a professional infographic of your revalidation progress to
+          save, print, or share
         </p>
       </div>
 
@@ -600,7 +744,8 @@ export default function SummaryInfographicPage() {
         <Alert variant="destructive" className="mb-6">
           <AlertTitle>Profile Not Set Up</AlertTitle>
           <AlertDescription>
-            You need to set up your profile before generating an infographic summary.
+            You need to set up your profile before generating an infographic
+            summary.
             <div className="mt-4">
               <Link href="/settings">
                 <Button size="sm" variant="outline">
@@ -622,30 +767,40 @@ export default function SummaryInfographicPage() {
             <Skeleton className="h-32 w-full" />
           </div>
         </div>
-      ) : summaryData && (
-        <RevalidationInfographic summaryData={summaryData} />
+      ) : (
+        summaryData && <RevalidationInfographic summaryData={summaryData} />
       )}
 
       <div className="mt-8 pt-6 border-t border-gray-200">
-        <h2 className="text-xl font-bold mb-6 text-revalpro-blue">Download Revalidation Summary</h2>
-        
+        <h2 className="text-xl font-bold mb-6 text-revalpro-blue">
+          Download Revalidation Summary
+        </h2>
+
         <div className="mb-8">
           <Button
             variant="default"
             size="lg"
             className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-revalpro-blue to-revalpro-teal text-white"
-            onClick={previewMode ? handlePreviewDownload : () => downloadRevalidationPack()}
+            onClick={
+              previewMode
+                ? handlePreviewDownload
+                : () => downloadRevalidationPack()
+            }
           >
             <Download className="h-5 w-5" />
             <span>Download Revalidation Summary</span>
           </Button>
         </div>
-        
+
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
           <Button
             variant="outline"
             className="flex items-center justify-center gap-2 h-auto py-4 border-2"
-            onClick={previewMode ? handlePreviewDownload : () => downloadRevalidationPack()}
+            onClick={
+              previewMode
+                ? handlePreviewDownload
+                : () => downloadRevalidationPack()
+            }
           >
             <Printer className="h-5 w-5 text-revalpro-blue" />
             <div className="text-left">
@@ -653,55 +808,75 @@ export default function SummaryInfographicPage() {
               <div className="text-xs text-gray-500">All NMC forms bundled</div>
             </div>
           </Button>
-          
-          <Button 
-            variant="outline" 
+
+          <Button
+            variant="outline"
             className="flex items-center justify-center gap-2 h-auto py-4 border-2"
-            onClick={previewMode ? generateInfographicPreview : () => {
-              // Handle infographic download
-              window.print();
-            }}
+            onClick={
+              previewMode
+                ? generateInfographicPreview
+                : () => {
+                    // Handle infographic download
+                    window.print();
+                  }
+            }
           >
             <Upload className="h-5 w-5 text-revalpro-purple" />
             <div className="text-left">
               <div className="font-medium">Infographic</div>
-              <div className="text-xs text-gray-500">Visual progress summary</div>
+              <div className="text-xs text-gray-500">
+                Visual progress summary
+              </div>
             </div>
           </Button>
         </div>
-        
+
         <Button
           variant="outline"
           className="w-full flex items-center justify-center gap-2 h-auto py-4 mb-4 border-2"
-          onClick={previewMode ? handlePreviewDownload : () => downloadRevalidationPack()}
+          onClick={
+            previewMode
+              ? handlePreviewDownload
+              : () => downloadRevalidationPack()
+          }
         >
           <FileText className="h-5 w-5 text-revalpro-teal" />
           <div className="text-left">
             <div className="font-medium">Export Form</div>
-            <div className="text-xs text-gray-500">Official NMC format documents</div>
+            <div className="text-xs text-gray-500">
+              Official NMC format documents
+            </div>
           </div>
         </Button>
-        
+
         <Button
           variant="secondary"
           className="w-full flex items-center justify-center gap-2 h-auto py-4 bg-gray-100"
-          onClick={previewMode ? handleJsonPreviewDownload : async () => {
-            // Export raw data as JSON
-            const data = await exportAllData();
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = `revalidation-data-${new Date().toISOString().split('T')[0]}.json`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-          }}
+          onClick={
+            previewMode
+              ? handleJsonPreviewDownload
+              : async () => {
+                  // Export raw data as JSON
+                  const data = await exportAllData();
+                  const blob = new Blob([JSON.stringify(data, null, 2)], {
+                    type: "application/json",
+                  });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `revalidation-data-${new Date().toISOString().split("T")[0]}.json`;
+                  document.body.appendChild(a);
+                  a.click();
+                  document.body.removeChild(a);
+                }
+          }
         >
           <FileJson className="h-5 w-5 text-gray-600" />
           <div className="text-left">
             <div className="font-medium">Export Raw Data (JSON)</div>
-            <div className="text-xs text-gray-500">For backup or transferring</div>
+            <div className="text-xs text-gray-500">
+              For backup or transferring
+            </div>
           </div>
         </Button>
       </div>
