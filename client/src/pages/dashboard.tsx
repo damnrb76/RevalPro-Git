@@ -173,10 +173,10 @@ export default function DashboardPage() {
             <CardContent className="pt-6">
               <div className="flex flex-col md:flex-row items-center justify-between">
                 <div className="flex items-center gap-4 mb-4 md:mb-0">
-                  {userProfile.profilePicture ? (
+                  {userProfile.profileImage ? (
                     <div className="rounded-full w-16 h-16 overflow-hidden border-2 border-revalpro-blue shadow-sm">
                       <img 
-                        src={userProfile.profilePicture} 
+                        src={userProfile.profileImage} 
                         alt="Profile" 
                         className="w-full h-full object-cover"
                       />
@@ -196,7 +196,7 @@ export default function DashboardPage() {
                 </div>
                 
                 <div className="flex flex-col items-center md:items-end">
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-2 justify-center md:justify-end">
                     <Badge variant="outline" className="bg-green-100 text-green-800 hover:bg-green-100">
                       Active Registration
                     </Badge>
@@ -204,6 +204,26 @@ export default function DashboardPage() {
                       {daysUntilExpiry !== null 
                         ? `${daysUntilExpiry} days until renewal` 
                         : "Renewal date not set"}
+                    </Badge>
+                    {/* Subscription Badge */}
+                    <Badge 
+                      className={`
+                        ${userProfile?.currentPlan === 'premium' 
+                          ? 'bg-gradient-to-r from-amber-400 to-yellow-500 text-black font-semibold' 
+                          : userProfile?.currentPlan === 'standard'
+                            ? 'bg-gradient-to-r from-indigo-400 to-indigo-600' 
+                            : 'bg-gradient-to-r from-gray-400 to-gray-600'
+                        } 
+                        shadow-sm border-0 px-3 flex gap-1 items-center
+                      `}
+                    >
+                      {userProfile?.currentPlan === 'premium' && <span className="text-xs">⭐</span>}
+                      {userProfile?.currentPlan === 'premium' 
+                        ? 'Premium Plan' 
+                        : userProfile?.currentPlan === 'standard'
+                          ? 'Standard Plan' 
+                          : 'Free Plan'
+                      }
                     </Badge>
                   </div>
                   <p className="text-sm text-gray-500 mt-2">
