@@ -14,6 +14,12 @@ export default function GoogleSignInButton() {
     try {
       setIsLoading(true);
       
+      // Display a message to the user
+      toast({
+        title: "Google Sign-In",
+        description: "Connecting to Google...",
+      });
+      
       // Sign in with Google
       const user = await signInWithGoogle();
       
@@ -24,17 +30,21 @@ export default function GoogleSignInButton() {
       // Use email as username (trim domain for simplicity)
       const username = user.email?.split('@')[0] || 'google_user';
       
-      // Create a random password (not actually used for Google auth)
-      const password = Math.random().toString(36).slice(-12) + Math.random().toString(36).slice(-12);
-      
       // Try to register or login the user in our system
       try {
-        // First try to login
+        // First try to login 
         await loginMutation.mutateAsync({ 
           username, 
           password: `google_${user.uid}` // Use Google UID as password (for matching)
         });
+        
+        toast({
+          title: "Success!",
+          description: "You're now signed in with Google",
+        });
       } catch (error) {
+        console.log("Login failed, trying to register new user:", error);
+        
         // If login fails, it might be a new user, so try to register
         toast({
           title: "Welcome to RevalPro!",
@@ -43,7 +53,7 @@ export default function GoogleSignInButton() {
         
         // Try to perform the backend registration
         try {
-          await fetch('/api/register-google-user', {
+          const registerResponse = await fetch('/api/register-google-user', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -54,22 +64,34 @@ export default function GoogleSignInButton() {
             })
           });
           
-          // Now try to login again
+          if (!registerResponse.ok) {
+            const errorData = await registerResponse.json();
+            console.error("Registration error:", errorData);
+            throw new Error(errorData.error || "Failed to create account");
+          }
+          
+          // Now try to login again with the newly created account
           await loginMutation.mutateAsync({ 
             username, 
             password: `google_${user.uid}` 
           });
+          
+          toast({
+            title: "Account created!",
+            description: "Your new account has been set up successfully.",
+          });
         } catch (registerError) {
-          throw new Error("Failed to create account");
+          console.error("Registration error:", registerError);
+          throw new Error("Failed to create account - please try again or use email signup");
         }
       }
     } catch (error) {
+      console.error("Google sign-in error:", error);
       toast({
         title: "Authentication failed",
-        description: "Could not sign in with Google",
+        description: error.message || "Could not sign in with Google",
         variant: "destructive",
       });
-      console.error("Google sign-in error:", error);
     } finally {
       setIsLoading(false);
     }

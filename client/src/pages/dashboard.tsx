@@ -208,19 +208,19 @@ export default function DashboardPage() {
                     {/* Subscription Badge */}
                     <Badge 
                       className={`
-                        ${userProfile?.currentPlan === 'premium' 
+                        ${'premium' === 'premium' 
                           ? 'bg-gradient-to-r from-amber-400 to-yellow-500 text-black font-semibold' 
-                          : userProfile?.currentPlan === 'standard'
+                          : 'free' === 'standard'
                             ? 'bg-gradient-to-r from-indigo-400 to-indigo-600' 
                             : 'bg-gradient-to-r from-gray-400 to-gray-600'
                         } 
                         shadow-sm border-0 px-3 flex gap-1 items-center
                       `}
                     >
-                      {userProfile?.currentPlan === 'premium' && <span className="text-xs">⭐</span>}
-                      {userProfile?.currentPlan === 'premium' 
+                      {'free' === 'premium' && <span className="text-xs">⭐</span>}
+                      {'free' === 'premium' 
                         ? 'Premium Plan' 
-                        : userProfile?.currentPlan === 'standard'
+                        : 'free' === 'standard'
                           ? 'Standard Plan' 
                           : 'Free Plan'
                       }
