@@ -173,12 +173,25 @@ export default function DashboardPage() {
             <CardContent className="pt-6">
               <div className="flex flex-col md:flex-row items-center justify-between">
                 <div className="flex items-center gap-4 mb-4 md:mb-0">
-                  <div className="bg-white p-4 rounded-full shadow-sm">
-                    <LayoutDashboard className="h-10 w-10 text-revalpro-blue" />
-                  </div>
+                  {userProfile.profilePicture ? (
+                    <div className="rounded-full w-16 h-16 overflow-hidden border-2 border-revalpro-blue shadow-sm">
+                      <img 
+                        src={userProfile.profilePicture} 
+                        alt="Profile" 
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <div className="bg-white p-4 rounded-full shadow-sm">
+                      <LayoutDashboard className="h-10 w-10 text-revalpro-blue" />
+                    </div>
+                  )}
                   <div>
                     <h2 className="text-xl font-bold">{userProfile.name}</h2>
-                    <p className="text-gray-600">{userProfile.registrationNumber}</p>
+                    <p className="text-gray-600">
+                      {userProfile.registrationNumber}
+                      {userProfile.jobTitle && <span> • {userProfile.jobTitle}</span>}
+                    </p>
                   </div>
                 </div>
                 
