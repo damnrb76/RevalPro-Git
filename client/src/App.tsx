@@ -10,6 +10,7 @@ import { ProtectedRoute } from "@/lib/protected-route";
 
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
+import Dashboard from "@/pages/dashboard";
 import AuthPage from "@/pages/auth-page";
 import LandingPage from "@/pages/landing";
 import PracticeHours from "@/pages/practice-hours";
@@ -60,7 +61,8 @@ function AppRouter() {
           <Route path="/landing" component={LandingPage} />
           <Route path="/auth" component={AuthPage} />
           <Route path="/original" component={LandingPage} />
-          <ProtectedRoute path="/dashboard" component={Home} />
+          <ProtectedRoute path="/dashboard" component={Dashboard} />
+          <ProtectedRoute path="/home" component={Home} />
           <ProtectedRoute path="/practice-hours" component={PracticeHours} />
           <ProtectedRoute path="/cpd" component={CPD} />
           <ProtectedRoute path="/feedback" component={Feedback} />

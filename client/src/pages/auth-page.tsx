@@ -12,9 +12,9 @@ export default function AuthPage() {
   const [activeTab, setActiveTab] = useState<string>("login");
   const { user } = useAuth();
 
-  // If user is already logged in, redirect to home page
+  // If user is already logged in, redirect to dashboard page
   if (user) {
-    return <Redirect to="/" />;
+    return <Redirect to="/dashboard" />;
   }
 
   return (
