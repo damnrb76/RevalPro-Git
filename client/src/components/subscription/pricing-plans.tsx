@@ -22,7 +22,7 @@ export default function PricingPlans() {
   const { user } = useAuth();
   const { toast } = useToast();
   const [_, setLocation] = useLocation();
-  const [period, setPeriod] = useState<"monthly" | "annual">("annual");
+  const [period, setPeriod] = useState<"monthly" | "annual">("annual"); // Default to annual
   const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlan | null>(null);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
 
@@ -210,6 +210,15 @@ export default function PricingPlans() {
         <p className="mt-4 max-w-2xl text-xl text-gray-500 mx-auto">
           Choose the right plan for your revalidation journey
         </p>
+        
+        {/* Early adopter incentive banner */}
+        <div className="mt-6 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4 max-w-3xl mx-auto">
+          <p className="font-bold text-blue-800">🎉 Limited Time Early Adopter Offer!</p>
+          <p className="text-sm text-gray-700 mt-1">
+            Join our founding members and get <span className="font-semibold text-blue-700">3 months free</span> with any annual plan. 
+            Plus, lock in our introductory pricing for life!
+          </p>
+        </div>
       </div>
 
       <div className="mt-6 flex justify-center">
