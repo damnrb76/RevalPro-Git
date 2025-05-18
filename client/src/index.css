@@ -152,8 +152,10 @@
   }
   
   body {
-    @apply bg-gradient-to-br from-revalpro-light-grey via-white to-revalpro-light-grey text-foreground font-sans;
+    @apply bg-gradient-to-br from-revalpro-blue/10 via-white to-revalpro-teal/10 text-foreground font-sans;
     font-feature-settings: "rlig" 1, "calt" 1;
+    background-size: 200% 200%;
+    animation: gradientShift 10s ease infinite;
   }
   
   h1, h2, h3, h4, h5, h6 {
@@ -179,9 +181,16 @@
     @apply h-full rounded-[5px];
   }
   
-  /* Form element colors */
+  /* Form element colors - More vibrant */
   form {
-    @apply bg-gradient-to-br from-revalpro-light-grey to-revalpro-white;
+    @apply bg-gradient-to-br from-revalpro-blue/10 to-revalpro-teal/5 rounded-lg p-6 border border-revalpro-blue/20;
+  }
+  
+  /* Form field styling */
+  .form-input,
+  .form-select,
+  .form-textarea {
+    @apply bg-white/80 border-revalpro-blue/30 focus:border-revalpro-blue focus:ring-revalpro-blue/40;
   }
   
   /* Colorful gradient backgrounds for cards */
@@ -205,22 +214,32 @@
     @apply bg-gradient-to-br from-revalpro-pink/30 to-revalpro-pink/10 hover:from-revalpro-pink/40 hover:to-revalpro-pink/20 transition-all duration-300;
   }
   
-  /* Enhanced card styling */
+  /* Enhanced card styling with vibrant colors */
   .card {
-    @apply transition-all duration-300 rounded-lg overflow-hidden shadow-md hover:shadow-lg;
+    @apply transition-all duration-300 rounded-lg overflow-hidden shadow-md hover:shadow-lg
+           bg-gradient-to-br from-white to-revalpro-blue/5 border border-revalpro-blue/20;
   }
   
   .card:hover {
-    @apply transform -translate-y-1;
+    @apply transform -translate-y-1 border-revalpro-blue/30 bg-gradient-to-br from-white to-revalpro-blue/10;
   }
   
-  /* Button animations */
+  /* Button animations with vivid colors */
   button:not(.unstyled) {
-    @apply transition-all duration-300;
+    @apply transition-all duration-300 bg-gradient-to-r from-revalpro-blue to-revalpro-teal 
+           text-white shadow-sm border-none;
   }
   
   button:not(.unstyled):hover {
-    @apply transform -translate-y-0.5 shadow-md;
+    @apply transform -translate-y-0.5 shadow-md bg-gradient-to-r from-revalpro-teal to-revalpro-blue;
+  }
+  
+  button.secondary:not(.unstyled) {
+    @apply bg-gradient-to-r from-revalpro-purple to-revalpro-pink;
+  }
+  
+  button.secondary:not(.unstyled):hover {
+    @apply bg-gradient-to-r from-revalpro-pink to-revalpro-purple;
   }
   
   /* Vibrant gradients for section backgrounds */
