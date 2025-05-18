@@ -46,11 +46,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Create a special password hash for Google users (uses UID)
       const hashedPassword = await hashPassword(`google_${uid}`);
 
-      // Create user in our system
+      // Create user in our system with additional fields
       const user = await storage.createUser({
         username,
         password: hashedPassword,
+        email: email || null,
+        currentPlan: "free",
+        profileImage: null,
+        jobTitle: null,
       });
+
+      // Add profile information if we have it
+      if (displayName) {
+        try {
+          await storage.createUserProfile({
+            userId: user.id,
+            name: displayName,
+            registrationNumber: "",
+            expiryDate: "",
+            email: email || null,
+            jobTitle: null,
+            profileImage: null,
+          });
+        } catch (profileError) {
+          console.error("Error creating profile for Google user:", profileError);
+          // Continue anyway as the user was created
+        }
+      }
 
       // Success
       res.status(201).json({ message: "User created successfully" });

@@ -27,10 +27,20 @@ googleProvider.setCustomParameters({
 // Google Authentication Functions
 export const signInWithGoogle = async () => {
   try {
+    console.log("Attempting Google sign-in...");
     const result = await signInWithPopup(auth, googleProvider);
+    console.log("Google sign-in successful:", result.user);
     return result.user;
   } catch (error) {
     console.error("Error signing in with Google:", error);
+    // Handle specific Firebase auth errors
+    if (error.code === 'auth/popup-blocked') {
+      console.error("Popup was blocked by the browser");
+      alert("Please allow popups for this site to use Google sign-in");
+    } else if (error.code === 'auth/unauthorized-domain') {
+      console.error("Domain not authorized in Firebase");
+      alert("This domain is not authorized for authentication. Please contact support.");
+    }
     throw error;
   }
 };
