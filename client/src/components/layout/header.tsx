@@ -10,10 +10,11 @@ import {
   DropdownMenuSeparator, 
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
-import { LogOut, User, Settings, HelpCircle, MoonStar, Sun, ChevronDown } from "lucide-react";
+import { LogOut, User, Settings, HelpCircle, MoonStar, Sun, ChevronDown, Palette } from "lucide-react";
 import { userProfileStorage } from "@/lib/storage";
 import { useTheme } from "@/components/ui/theme-provider";
 import AssistantButton from "@/components/ai/assistant-button";
+import ColorPaletteSelector from "./color-palette-selector";
 
 type HeaderProps = {
   logo: string;
@@ -118,6 +119,12 @@ export default function Header({ logo }: HeaderProps) {
                   </>
                 )}
               </DropdownMenuItem>
+              <Link href="/settings?tab=appearance">
+                <DropdownMenuItem>
+                  <Palette className="mr-2 h-4 w-4" />
+                  <span>Color Themes</span>
+                </DropdownMenuItem>
+              </Link>
               <DropdownMenuSeparator />
               <DropdownMenuItem className="sm:hidden block">
                 <AssistantButton variant="ghost" className="w-full justify-start p-0 hover:bg-transparent" />
