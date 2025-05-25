@@ -992,21 +992,36 @@ export async function downloadSpecificForm(formType: string): Promise<void> {
         throw new Error(`Unknown form type: ${formType}`);
     }
     
-    // Generate and download the PDF
+    // Generate and download the PDF with improved browser compatibility
     const pdfOutput = pdf.output('blob');
     const url = URL.createObjectURL(pdfOutput);
     const a = document.createElement("a");
+    
+    // Set download attributes
     a.href = url;
     a.download = `${filename}-${formatDateShort(new Date()).replace(/\//g, '-')}.pdf`;
+    a.style.display = 'none';
     
-    // Trigger download
+    // Add to document and trigger download
     document.body.appendChild(a);
-    a.click();
     
-    // Cleanup
+    // Force click with timeout for better browser compatibility
     setTimeout(() => {
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      try {
+        a.click();
+      } catch (clickError) {
+        // Fallback: try opening in new window if click fails
+        console.warn('Direct download failed, trying fallback method');
+        window.open(url, '_blank');
+      }
+      
+      // Cleanup after download
+      setTimeout(() => {
+        if (document.body.contains(a)) {
+          document.body.removeChild(a);
+        }
+        URL.revokeObjectURL(url);
+      }, 500);
     }, 100);
     
   } catch (error) {
