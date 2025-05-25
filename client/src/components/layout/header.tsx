@@ -15,6 +15,7 @@ import { userProfileStorage } from "@/lib/storage";
 import { useTheme } from "@/components/ui/theme-provider";
 import AssistantButton from "@/components/ai/assistant-button";
 import ColorPaletteSelector from "./color-palette-selector";
+import NotificationCenter from "@/components/notification-center";
 
 type HeaderProps = {
   logo: string;
@@ -70,6 +71,10 @@ export default function Header({ logo }: HeaderProps) {
         <div className="flex items-center">
           <div className="mr-3 hidden sm:block">
             <AssistantButton variant="secondary" size="sm" />
+          </div>
+          
+          <div className="mr-3">
+            <NotificationCenter />
           </div>
           
           <DropdownMenu>

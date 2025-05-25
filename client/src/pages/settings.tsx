@@ -12,7 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useTheme } from "@/components/ui/theme-provider";
 import { 
   AlertTriangle, Download, Upload, Trash2, 
-  Moon, Sun, Info, Shield, User, Palette
+  Moon, Sun, Info, Shield, User, Palette, Bell
 } from "lucide-react";
 import { 
   userProfileStorage, 
