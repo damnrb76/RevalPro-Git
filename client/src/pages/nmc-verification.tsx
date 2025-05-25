@@ -71,12 +71,7 @@ export default function NmcVerificationPage() {
   const [expiryDate, setExpiryDate] = useState<Date | undefined>(undefined);
   const [dateOfBirth, setDateOfBirth] = useState<Date | undefined>(undefined);
 
-  // Check NMC service status
-  const { data: serviceStatus, isLoading: statusLoading } = useQuery<RevalidationServiceStatus>({
-    queryKey: ["/api/nmc/service-status"],
-    refetchOnWindowFocus: false,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  });
+
 
   // Get revalidation requirements
   const { data: requirements, isLoading: requirementsLoading } = useQuery<string[]>({
@@ -190,35 +185,7 @@ export default function NmcVerificationPage() {
         Connect with the Nursing & Midwifery Council portal
       </p>
 
-      {/* Service Status */}
-      <div className="mb-8">
-        <Alert variant={serviceStatus?.status === 'Available' ? 'default' : 'destructive'}>
-          {statusLoading ? (
-            <Server className="h-4 w-4 animate-pulse" />
-          ) : serviceStatus?.status === 'Available' ? (
-            <CheckCircle2 className="h-4 w-4" />
-          ) : (
-            <AlertCircle className="h-4 w-4" />
-          )}
-          <AlertTitle>
-            NMC Services: {statusLoading ? "Checking..." : serviceStatus?.status}
-          </AlertTitle>
-          <AlertDescription>
-            {statusLoading
-              ? "Checking NMC service availability..."
-              : serviceStatus?.status === 'Available'
-                ? "NMC services are currently available."
-                : serviceStatus?.status === 'Maintenance'
-                  ? "NMC services are currently under maintenance. Please try again later."
-                  : "NMC services are currently unavailable. Please try again later or visit the NMC website directly."}
-            {serviceStatus && (
-              <div className="text-xs mt-1">
-                Last checked: {formatDateFull(serviceStatus.lastChecked)}
-              </div>
-            )}
-          </AlertDescription>
-        </Alert>
-      </div>
+
 
       <Tabs defaultValue="verify" className="w-full">
         <TabsList className="grid grid-cols-3 mb-8">
