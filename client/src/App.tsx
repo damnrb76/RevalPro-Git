@@ -26,7 +26,7 @@ import NmcVerification from "@/pages/nmc-verification";
 import NmcRegistrationCheck from "@/pages/nmc-registration-check";
 import RevalidationDates from "@/pages/revalidation-dates";
 import NmcResources from "@/pages/nmc-resources";
-import NmcServiceStatus from "@/pages/nmc-service-status";
+
 import TesterFeedback from "@/pages/tester-feedback";
 import SummaryInfographic from "@/pages/summary-infographic";
 import SneakPeekPage from "@/pages/sneak-peek";
@@ -76,7 +76,7 @@ function AppRouter() {
           <ProtectedRoute path="/nmc-registration-check" component={NmcRegistrationCheck} />
           <ProtectedRoute path="/revalidation-dates" component={RevalidationDates} />
           <ProtectedRoute path="/nmc-resources" component={NmcResources} />
-          <ProtectedRoute path="/nmc-service-status" component={NmcServiceStatus} />
+
           
           {/* Tester Feedback */}
           <Route path="/tester-feedback" component={TesterFeedback} />
