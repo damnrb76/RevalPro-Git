@@ -580,17 +580,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "Invalid email format" });
       }
 
-      // Log the interest registration (you could also store this in a database)
+      // Log the interest registration
       console.log(`New interest registration: ${email} at ${new Date().toISOString()}`);
       
-      // Send notification email to revalpro2025@gmail.com
-      // Note: For production, you would implement actual email sending here
-      // This could be done with services like SendGrid, Nodemailer, etc.
+      // Import email service
+      const { sendInterestNotification, sendWelcomeEmail } = await import('./email-service');
       
-      // For now, we'll log it and return success
-      // In production, you would integrate with an email service
-      console.log(`Email signup notification should be sent to: revalpro2025@gmail.com`);
-      console.log(`New signup from: ${email}`);
+      // Send notification email to revalpro2025@gmail.com
+      const notificationSent = await sendInterestNotification(email);
+      
+      // Send welcome email to the user
+      const welcomeSent = await sendWelcomeEmail(email);
+      
+      if (notificationSent && welcomeSent) {
+        console.log(`Emails sent successfully for signup: ${email}`);
+      } else {
+        console.log(`Some emails failed to send for: ${email}`);
+      }
       
       res.json({ 
         success: true, 
