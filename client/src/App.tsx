@@ -91,6 +91,10 @@ function AppRouter() {
           {/* Subscription Routes */}
           <ProtectedRoute path="/subscription" component={SubscriptionPage} />
           <ProtectedRoute path="/subscription/success" component={SubscriptionSuccess} />
+          
+          {/* Admin Panel Route */}
+          <ProtectedRoute path="/admin" component={AdminPanel} />
+          
           <Route component={NotFound} />
         </Switch>
       </div>
