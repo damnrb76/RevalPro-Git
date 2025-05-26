@@ -58,6 +58,9 @@ function AppRouter() {
           {/* Coming Soon Page - For main domain */}
           <Route path="/" component={ComingSoonPage} />
           
+          {/* Development access route for testing app features */}
+          <Route path="/app" component={LandingPage} />
+          
           {/* Original Routes - Still accessible on the Replit domain */}
           <Route path="/landing" component={LandingPage} />
           <Route path="/auth" component={AuthPage} />

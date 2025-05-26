@@ -1,7 +1,54 @@
 import { Helmet } from "react-helmet";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 export default function ComingSoonPage() {
+  const [email, setEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
+
+  const handleEmailSignup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!email) {
+      toast({
+        title: "Email required",
+        description: "Please enter your email address",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+    
+    try {
+      const response = await fetch('/api/register-interest', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      if (response.ok) {
+        toast({
+          title: "Thank you!",
+          description: "We'll notify you as soon as RevalPro launches!",
+        });
+        setEmail("");
+      } else {
+        throw new Error('Failed to register interest');
+      }
+    } catch (error) {
+      toast({
+        title: "Something went wrong",
+        description: "Please try again later or contact us directly",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex flex-col items-center justify-center p-4">
@@ -61,16 +108,28 @@ export default function ComingSoonPage() {
       {/* Email Notification */}
       <div className="bg-white p-6 rounded-xl shadow-md max-w-xl w-full">
         <h3 className="text-xl font-bold text-center mb-4">Be the first to know when we launch</h3>
-        <div className="flex flex-col sm:flex-row gap-2">
-          <input 
-            type="email" 
-            placeholder="Your email address" 
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <button className="px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">
-            Notify Me
-          </button>
-        </div>
+        <form onSubmit={handleEmailSignup}>
+          <div className="flex flex-col sm:flex-row gap-2">
+            <input 
+              type="email" 
+              placeholder="Your email address" 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+            <button 
+              type="submit"
+              disabled={isSubmitting}
+              className="px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isSubmitting ? "Submitting..." : "Notify Me"}
+            </button>
+          </div>
+        </form>
+        <p className="text-sm text-gray-500 mt-2 text-center">
+          Join our early access list for priority updates and exclusive launch benefits!
+        </p>
       </div>
       
       {/* Footer */}

@@ -565,6 +565,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Email signup for coming soon page
+  app.post("/api/register-interest", async (req, res) => {
+    try {
+      const { email } = req.body;
+      
+      if (!email) {
+        return res.status(400).json({ error: "Email is required" });
+      }
+
+      // Validate email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        return res.status(400).json({ error: "Invalid email format" });
+      }
+
+      // Log the interest registration (you could also store this in a database)
+      console.log(`New interest registration: ${email} at ${new Date().toISOString()}`);
+      
+      // Send notification email to revalpro2025@gmail.com
+      // Note: For production, you would implement actual email sending here
+      // This could be done with services like SendGrid, Nodemailer, etc.
+      
+      // For now, we'll log it and return success
+      // In production, you would integrate with an email service
+      console.log(`Email signup notification should be sent to: revalpro2025@gmail.com`);
+      console.log(`New signup from: ${email}`);
+      
+      res.json({ 
+        success: true, 
+        message: "Thank you for registering your interest! We'll notify you when RevalPro launches." 
+      });
+      
+    } catch (error) {
+      console.error("Error processing interest registration:", error);
+      res.status(500).json({ error: "Failed to register interest" });
+    }
+  });
+
   const httpServer = createServer(app);
 
   return httpServer;
