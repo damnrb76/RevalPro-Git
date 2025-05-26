@@ -100,7 +100,7 @@ function AppRouter() {
           <ProtectedRoute path="/admin" component={AdminPanel} />
           
           {/* Privacy Policy Route */}
-          <Route path="/privacy" component={PrivacyPolicyPage} />
+          <Route path="/privacy-policy" component={PrivacyPolicyPage} />
           
           <Route component={NotFound} />
         </Switch>

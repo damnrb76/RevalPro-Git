@@ -43,7 +43,7 @@ export default function ComingSoonPage() {
       if (response.ok) {
         toast({
           title: "Thank you!",
-          description: "We'll notify you as soon as RevalPro launches!",
+          description: "We'll notify you as soon as RevalPro launches! Please check your spam folder if you don't receive a confirmation email within a few minutes.",
         });
         setEmail("");
         setConsent(false);
@@ -182,6 +182,11 @@ export default function ComingSoonPage() {
       <div className="mt-12 text-center text-gray-500">
         <p>&copy; 2025 RevalPro. All rights reserved.</p>
         <p className="mt-2">The complete NMC revalidation companion for UK nurses and midwives.</p>
+        <p className="mt-2">
+          <a href="/privacy-policy" className="text-blue-600 hover:text-blue-800 underline">
+            Privacy Policy
+          </a>
+        </p>
       </div>
     </div>
   );
