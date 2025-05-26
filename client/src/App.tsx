@@ -32,6 +32,7 @@ import SummaryInfographic from "@/pages/summary-infographic";
 import SneakPeekPage from "@/pages/sneak-peek";
 import ComingSoonPage from "@/pages/coming-soon";
 import AdminPanel from "@/pages/admin-panel";
+import PrivacyPolicyPage from "@/pages/privacy-policy";
 import Footer from "@/components/layout/footer";
 import NavigationTabs from "@/components/layout/navigation-tabs";
 import ProminentHeader from "@/components/layout/prominent-header";
@@ -97,6 +98,9 @@ function AppRouter() {
           
           {/* Admin Panel Route */}
           <ProtectedRoute path="/admin" component={AdminPanel} />
+          
+          {/* Privacy Policy Route */}
+          <Route path="/privacy" component={PrivacyPolicyPage} />
           
           <Route component={NotFound} />
         </Switch>
