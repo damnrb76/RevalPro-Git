@@ -143,6 +143,59 @@ export class MemStorage implements IStorage {
     this.users.set(userId, updatedUser);
     return updatedUser;
   }
+
+  async getAllUsers(): Promise<User[]> {
+    return Array.from(this.users.values());
+  }
+
+  async updateUserPlan(userId: number, plan: string): Promise<User> {
+    const user = this.users.get(userId);
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const updatedUser = { 
+      ...user, 
+      currentPlan: plan,
+      subscriptionStatus: plan === "free" ? "inactive" : "active"
+    };
+    this.users.set(userId, updatedUser);
+    return updatedUser;
+  }
+
+  async deleteUser(userId: number): Promise<boolean> {
+    return this.users.delete(userId);
+  }
+
+  async getAdminStats(): Promise<{
+    totalUsers: number;
+    freeUsers: number;
+    standardUsers: number;
+    premiumUsers: number;
+    activeSubscriptions: number;
+    totalRevenue: number;
+  }> {
+    const users = Array.from(this.users.values());
+    const totalUsers = users.length;
+    const freeUsers = users.filter(u => u.currentPlan === "free").length;
+    const standardUsers = users.filter(u => u.currentPlan === "standard").length;
+    const premiumUsers = users.filter(u => u.currentPlan === "premium").length;
+    const activeSubscriptions = users.filter(u => u.subscriptionStatus === "active").length;
+    
+    // Calculate estimated monthly revenue (simplified calculation)
+    const standardRevenue = standardUsers * 4.99;
+    const premiumRevenue = premiumUsers * 9.99;
+    const totalRevenue = Math.round((standardRevenue + premiumRevenue) * 100) / 100;
+
+    return {
+      totalUsers,
+      freeUsers,
+      standardUsers,
+      premiumUsers,
+      activeSubscriptions,
+      totalRevenue
+    };
+  }
 }
 
 export const storage = new MemStorage();
