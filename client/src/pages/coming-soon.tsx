@@ -4,6 +4,7 @@ import { useToast } from "@/hooks/use-toast";
 
 export default function ComingSoonPage() {
   const [email, setEmail] = useState("");
+  const [consent, setConsent] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
@@ -14,6 +15,15 @@ export default function ComingSoonPage() {
       toast({
         title: "Email required",
         description: "Please enter your email address",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!consent) {
+      toast({
+        title: "Consent required",
+        description: "Please confirm you'd like to receive updates by checking the consent box",
         variant: "destructive",
       });
       return;
@@ -36,6 +46,7 @@ export default function ComingSoonPage() {
           description: "We'll notify you as soon as RevalPro launches!",
         });
         setEmail("");
+        setConsent(false);
       } else {
         throw new Error('Failed to register interest');
       }
@@ -74,6 +85,66 @@ export default function ComingSoonPage() {
         We're building something special to transform your NMC revalidation experience.
         Stay tuned!
       </p>
+
+      {/* Email Signup Form - Moved to Top */}
+      <div className="bg-white p-8 rounded-xl shadow-lg max-w-2xl w-full mb-12 border-2 border-blue-100">
+        <h2 className="text-2xl md:text-3xl font-bold text-center text-blue-700 mb-2">
+          Be the First to Experience RevalPro!
+        </h2>
+        <h3 className="text-xl font-semibold text-center text-gray-700 mb-6">
+          Get Exclusive Access & Updates for RevalPro!
+        </h3>
+        
+        <p className="text-gray-600 text-center mb-6">
+          Enter your email below to receive notifications about the RevalPro launch, important product updates, 
+          and information on how to get priority access when it becomes available.
+        </p>
+        
+        <form onSubmit={handleEmailSignup} className="space-y-4">
+          <div>
+            <input 
+              type="email" 
+              placeholder="Email Address" 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
+              required
+            />
+          </div>
+          
+          <div className="flex items-start space-x-3">
+            <input
+              type="checkbox"
+              id="consent"
+              checked={consent}
+              onChange={(e) => setConsent(e.target.checked)}
+              className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+            />
+            <label htmlFor="consent" className="text-sm text-gray-700 leading-relaxed">
+              Yes, please keep me informed about RevalPro! By checking this box, I agree to receive emails about the RevalPro launch, 
+              product updates, and priority access opportunities. I understand I can unsubscribe at any time.
+            </label>
+          </div>
+          
+          <div className="text-center">
+            <button 
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full px-8 py-3 bg-blue-600 text-white font-semibold text-lg rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isSubmitting ? "Submitting..." : "Sign Up for RevalPro: Launch News, Updates & Priority Access!"}
+            </button>
+          </div>
+          
+          <div className="text-center text-sm text-gray-600">
+            We value your privacy. Please review our{" "}
+            <a href="/privacy" className="text-blue-600 hover:text-blue-800 underline">
+              Privacy Policy
+            </a>{" "}
+            to see how we manage your data.
+          </div>
+        </form>
+      </div>
       
       {/* Launch Announcement */}
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 max-w-2xl w-full text-center mb-12">
@@ -105,32 +176,7 @@ export default function ComingSoonPage() {
         </div>
       </div>
       
-      {/* Email Notification */}
-      <div className="bg-white p-6 rounded-xl shadow-md max-w-xl w-full">
-        <h3 className="text-xl font-bold text-center mb-4">Be the first to know when we launch</h3>
-        <form onSubmit={handleEmailSignup}>
-          <div className="flex flex-col sm:flex-row gap-2">
-            <input 
-              type="email" 
-              placeholder="Your email address" 
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-            <button 
-              type="submit"
-              disabled={isSubmitting}
-              className="px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isSubmitting ? "Submitting..." : "Notify Me"}
-            </button>
-          </div>
-        </form>
-        <p className="text-sm text-gray-500 mt-2 text-center">
-          Join our early access list for priority updates and exclusive launch benefits!
-        </p>
-      </div>
+
       
       {/* Footer */}
       <div className="mt-12 text-center text-gray-500">
