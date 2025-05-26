@@ -18,9 +18,11 @@ import {
   MessageCircle,
   BarChart3,
   LayoutPanelTop,
-  PanelLeft
+  PanelLeft,
+  Shield
 } from 'lucide-react';
 import { useMenuLayout } from "@/hooks/use-menu-layout";
+import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
@@ -38,9 +40,11 @@ type NavigationLink = {
 
 export default function NavigationTabs({ currentPath }: NavigationTabsProps) {
   const { layout, toggleLayout } = useMenuLayout();
+  const { user } = useAuth();
   const isVertical = layout === "vertical";
   
-  const links: NavigationLink[] = [
+  // Base navigation links
+  const baseLinks: NavigationLink[] = [
     { 
       href: "/dashboard", 
       label: "Dashboard", 
@@ -147,6 +151,18 @@ export default function NavigationTabs({ currentPath }: NavigationTabsProps) {
       hoverColor: "hover:bg-gray-300"
     },
   ];
+
+  // Add admin panel link for super admins
+  const links = [...baseLinks];
+  if (user?.isSuperAdmin || user?.isAdmin) {
+    links.push({
+      href: "/admin",
+      label: "Admin Panel",
+      icon: <Shield size={16} />,
+      color: "bg-red-200 text-red-700",
+      hoverColor: "hover:bg-red-300"
+    });
+  }
 
   // Render the vertical sidebar navigation
   if (isVertical) {
