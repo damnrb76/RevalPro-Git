@@ -19,6 +19,8 @@ export const users = pgTable("users", {
   subscriptionPeriod: text("subscription_period"),  // "monthly" or "annual"
   subscriptionEndDate: timestamp("subscription_end_date"),
   cancelAtPeriodEnd: boolean("cancel_at_period_end").default(false),
+  isAdmin: boolean("is_admin").default(false),
+  isSuperAdmin: boolean("is_super_admin").default(false),
 });
 
 export const insertUserSchema = createInsertSchema(users).pick({

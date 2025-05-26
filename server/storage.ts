@@ -22,6 +22,17 @@ export interface IStorage {
   getUserByStripeCustomerId(customerId: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   updateUserStripeInfo(userId: number, info: SubscriptionInfo): Promise<User>;
+  getAllUsers(): Promise<User[]>;
+  updateUserPlan(userId: number, plan: string): Promise<User>;
+  deleteUser(userId: number): Promise<boolean>;
+  getAdminStats(): Promise<{
+    totalUsers: number;
+    freeUsers: number;
+    standardUsers: number;
+    premiumUsers: number;
+    activeSubscriptions: number;
+    totalRevenue: number;
+  }>;
   sessionStore: session.Store;
 }
 
@@ -51,9 +62,30 @@ export class MemStorage implements IStorage {
       subscriptionStatus: "inactive",
       subscriptionPeriod: null,
       subscriptionEndDate: null,
-      cancelAtPeriodEnd: false
+      cancelAtPeriodEnd: false,
+      isAdmin: false,
+      isSuperAdmin: false
     });
-    this.currentId = 2; // Start new users at ID 2
+
+    // Add super admin account with full privileges
+    this.users.set(2, {
+      id: 2,
+      username: "RevalProAdmin",
+      password: "hashed_5up3ru53r!", // Simple hash for "5up3ru53r!"
+      email: "admin@revalpro.co.uk",
+      profilePicture: "https://api.dicebear.com/7.x/personas/svg?seed=superadmin",
+      created: new Date(),
+      currentPlan: "premium", // Super admin gets premium access
+      stripeCustomerId: null,
+      stripeSubscriptionId: null,
+      subscriptionStatus: "active",
+      subscriptionPeriod: "annual",
+      subscriptionEndDate: null, // Never expires
+      cancelAtPeriodEnd: false,
+      isAdmin: true,
+      isSuperAdmin: true
+    });
+    this.currentId = 3; // Start new users at ID 3
   }
 
   async getUser(id: number): Promise<User | undefined> {
@@ -83,7 +115,9 @@ export class MemStorage implements IStorage {
       subscriptionStatus: "inactive",
       subscriptionPeriod: null,
       subscriptionEndDate: null,
-      cancelAtPeriodEnd: false
+      cancelAtPeriodEnd: false,
+      isAdmin: false,
+      isSuperAdmin: false
     };
     this.users.set(id, user);
     return user;
