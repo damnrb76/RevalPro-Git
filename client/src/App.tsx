@@ -46,10 +46,11 @@ function AppRouter() {
   const { layout } = useMenuLayout();
   const isVerticalMenu = layout === "vertical";
   const isComingSoonPage = location === '/';
-  const showTabs = location !== '/auth' && location !== '/landing' && !isComingSoonPage;
+  const isPrivacyPage = location === '/privacy-policy';
+  const showTabs = location !== '/auth' && location !== '/landing' && !isComingSoonPage && !isPrivacyPage;
   const isAuthPage = location === '/auth';
   const isLandingPage = location === '/landing';
-  const showAppHeader = !isLandingPage && !isComingSoonPage;
+  const showAppHeader = !isLandingPage && !isComingSoonPage && !isPrivacyPage;
   
   return (
     <div className={`min-h-screen flex flex-col ${isVerticalMenu && showTabs ? 'pl-64' : ''}`}>
@@ -106,7 +107,7 @@ function AppRouter() {
           <Route component={NotFound} />
         </Switch>
       </div>
-      {!isLandingPage && !isComingSoonPage && <Footer logo={logo} className={isVerticalMenu && showTabs ? 'ml-64' : ''} />}
+      {!isLandingPage && !isComingSoonPage && !isPrivacyPage && <Footer logo={logo} className={isVerticalMenu && showTabs ? 'ml-64' : ''} />}
     </div>
   );
 }
