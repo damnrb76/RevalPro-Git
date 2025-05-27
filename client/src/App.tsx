@@ -59,7 +59,7 @@ function AppRouter() {
       <div className={`flex-grow ${!isAuthPage && !isLandingPage ? 'pt-4' : ''}`}>
         <Switch>
           {/* Coming Soon Page - For main domain only */}
-          <Route path="/" component={window.location.hostname === 'revalpro.co.uk' ? ComingSoonPage : AuthPage} />
+          <Route path="/" component={window.location.hostname.includes('revalpro.co.uk') ? ComingSoonPage : AuthPage} />
           
           {/* Development access route for testing app features */}
           <Route path="/app" component={LandingPage} />
