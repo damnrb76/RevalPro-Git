@@ -45,8 +45,8 @@ function AppRouter() {
   const [location] = useLocation();
   const { layout } = useMenuLayout();
   const isVerticalMenu = layout === "vertical";
-  const isComingSoonPage = location === '/';
-  const isPrivacyPage = location === '/privacy-policy';
+  const isComingSoonPage = location === '/' && window.location.hostname === 'revalpro.co.uk';
+  const isPrivacyPage = location === '/privacy-policy' && window.location.hostname === 'revalpro.co.uk';
   const showTabs = location !== '/auth' && location !== '/landing' && !isComingSoonPage && !isPrivacyPage;
   const isAuthPage = location === '/auth';
   const isLandingPage = location === '/landing';
