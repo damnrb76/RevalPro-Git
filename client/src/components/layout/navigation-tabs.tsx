@@ -144,6 +144,13 @@ export default function NavigationTabs({ currentPath }: NavigationTabsProps) {
       hoverColor: "hover:bg-amber-300"
     },
     { 
+      href: "/feasibility-questionnaire", 
+      label: "Feasibility Test", 
+      icon: <ClipboardCheck size={16} />,
+      color: "bg-emerald-200 text-emerald-700",
+      hoverColor: "hover:bg-emerald-300"
+    },
+    { 
       href: "/settings", 
       label: "Settings", 
       icon: <SettingsIcon size={16} />,

@@ -28,6 +28,7 @@ import RevalidationDates from "@/pages/revalidation-dates";
 import NmcResources from "@/pages/nmc-resources";
 
 import TesterFeedback from "@/pages/tester-feedback";
+import FeasibilityQuestionnaire from "@/pages/feasibility-questionnaire";
 import SummaryInfographic from "@/pages/summary-infographic";
 import SneakPeekPage from "@/pages/sneak-peek";
 import ComingSoonPage from "@/pages/coming-soon";
@@ -87,6 +88,9 @@ function AppRouter() {
           
           {/* Tester Feedback */}
           <Route path="/tester-feedback" component={TesterFeedback} />
+          
+          {/* Feasibility Questionnaire */}
+          <Route path="/feasibility-questionnaire" component={FeasibilityQuestionnaire} />
           
           {/* Infographic Routes - Changed to regular Route for preview */}
           <Route path="/summary-infographic" component={SummaryInfographic} />
