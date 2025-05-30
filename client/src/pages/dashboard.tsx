@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 import { 
   Clock, 
   BookOpen, 
@@ -17,7 +18,11 @@ import {
   LayoutDashboard,
   Settings,
   Bot,
-  ArrowUpRight
+  ArrowUpRight,
+  CheckCircle,
+  AlertCircle,
+  XCircle,
+  ListChecks
 } from "lucide-react";
 import { userProfileStorage } from "@/lib/storage";
 
@@ -50,78 +55,116 @@ export default function DashboardPage() {
   };
   
   const daysUntilExpiry = getDaysUntilExpiry();
+
+  // Mock data for demonstration - replace with actual data queries
+  const getRevalidationProgress = () => {
+    return {
+      practiceHours: {
+        current: 900,
+        required: 1500,
+        percentage: Math.round((900 / 1500) * 100),
+        status: 'in-progress'
+      },
+      cpdRecords: {
+        current: 25,
+        required: 35,
+        percentage: Math.round((25 / 35) * 100),
+        status: 'in-progress'
+      },
+      feedback: {
+        current: 3,
+        required: 5,
+        percentage: Math.round((3 / 5) * 100),
+        status: 'in-progress'
+      },
+      reflections: {
+        current: 4,
+        required: 5,
+        percentage: Math.round((4 / 5) * 100),
+        status: 'in-progress'
+      },
+      declarations: {
+        current: 1,
+        required: 1,
+        percentage: 100,
+        status: 'complete'
+      }
+    };
+  };
+
+  const progressData = getRevalidationProgress();
+
+  // Calculate overall completion percentage
+  const getOverallProgress = () => {
+    const elements = Object.values(progressData);
+    const totalPercentage = elements.reduce((sum, element) => sum + element.percentage, 0);
+    return Math.round(totalPercentage / elements.length);
+  };
+
+  const overallProgress = getOverallProgress();
+
+  // Get status icon and color
+  const getStatusInfo = (status: string, percentage: number) => {
+    if (percentage === 100) {
+      return { icon: CheckCircle, color: 'text-green-500', bgColor: 'bg-green-50', borderColor: 'border-green-200' };
+    } else if (percentage >= 70) {
+      return { icon: AlertCircle, color: 'text-amber-500', bgColor: 'bg-amber-50', borderColor: 'border-amber-200' };
+    } else {
+      return { icon: XCircle, color: 'text-red-500', bgColor: 'bg-red-50', borderColor: 'border-red-200' };
+    }
+  };
   
-  // Define the navigation cards with their details
-  const navCards = [
+  // Define the revalidation elements with progress tracking
+  const revalidationElements = [
     {
+      key: 'practiceHours',
       title: "Practice Hours",
       description: "Log and track your nursing practice hours",
-      icon: <Clock className="h-10 w-10 text-blue-500" />,
-      color: "bg-gradient-to-br from-blue-500/20 to-blue-600/10 border-blue-200",
-      link: "/practice-hours"
+      icon: <Clock className="h-8 w-8" />,
+      color: "from-revalpro-green/20 to-revalpro-green/10",
+      borderColor: "border-revalpro-green/30",
+      link: "/practice-hours",
+      data: progressData.practiceHours
     },
     {
+      key: 'cpdRecords',
       title: "CPD Records",
       description: "Record your continuing professional development",
-      icon: <BookOpen className="h-10 w-10 text-emerald-500" />,
-      color: "bg-gradient-to-br from-emerald-500/20 to-emerald-600/10 border-emerald-200",
-      link: "/cpd"
+      icon: <BookOpen className="h-8 w-8" />,
+      color: "from-revalpro-teal/20 to-revalpro-teal/10",
+      borderColor: "border-revalpro-teal/30",
+      link: "/cpd",
+      data: progressData.cpdRecords
     },
     {
-      title: "Reflective Accounts",
-      description: "Create and manage reflective practice accounts",
-      icon: <FileText className="h-10 w-10 text-purple-500" />,
-      color: "bg-gradient-to-br from-purple-500/20 to-purple-600/10 border-purple-200",
-      link: "/reflections"
-    },
-    {
+      key: 'feedback',
       title: "Feedback",
       description: "Collect and organize feedback for revalidation",
-      icon: <MessageSquare className="h-10 w-10 text-pink-500" />,
-      color: "bg-gradient-to-br from-pink-500/20 to-pink-600/10 border-pink-200",
-      link: "/feedback"
+      icon: <MessageSquare className="h-8 w-8" />,
+      color: "from-revalpro-purple/20 to-revalpro-purple/10",
+      borderColor: "border-revalpro-purple/30",
+      link: "/feedback",
+      data: progressData.feedback
     },
     {
-      title: "Health Declaration",
+      key: 'reflections',
+      title: "Reflections",
+      description: "Create and manage reflective practice accounts",
+      icon: <FileText className="h-8 w-8" />,
+      color: "from-revalpro-orange/20 to-revalpro-orange/10",
+      borderColor: "border-revalpro-orange/30",
+      link: "/reflections",
+      data: progressData.reflections
+    },
+    {
+      key: 'declarations',
+      title: "Declarations",
       description: "Complete your health and character declaration",
-      icon: <Heart className="h-10 w-10 text-red-500" />,
-      color: "bg-gradient-to-br from-red-500/20 to-red-600/10 border-red-200",
-      link: "/declarations"
-    },
-    {
-      title: "Confirmation",
-      description: "Manage your confirmer details and confirmation",
-      icon: <FileCheck className="h-10 w-10 text-amber-500" />,
-      color: "bg-gradient-to-br from-amber-500/20 to-amber-600/10 border-amber-200",
-      link: "/declarations?tab=confirmation"
-    },
-    {
-      title: "Revalidation Dates",
-      description: "View and track important revalidation deadlines",
-      icon: <CalendarDays className="h-10 w-10 text-teal-500" />,
-      color: "bg-gradient-to-br from-teal-500/20 to-teal-600/10 border-teal-200",
-      link: "/revalidation-dates"
-    },
-    {
-      title: "Summary & Export",
-      description: "Generate infographics and export your records",
-      icon: <BarChart3 className="h-10 w-10 text-indigo-500" />,
-      color: "bg-gradient-to-br from-indigo-500/20 to-indigo-600/10 border-indigo-200",
-      link: "/summary-infographic"
-    },
-    {
-      title: "AI Assistant",
-      description: "Get guidance with our AI revalidation assistant",
-      icon: <Bot className="h-10 w-10 text-blue-600" />,
-      color: "bg-gradient-to-br from-blue-600/20 to-indigo-500/10 border-blue-300",
-      link: "/ai-assistant"
-    },
-    {
-      title: "Settings",
-      description: "Manage your profile and application settings",
-      icon: <Settings className="h-10 w-10 text-gray-600" />,
-      color: "bg-gradient-to-br from-gray-300/20 to-gray-400/10 border-gray-300",
-      link: "/settings"
+      icon: <Heart className="h-8 w-8" />,
+      color: "from-revalpro-pink/20 to-revalpro-pink/10",
+      borderColor: "border-revalpro-pink/30",
+      link: "/declarations",
+      data: progressData.declarations
     }
   ];
   
@@ -161,43 +204,58 @@ export default function DashboardPage() {
         </motion.p>
       </div>
       
-      {/* Registration status card */}
-      {userProfile && (
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="mb-8"
-        >
-          <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
-            <CardContent className="pt-6">
-              <div className="flex flex-col md:flex-row items-center justify-between">
-                <div className="flex items-center gap-4 mb-4 md:mb-0">
-                  {userProfile.profileImage ? (
-                    <div className="rounded-full w-16 h-16 overflow-hidden border-2 border-revalpro-blue shadow-sm">
-                      <img 
-                        src={userProfile.profileImage} 
-                        alt="Profile" 
-                        className="w-full h-full object-cover"
-                      />
+      {/* Overall Progress Summary */}
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        className="mb-8"
+      >
+        <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <ListChecks className="h-6 w-6 text-revalpro-blue" />
+              Revalidation Progress Overview
+            </CardTitle>
+            <CardDescription>
+              Your current progress across all revalidation requirements
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="text-lg font-semibold">Overall Completion</span>
+                <span className="text-2xl font-bold text-revalpro-blue">{overallProgress}%</span>
+              </div>
+              <Progress value={overallProgress} className="h-3" />
+              
+              {userProfile && (
+                <div className="flex flex-col md:flex-row items-center justify-between pt-4 border-t">
+                  <div className="flex items-center gap-4 mb-4 md:mb-0">
+                    {userProfile.profileImage ? (
+                      <div className="rounded-full w-12 h-12 overflow-hidden border-2 border-revalpro-blue shadow-sm">
+                        <img 
+                          src={userProfile.profileImage} 
+                          alt="Profile" 
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    ) : (
+                      <div className="bg-white p-3 rounded-full shadow-sm">
+                        <LayoutDashboard className="h-6 w-6 text-revalpro-blue" />
+                      </div>
+                    )}
+                    <div>
+                      <h3 className="font-bold">{userProfile.name}</h3>
+                      <p className="text-sm text-gray-600">
+                        {userProfile.registrationNumber}
+                        {userProfile.jobTitle && <span> • {userProfile.jobTitle}</span>}
+                      </p>
                     </div>
-                  ) : (
-                    <div className="bg-white p-4 rounded-full shadow-sm">
-                      <LayoutDashboard className="h-10 w-10 text-revalpro-blue" />
-                    </div>
-                  )}
-                  <div>
-                    <h2 className="text-xl font-bold">{userProfile.name}</h2>
-                    <p className="text-gray-600">
-                      {userProfile.registrationNumber}
-                      {userProfile.jobTitle && <span> • {userProfile.jobTitle}</span>}
-                    </p>
                   </div>
-                </div>
-                
-                <div className="flex flex-col items-center md:items-end">
-                  <div className="flex flex-wrap items-center gap-2 justify-center md:justify-end">
-                    <Badge variant="outline" className="bg-green-100 text-green-800 hover:bg-green-100">
+                  
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Badge variant="outline" className="bg-green-100 text-green-800">
                       Active Registration
                     </Badge>
                     <Badge className="bg-blue-500">
@@ -205,67 +263,146 @@ export default function DashboardPage() {
                         ? `${daysUntilExpiry} days until renewal` 
                         : "Renewal date not set"}
                     </Badge>
-                    {/* Subscription Badge */}
-                    <Badge 
-                      className={`
-                        ${'premium' === 'premium' 
-                          ? 'bg-gradient-to-r from-amber-400 to-yellow-500 text-black font-semibold' 
-                          : 'free' === 'standard'
-                            ? 'bg-gradient-to-r from-indigo-400 to-indigo-600' 
-                            : 'bg-gradient-to-r from-gray-400 to-gray-600'
-                        } 
-                        shadow-sm border-0 px-3 flex gap-1 items-center
-                      `}
-                    >
-                      {'free' === 'premium' && <span className="text-xs">⭐</span>}
-                      {'free' === 'premium' 
-                        ? 'Premium Plan' 
-                        : 'free' === 'standard'
-                          ? 'Standard Plan' 
-                          : 'Free Plan'
-                      }
-                    </Badge>
                   </div>
-                  <p className="text-sm text-gray-500 mt-2">
-                    Expiry: {userProfile.expiryDate 
-                      ? new Date(userProfile.expiryDate).toLocaleDateString() 
-                      : "Not set"}
-                  </p>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+
+      {/* Revalidation Elements with Progress */}
+      <div className="mb-8">
+        <h2 className="text-2xl font-bold mb-6 text-center">
+          <span className="bg-gradient-to-r from-revalpro-blue to-revalpro-teal bg-clip-text text-transparent">
+            Revalidation Elements
+          </span>
+        </h2>
+        
+        <motion.div 
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          variants={container}
+          initial="hidden"
+          animate="show"
+        >
+          {revalidationElements.map((element, index) => {
+            const statusInfo = getStatusInfo(element.data.status, element.data.percentage);
+            const StatusIcon = statusInfo.icon;
+            
+            return (
+              <motion.div key={element.key} variants={item}>
+                <Link href={element.link}>
+                  <Card className={`cursor-pointer h-full transition-all duration-300 hover:-translate-y-1 hover:shadow-lg bg-gradient-to-br ${element.color} ${element.borderColor} border-2`}>
+                    <CardHeader className="pb-4">
+                      <div className="flex justify-between items-start">
+                        <div className={`p-3 rounded-lg ${statusInfo.bgColor} ${statusInfo.borderColor} border`}>
+                          <div className={statusInfo.color}>
+                            {element.icon}
+                          </div>
+                        </div>
+                        <div className="flex flex-col items-end gap-1">
+                          <StatusIcon className={`h-5 w-5 ${statusInfo.color}`} />
+                          <span className={`text-sm font-semibold ${statusInfo.color}`}>
+                            {element.data.percentage}%
+                          </span>
+                        </div>
+                      </div>
+                      <CardTitle className="text-lg mt-3">{element.title}</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <CardDescription className="text-gray-600">
+                        {element.description}
+                      </CardDescription>
+                      
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-sm">
+                          <span>Progress</span>
+                          <span className="font-medium">
+                            {element.data.current} / {element.data.required}
+                          </span>
+                        </div>
+                        <Progress 
+                          value={element.data.percentage} 
+                          className="h-2"
+                        />
+                      </div>
+                      
+                      <div className="flex items-center justify-between pt-2">
+                        <Badge 
+                          variant={element.data.percentage === 100 ? "default" : "secondary"}
+                          className={element.data.percentage === 100 ? "bg-green-500" : ""}
+                        >
+                          {element.data.percentage === 100 ? "Complete" : "In Progress"}
+                        </Badge>
+                        <ArrowUpRight className="h-4 w-4 text-gray-400" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              </motion.div>
+            );
+          })}
         </motion.div>
-      )}
-      
-      {/* Navigation cards */}
-      <motion.div 
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
-        variants={container}
-        initial="hidden"
-        animate="show"
-      >
-        {navCards.map((card, index) => (
-          <motion.div key={index} variants={item}>
-            <Link href={card.link}>
-              <Card className={`cursor-pointer h-full transition-all duration-300 hover:-translate-y-1 hover:shadow-md ${card.color}`}>
-                <CardHeader className="pb-2">
-                  <div className="flex justify-between items-start">
-                    {card.icon}
-                    <ArrowUpRight className="h-5 w-5 text-gray-400" />
-                  </div>
-                  <CardTitle className="text-xl mt-2">{card.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription className="text-gray-600">
-                    {card.description}
-                  </CardDescription>
+      </div>
+
+      {/* Quick Actions */}
+      <div className="mb-8">
+        <h3 className="text-xl font-semibold mb-4">Quick Actions</h3>
+        <motion.div 
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"
+          variants={container}
+          initial="hidden"
+          animate="show"
+        >
+          <motion.div variants={item}>
+            <Link href="/ai-assistant">
+              <Card className="cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-md bg-gradient-to-br from-blue-500/20 to-purple-500/10 border-blue-200">
+                <CardContent className="p-4 text-center">
+                  <Bot className="h-8 w-8 text-blue-600 mx-auto mb-2" />
+                  <h4 className="font-semibold">AI Assistant</h4>
+                  <p className="text-xs text-gray-600 mt-1">Get revalidation guidance</p>
                 </CardContent>
               </Card>
             </Link>
           </motion.div>
-        ))}
-      </motion.div>
+          
+          <motion.div variants={item}>
+            <Link href="/summary-infographic">
+              <Card className="cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-md bg-gradient-to-br from-orange-500/20 to-red-500/10 border-orange-200">
+                <CardContent className="p-4 text-center">
+                  <BarChart3 className="h-8 w-8 text-orange-600 mx-auto mb-2" />
+                  <h4 className="font-semibold">Export Summary</h4>
+                  <p className="text-xs text-gray-600 mt-1">Generate progress report</p>
+                </CardContent>
+              </Card>
+            </Link>
+          </motion.div>
+          
+          <motion.div variants={item}>
+            <Link href="/revalidation-dates">
+              <Card className="cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-md bg-gradient-to-br from-teal-500/20 to-green-500/10 border-teal-200">
+                <CardContent className="p-4 text-center">
+                  <CalendarDays className="h-8 w-8 text-teal-600 mx-auto mb-2" />
+                  <h4 className="font-semibold">Important Dates</h4>
+                  <p className="text-xs text-gray-600 mt-1">View key deadlines</p>
+                </CardContent>
+              </Card>
+            </Link>
+          </motion.div>
+          
+          <motion.div variants={item}>
+            <Link href="/settings">
+              <Card className="cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-md bg-gradient-to-br from-gray-400/20 to-gray-500/10 border-gray-300">
+                <CardContent className="p-4 text-center">
+                  <Settings className="h-8 w-8 text-gray-600 mx-auto mb-2" />
+                  <h4 className="font-semibold">Settings</h4>
+                  <p className="text-xs text-gray-600 mt-1">Manage your profile</p>
+                </CardContent>
+              </Card>
+            </Link>
+          </motion.div>
+        </motion.div>
+      </div>
     </div>
   );
 }
