@@ -8,6 +8,7 @@ import { createCustomer, createSubscription, getSubscription, cancelSubscription
 import { PLAN_DETAILS } from "../shared/subscription-plans";
 import Stripe from "stripe";
 import { checkNmcServiceStatus, verifyRegistration, calculateNmcImportantDates, getLatestRevalidationRequirements, checkNmcMaintenanceStatus } from "./nmc-api";
+import { getRevalidationAdvice, generateReflectiveTemplate, suggestCpdActivities } from "./ai-service";
 
 const scryptAsync = promisify(scrypt);
 
@@ -562,6 +563,55 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error deleting user:", error);
       res.status(500).json({ error: "Failed to delete user" });
+    }
+  });
+
+  // AI Assistant Routes
+  app.post("/api/ai/advice", async (req, res) => {
+    try {
+      const { question } = req.body;
+      
+      if (!question) {
+        return res.status(400).json({ error: "Question is required" });
+      }
+      
+      const response = await getRevalidationAdvice(question);
+      res.json({ response });
+    } catch (error) {
+      console.error("Error in AI advice endpoint:", error);
+      res.status(500).json({ error: "Failed to get AI advice" });
+    }
+  });
+
+  app.post("/api/ai/reflection", async (req, res) => {
+    try {
+      const { experience, codeSection } = req.body;
+      
+      if (!experience || !codeSection) {
+        return res.status(400).json({ error: "Experience and code section are required" });
+      }
+      
+      const response = await generateReflectiveTemplate(experience, codeSection);
+      res.json({ response });
+    } catch (error) {
+      console.error("Error in AI reflection endpoint:", error);
+      res.status(500).json({ error: "Failed to generate reflection template" });
+    }
+  });
+
+  app.post("/api/ai/cpd-suggestions", async (req, res) => {
+    try {
+      const { specialty, interests } = req.body;
+      
+      if (!specialty || !interests) {
+        return res.status(400).json({ error: "Specialty and interests are required" });
+      }
+      
+      const response = await suggestCpdActivities(specialty, interests);
+      res.json({ response });
+    } catch (error) {
+      console.error("Error in AI CPD suggestions endpoint:", error);
+      res.status(500).json({ error: "Failed to generate CPD suggestions" });
     }
   });
 
