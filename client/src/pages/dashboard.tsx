@@ -25,6 +25,8 @@ import {
   ListChecks
 } from "lucide-react";
 import { userProfileStorage } from "@/lib/storage";
+// Import the logo
+import logo from "@assets/Leonardo_Phoenix_10_design_a_vibrant_and_professional_logo_for_3.jpg";
 
 export default function DashboardPage() {
   const [_, setLocation] = useLocation();
@@ -227,7 +229,7 @@ export default function DashboardPage() {
                 <span className="text-lg font-semibold">Overall Completion</span>
                 <span className="text-2xl font-bold text-revalpro-blue">{overallProgress}%</span>
               </div>
-              <Progress value={overallProgress} className="h-3" />
+              <Progress value={overallProgress} max={100} className="h-3" />
               
               {userProfile && (
                 <div className="flex flex-col md:flex-row items-center justify-between pt-4 border-t">
@@ -271,77 +273,163 @@ export default function DashboardPage() {
         </Card>
       </motion.div>
 
-      {/* Revalidation Elements with Progress */}
+      {/* Circular Revalidation Wheel */}
       <div className="mb-8">
-        <h2 className="text-2xl font-bold mb-6 text-center">
+        <h2 className="text-2xl font-bold mb-8 text-center">
           <span className="bg-gradient-to-r from-revalpro-blue to-revalpro-teal bg-clip-text text-transparent">
-            Revalidation Elements
+            Revalidation Progress Wheel
           </span>
         </h2>
         
         <motion.div 
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-          variants={container}
-          initial="hidden"
-          animate="show"
+          className="flex justify-center items-center"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.4, duration: 0.6 }}
         >
-          {revalidationElements.map((element, index) => {
-            const statusInfo = getStatusInfo(element.data.status, element.data.percentage);
-            const StatusIcon = statusInfo.icon;
+          <div className="relative w-80 h-80 md:w-96 md:h-96">
+            {/* Center circle with logo and overall progress */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-32 h-32 md:w-40 md:h-40 bg-white rounded-full shadow-lg border-4 border-revalpro-blue/20 flex flex-col items-center justify-center">
+                <div className="w-12 h-12 md:w-16 md:h-16 rounded-full overflow-hidden mb-2 border-2 border-revalpro-blue/30">
+                  <img 
+                    src={logo} 
+                    alt="RevalPro Logo" 
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="text-lg md:text-xl font-bold text-revalpro-blue">
+                  {overallProgress}%
+                </div>
+                <div className="text-xs text-gray-600 text-center px-1">
+                  Complete
+                </div>
+              </div>
+            </div>
             
-            return (
-              <motion.div key={element.key} variants={item}>
-                <Link href={element.link}>
-                  <Card className={`cursor-pointer h-full transition-all duration-300 hover:-translate-y-1 hover:shadow-lg bg-gradient-to-br ${element.color} ${element.borderColor} border-2`}>
-                    <CardHeader className="pb-4">
-                      <div className="flex justify-between items-start">
-                        <div className={`p-3 rounded-lg ${statusInfo.bgColor} ${statusInfo.borderColor} border`}>
-                          <div className={statusInfo.color}>
-                            {element.icon}
-                          </div>
-                        </div>
-                        <div className="flex flex-col items-end gap-1">
-                          <StatusIcon className={`h-5 w-5 ${statusInfo.color}`} />
-                          <span className={`text-sm font-semibold ${statusInfo.color}`}>
-                            {element.data.percentage}%
-                          </span>
-                        </div>
-                      </div>
-                      <CardTitle className="text-lg mt-3">{element.title}</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <CardDescription className="text-gray-600">
-                        {element.description}
-                      </CardDescription>
+            {/* Circular segments for each element */}
+            {revalidationElements.map((element, index) => {
+              const angle = (360 / revalidationElements.length) * index;
+              const rotation = angle - 90; // Start from top
+              const statusInfo = getStatusInfo(element.data.status, element.data.percentage);
+              const StatusIcon = statusInfo.icon;
+              
+              // Calculate position for the segment label
+              const labelRadius = 180; // Distance from center for labels
+              const labelAngle = (angle * Math.PI) / 180;
+              const labelX = Math.cos(labelAngle) * labelRadius;
+              const labelY = Math.sin(labelAngle) * labelRadius;
+              
+              return (
+                <motion.div
+                  key={element.key}
+                  className="absolute inset-0"
+                  initial={{ opacity: 0, rotate: rotation - 20 }}
+                  animate={{ opacity: 1, rotate: rotation }}
+                  transition={{ delay: 0.6 + index * 0.1, duration: 0.5 }}
+                >
+                  {/* Segment slice */}
+                  <div className="relative w-full h-full">
+                    <svg
+                      className="w-full h-full absolute inset-0"
+                      viewBox="0 0 400 400"
+                      style={{ transform: `rotate(${rotation}deg)` }}
+                    >
+                      <defs>
+                        <linearGradient id={`gradient-${index}`} x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" className={element.color.includes('green') ? 'text-revalpro-green' : 
+                                                     element.color.includes('teal') ? 'text-revalpro-teal' :
+                                                     element.color.includes('purple') ? 'text-revalpro-purple' :
+                                                     element.color.includes('orange') ? 'text-revalpro-orange' :
+                                                     'text-revalpro-pink'} stopOpacity="0.8" />
+                          <stop offset="100%" className={element.color.includes('green') ? 'text-revalpro-green' : 
+                                                       element.color.includes('teal') ? 'text-revalpro-teal' :
+                                                       element.color.includes('purple') ? 'text-revalpro-purple' :
+                                                       element.color.includes('orange') ? 'text-revalpro-orange' :
+                                                       'text-revalpro-pink'} stopOpacity="0.4" />
+                        </linearGradient>
+                      </defs>
                       
-                      <div className="space-y-2">
-                        <div className="flex justify-between text-sm">
-                          <span>Progress</span>
-                          <span className="font-medium">
-                            {element.data.current} / {element.data.required}
-                          </span>
-                        </div>
-                        <Progress 
-                          value={element.data.percentage} 
-                          className="h-2"
-                        />
-                      </div>
+                      {/* Outer ring segment */}
+                      <path
+                        d={`M 200 200 L 200 80 A 120 120 0 0 1 ${200 + 120 * Math.cos((72 * Math.PI) / 180)} ${200 + 120 * Math.sin((72 * Math.PI) / 180)} Z`}
+                        fill={`url(#gradient-${index})`}
+                        stroke="white"
+                        strokeWidth="3"
+                        className="cursor-pointer transition-all duration-300 hover:opacity-80"
+                        onClick={() => setLocation(element.link)}
+                      />
                       
-                      <div className="flex items-center justify-between pt-2">
-                        <Badge 
-                          variant={element.data.percentage === 100 ? "default" : "secondary"}
-                          className={element.data.percentage === 100 ? "bg-green-500" : ""}
-                        >
-                          {element.data.percentage === 100 ? "Complete" : "In Progress"}
-                        </Badge>
-                        <ArrowUpRight className="h-4 w-4 text-gray-400" />
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
-              </motion.div>
-            );
-          })}
+                      {/* Progress indicator ring */}
+                      <path
+                        d={`M 200 200 L 200 80 A 120 120 0 0 1 ${200 + 120 * Math.cos(((72 * element.data.percentage) / 100 * Math.PI) / 180)} ${200 + 120 * Math.sin(((72 * element.data.percentage) / 100 * Math.PI) / 180)} Z`}
+                        fill={element.data.percentage === 100 ? '#10b981' : element.data.percentage >= 70 ? '#f59e0b' : '#ef4444'}
+                        stroke="white"
+                        strokeWidth="2"
+                        opacity="0.9"
+                      />
+                    </svg>
+                  </div>
+                  
+                  {/* Label positioned around the circle */}
+                  <Link href={element.link}>
+                    <div
+                      className="absolute cursor-pointer transform -translate-x-1/2 -translate-y-1/2"
+                      style={{
+                        left: `calc(50% + ${labelX}px)`,
+                        top: `calc(50% + ${labelY}px)`,
+                      }}
+                    >
+                      <motion.div
+                        className="bg-white rounded-lg shadow-lg border-2 p-3 min-w-24 text-center hover:scale-105 transition-transform duration-200"
+                        style={{ borderColor: element.color.includes('green') ? '#10b981' : 
+                                              element.color.includes('teal') ? '#14b8a6' :
+                                              element.color.includes('purple') ? '#8b5cf6' :
+                                              element.color.includes('orange') ? '#f97316' :
+                                              '#ec4899' }}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        <div className={statusInfo.color}>
+                          {element.icon}
+                        </div>
+                        <div className="text-xs font-semibold mt-1 leading-tight">
+                          {element.title}
+                        </div>
+                        <div className={`text-xs font-bold ${statusInfo.color}`}>
+                          {element.data.percentage}%
+                        </div>
+                        <div className="text-xs text-gray-500">
+                          {element.data.current}/{element.data.required}
+                        </div>
+                      </motion.div>
+                    </div>
+                  </Link>
+                </motion.div>
+              );
+            })}
+          </div>
+        </motion.div>
+        
+        {/* Legend */}
+        <motion.div 
+          className="mt-8 flex flex-wrap justify-center gap-4"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.2 }}
+        >
+          <div className="flex items-center gap-2 bg-green-50 px-3 py-1 rounded-full border border-green-200">
+            <CheckCircle className="h-4 w-4 text-green-500" />
+            <span className="text-sm text-green-700">Complete (100%)</span>
+          </div>
+          <div className="flex items-center gap-2 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
+            <AlertCircle className="h-4 w-4 text-amber-500" />
+            <span className="text-sm text-amber-700">In Progress (70%+)</span>
+          </div>
+          <div className="flex items-center gap-2 bg-red-50 px-3 py-1 rounded-full border border-red-200">
+            <XCircle className="h-4 w-4 text-red-500" />
+            <span className="text-sm text-red-700">Needs Attention (&lt;70%)</span>
+          </div>
         </motion.div>
       </div>
 
