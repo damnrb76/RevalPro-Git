@@ -333,8 +333,10 @@ export default function DashboardPage() {
                 transition={{ delay: 0.2 + index * 0.1, duration: 0.5 }}
               >
                 <Link href={element.link}>
-                  <Card className="relative overflow-hidden bg-white/70 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group">
-                    <div className="absolute inset-0 bg-gradient-to-br from-white/50 to-gray-50/30"></div>
+                  <Card className="relative overflow-hidden border-0 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group">
+                    <div className="absolute inset-0 bg-gradient-to-br" style={{
+                      background: `linear-gradient(135deg, ${colors.primary}15, ${colors.secondary}10, transparent)`
+                    }}></div>
                     <CardContent className="relative p-6">
                       <div className="flex items-center justify-between mb-4">
                         <div style={{ color: colors.primary }} className="text-lg">
@@ -391,8 +393,10 @@ export default function DashboardPage() {
                 transition={{ delay: 0.4 + index * 0.1, duration: 0.5 }}
               >
                 <Link href={element.link}>
-                  <Card className="relative overflow-hidden bg-white/70 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group h-full">
-                    <div className="absolute inset-0 bg-gradient-to-br from-white/50 to-gray-50/30"></div>
+                  <Card className="relative overflow-hidden border-0 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group h-full">
+                    <div className="absolute inset-0 bg-gradient-to-br" style={{
+                      background: `linear-gradient(135deg, ${colors.primary}15, ${colors.secondary}10, transparent)`
+                    }}></div>
                     <CardContent className="relative p-6">
                       <div className="flex items-center justify-between mb-4">
                         <div style={{ color: colors.primary }} className="text-lg">
