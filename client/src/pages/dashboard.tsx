@@ -315,15 +315,18 @@ export default function DashboardPage() {
 
           {/* Individual element cards */}
           {revalidationElements.slice(0, 2).map((element, index) => {
-            const getProgressColor = (percentage: number) => {
-              if (percentage === 100) return { primary: '#0ea5e9', secondary: '#06b6d4' };
-              if (percentage >= 81) return { primary: '#10b981', secondary: '#059669' };
-              if (percentage >= 51) return { primary: '#eab308', secondary: '#d97706' };
-              if (percentage >= 21) return { primary: '#f97316', secondary: '#ea580c' };
-              return { primary: '#ef4444', secondary: '#dc2626' };
+            const getElementColors = (key: string) => {
+              switch(key) {
+                case 'practiceHours': return { primary: '#10b981', secondary: '#059669' }; // Green
+                case 'cpdRecords': return { primary: '#f59e0b', secondary: '#d97706' }; // Amber
+                case 'reflections': return { primary: '#8b5cf6', secondary: '#7c3aed' }; // Purple
+                case 'feedback': return { primary: '#ef4444', secondary: '#dc2626' }; // Red
+                case 'declarations': return { primary: '#0ea5e9', secondary: '#0284c7' }; // Blue
+                default: return { primary: '#6b7280', secondary: '#4b5563' }; // Gray
+              }
             };
 
-            const colors = getProgressColor(element.data.percentage);
+            const colors = getElementColors(element.key);
             
             return (
               <motion.div
@@ -375,15 +378,18 @@ export default function DashboardPage() {
         {/* Remaining elements grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {revalidationElements.slice(2).map((element, index) => {
-            const getProgressColor = (percentage: number) => {
-              if (percentage === 100) return { primary: '#0ea5e9', secondary: '#06b6d4' };
-              if (percentage >= 81) return { primary: '#10b981', secondary: '#059669' };
-              if (percentage >= 51) return { primary: '#eab308', secondary: '#d97706' };
-              if (percentage >= 21) return { primary: '#f97316', secondary: '#ea580c' };
-              return { primary: '#ef4444', secondary: '#dc2626' };
+            const getElementColors = (key: string) => {
+              switch(key) {
+                case 'practiceHours': return { primary: '#10b981', secondary: '#059669' }; // Green
+                case 'cpdRecords': return { primary: '#f59e0b', secondary: '#d97706' }; // Amber
+                case 'reflections': return { primary: '#8b5cf6', secondary: '#7c3aed' }; // Purple
+                case 'feedback': return { primary: '#ef4444', secondary: '#dc2626' }; // Red
+                case 'declarations': return { primary: '#0ea5e9', secondary: '#0284c7' }; // Blue
+                default: return { primary: '#6b7280', secondary: '#4b5563' }; // Gray
+              }
             };
 
-            const colors = getProgressColor(element.data.percentage);
+            const colors = getElementColors(element.key);
             
             return (
               <motion.div
