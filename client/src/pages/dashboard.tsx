@@ -273,11 +273,11 @@ export default function DashboardPage() {
         </Card>
       </motion.div>
 
-      {/* Circular Revalidation Wheel */}
+      {/* Hexagonal Honeycomb Dashboard */}
       <div className="mb-8">
         <h2 className="text-2xl font-bold mb-8 text-center">
           <span className="bg-gradient-to-r from-revalpro-blue to-revalpro-teal bg-clip-text text-transparent">
-            Revalidation Progress Wheel
+            Revalidation Progress Hub
           </span>
         </h2>
         
@@ -287,144 +287,122 @@ export default function DashboardPage() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.4, duration: 0.6 }}
         >
-          <div className="relative w-[500px] h-[500px] md:w-[600px] md:h-[600px]">
-            {/* Center circle with logo and overall progress */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-40 h-40 md:w-48 md:h-48 bg-white rounded-full shadow-xl border-4 border-revalpro-blue/30 flex flex-col items-center justify-center z-10">
-                <div className="w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden mb-3 border-2 border-revalpro-blue/40">
-                  <img 
-                    src={logo} 
-                    alt="RevalPro Logo" 
-                    className="w-full h-full object-cover"
+          <div className="relative">
+            {/* Center hexagon with logo and overall progress */}
+            <div className="flex justify-center items-center mb-8">
+              <motion.div
+                className="relative"
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.6, duration: 0.5 }}
+              >
+                <svg width="200" height="173" viewBox="0 0 200 173" className="drop-shadow-xl">
+                  <defs>
+                    <linearGradient id="centerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#0ea5e9" stopOpacity="0.2" />
+                      <stop offset="100%" stopColor="#0ea5e9" stopOpacity="0.4" />
+                    </linearGradient>
+                  </defs>
+                  <path
+                    d="M50 0 L150 0 L200 86.6 L150 173.2 L50 173.2 L0 86.6 Z"
+                    fill="url(#centerGradient)"
+                    stroke="#0ea5e9"
+                    strokeWidth="3"
                   />
+                </svg>
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <div className="w-12 h-12 rounded-full overflow-hidden mb-2 border-2 border-revalpro-blue/40">
+                    <img 
+                      src={logo} 
+                      alt="RevalPro Logo" 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="text-2xl font-bold text-revalpro-blue">
+                    {overallProgress}%
+                  </div>
+                  <div className="text-xs text-gray-600">
+                    Complete
+                  </div>
                 </div>
-                <div className="text-xl md:text-2xl font-bold text-revalpro-blue">
-                  {overallProgress}%
-                </div>
-                <div className="text-sm text-gray-600 text-center">
-                  Complete
-                </div>
-              </div>
+              </motion.div>
             </div>
             
-            {/* Circular segments for each element */}
-            {revalidationElements.map((element, index) => {
-              const segmentAngle = 360 / revalidationElements.length;
-              const startAngle = segmentAngle * index - 90; // Start from top
-              const endAngle = startAngle + segmentAngle - 8; // 8 degree gap between segments
-              
-              // Convert percentage to color scheme
-              const getProgressColor = (percentage: number) => {
-                if (percentage === 100) return '#0ea5e9'; // Bright blue for complete
-                if (percentage >= 81) return '#10b981'; // Bright green
-                if (percentage >= 51) return '#eab308'; // Yellow
-                if (percentage >= 21) return '#f97316'; // Orange
-                return '#ef4444'; // Red
-              };
+            {/* Hexagonal grid for elements */}
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
+              {revalidationElements.map((element, index) => {
+                // Convert percentage to color scheme
+                const getProgressColor = (percentage: number) => {
+                  if (percentage === 100) return '#0ea5e9'; // Bright blue for complete
+                  if (percentage >= 81) return '#10b981'; // Bright green
+                  if (percentage >= 51) return '#eab308'; // Yellow
+                  if (percentage >= 21) return '#f97316'; // Orange
+                  return '#ef4444'; // Red
+                };
 
-              const progressColor = getProgressColor(element.data.percentage);
-              
-              // Calculate label position
-              const midAngle = (startAngle + endAngle) / 2;
-              const labelRadius = 320; // Distance from center for labels
-              const labelAngle = (midAngle * Math.PI) / 180;
-              const labelX = Math.cos(labelAngle) * labelRadius;
-              const labelY = Math.sin(labelAngle) * labelRadius;
-              
-              // Create SVG path for the segment
-              const outerRadius = 240;
-              const innerRadius = 120;
-              
-              const startAngleRad = (startAngle * Math.PI) / 180;
-              const endAngleRad = (endAngle * Math.PI) / 180;
-              
-              const x1 = 300 + innerRadius * Math.cos(startAngleRad);
-              const y1 = 300 + innerRadius * Math.sin(startAngleRad);
-              const x2 = 300 + outerRadius * Math.cos(startAngleRad);
-              const y2 = 300 + outerRadius * Math.sin(startAngleRad);
-              const x3 = 300 + outerRadius * Math.cos(endAngleRad);
-              const y3 = 300 + outerRadius * Math.sin(endAngleRad);
-              const x4 = 300 + innerRadius * Math.cos(endAngleRad);
-              const y4 = 300 + innerRadius * Math.sin(endAngleRad);
-              
-              const largeArcFlag = segmentAngle > 180 ? 1 : 0;
-              
-              const pathData = [
-                `M ${x1} ${y1}`,
-                `L ${x2} ${y2}`,
-                `A ${outerRadius} ${outerRadius} 0 ${largeArcFlag} 1 ${x3} ${y3}`,
-                `L ${x4} ${y4}`,
-                `A ${innerRadius} ${innerRadius} 0 ${largeArcFlag} 0 ${x1} ${y1}`,
-                'Z'
-              ].join(' ');
-              
-              return (
-                <motion.div
-                  key={element.key}
-                  className="absolute inset-0"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.6 + index * 0.15, duration: 0.5 }}
-                >
-                  <svg
-                    className="w-full h-full absolute inset-0"
-                    viewBox="0 0 600 600"
+                const progressColor = getProgressColor(element.data.percentage);
+                
+                return (
+                  <motion.div
+                    key={element.key}
+                    className="flex justify-center"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.8 + index * 0.1, duration: 0.5 }}
                   >
-                    <defs>
-                      <radialGradient id={`progressGradient-${index}`} cx="50%" cy="50%" r="50%">
-                        <stop offset="0%" stopColor="white" stopOpacity="0.2" />
-                        <stop offset={`${Math.max(10, element.data.percentage)}%`} stopColor={progressColor} stopOpacity="0.8" />
-                        <stop offset="100%" stopColor={progressColor} stopOpacity="1" />
-                      </radialGradient>
-                    </defs>
-                    
-                    {/* Segment background */}
-                    <path
-                      d={pathData}
-                      fill={`url(#progressGradient-${index})`}
-                      stroke="white"
-                      strokeWidth="4"
-                      className="cursor-pointer transition-all duration-300 hover:brightness-110"
-                      onClick={() => setLocation(element.link)}
-                    />
-                  </svg>
-                  
-                  {/* Label positioned around the circle */}
-                  <Link href={element.link}>
-                    <div
-                      className="absolute cursor-pointer transform -translate-x-1/2 -translate-y-1/2"
-                      style={{
-                        left: `calc(50% + ${labelX}px)`,
-                        top: `calc(50% + ${labelY}px)`,
-                      }}
-                    >
-                      <motion.div
-                        className="bg-white rounded-xl shadow-xl border-3 p-4 min-w-32 text-center hover:scale-105 transition-all duration-200"
-                        style={{ 
-                          borderColor: progressColor,
-                          boxShadow: `0 10px 25px -5px ${progressColor}20, 0 10px 10px -5px ${progressColor}10`
-                        }}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                      >
-                        <div style={{ color: progressColor }}>
-                          {element.icon}
+                    <Link href={element.link}>
+                      <div className="relative cursor-pointer group">
+                        <svg width="160" height="138" viewBox="0 0 160 138" className="drop-shadow-lg">
+                          <defs>
+                            <linearGradient id={`hexGradient-${index}`} x1="0%" y1="0%" x2="100%" y2="100%">
+                              <stop offset="0%" stopColor="white" stopOpacity="0.3" />
+                              <stop offset={`${Math.max(20, element.data.percentage)}%`} stopColor={progressColor} stopOpacity="0.7" />
+                              <stop offset="100%" stopColor={progressColor} stopOpacity="0.9" />
+                            </linearGradient>
+                          </defs>
+                          <path
+                            d="M40 0 L120 0 L160 69.3 L120 138.6 L40 138.6 L0 69.3 Z"
+                            fill={`url(#hexGradient-${index})`}
+                            stroke="white"
+                            strokeWidth="3"
+                            className="transition-all duration-300 group-hover:brightness-110"
+                          />
+                        </svg>
+                        
+                        {/* Content inside hexagon */}
+                        <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
+                          <div style={{ color: progressColor }} className="mb-2">
+                            {element.icon}
+                          </div>
+                          <div className="text-sm font-semibold text-center leading-tight mb-1">
+                            {element.title}
+                          </div>
+                          <div className="text-xl font-bold mb-1" style={{ color: progressColor }}>
+                            {element.data.percentage}%
+                          </div>
+                          <div className="text-xs text-gray-600">
+                            {element.data.current}/{element.data.required}
+                          </div>
                         </div>
-                        <div className="text-sm font-semibold mt-2 leading-tight">
-                          {element.title}
+                        
+                        {/* Hover effect */}
+                        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          <svg width="160" height="138" viewBox="0 0 160 138">
+                            <path
+                              d="M40 0 L120 0 L160 69.3 L120 138.6 L40 138.6 L0 69.3 Z"
+                              fill="none"
+                              stroke={progressColor}
+                              strokeWidth="2"
+                              className="animate-pulse"
+                            />
+                          </svg>
                         </div>
-                        <div className="text-lg font-bold mt-1" style={{ color: progressColor }}>
-                          {element.data.percentage}%
-                        </div>
-                        <div className="text-xs text-gray-500 mt-1">
-                          {element.data.current}/{element.data.required}
-                        </div>
-                      </motion.div>
-                    </div>
-                  </Link>
-                </motion.div>
-              );
-            })}
+                      </div>
+                    </Link>
+                  </motion.div>
+                );
+              })}
+            </div>
           </div>
         </motion.div>
         
