@@ -313,12 +313,12 @@ export default function DashboardPage() {
               const startAngle = segmentAngle * index - 90; // Start from top
               const endAngle = startAngle + segmentAngle - 8; // 8 degree gap between segments
               
-              // Convert percentage to color gradient (red to yellow to green)
-              const getProgressColor = (percentage) => {
-                if (percentage >= 80) return '#10b981'; // Green
-                if (percentage >= 60) return '#84cc16'; // Light green
-                if (percentage >= 40) return '#eab308'; // Yellow
-                if (percentage >= 20) return '#f97316'; // Orange
+              // Convert percentage to color scheme
+              const getProgressColor = (percentage: number) => {
+                if (percentage === 100) return '#0ea5e9'; // Bright blue for complete
+                if (percentage >= 81) return '#10b981'; // Bright green
+                if (percentage >= 51) return '#eab308'; // Yellow
+                if (percentage >= 21) return '#f97316'; // Orange
                 return '#ef4444'; // Red
               };
 
@@ -372,8 +372,8 @@ export default function DashboardPage() {
                   >
                     <defs>
                       <radialGradient id={`progressGradient-${index}`} cx="50%" cy="50%" r="50%">
-                        <stop offset="0%" stopColor="#ef4444" stopOpacity="0.3" />
-                        <stop offset={`${element.data.percentage}%`} stopColor={progressColor} stopOpacity="0.8" />
+                        <stop offset="0%" stopColor="white" stopOpacity="0.2" />
+                        <stop offset={`${Math.max(10, element.data.percentage)}%`} stopColor={progressColor} stopOpacity="0.8" />
                         <stop offset="100%" stopColor={progressColor} stopOpacity="1" />
                       </radialGradient>
                     </defs>
@@ -435,17 +435,25 @@ export default function DashboardPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.2 }}
         >
-          <div className="flex items-center gap-2 bg-green-50 px-3 py-1 rounded-full border border-green-200">
-            <CheckCircle className="h-4 w-4 text-green-500" />
-            <span className="text-sm text-green-700">Complete (100%)</span>
+          <div className="flex items-center gap-2 bg-blue-50 px-3 py-1 rounded-full border border-blue-200">
+            <div className="w-4 h-4 rounded-full bg-blue-500"></div>
+            <span className="text-sm text-blue-700">Complete (100%)</span>
           </div>
-          <div className="flex items-center gap-2 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
-            <AlertCircle className="h-4 w-4 text-amber-500" />
-            <span className="text-sm text-amber-700">In Progress (70%+)</span>
+          <div className="flex items-center gap-2 bg-green-50 px-3 py-1 rounded-full border border-green-200">
+            <div className="w-4 h-4 rounded-full bg-green-500"></div>
+            <span className="text-sm text-green-700">Excellent (81%+)</span>
+          </div>
+          <div className="flex items-center gap-2 bg-yellow-50 px-3 py-1 rounded-full border border-yellow-200">
+            <div className="w-4 h-4 rounded-full bg-yellow-500"></div>
+            <span className="text-sm text-yellow-700">Good (51-80%)</span>
+          </div>
+          <div className="flex items-center gap-2 bg-orange-50 px-3 py-1 rounded-full border border-orange-200">
+            <div className="w-4 h-4 rounded-full bg-orange-500"></div>
+            <span className="text-sm text-orange-700">In Progress (21-50%)</span>
           </div>
           <div className="flex items-center gap-2 bg-red-50 px-3 py-1 rounded-full border border-red-200">
-            <XCircle className="h-4 w-4 text-red-500" />
-            <span className="text-sm text-red-700">Needs Attention (&lt;70%)</span>
+            <div className="w-4 h-4 rounded-full bg-red-500"></div>
+            <span className="text-sm text-red-700">Needs Attention (0-20%)</span>
           </div>
         </motion.div>
       </div>
