@@ -273,413 +273,160 @@ export default function DashboardPage() {
         </Card>
       </motion.div>
 
-      {/* Hexagonal Honeycomb Dashboard */}
+      {/* Modern Analytics Dashboard */}
       <div className="mb-8">
-        <h2 className="text-2xl font-bold mb-8 text-center">
+        <h2 className="text-2xl font-bold mb-8">
           <span className="bg-gradient-to-r from-revalpro-blue to-revalpro-teal bg-clip-text text-transparent">
-            Revalidation Progress Hub
+            Revalidation Progress
           </span>
         </h2>
         
-        <motion.div 
-          className="flex justify-center items-center"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.4, duration: 0.6 }}
-        >
-          <div className="relative max-w-5xl mx-auto">
-            {/* True Honeycomb Pattern - Center hexagon surrounded by 4 touching hexagons */}
-            <div className="relative">
-              <div className="relative w-fit mx-auto">
-                {/* Position hexagons in true honeycomb formation */}
-                
-                {/* Center hexagon - Feedback */}
-                {revalidationElements.filter(el => el.key === 'feedback').map((element) => {
-                  const getProgressColor = (percentage: number) => {
-                    if (percentage === 100) return '#0ea5e9';
-                    if (percentage >= 81) return '#10b981';
-                    if (percentage >= 51) return '#eab308';
-                    if (percentage >= 21) return '#f97316';
-                    return '#ef4444';
-                  };
+        {/* Main metrics grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          {/* Overall Progress Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1, duration: 0.5 }}
+          >
+            <Card className="relative overflow-hidden bg-gradient-to-br from-revalpro-blue/10 via-revalpro-blue/5 to-transparent border-0 shadow-lg">
+              <div className="absolute inset-0 bg-gradient-to-br from-revalpro-blue/20 to-revalpro-teal/10"></div>
+              <CardContent className="relative p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-sm font-medium text-gray-600">Overall Progress</h3>
+                  <div className="flex items-center gap-1">
+                    <div className="w-2 h-2 rounded-full bg-revalpro-blue animate-pulse"></div>
+                    <span className="text-xs text-gray-500">Active</span>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <div className="text-3xl font-bold text-revalpro-blue">{overallProgress}%</div>
+                  <div className="text-sm text-gray-500">Complete</div>
+                  <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div 
+                      className="bg-gradient-to-r from-revalpro-blue to-revalpro-teal h-2 rounded-full transition-all duration-1000"
+                      style={{ width: `${overallProgress}%` }}
+                    ></div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
 
-                  const progressColor = getProgressColor(element.data.percentage);
-                  
-                  return (
-                    <motion.div
-                      key={element.key}
-                      className="absolute"
-                      style={{
-                        left: '50%',
-                        top: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        zIndex: 10
-                      }}
-                      initial={{ opacity: 0, scale: 0.5 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: 1.0, duration: 0.5 }}
-                    >
-                      <Link href={element.link}>
-                        <div className="relative cursor-pointer group">
-                          <svg width="160" height="138" viewBox="0 0 160 138" className="drop-shadow-xl">
-                            <defs>
-                              <linearGradient id={`hexGradient-${element.key}`} x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stopColor="white" stopOpacity="0.3" />
-                                <stop offset={`${Math.max(20, element.data.percentage)}%`} stopColor={progressColor} stopOpacity="0.7" />
-                                <stop offset="100%" stopColor={progressColor} stopOpacity="0.9" />
-                              </linearGradient>
-                            </defs>
-                            <path
-                              d="M40 0 L120 0 L160 69.3 L120 138.6 L40 138.6 L0 69.3 Z"
-                              fill={`url(#hexGradient-${element.key})`}
-                              stroke="white"
-                              strokeWidth="4"
-                              className="transition-all duration-300 group-hover:brightness-110"
-                            />
-                          </svg>
-                          
-                          <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
-                            <div style={{ color: progressColor }} className="mb-2">
-                              {element.icon}
-                            </div>
-                            <div className="text-sm font-semibold text-center leading-tight mb-1">
-                              {element.title}
-                            </div>
-                            <div className="text-xl font-bold mb-1" style={{ color: progressColor }}>
-                              {element.data.percentage}%
-                            </div>
-                            <div className="text-xs text-gray-600">
-                              {element.data.current}/{element.data.required}
-                            </div>
-                          </div>
-                          
-                          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <svg width="160" height="138" viewBox="0 0 160 138">
-                              <path
-                                d="M40 0 L120 0 L160 69.3 L120 138.6 L40 138.6 L0 69.3 Z"
-                                fill="none"
-                                stroke={progressColor}
-                                strokeWidth="3"
-                                className="animate-pulse"
-                              />
-                            </svg>
-                          </div>
+          {/* Individual element cards */}
+          {revalidationElements.slice(0, 2).map((element, index) => {
+            const getProgressColor = (percentage: number) => {
+              if (percentage === 100) return { primary: '#0ea5e9', secondary: '#06b6d4' };
+              if (percentage >= 81) return { primary: '#10b981', secondary: '#059669' };
+              if (percentage >= 51) return { primary: '#eab308', secondary: '#d97706' };
+              if (percentage >= 21) return { primary: '#f97316', secondary: '#ea580c' };
+              return { primary: '#ef4444', secondary: '#dc2626' };
+            };
+
+            const colors = getProgressColor(element.data.percentage);
+            
+            return (
+              <motion.div
+                key={element.key}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 + index * 0.1, duration: 0.5 }}
+              >
+                <Link href={element.link}>
+                  <Card className="relative overflow-hidden bg-white/70 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group">
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/50 to-gray-50/30"></div>
+                    <CardContent className="relative p-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <div style={{ color: colors.primary }} className="text-lg">
+                          {element.icon}
                         </div>
-                      </Link>
-                    </motion.div>
-                  );
-                })}
-
-                {/* Top hexagon - Practice Hours */}
-                {revalidationElements.filter(el => el.key === 'practiceHours').map((element) => {
-                  const getProgressColor = (percentage: number) => {
-                    if (percentage === 100) return '#0ea5e9';
-                    if (percentage >= 81) return '#10b981';
-                    if (percentage >= 51) return '#eab308';
-                    if (percentage >= 21) return '#f97316';
-                    return '#ef4444';
-                  };
-
-                  const progressColor = getProgressColor(element.data.percentage);
-                  
-                  return (
-                    <motion.div
-                      key={element.key}
-                      className="absolute"
-                      style={{
-                        left: '50%',
-                        top: '0%',
-                        transform: 'translate(-50%, -15%)'
-                      }}
-                      initial={{ opacity: 0, y: -20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.6, duration: 0.5 }}
-                    >
-                      <Link href={element.link}>
-                        <div className="relative cursor-pointer group">
-                          <svg width="160" height="138" viewBox="0 0 160 138" className="drop-shadow-lg">
-                            <defs>
-                              <linearGradient id={`hexGradient-${element.key}`} x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stopColor="white" stopOpacity="0.3" />
-                                <stop offset={`${Math.max(20, element.data.percentage)}%`} stopColor={progressColor} stopOpacity="0.7" />
-                                <stop offset="100%" stopColor={progressColor} stopOpacity="0.9" />
-                              </linearGradient>
-                            </defs>
-                            <path
-                              d="M40 0 L120 0 L160 69.3 L120 138.6 L40 138.6 L0 69.3 Z"
-                              fill={`url(#hexGradient-${element.key})`}
-                              stroke="white"
-                              strokeWidth="3"
-                              className="transition-all duration-300 group-hover:brightness-110"
-                            />
-                          </svg>
-                          
-                          <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
-                            <div style={{ color: progressColor }} className="mb-2">
-                              {element.icon}
-                            </div>
-                            <div className="text-sm font-semibold text-center leading-tight mb-1">
-                              {element.title}
-                            </div>
-                            <div className="text-xl font-bold mb-1" style={{ color: progressColor }}>
-                              {element.data.percentage}%
-                            </div>
-                            <div className="text-xs text-gray-600">
-                              {element.data.current}/{element.data.required}
-                            </div>
-                          </div>
-                          
-                          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <svg width="160" height="138" viewBox="0 0 160 138">
-                              <path
-                                d="M40 0 L120 0 L160 69.3 L120 138.6 L40 138.6 L0 69.3 Z"
-                                fill="none"
-                                stroke={progressColor}
-                                strokeWidth="2"
-                                className="animate-pulse"
-                              />
-                            </svg>
-                          </div>
+                        <div className="text-xs text-gray-400">
+                          {element.data.current}/{element.data.required}
                         </div>
-                      </Link>
-                    </motion.div>
-                  );
-                })}
-
-                {/* Left hexagon - Reflections */}
-                {revalidationElements.filter(el => el.key === 'reflections').map((element) => {
-                  const getProgressColor = (percentage: number) => {
-                    if (percentage === 100) return '#0ea5e9';
-                    if (percentage >= 81) return '#10b981';
-                    if (percentage >= 51) return '#eab308';
-                    if (percentage >= 21) return '#f97316';
-                    return '#ef4444';
-                  };
-
-                  const progressColor = getProgressColor(element.data.percentage);
-                  
-                  return (
-                    <motion.div
-                      key={element.key}
-                      className="absolute"
-                      style={{
-                        left: '12%',
-                        top: '50%',
-                        transform: 'translate(-50%, -50%)'
-                      }}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.8, duration: 0.5 }}
-                    >
-                      <Link href={element.link}>
-                        <div className="relative cursor-pointer group">
-                          <svg width="160" height="138" viewBox="0 0 160 138" className="drop-shadow-lg">
-                            <defs>
-                              <linearGradient id={`hexGradient-${element.key}`} x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stopColor="white" stopOpacity="0.3" />
-                                <stop offset={`${Math.max(20, element.data.percentage)}%`} stopColor={progressColor} stopOpacity="0.7" />
-                                <stop offset="100%" stopColor={progressColor} stopOpacity="0.9" />
-                              </linearGradient>
-                            </defs>
-                            <path
-                              d="M40 0 L120 0 L160 69.3 L120 138.6 L40 138.6 L0 69.3 Z"
-                              fill={`url(#hexGradient-${element.key})`}
-                              stroke="white"
-                              strokeWidth="3"
-                              className="transition-all duration-300 group-hover:brightness-110"
-                            />
-                          </svg>
-                          
-                          <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
-                            <div style={{ color: progressColor }} className="mb-2">
-                              {element.icon}
-                            </div>
-                            <div className="text-sm font-semibold text-center leading-tight mb-1">
-                              {element.title}
-                            </div>
-                            <div className="text-xl font-bold mb-1" style={{ color: progressColor }}>
-                              {element.data.percentage}%
-                            </div>
-                            <div className="text-xs text-gray-600">
-                              {element.data.current}/{element.data.required}
-                            </div>
-                          </div>
-                          
-                          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <svg width="160" height="138" viewBox="0 0 160 138">
-                              <path
-                                d="M40 0 L120 0 L160 69.3 L120 138.6 L40 138.6 L0 69.3 Z"
-                                fill="none"
-                                stroke={progressColor}
-                                strokeWidth="2"
-                                className="animate-pulse"
-                              />
-                            </svg>
-                          </div>
+                      </div>
+                      <div className="space-y-2">
+                        <h3 className="text-sm font-medium text-gray-700">{element.title}</h3>
+                        <div className="flex items-baseline gap-2">
+                          <span className="text-2xl font-bold" style={{ color: colors.primary }}>
+                            {element.data.percentage}%
+                          </span>
+                          <span className="text-xs text-gray-500">complete</span>
                         </div>
-                      </Link>
-                    </motion.div>
-                  );
-                })}
-
-                {/* Right hexagon - Declarations */}
-                {revalidationElements.filter(el => el.key === 'declarations').map((element) => {
-                  const getProgressColor = (percentage: number) => {
-                    if (percentage === 100) return '#0ea5e9';
-                    if (percentage >= 81) return '#10b981';
-                    if (percentage >= 51) return '#eab308';
-                    if (percentage >= 21) return '#f97316';
-                    return '#ef4444';
-                  };
-
-                  const progressColor = getProgressColor(element.data.percentage);
-                  
-                  return (
-                    <motion.div
-                      key={element.key}
-                      className="absolute"
-                      style={{
-                        left: '88%',
-                        top: '50%',
-                        transform: 'translate(-50%, -50%)'
-                      }}
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 1.2, duration: 0.5 }}
-                    >
-                      <Link href={element.link}>
-                        <div className="relative cursor-pointer group">
-                          <svg width="160" height="138" viewBox="0 0 160 138" className="drop-shadow-lg">
-                            <defs>
-                              <linearGradient id={`hexGradient-${element.key}`} x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stopColor="white" stopOpacity="0.3" />
-                                <stop offset={`${Math.max(20, element.data.percentage)}%`} stopColor={progressColor} stopOpacity="0.7" />
-                                <stop offset="100%" stopColor={progressColor} stopOpacity="0.9" />
-                              </linearGradient>
-                            </defs>
-                            <path
-                              d="M40 0 L120 0 L160 69.3 L120 138.6 L40 138.6 L0 69.3 Z"
-                              fill={`url(#hexGradient-${element.key})`}
-                              stroke="white"
-                              strokeWidth="3"
-                              className="transition-all duration-300 group-hover:brightness-110"
-                            />
-                          </svg>
-                          
-                          <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
-                            <div style={{ color: progressColor }} className="mb-2">
-                              {element.icon}
-                            </div>
-                            <div className="text-sm font-semibold text-center leading-tight mb-1">
-                              {element.title}
-                            </div>
-                            <div className="text-xl font-bold mb-1" style={{ color: progressColor }}>
-                              {element.data.percentage}%
-                            </div>
-                            <div className="text-xs text-gray-600">
-                              {element.data.current}/{element.data.required}
-                            </div>
-                          </div>
-                          
-                          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <svg width="160" height="138" viewBox="0 0 160 138">
-                              <path
-                                d="M40 0 L120 0 L160 69.3 L120 138.6 L40 138.6 L0 69.3 Z"
-                                fill="none"
-                                stroke={progressColor}
-                                strokeWidth="2"
-                                className="animate-pulse"
-                              />
-                            </svg>
-                          </div>
+                        <div className="w-full bg-gray-200 rounded-full h-1.5">
+                          <div 
+                            className="h-1.5 rounded-full transition-all duration-1000"
+                            style={{ 
+                              width: `${element.data.percentage}%`,
+                              background: `linear-gradient(90deg, ${colors.primary}, ${colors.secondary})`
+                            }}
+                          ></div>
                         </div>
-                      </Link>
-                    </motion.div>
-                  );
-                })}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              </motion.div>
+            );
+          })}
+        </div>
 
-                {/* Bottom hexagon - CPD Records */}
-                {revalidationElements.filter(el => el.key === 'cpdRecords').map((element) => {
-                  const getProgressColor = (percentage: number) => {
-                    if (percentage === 100) return '#0ea5e9';
-                    if (percentage >= 81) return '#10b981';
-                    if (percentage >= 51) return '#eab308';
-                    if (percentage >= 21) return '#f97316';
-                    return '#ef4444';
-                  };
+        {/* Remaining elements grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {revalidationElements.slice(2).map((element, index) => {
+            const getProgressColor = (percentage: number) => {
+              if (percentage === 100) return { primary: '#0ea5e9', secondary: '#06b6d4' };
+              if (percentage >= 81) return { primary: '#10b981', secondary: '#059669' };
+              if (percentage >= 51) return { primary: '#eab308', secondary: '#d97706' };
+              if (percentage >= 21) return { primary: '#f97316', secondary: '#ea580c' };
+              return { primary: '#ef4444', secondary: '#dc2626' };
+            };
 
-                  const progressColor = getProgressColor(element.data.percentage);
-                  
-                  return (
-                    <motion.div
-                      key={element.key}
-                      className="absolute"
-                      style={{
-                        left: '50%',
-                        top: '100%',
-                        transform: 'translate(-50%, -85%)'
-                      }}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 1.4, duration: 0.5 }}
-                    >
-                      <Link href={element.link}>
-                        <div className="relative cursor-pointer group">
-                          <svg width="160" height="138" viewBox="0 0 160 138" className="drop-shadow-lg">
-                            <defs>
-                              <linearGradient id={`hexGradient-${element.key}`} x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stopColor="white" stopOpacity="0.3" />
-                                <stop offset={`${Math.max(20, element.data.percentage)}%`} stopColor={progressColor} stopOpacity="0.7" />
-                                <stop offset="100%" stopColor={progressColor} stopOpacity="0.9" />
-                              </linearGradient>
-                            </defs>
-                            <path
-                              d="M40 0 L120 0 L160 69.3 L120 138.6 L40 138.6 L0 69.3 Z"
-                              fill={`url(#hexGradient-${element.key})`}
-                              stroke="white"
-                              strokeWidth="3"
-                              className="transition-all duration-300 group-hover:brightness-110"
-                            />
-                          </svg>
-                          
-                          <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
-                            <div style={{ color: progressColor }} className="mb-2">
-                              {element.icon}
-                            </div>
-                            <div className="text-sm font-semibold text-center leading-tight mb-1">
-                              {element.title}
-                            </div>
-                            <div className="text-xl font-bold mb-1" style={{ color: progressColor }}>
-                              {element.data.percentage}%
-                            </div>
-                            <div className="text-xs text-gray-600">
-                              {element.data.current}/{element.data.required}
-                            </div>
-                          </div>
-                          
-                          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <svg width="160" height="138" viewBox="0 0 160 138">
-                              <path
-                                d="M40 0 L120 0 L160 69.3 L120 138.6 L40 138.6 L0 69.3 Z"
-                                fill="none"
-                                stroke={progressColor}
-                                strokeWidth="2"
-                                className="animate-pulse"
-                              />
-                            </svg>
-                          </div>
+            const colors = getProgressColor(element.data.percentage);
+            
+            return (
+              <motion.div
+                key={element.key}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 + index * 0.1, duration: 0.5 }}
+              >
+                <Link href={element.link}>
+                  <Card className="relative overflow-hidden bg-white/70 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group h-full">
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/50 to-gray-50/30"></div>
+                    <CardContent className="relative p-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <div style={{ color: colors.primary }} className="text-lg">
+                          {element.icon}
                         </div>
-                      </Link>
-                    </motion.div>
-                  );
-                })}
-                
-                {/* Container sizing element - invisible */}
-                <div className="w-96 h-72 opacity-0 pointer-events-none"></div>
-              </div>
-            </div>
-          </div>
-        </motion.div>
+                        <div className="text-xs text-gray-400">
+                          {element.data.current}/{element.data.required}
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <h3 className="text-sm font-medium text-gray-700">{element.title}</h3>
+                        <div className="flex items-baseline gap-2">
+                          <span className="text-2xl font-bold" style={{ color: colors.primary }}>
+                            {element.data.percentage}%
+                          </span>
+                          <span className="text-xs text-gray-500">complete</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-1.5">
+                          <div 
+                            className="h-1.5 rounded-full transition-all duration-1000"
+                            style={{ 
+                              width: `${element.data.percentage}%`,
+                              background: `linear-gradient(90deg, ${colors.primary}, ${colors.secondary})`
+                            }}
+                          ></div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              </motion.div>
+            );
+          })}
+        </div>
         
         {/* Legend */}
         <motion.div 
