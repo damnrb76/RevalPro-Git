@@ -28,6 +28,52 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Set up authentication routes and middleware
   setupAuth(app);
+
+  // AI Assistant API routes
+  app.post("/api/ai/revalidation-advice", async (req, res) => {
+    try {
+      const { question } = req.body;
+      if (!question) {
+        return res.status(400).json({ error: "Question is required" });
+      }
+      
+      const advice = await getRevalidationAdvice(question);
+      res.json({ advice });
+    } catch (error) {
+      console.error("Error getting revalidation advice:", error);
+      res.status(500).json({ error: "Failed to get revalidation advice" });
+    }
+  });
+
+  app.post("/api/ai/reflection-template", async (req, res) => {
+    try {
+      const { experience, codeSection } = req.body;
+      if (!experience || !codeSection) {
+        return res.status(400).json({ error: "Experience and code section are required" });
+      }
+      
+      const template = await generateReflectiveTemplate(experience, codeSection);
+      res.json({ template });
+    } catch (error) {
+      console.error("Error generating reflection template:", error);
+      res.status(500).json({ error: "Failed to generate reflection template" });
+    }
+  });
+
+  app.post("/api/ai/cpd-suggestions", async (req, res) => {
+    try {
+      const { specialty, interests } = req.body;
+      if (!specialty) {
+        return res.status(400).json({ error: "Specialty is required" });
+      }
+      
+      const suggestions = await suggestCpdActivities(specialty, interests || "");
+      res.json({ suggestions });
+    } catch (error) {
+      console.error("Error getting CPD suggestions:", error);
+      res.status(500).json({ error: "Failed to get CPD suggestions" });
+    }
+  });
   
   // Google user registration handler
   app.post("/api/register-google-user", async (req, res) => {

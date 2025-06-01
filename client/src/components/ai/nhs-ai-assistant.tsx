@@ -5,11 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, Send, Info, HelpCircle, BookOpen, FileText } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { 
-  getRevalidationAdvice, 
-  generateReflectiveTemplate,
-  suggestCpdActivities
-} from "@/lib/openai-service";
+import { apiRequest } from "@/lib/queryClient";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
@@ -99,13 +95,14 @@ export default function NhsAiAssistant({
     setIsLoading(true);
     
     try {
-      // Get AI response
-      const response = await getRevalidationAdvice(inputValue);
+      // Get AI response from backend
+      const response = await apiRequest("POST", "/api/ai/revalidation-advice", { question: inputValue });
+      const data = await response.json();
       
       // Add assistant message
       const assistantMessage: Message = {
         role: "assistant",
-        content: response,
+        content: data.advice,
         timestamp: new Date()
       };
       
@@ -145,12 +142,13 @@ export default function NhsAiAssistant({
     setIsGeneratingReflection(true);
     
     try {
-      const template = await generateReflectiveTemplate(
-        reflectionExperience,
-        reflectionCodeSection
-      );
+      const response = await apiRequest("POST", "/api/ai/reflection-template", {
+        experience: reflectionExperience,
+        codeSection: reflectionCodeSection
+      });
+      const data = await response.json();
       
-      setReflectionTemplate(template);
+      setReflectionTemplate(data.template);
     } catch (error) {
       console.error("Error generating reflection template:", error);
       setReflectionTemplate("Sorry, I encountered an error while generating your reflection template. Please try again later.");
@@ -165,12 +163,13 @@ export default function NhsAiAssistant({
     setIsGeneratingCpdSuggestions(true);
     
     try {
-      const suggestions = await suggestCpdActivities(
-        nurseSpecialty,
-        nurseInterests
-      );
+      const response = await apiRequest("POST", "/api/ai/cpd-suggestions", {
+        specialty: nurseSpecialty,
+        interests: nurseInterests
+      });
+      const data = await response.json();
       
-      setCpdSuggestions(suggestions);
+      setCpdSuggestions(data.suggestions);
     } catch (error) {
       console.error("Error generating CPD suggestions:", error);
       setCpdSuggestions("Sorry, I encountered an error while generating CPD suggestions. Please try again later.");
