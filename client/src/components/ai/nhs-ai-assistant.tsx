@@ -419,8 +419,8 @@ export default function NhsAiAssistant({
       </CardContent>
       <CardFooter className="pb-2 pt-1 px-4 text-xs text-gray-500 flex items-center justify-between">
         <div>
-          {import.meta.env.VITE_GEMINI_API_KEY 
-            ? "AI-powered by Gemini" 
+          {import.meta.env.VITE_OPENAI_API_KEY 
+            ? "AI-powered by OpenAI" 
             : <span className="flex items-center gap-1">
                 <span className="w-2 h-2 rounded-full bg-amber-500"></span>
                 <span>Running with fallback data</span>

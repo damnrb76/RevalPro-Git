@@ -43,7 +43,7 @@ export default function AiAssistantPage() {
                 <AlertTitle>Privacy Notice</AlertTitle>
                 <AlertDescription className="text-sm">
                   Your conversations and data are not stored or shared with third parties.
-                  All processing is done on demand using Google's Gemini AI.
+                  All processing is done on demand using OpenAI GPT-4o.
                 </AlertDescription>
               </Alert>
               
