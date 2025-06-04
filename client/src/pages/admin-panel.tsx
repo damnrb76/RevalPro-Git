@@ -86,6 +86,12 @@ export default function AdminPanel() {
     enabled: !!user?.isSuperAdmin || !!user?.isAdmin,
   });
 
+  // Fetch beta applications
+  const { data: betaApplications, isLoading: betaLoading } = useQuery<BetaApplication[]>({
+    queryKey: ["/api/admin/beta-applications"],
+    enabled: !!user?.isSuperAdmin || !!user?.isAdmin,
+  });
+
   // Filter users based on search term
   const filteredUsers = users?.filter(u => 
     u.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -185,7 +191,7 @@ export default function AdminPanel() {
       </div>
 
       <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="overview" className="flex items-center gap-2">
             <BarChart3 className="h-4 w-4" />
             Overview
@@ -193,6 +199,10 @@ export default function AdminPanel() {
           <TabsTrigger value="users" className="flex items-center gap-2">
             <Users className="h-4 w-4" />
             User Management
+          </TabsTrigger>
+          <TabsTrigger value="beta" className="flex items-center gap-2">
+            <Eye className="h-4 w-4" />
+            Beta Applications
           </TabsTrigger>
           <TabsTrigger value="settings" className="flex items-center gap-2">
             <Settings className="h-4 w-4" />
@@ -362,6 +372,72 @@ export default function AdminPanel() {
                       ))}
                     </TableBody>
                   </Table>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="beta" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Eye className="h-5 w-5" />
+                Beta Applications ({betaApplications?.length || 0})
+              </CardTitle>
+              <CardDescription>
+                View all submitted beta tester applications
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {betaLoading ? (
+                <div className="animate-pulse space-y-4">
+                  {[...Array(3)].map((_, i) => (
+                    <div key={i} className="h-16 bg-gray-200 rounded"></div>
+                  ))}
+                </div>
+              ) : betaApplications && betaApplications.length > 0 ? (
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Name</TableHead>
+                        <TableHead>Email</TableHead>
+                        <TableHead>Specialty</TableHead>
+                        <TableHead>Work Location</TableHead>
+                        <TableHead>Experience</TableHead>
+                        <TableHead>Submitted</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {betaApplications.map((application) => (
+                        <TableRow key={application.id}>
+                          <TableCell className="font-medium">
+                            {application.name}
+                          </TableCell>
+                          <TableCell>{application.email}</TableCell>
+                          <TableCell>
+                            <Badge variant="secondary">
+                              {application.nursingSpecialty}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>{application.workLocation}</TableCell>
+                          <TableCell>{application.experience}</TableCell>
+                          <TableCell>
+                            {new Date(application.submittedAt).toLocaleDateString()}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <Eye className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">No Applications Yet</h3>
+                  <p className="text-gray-500">
+                    Beta tester applications will appear here once submitted.
+                  </p>
                 </div>
               )}
             </CardContent>
