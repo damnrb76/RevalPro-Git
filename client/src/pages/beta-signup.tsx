@@ -98,16 +98,9 @@ export default function BetaSignupPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="text-center">
-            <p className="text-sm text-gray-600 mb-4">
-              In the meantime, follow us on social media for updates on the beta program.
+            <p className="text-sm text-gray-600">
+              We'll review your application and contact you within 48 hours. In the meantime, follow us on social media for updates on the beta program.
             </p>
-            <Button 
-              variant="outline" 
-              onClick={() => window.location.href = '/'}
-              className="w-full"
-            >
-              Return to Home
-            </Button>
           </CardContent>
         </Card>
       </main>
@@ -155,7 +148,7 @@ export default function BetaSignupPage() {
             <CardContent className="p-6 text-center">
               <Shield className="w-8 h-8 text-purple-600 mx-auto mb-3" />
               <h3 className="font-semibold text-purple-800 mb-2">Free Premium Access</h3>
-              <p className="text-sm text-purple-600">Complimentary premium features for 6 months</p>
+              <p className="text-sm text-purple-600">Complimentary premium features for life</p>
             </CardContent>
           </Card>
         </div>
@@ -342,7 +335,7 @@ export default function BetaSignupPage() {
 
         {/* Footer */}
         <div className="text-center mt-8 text-sm text-gray-500">
-          <p>Questions about the beta program? Email us at <a href="mailto:beta@revalpro.co.uk" className="text-blue-600 hover:underline">beta@revalpro.co.uk</a></p>
+          <p>Questions about the beta program? Email us at <a href="mailto:revalpro2025@gmail.com" className="text-blue-600 hover:underline">revalpro2025@gmail.com</a></p>
         </div>
       </div>
     </main>
