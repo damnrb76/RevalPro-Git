@@ -49,10 +49,11 @@ function AppRouter() {
   const isVerticalMenu = layout === "vertical";
   const isComingSoonPage = location === '/' && window.location.hostname === 'revalpro.co.uk';
   const isPrivacyPage = location === '/privacy-policy' && window.location.hostname === 'revalpro.co.uk';
-  const showTabs = location !== '/auth' && location !== '/landing' && !isComingSoonPage && !isPrivacyPage;
+  const isBetaSignupPage = location === '/beta-signup';
+  const showTabs = location !== '/auth' && location !== '/landing' && !isComingSoonPage && !isPrivacyPage && !isBetaSignupPage;
   const isAuthPage = location === '/auth';
   const isLandingPage = location === '/landing';
-  const showAppHeader = !isLandingPage && !isComingSoonPage && !isPrivacyPage;
+  const showAppHeader = !isLandingPage && !isComingSoonPage && !isPrivacyPage && !isBetaSignupPage;
   
   return (
     <div className={`min-h-screen flex flex-col ${isVerticalMenu && showTabs ? 'pl-64' : ''}`}>
@@ -115,7 +116,7 @@ function AppRouter() {
           <Route component={NotFound} />
         </Switch>
       </div>
-      {!isLandingPage && !isComingSoonPage && !isPrivacyPage && <Footer logo={logo} className={isVerticalMenu && showTabs ? 'ml-64' : ''} />}
+      {!isLandingPage && !isComingSoonPage && !isPrivacyPage && !isBetaSignupPage && <Footer logo={logo} className={isVerticalMenu && showTabs ? 'ml-64' : ''} />}
     </div>
   );
 }
