@@ -29,6 +29,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Set up authentication routes and middleware
   setupAuth(app);
 
+  // Beta signup endpoint
+  app.post("/api/beta-signup", async (req, res) => {
+    try {
+      const betaSignup = req.body;
+      
+      // Log the beta signup (in production, you'd store this in a database)
+      console.log("New beta signup:", {
+        name: betaSignup.name,
+        email: betaSignup.email,
+        specialty: betaSignup.nursingSpecialty,
+        location: betaSignup.workLocation,
+        experience: betaSignup.experience,
+        motivation: betaSignup.motivation.substring(0, 100) + "...",
+        timestamp: new Date().toISOString()
+      });
+      
+      // Here you would typically:
+      // 1. Validate the data
+      // 2. Store in database
+      // 3. Send confirmation email
+      // 4. Add to mailing list if they opted in
+      
+      res.status(201).json({ 
+        success: true, 
+        message: "Beta signup received successfully",
+        id: Date.now() // Temporary ID for demo
+      });
+    } catch (error) {
+      console.error("Error processing beta signup:", error);
+      res.status(500).json({ error: "Failed to process beta signup" });
+    }
+  });
+
   // AI Assistant API routes
   app.post("/api/ai/revalidation-advice", async (req, res) => {
     try {
