@@ -28,6 +28,22 @@ interface AdminUser {
   isSuperAdmin: boolean;
 }
 
+interface BetaApplication {
+  id: number;
+  name: string;
+  email: string;
+  nmcPin: string;
+  nursingSpecialty: string;
+  workLocation: string;
+  experience: string;
+  currentChallenges: string;
+  expectations: string;
+  testingAvailability: string;
+  agreeToTerms: boolean;
+  allowContact: boolean;
+  submittedAt: string;
+}
+
 interface AdminStats {
   totalUsers: number;
   freeUsers: number;

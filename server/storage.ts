@@ -16,6 +16,22 @@ export interface SubscriptionInfo {
   cancelAtPeriodEnd?: boolean;
 }
 
+export interface BetaApplication {
+  id: number;
+  name: string;
+  email: string;
+  nmcPin: string;
+  nursingSpecialty: string;
+  workLocation: string;
+  experience: string;
+  currentChallenges: string;
+  expectations: string;
+  testingAvailability: string;
+  agreeToTerms: boolean;
+  allowContact: boolean;
+  submittedAt: Date;
+}
+
 export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
@@ -33,17 +49,23 @@ export interface IStorage {
     activeSubscriptions: number;
     totalRevenue: number;
   }>;
+  createBetaApplication(application: Omit<BetaApplication, 'id' | 'submittedAt'>): Promise<BetaApplication>;
+  getAllBetaApplications(): Promise<BetaApplication[]>;
   sessionStore: session.Store;
 }
 
 export class MemStorage implements IStorage {
   private users: Map<number, User>;
+  private betaApplications: Map<number, BetaApplication>;
   currentId: number;
+  currentBetaId: number;
   sessionStore: session.Store;
 
   constructor() {
     this.users = new Map();
+    this.betaApplications = new Map();
     this.currentId = 1;
+    this.currentBetaId = 1;
     this.sessionStore = new MemoryStore({
       checkPeriod: 86400000, // 24 hours - prune expired entries
     });
@@ -195,6 +217,21 @@ export class MemStorage implements IStorage {
       activeSubscriptions,
       totalRevenue
     };
+  }
+
+  async createBetaApplication(application: Omit<BetaApplication, 'id' | 'submittedAt'>): Promise<BetaApplication> {
+    const id = this.currentBetaId++;
+    const betaApplication: BetaApplication = {
+      ...application,
+      id,
+      submittedAt: new Date()
+    };
+    this.betaApplications.set(id, betaApplication);
+    return betaApplication;
+  }
+
+  async getAllBetaApplications(): Promise<BetaApplication[]> {
+    return Array.from(this.betaApplications.values());
   }
 }
 

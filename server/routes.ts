@@ -645,6 +645,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Beta Signup Routes
+  app.post("/api/beta-signup", async (req, res) => {
+    try {
+      const application = await storage.createBetaApplication(req.body);
+      res.status(201).json(application);
+    } catch (error) {
+      console.error("Error creating beta application:", error);
+      res.status(500).json({ error: "Failed to submit beta application" });
+    }
+  });
+
+  app.get("/api/admin/beta-applications", requireAdmin, async (req, res) => {
+    try {
+      const applications = await storage.getAllBetaApplications();
+      res.json(applications);
+    } catch (error) {
+      console.error("Error fetching beta applications:", error);
+      res.status(500).json({ error: "Failed to fetch beta applications" });
+    }
+  });
+
   // AI Assistant Routes
   app.post("/api/ai/advice", async (req, res) => {
     try {
