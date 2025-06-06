@@ -656,6 +656,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Alternative endpoint for beta applications (same functionality)
+  app.post("/api/beta-applications", async (req, res) => {
+    try {
+      const application = await storage.createBetaApplication(req.body);
+      res.status(201).json(application);
+    } catch (error) {
+      console.error("Error creating beta application:", error);
+      res.status(500).json({ error: "Failed to submit beta application" });
+    }
+  });
+
   app.get("/api/admin/beta-applications", requireAdmin, async (req, res) => {
     try {
       const applications = await storage.getAllBetaApplications();
