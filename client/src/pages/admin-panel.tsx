@@ -191,20 +191,20 @@ export default function AdminPanel() {
       </div>
 
       <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="overview" className="flex items-center gap-2">
+        <TabsList className="flex w-full overflow-x-auto">
+          <TabsTrigger value="overview" className="flex items-center gap-2 flex-shrink-0">
             <BarChart3 className="h-4 w-4" />
             Overview
           </TabsTrigger>
-          <TabsTrigger value="users" className="flex items-center gap-2">
+          <TabsTrigger value="users" className="flex items-center gap-2 flex-shrink-0">
             <Users className="h-4 w-4" />
-            User Management
+            Users
           </TabsTrigger>
-          <TabsTrigger value="beta" className="flex items-center gap-2">
+          <TabsTrigger value="beta" className="flex items-center gap-2 flex-shrink-0">
             <Eye className="h-4 w-4" />
-            Beta Applications
+            Beta Apps
           </TabsTrigger>
-          <TabsTrigger value="settings" className="flex items-center gap-2">
+          <TabsTrigger value="settings" className="flex items-center gap-2 flex-shrink-0">
             <Settings className="h-4 w-4" />
             Settings
           </TabsTrigger>

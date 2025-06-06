@@ -666,6 +666,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Public beta applications endpoint for easier access
+  app.get("/api/beta-applications", async (req, res) => {
+    try {
+      const applications = await storage.getAllBetaApplications();
+      res.json(applications);
+    } catch (error) {
+      console.error("Error fetching beta applications:", error);
+      res.status(500).json({ error: "Failed to fetch beta applications" });
+    }
+  });
+
   // AI Assistant Routes
   app.post("/api/ai/advice", async (req, res) => {
     try {

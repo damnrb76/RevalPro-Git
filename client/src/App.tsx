@@ -35,6 +35,7 @@ import ComingSoonPage from "@/pages/coming-soon";
 import AdminPanel from "@/pages/admin-panel";
 import PrivacyPolicyPage from "@/pages/privacy-policy";
 import BetaSignupPage from "@/pages/beta-signup";
+import BetaApplicationsPage from "@/pages/beta-applications";
 import Footer from "@/components/layout/footer";
 import NavigationTabs from "@/components/layout/navigation-tabs";
 import ProminentHeader from "@/components/layout/prominent-header";
@@ -104,14 +105,18 @@ function AppRouter() {
           <ProtectedRoute path="/subscription" component={SubscriptionPage} />
           <ProtectedRoute path="/subscription/success" component={SubscriptionSuccess} />
           
-          {/* Admin Panel Route */}
+          {/* Admin Panel Routes */}
           <ProtectedRoute path="/admin" component={AdminPanel} />
+          <ProtectedRoute path="/admin-panel" component={AdminPanel} />
           
           {/* Privacy Policy Route */}
           <Route path="/privacy-policy" component={PrivacyPolicyPage} />
           
           {/* Beta Signup Route */}
           <Route path="/beta-signup" component={BetaSignupPage} />
+          
+          {/* Beta Applications View */}
+          <Route path="/beta-applications" component={() => <BetaApplicationsPage />} />
           
           <Route component={NotFound} />
         </Switch>
