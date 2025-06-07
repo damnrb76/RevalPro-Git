@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Eye } from "lucide-react";
+import { Eye, Loader2, AlertCircle } from "lucide-react";
 
 interface BetaApplication {
   id: number;
@@ -22,9 +22,11 @@ interface BetaApplication {
 
 export default function BetaApplicationsPage() {
   // Fetch beta applications without authentication requirement
-  const { data: betaApplications, isLoading } = useQuery<BetaApplication[]>({
+  const { data: betaApplications, isLoading, error } = useQuery<BetaApplication[]>({
     queryKey: ["/api/beta-applications"],
   });
+
+  console.log("Beta Applications Page:", { betaApplications, isLoading, error });
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">

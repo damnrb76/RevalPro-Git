@@ -36,6 +36,7 @@ import AdminPanel from "@/pages/admin-panel";
 import PrivacyPolicyPage from "@/pages/privacy-policy";
 import BetaSignupPage from "@/pages/beta-signup";
 import BetaApplicationsPage from "@/pages/beta-applications";
+import TestBeta from "@/pages/test-beta";
 import Footer from "@/components/layout/footer";
 import NavigationTabs from "@/components/layout/navigation-tabs";
 import ProminentHeader from "@/components/layout/prominent-header";
@@ -118,6 +119,9 @@ function AppRouter() {
           
           {/* Beta Applications View */}
           <Route path="/beta-applications" component={() => <BetaApplicationsPage />} />
+          
+          {/* Test Route */}
+          <Route path="/test-beta" component={TestBeta} />
           
           <Route component={NotFound} />
         </Switch>
