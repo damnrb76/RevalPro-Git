@@ -108,57 +108,7 @@ export class MemStorage implements IStorage {
       isSuperAdmin: true
     });
     this.currentId = 3; // Start new users at ID 3
-
-    // Add sample beta applications for demonstration
-    this.betaApplications.set(1, {
-      id: 1,
-      name: "Sarah Johnson",
-      email: "sarah.johnson@nhs.uk",
-      nmcPin: "12A3456B",
-      nursingSpecialty: "Adult Nursing",
-      workLocation: "Royal London Hospital",
-      experience: "8 years",
-      currentChallenges: "Managing revalidation paperwork alongside busy ward shifts",
-      expectations: "Automated tracking and reminder system for all requirements",
-      testingAvailability: "Weekday evenings and weekends",
-      agreeToTerms: true,
-      allowContact: true,
-      submittedAt: new Date("2025-01-05T14:30:00Z")
-    });
-
-    this.betaApplications.set(2, {
-      id: 2,
-      name: "Michael Davies",
-      email: "m.davies@gmail.com",
-      nmcPin: "34C7890D",
-      nursingSpecialty: "Mental Health Nursing",
-      workLocation: "Community Mental Health Team",
-      experience: "12 years",
-      currentChallenges: "Keeping track of CPD hours and reflective accounts",
-      expectations: "Better organization of revalidation documents and deadlines",
-      testingAvailability: "Weekend mornings",
-      agreeToTerms: true,
-      allowContact: true,
-      submittedAt: new Date("2025-01-04T09:15:00Z")
-    });
-
-    this.betaApplications.set(3, {
-      id: 3,
-      name: "Emma Thompson",
-      email: "emma.t@outlook.com",
-      nmcPin: "56E1234F",
-      nursingSpecialty: "Pediatric Nursing",
-      workLocation: "Great Ormond Street Hospital",
-      experience: "6 years",
-      currentChallenges: "Balancing work commitments with revalidation requirements",
-      expectations: "Simple interface to track all revalidation elements in one place",
-      testingAvailability: "Flexible - any time",
-      agreeToTerms: true,
-      allowContact: true,
-      submittedAt: new Date("2025-01-03T16:45:00Z")
-    });
-
-    this.currentBetaId = 4; // Start new applications at ID 4
+    this.currentBetaId = 1; // Start new applications at ID 1
   }
 
   async getUser(id: number): Promise<User | undefined> {
