@@ -21,6 +21,92 @@ async function hashPassword(password: string) {
 // Simple server to serve the static frontend
 // The actual data is stored in the browser using IndexedDB
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Direct beta applications HTML page (priority route)
+  app.get("/beta-view", async (req, res) => {
+    try {
+      const applications = await storage.getAllBetaApplications();
+      
+      res.setHeader('Content-Type', 'text/html');
+      res.send(`<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beta Applications - RevalPro</title>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 20px; background: #f3f4f6; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        h1 { color: #1e40af; margin: 0 0 10px 0; font-size: 28px; }
+        .subtitle { color: #6b7280; margin-bottom: 25px; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb; }
+        th { background: #f9fafb; font-weight: 600; color: #374151; font-size: 14px; }
+        td { font-size: 14px; }
+        tr:hover { background: #f9fafb; }
+        .name { font-weight: 600; color: #1f2937; }
+        .email { color: #2563eb; text-decoration: none; }
+        .email:hover { text-decoration: underline; }
+        .specialty { background: #dbeafe; color: #1e40af; padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: 500; }
+        .empty { text-align: center; padding: 60px 20px; color: #6b7280; }
+        .links { margin-top: 30px; padding: 20px; background: #f8fafc; border-radius: 6px; border-left: 4px solid #3b82f6; }
+        .links a { color: #2563eb; text-decoration: none; margin-right: 20px; font-weight: 500; }
+        .links a:hover { text-decoration: underline; }
+        .count { font-weight: 600; color: #059669; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Beta Applications</h1>
+        <p class="subtitle">Facebook advertising campaign results: <span class="count">${applications.length} total applications</span></p>
+        
+        ${applications.length > 0 ? `
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>NMC PIN</th>
+                    <th>Specialty</th>
+                    <th>Experience</th>
+                    <th>Work Location</th>
+                    <th>Submitted</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${applications.map(app => `
+                <tr>
+                    <td class="name">${app.name}</td>
+                    <td><a href="mailto:${app.email}" class="email">${app.email}</a></td>
+                    <td>${app.nmcPin || 'Not provided'}</td>
+                    <td><span class="specialty">${app.nursingSpecialty}</span></td>
+                    <td>${app.experience}</td>
+                    <td>${app.workLocation}</td>
+                    <td>${new Date(app.submittedAt).toLocaleDateString('en-GB')}</td>
+                </tr>
+                `).join('')}
+            </tbody>
+        </table>
+        ` : `
+        <div class="empty">
+            <h3>No applications submitted yet</h3>
+            <p>Beta applications will appear here when nurses submit the signup form.</p>
+        </div>
+        `}
+        
+        <div class="links">
+            <strong>Quick Links:</strong><br><br>
+            <a href="/beta-signup">Beta Signup Form</a>
+            <a href="/api/beta-applications">Raw JSON Data</a>
+            <a href="/">Back to App</a>
+        </div>
+    </div>
+</body>
+</html>`);
+    } catch (error) {
+      res.status(500).send(`<h1>Error</h1><p>Failed to load applications: ${error}</p>`);
+    }
+  });
+
   // For deployment debugging - this will help diagnose what's happening on the root URL
   app.get('/api/ping', (_req, res) => {
     res.json({ status: 'ok', message: 'API is running' });
@@ -685,6 +771,91 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching beta applications:", error);
       res.status(500).json({ error: "Failed to fetch beta applications" });
+    }
+  });
+
+  // Direct HTML view for beta applications (bypasses React routing issues)
+  app.get("/view-beta-applications", async (req, res) => {
+    try {
+      const applications = await storage.getAllBetaApplications();
+      
+      const html = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beta Applications - RevalPro</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 20px; background: #f8f9fa; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { color: #2563eb; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #f8f9fa; font-weight: 600; color: #374151; }
+        tr:hover { background-color: #f8f9fa; }
+        .badge { background: #dbeafe; color: #1e40af; padding: 4px 8px; border-radius: 4px; font-size: 12px; }
+        .email { color: #2563eb; text-decoration: none; }
+        .email:hover { text-decoration: underline; }
+        .empty { text-align: center; padding: 40px; color: #6b7280; }
+        .links { margin-top: 30px; padding: 20px; background: #f1f5f9; border-radius: 6px; }
+        .links a { color: #2563eb; text-decoration: none; margin-right: 20px; }
+        .links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Beta Applications (${applications.length} total)</h1>
+        <p>Submitted beta tester applications for your Facebook advertising campaign</p>
+        
+        ${applications.length > 0 ? `
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>NMC PIN</th>
+                    <th>Specialty</th>
+                    <th>Experience</th>
+                    <th>Work Location</th>
+                    <th>Submitted</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${applications.map(app => `
+                <tr>
+                    <td><strong>${app.name}</strong></td>
+                    <td><a href="mailto:${app.email}" class="email">${app.email}</a></td>
+                    <td>${app.nmcPin || 'Not provided'}</td>
+                    <td><span class="badge">${app.nursingSpecialty}</span></td>
+                    <td>${app.experience}</td>
+                    <td>${app.workLocation}</td>
+                    <td>${new Date(app.submittedAt).toLocaleDateString('en-GB')}</td>
+                </tr>
+                `).join('')}
+            </tbody>
+        </table>
+        ` : `
+        <div class="empty">
+            <h3>No applications yet</h3>
+            <p>Beta applications will appear here when submitted through the signup form.</p>
+        </div>
+        `}
+        
+        <div class="links">
+            <strong>Quick Links:</strong><br><br>
+            <a href="/beta-signup">Beta Signup Form</a>
+            <a href="/api/beta-applications">Raw JSON Data</a>
+            <a href="/">Back to App</a>
+        </div>
+    </div>
+</body>
+</html>`;
+      
+      res.send(html);
+    } catch (error) {
+      console.error("Error generating beta applications view:", error);
+      res.status(500).send(`<h1>Error</h1><p>Failed to load beta applications: ${error.message}</p>`);
     }
   });
 

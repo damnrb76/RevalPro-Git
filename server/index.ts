@@ -53,6 +53,90 @@ app.use((req, res, next) => {
 (async () => {
   const server = await registerRoutes(app);
 
+  // Add direct beta applications HTML route before Vite middleware
+  app.get("/view-beta-applications", async (req, res) => {
+    try {
+      const { storage } = await import("./storage");
+      const applications = await storage.getAllBetaApplications();
+      
+      const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beta Applications - RevalPro</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 20px; background: #f8f9fa; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { color: #2563eb; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #f8f9fa; font-weight: 600; color: #374151; }
+        tr:hover { background-color: #f8f9fa; }
+        .badge { background: #dbeafe; color: #1e40af; padding: 4px 8px; border-radius: 4px; font-size: 12px; }
+        .email { color: #2563eb; text-decoration: none; }
+        .email:hover { text-decoration: underline; }
+        .empty { text-align: center; padding: 40px; color: #6b7280; }
+        .links { margin-top: 30px; padding: 20px; background: #f1f5f9; border-radius: 6px; }
+        .links a { color: #2563eb; text-decoration: none; margin-right: 20px; }
+        .links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Beta Applications (${applications.length} total)</h1>
+        <p>Submitted beta tester applications for your Facebook advertising campaign</p>
+        
+        ${applications.length > 0 ? `
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>NMC PIN</th>
+                    <th>Specialty</th>
+                    <th>Experience</th>
+                    <th>Work Location</th>
+                    <th>Submitted</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${applications.map(app => `
+                <tr>
+                    <td><strong>${app.name}</strong></td>
+                    <td><a href="mailto:${app.email}" class="email">${app.email}</a></td>
+                    <td>${app.nmcPin || 'Not provided'}</td>
+                    <td><span class="badge">${app.nursingSpecialty}</span></td>
+                    <td>${app.experience}</td>
+                    <td>${app.workLocation}</td>
+                    <td>${new Date(app.submittedAt).toLocaleDateString('en-GB')}</td>
+                </tr>
+                `).join('')}
+            </tbody>
+        </table>
+        ` : `
+        <div class="empty">
+            <h3>No applications yet</h3>
+            <p>Beta applications will appear here when submitted through the signup form.</p>
+        </div>
+        `}
+        
+        <div class="links">
+            <strong>Quick Links:</strong><br><br>
+            <a href="/beta-signup">Beta Signup Form</a>
+            <a href="/api/beta-applications">Raw JSON Data</a>
+            <a href="/">Back to App</a>
+        </div>
+    </div>
+</body>
+</html>`;
+      
+      res.send(html);
+    } catch (error) {
+      res.status(500).send(`<h1>Error</h1><p>Failed to load beta applications: ${error.message}</p>`);
+    }
+  });
+
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
