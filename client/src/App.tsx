@@ -36,6 +36,7 @@ import AdminPanel from "@/pages/admin-panel";
 import PrivacyPolicyPage from "@/pages/privacy-policy";
 import BetaSignupPage from "@/pages/beta-signup";
 import BetaApplicationsPage from "@/pages/beta-applications";
+import SimpleBetaView from "@/pages/simple-beta-view";
 import TestBeta from "@/pages/test-beta";
 import Footer from "@/components/layout/footer";
 import NavigationTabs from "@/components/layout/navigation-tabs";
@@ -56,7 +57,7 @@ function AppRouter() {
   const showTabs = location !== '/auth' && location !== '/landing' && !isComingSoonPage && !isPrivacyPage && !isBetaSignupPage && !isBetaApplicationsPage;
   const isAuthPage = location === '/auth';
   const isLandingPage = location === '/landing';
-  const showAppHeader = !isLandingPage && !isComingSoonPage && !isPrivacyPage && !isBetaSignupPage && !isBetaApplicationsPage;
+  const showAppHeader = !isLandingPage && !isComingSoonPage && !isPrivacyPage && !isBetaSignupPage;
   
   return (
     <div className={`min-h-screen flex flex-col ${isVerticalMenu && showTabs ? 'pl-64' : ''}`}>
@@ -120,13 +121,16 @@ function AppRouter() {
           {/* Beta Applications View */}
           <Route path="/beta-applications" component={BetaApplicationsPage} />
           
+          {/* Simple Beta Applications View */}
+          <Route path="/simple-beta" component={SimpleBetaView} />
+          
           {/* Test Route */}
           <Route path="/test-beta" component={TestBeta} />
           
           <Route component={NotFound} />
         </Switch>
       </div>
-      {!isLandingPage && !isComingSoonPage && !isPrivacyPage && !isBetaSignupPage && !isBetaApplicationsPage && <Footer logo={logo} className={isVerticalMenu && showTabs ? 'ml-64' : ''} />}
+      {!isLandingPage && !isComingSoonPage && !isPrivacyPage && !isBetaSignupPage && <Footer logo={logo} className={isVerticalMenu && showTabs ? 'ml-64' : ''} />}
     </div>
   );
 }
