@@ -21,109 +21,107 @@ interface BetaApplication {
 }
 
 export default function BetaApplicationsPage() {
-  // Fetch beta applications without authentication requirement
   const { data: betaApplications, isLoading, error } = useQuery<BetaApplication[]>({
     queryKey: ["/api/beta-applications"],
+    retry: 1,
   });
 
-  console.log("Beta Applications Page:", { betaApplications, isLoading, error });
-
-  return (
-    <div className="container mx-auto px-4 py-8 max-w-7xl">
-      <div className="flex items-center gap-3 mb-8">
-        <Eye className="h-8 w-8 text-revalpro-blue" />
-        <div>
-          <h1 className="text-3xl font-bold text-revalpro-blue">Beta Applications</h1>
-          <p className="text-muted-foreground">
-            View all submitted beta tester applications ({betaApplications?.length || 0} total)
-          </p>
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 py-8">
+        <div className="container mx-auto px-4 max-w-7xl">
+          <div className="bg-white rounded-lg shadow p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <AlertCircle className="h-8 w-8 text-red-500" />
+              <div>
+                <h1 className="text-2xl font-bold text-red-500">Error Loading Applications</h1>
+                <p className="text-gray-600">
+                  {error instanceof Error ? error.message : 'Failed to load beta applications'}
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
+    );
+  }
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Eye className="h-5 w-5" />
-            Beta Applications ({betaApplications?.length || 0})
-          </CardTitle>
-          <CardDescription>
-            All submitted beta tester applications from your Facebook advertising campaign
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+  return (
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="container mx-auto px-4 max-w-7xl">
+        <div className="bg-white rounded-lg shadow p-6">
+          <div className="flex items-center gap-3 mb-6">
+            <Eye className="h-8 w-8 text-blue-600" />
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">Beta Applications</h1>
+              <p className="text-gray-600">
+                View all submitted beta tester applications ({betaApplications?.length || 0} total)
+              </p>
+            </div>
+          </div>
+
           {isLoading ? (
-            <div className="animate-pulse space-y-4">
-              {[...Array(3)].map((_, i) => (
-                <div key={i} className="h-16 bg-gray-200 rounded"></div>
-              ))}
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+              <span className="ml-2 text-gray-600">Loading applications...</span>
             </div>
           ) : betaApplications && betaApplications.length > 0 ? (
             <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>NMC PIN</TableHead>
-                    <TableHead>Specialty</TableHead>
-                    <TableHead>Work Location</TableHead>
-                    <TableHead>Experience</TableHead>
-                    <TableHead>Challenges</TableHead>
-                    <TableHead>Expectations</TableHead>
-                    <TableHead>Availability</TableHead>
-                    <TableHead>Submitted</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {betaApplications.map((application) => (
-                    <TableRow key={application.id}>
-                      <TableCell className="font-medium">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NMC PIN</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Specialty</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Experience</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Submitted</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {betaApplications.map((application, index) => (
+                    <tr key={application.id} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         {application.name}
-                      </TableCell>
-                      <TableCell>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         <a href={`mailto:${application.email}`} className="text-blue-600 hover:underline">
                           {application.email}
                         </a>
-                      </TableCell>
-                      <TableCell>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {application.nmcPin || "Not provided"}
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="secondary">
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
                           {application.nursingSpecialty}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>{application.workLocation}</TableCell>
-                      <TableCell>{application.experience}</TableCell>
-                      <TableCell className="max-w-xs truncate">
-                        {application.currentChallenges}
-                      </TableCell>
-                      <TableCell className="max-w-xs truncate">
-                        {application.expectations}
-                      </TableCell>
-                      <TableCell>{application.testingAvailability}</TableCell>
-                      <TableCell>
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {application.experience}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {new Date(application.submittedAt).toLocaleDateString()}
-                      </TableCell>
-                    </TableRow>
+                      </td>
+                    </tr>
                   ))}
-                </TableBody>
-              </Table>
+                </tbody>
+              </table>
             </div>
           ) : (
-            <div className="text-center py-8">
+            <div className="text-center py-12">
               <Eye className="h-12 w-12 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">No Applications Yet</h3>
-              <p className="text-gray-500">
+              <p className="text-gray-500 mb-4">
                 Beta tester applications will appear here once submitted through your beta signup form.
               </p>
-              <p className="text-sm text-gray-400 mt-2">
-                Share your beta signup link: <code className="bg-gray-100 px-2 py-1 rounded">/beta-signup</code>
-              </p>
+              <div className="bg-gray-100 rounded p-3 inline-block">
+                <code className="text-sm">Share your beta signup link: /beta-signup</code>
+              </div>
             </div>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }

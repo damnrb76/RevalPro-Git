@@ -118,7 +118,7 @@ function AppRouter() {
           <Route path="/beta-signup" component={BetaSignupPage} />
           
           {/* Beta Applications View */}
-          <Route path="/beta-applications" component={() => <BetaApplicationsPage />} />
+          <Route path="/beta-applications" component={BetaApplicationsPage} />
           
           {/* Test Route */}
           <Route path="/test-beta" component={TestBeta} />
