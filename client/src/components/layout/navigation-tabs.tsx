@@ -201,27 +201,11 @@ export default function NavigationTabs({ currentPath }: NavigationTabsProps) {
     },
   ];
 
-  // Add testing and admin items if applicable
-  const testingItems: NavigationLink[] = [];
-  testingItems.push(
-    { 
-      href: "/tester-feedback", 
-      label: "Tester Feedback", 
-      icon: <MessageCircle size={16} />,
-      color: "bg-amber-200 text-amber-700",
-      hoverColor: "hover:bg-amber-300"
-    },
-    { 
-      href: "/feasibility-questionnaire", 
-      label: "Feasibility Test", 
-      icon: <ClipboardCheck size={16} />,
-      color: "bg-emerald-200 text-emerald-700",
-      hoverColor: "hover:bg-emerald-300"
-    }
-  );
+  // Add admin items if applicable
+  const adminItems: NavigationLink[] = [];
 
   if (user?.isSuperAdmin || user?.isAdmin) {
-    testingItems.push({
+    adminItems.push({
       href: "/admin",
       label: "Admin Panel",
       icon: <Shield size={16} />,
@@ -230,13 +214,13 @@ export default function NavigationTabs({ currentPath }: NavigationTabsProps) {
     });
   }
 
-  if (testingItems.length > 0) {
+  if (adminItems.length > 0) {
     navigationGroups.push({
-      label: "Testing & Admin",
+      label: "Admin",
       icon: <Shield size={16} />,
-      color: "bg-amber-200 text-amber-700",
-      hoverColor: "hover:bg-amber-300",
-      items: testingItems
+      color: "bg-red-200 text-red-700",
+      hoverColor: "hover:bg-red-300",
+      items: adminItems
     });
   }
 
