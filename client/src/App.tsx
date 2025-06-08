@@ -27,21 +27,17 @@ import NmcRegistrationCheck from "@/pages/nmc-registration-check";
 import RevalidationDates from "@/pages/revalidation-dates";
 import NmcResources from "@/pages/nmc-resources";
 
-import TesterFeedback from "@/pages/tester-feedback";
-import FeasibilityQuestionnaire from "@/pages/feasibility-questionnaire";
 import SummaryInfographic from "@/pages/summary-infographic";
-import SneakPeekPage from "@/pages/sneak-peek";
-import ComingSoonPage from "@/pages/coming-soon";
 import AdminPanel from "@/pages/admin-panel";
 import PrivacyPolicyPage from "@/pages/privacy-policy";
 import BetaSignupPage from "@/pages/beta-signup";
 import BetaApplicationsPage from "@/pages/beta-applications";
 import SimpleBetaView from "@/pages/simple-beta-view";
-import TestBeta from "@/pages/test-beta";
+
 import Footer from "@/components/layout/footer";
 import NavigationTabs from "@/components/layout/navigation-tabs";
 import ProminentHeader from "@/components/layout/prominent-header";
-import WelcomePopupWrapper from "@/components/welcome-popup-wrapper";
+
 
 // Import the logo
 import logo from "@assets/Leonardo_Phoenix_10_design_a_vibrant_and_professional_logo_for_3.jpg";
@@ -65,8 +61,8 @@ function AppRouter() {
       {showTabs && <NavigationTabs currentPath={location} />}
       <div className={`flex-grow ${!isAuthPage && !isLandingPage ? 'pt-4' : ''}`}>
         <Switch>
-          {/* Coming Soon Page - For main domain only */}
-          <Route path="/" component={window.location.hostname.includes('revalpro.co.uk') ? ComingSoonPage : AuthPage} />
+          {/* Main route */}
+          <Route path="/" component={AuthPage} />
           
           {/* Development access route for testing app features */}
           <Route path="/app" component={LandingPage} />
@@ -92,17 +88,8 @@ function AppRouter() {
           <ProtectedRoute path="/nmc-resources" component={NmcResources} />
 
           
-          {/* Tester Feedback */}
-          <Route path="/tester-feedback" component={TesterFeedback} />
-          
-          {/* Feasibility Questionnaire */}
-          <Route path="/feasibility-questionnaire" component={FeasibilityQuestionnaire} />
-          
           {/* Infographic Routes - Changed to regular Route for preview */}
           <Route path="/summary-infographic" component={SummaryInfographic} />
-          
-          {/* Sneak Peek Page */}
-          <Route path="/sneak-peek" component={SneakPeekPage} />
           
           {/* Subscription Routes */}
           <ProtectedRoute path="/subscription" component={SubscriptionPage} />
@@ -124,8 +111,7 @@ function AppRouter() {
           {/* Simple Beta Applications View */}
           <Route path="/simple-beta" component={SimpleBetaView} />
           
-          {/* Test Route */}
-          <Route path="/test-beta" component={TestBeta} />
+
           
           <Route component={NotFound} />
         </Switch>
@@ -143,7 +129,7 @@ function App() {
           <ThemeProvider defaultTheme="light" storageKey="revalpro-theme">
             <TooltipProvider>
               <AppRouter />
-              <WelcomePopupWrapper />
+
               <Toaster />
             </TooltipProvider>
           </ThemeProvider>
