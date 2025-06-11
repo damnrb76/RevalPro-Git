@@ -239,6 +239,37 @@ export const insertConfirmationSchema = createInsertSchema(confirmations, {
   completed: true,
 });
 
+// Beta Applications
+export const betaApplications = pgTable("beta_applications", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  nmcPin: text("nmc_pin").notNull(),
+  nursingSpecialty: text("nursing_specialty").notNull(),
+  workLocation: text("work_location").notNull(),
+  experience: text("experience").notNull(),
+  currentChallenges: text("current_challenges").notNull(),
+  expectations: text("expectations").notNull(),
+  testingAvailability: text("testing_availability").notNull(),
+  agreeToTerms: boolean("agree_to_terms").notNull(),
+  allowContact: boolean("allow_contact").notNull(),
+  submittedAt: timestamp("submitted_at").notNull().defaultNow(),
+});
+
+export const insertBetaApplicationSchema = createInsertSchema(betaApplications).pick({
+  name: true,
+  email: true,
+  nmcPin: true,
+  nursingSpecialty: true,
+  workLocation: true,
+  experience: true,
+  currentChallenges: true,
+  expectations: true,
+  testingAvailability: true,
+  agreeToTerms: true,
+  allowContact: true,
+});
+
 // Export types for frontend use
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -266,6 +297,9 @@ export type InsertHealthDeclaration = z.infer<typeof insertHealthDeclarationSche
 
 export type Confirmation = typeof confirmations.$inferSelect;
 export type InsertConfirmation = z.infer<typeof insertConfirmationSchema>;
+
+export type BetaApplication = typeof betaApplications.$inferSelect;
+export type InsertBetaApplication = z.infer<typeof insertBetaApplicationSchema>;
 
 // Define NHS Revalidation Status types
 export const RevalidationStatusEnum = {
