@@ -232,7 +232,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllBetaApplications(): Promise<BetaApplication[]> {
-    return await db.select().from(betaApplications).orderBy(betaApplications.submittedAt);
+    return await db.select().from(betaApplications);
   }
 }
 
