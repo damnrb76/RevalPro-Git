@@ -18,6 +18,22 @@ export interface SubscriptionInfo {
   cancelAtPeriodEnd?: boolean;
 }
 
+export interface BetaApplication {
+  id: number;
+  name: string;
+  email: string;
+  nmcPin: string;
+  nursingSpecialty: string;
+  workLocation: string;
+  experience: string;
+  currentChallenges: string;
+  expectations: string;
+  testingAvailability: string;
+  agreeToTerms: boolean;
+  allowContact: boolean;
+  submittedAt: Date;
+}
+
 export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
@@ -40,7 +56,6 @@ export interface IStorage {
   sessionStore: session.Store;
 }
 
-// In-memory storage implementation for users (temporary)
 export class MemStorage implements IStorage {
   private users: Map<number, User>;
   private betaApplications: Map<number, BetaApplication>;
@@ -54,29 +69,16 @@ export class MemStorage implements IStorage {
     this.currentId = 1;
     this.currentBetaId = 1;
     this.sessionStore = new MemoryStore({
-      checkPeriod: 86400000,
+      checkPeriod: 86400000, // 24 hours - prune expired entries
     });
-  }
-
-  async getUser(id: number): Promise<User | undefined> {
-    return this.users.get(id);
-  }
-
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    for (const user of this.users.values()) {
-      if (user.username === username) {
-        return user;
-      }
-    }
-    return undefined;
-  }
-
-  async createUser(insertUser: InsertUser): Promise<User> {
-    const user: User = { 
-      id: this.currentId++, 
-      ...insertUser,
+    
+    // Add demo user for testing with simple hashing
+    this.users.set(1, {
+      id: 1, 
+      username: "demouser",
+      password: "hashed_hello", // Simple hash for "hello"
       email: null,
-      profilePicture: null,
+      profilePicture: "https://api.dicebear.com/7.x/personas/svg?seed=nursehero",
       created: new Date(),
       currentPlan: "free",
       stripeCustomerId: null,
@@ -86,28 +88,83 @@ export class MemStorage implements IStorage {
       subscriptionEndDate: null,
       cancelAtPeriodEnd: false,
       isAdmin: false,
-      isSuperAdmin: false,
+      isSuperAdmin: false
+    });
+
+    // Add super admin account with full privileges
+    this.users.set(2, {
+      id: 2,
+      username: "RevalProAdmin",
+      password: "hashed_5up3ru53r!", // Simple hash for "5up3ru53r!"
+      email: "admin@revalpro.co.uk",
+      profilePicture: "https://api.dicebear.com/7.x/personas/svg?seed=superadmin",
+      created: new Date(),
+      currentPlan: "premium", // Super admin gets premium access
+      stripeCustomerId: null,
+      stripeSubscriptionId: null,
+      subscriptionStatus: "active",
+      subscriptionPeriod: "annual",
+      subscriptionEndDate: null, // Never expires
+      cancelAtPeriodEnd: false,
+      isAdmin: true,
+      isSuperAdmin: true
+    });
+    this.currentId = 3; // Start new users at ID 3
+    this.currentBetaId = 1; // Start new applications at ID 1
+  }
+
+  async getUser(id: number): Promise<User | undefined> {
+    return this.users.get(id);
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    return Array.from(this.users.values()).find(
+      (user) => user.username === username,
+    );
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const id = this.currentId++;
+    const timestamp = new Date();
+    const user: User = { 
+      ...insertUser, 
+      id,
+      email: null,
+      profilePicture: insertUser.username 
+        ? `https://api.dicebear.com/7.x/personas/svg?seed=${insertUser.username}` 
+        : null,
+      created: timestamp,
+      currentPlan: "free",
+      stripeCustomerId: null,
+      stripeSubscriptionId: null,
+      subscriptionStatus: "inactive",
+      subscriptionPeriod: null,
+      subscriptionEndDate: null,
+      cancelAtPeriodEnd: false,
+      isAdmin: false,
+      isSuperAdmin: false
     };
-    this.users.set(user.id, user);
+    this.users.set(id, user);
     return user;
   }
-
+  
   async getUserByStripeCustomerId(customerId: string): Promise<User | undefined> {
-    for (const user of this.users.values()) {
-      if (user.stripeCustomerId === customerId) {
-        return user;
-      }
-    }
-    return undefined;
+    return Array.from(this.users.values()).find(
+      (user) => user.stripeCustomerId === customerId,
+    );
   }
-
+  
   async updateUserStripeInfo(userId: number, info: SubscriptionInfo): Promise<User> {
-    const user = this.users.get(userId);
+    const user = await this.getUser(userId);
     if (!user) {
-      throw new Error("User not found");
+      throw new Error(`User with ID ${userId} not found`);
     }
     
-    const updatedUser = { ...user, ...info };
+    const updatedUser = {
+      ...user,
+      ...info
+    };
+    
     this.users.set(userId, updatedUser);
     return updatedUser;
   }
@@ -121,8 +178,12 @@ export class MemStorage implements IStorage {
     if (!user) {
       throw new Error("User not found");
     }
-    
-    const updatedUser = { ...user, currentPlan: plan };
+
+    const updatedUser = { 
+      ...user, 
+      currentPlan: plan,
+      subscriptionStatus: plan === "free" ? "inactive" : "active"
+    };
     this.users.set(userId, updatedUser);
     return updatedUser;
   }
@@ -140,23 +201,35 @@ export class MemStorage implements IStorage {
     totalRevenue: number;
   }> {
     const users = Array.from(this.users.values());
+    const totalUsers = users.length;
+    const freeUsers = users.filter(u => u.currentPlan === "free").length;
+    const standardUsers = users.filter(u => u.currentPlan === "standard").length;
+    const premiumUsers = users.filter(u => u.currentPlan === "premium").length;
+    const activeSubscriptions = users.filter(u => u.subscriptionStatus === "active").length;
+    
+    // Calculate estimated monthly revenue (simplified calculation)
+    const standardRevenue = standardUsers * 4.99;
+    const premiumRevenue = premiumUsers * 9.99;
+    const totalRevenue = Math.round((standardRevenue + premiumRevenue) * 100) / 100;
+
     return {
-      totalUsers: users.length,
-      freeUsers: users.filter(u => u.currentPlan === "free").length,
-      standardUsers: users.filter(u => u.currentPlan === "standard").length,
-      premiumUsers: users.filter(u => u.currentPlan === "premium").length,
-      activeSubscriptions: users.filter(u => u.subscriptionStatus === "active").length,
-      totalRevenue: 0, // Would calculate based on subscription data
+      totalUsers,
+      freeUsers,
+      standardUsers,
+      premiumUsers,
+      activeSubscriptions,
+      totalRevenue
     };
   }
 
   async createBetaApplication(application: Omit<BetaApplication, 'id' | 'submittedAt'>): Promise<BetaApplication> {
+    const id = this.currentBetaId++;
     const betaApplication: BetaApplication = {
-      id: this.currentBetaId++,
       ...application,
-      submittedAt: new Date(),
+      id,
+      submittedAt: new Date()
     };
-    this.betaApplications.set(betaApplication.id, betaApplication);
+    this.betaApplications.set(id, betaApplication);
     return betaApplication;
   }
 
