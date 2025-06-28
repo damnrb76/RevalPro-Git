@@ -422,7 +422,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.json({ success: true, plan: "free" });
       }
 
-      // Get price ID based on plan and period
+      // Development mode: Allow testing paid plans without Stripe integration
+      if (process.env.NODE_ENV === "development") {
+        // Simulate successful subscription for testing
+        const endDate = new Date();
+        endDate.setFullYear(endDate.getFullYear() + (period === "annual" ? 1 : 0));
+        endDate.setMonth(endDate.getMonth() + (period === "monthly" ? 1 : 0));
+
+        await storage.updateUserStripeInfo(user.id, {
+          currentPlan: planId,
+          subscriptionStatus: "active",
+          stripeSubscriptionId: `dev_sub_${Date.now()}`,
+          subscriptionPeriod: period,
+          subscriptionEndDate: endDate,
+          cancelAtPeriodEnd: false,
+        });
+        
+        return res.json({ 
+          success: true, 
+          plan: planId,
+          message: "Development mode: Subscription activated for testing" 
+        });
+      }
+
+      // Production mode: Use actual Stripe integration
       const priceId = planDetails.stripePriceId[period];
       if (!priceId) {
         return res.status(400).json({ error: "Invalid price ID for selected plan and period" });
