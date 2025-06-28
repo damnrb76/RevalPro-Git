@@ -153,13 +153,7 @@ export default function NavigationTabs({ currentPath }: NavigationTabsProps) {
           color: "bg-revalpro-teal/20 text-revalpro-teal",
           hoverColor: "hover:bg-revalpro-teal/30"
         },
-        { 
-          href: "/nmc-service-status", 
-          label: "NMC Status", 
-          icon: <ActivitySquare size={16} />,
-          color: "bg-revalpro-purple/20 text-revalpro-purple",
-          hoverColor: "hover:bg-revalpro-purple/30"
-        },
+
       ]
     },
     {
