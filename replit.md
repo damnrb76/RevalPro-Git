@@ -108,6 +108,7 @@ RevalPro is a comprehensive UK-specific nursing revalidation tracker application
 - December 28, 2025. Fixed beta application persistence with PostgreSQL database storage
 - December 28, 2025. Removed progress indicator legend section from dashboard
 - December 28, 2025. Removed "NMC Status" from Analytics & Visuals menu
+- December 28, 2025. Removed early founders promotional offer and locked pricing from subscription page
 
 ## User Preferences
 
