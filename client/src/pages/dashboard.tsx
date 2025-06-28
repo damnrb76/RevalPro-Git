@@ -438,34 +438,7 @@ export default function DashboardPage() {
           })}
         </div>
         
-        {/* Legend */}
-        <motion.div 
-          className="mt-8 flex flex-wrap justify-center gap-4"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.2 }}
-        >
-          <div className="flex items-center gap-2 bg-blue-50 px-3 py-1 rounded-full border border-blue-200">
-            <div className="w-4 h-4 rounded-full bg-blue-500"></div>
-            <span className="text-sm text-blue-700">Complete (100%)</span>
-          </div>
-          <div className="flex items-center gap-2 bg-green-50 px-3 py-1 rounded-full border border-green-200">
-            <div className="w-4 h-4 rounded-full bg-green-500"></div>
-            <span className="text-sm text-green-700">Excellent (81%+)</span>
-          </div>
-          <div className="flex items-center gap-2 bg-yellow-50 px-3 py-1 rounded-full border border-yellow-200">
-            <div className="w-4 h-4 rounded-full bg-yellow-500"></div>
-            <span className="text-sm text-yellow-700">Good (51-80%)</span>
-          </div>
-          <div className="flex items-center gap-2 bg-orange-50 px-3 py-1 rounded-full border border-orange-200">
-            <div className="w-4 h-4 rounded-full bg-orange-500"></div>
-            <span className="text-sm text-orange-700">In Progress (21-50%)</span>
-          </div>
-          <div className="flex items-center gap-2 bg-red-50 px-3 py-1 rounded-full border border-red-200">
-            <div className="w-4 h-4 rounded-full bg-red-500"></div>
-            <span className="text-sm text-red-700">Needs Attention (0-20%)</span>
-          </div>
-        </motion.div>
+
       </div>
 
       {/* Quick Actions */}
