@@ -57,7 +57,17 @@ export default function PricingPlans() {
         return;
       }
 
-      // If a paid plan, we need to show the payment form
+      // Development mode: subscription activated immediately
+      if (data.success && data.message && data.message.includes("Development mode")) {
+        toast({
+          title: "Subscription activated!",
+          description: `You are now on the ${data.plan} plan`,
+        });
+        queryClient.invalidateQueries({ queryKey: ["/api/subscription"] });
+        return;
+      }
+
+      // Production mode: show payment form
       if (data.clientSecret) {
         setClientSecret(data.clientSecret);
       }
