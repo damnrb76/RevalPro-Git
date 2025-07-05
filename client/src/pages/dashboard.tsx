@@ -310,10 +310,10 @@ export default function DashboardPage() {
       >
         <Card className={`border-2 ${
           subscriptionInfo?.currentPlan === 'premium' 
-            ? 'bg-gradient-to-r from-purple-50 via-pink-50 to-purple-50 border-purple-300 shadow-lg shadow-purple-200/50' 
+            ? 'bg-white border-purple-300 shadow-lg shadow-purple-200/50' 
             : subscriptionInfo?.currentPlan === 'standard'
-            ? 'bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-300 shadow-md shadow-blue-100/50'
-            : 'bg-gradient-to-r from-gray-50 to-slate-50 border-gray-200'
+            ? 'bg-white border-blue-300 shadow-md shadow-blue-100/50'
+            : 'bg-white border-gray-200'
         }`}>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
