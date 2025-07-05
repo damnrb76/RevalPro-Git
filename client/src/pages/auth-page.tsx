@@ -39,7 +39,7 @@ function DemoLoginButton() {
         
         toast({
           title: "Demo Login Successful",
-          description: `Logged in as ${user.username} with ${user.currentPlan} plan`,
+          description: `Logged in as ${user.username} with ${user.currentPlan?.toUpperCase()} plan`,
         });
         
         // Force page refresh to update authentication state
@@ -65,9 +65,9 @@ function DemoLoginButton() {
     <Button 
       onClick={handleDemoLogin}
       variant="outline" 
-      className="w-full bg-orange-50 border-orange-200 text-orange-800 hover:bg-orange-100"
+      className="w-full bg-purple-50 border-purple-200 text-purple-800 hover:bg-purple-100"
     >
-      🔥 Try Demo (Standard Plan)
+      ⭐ Try Demo (Premium Plan)
     </Button>
   );
 }

@@ -227,6 +227,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const demoUsername = "demo@revalpro.com";
       const demoPassword = "demo123";
+      const requestedPlan = req.body?.plan || "standard"; // Default to standard, allow override
       
       // Check if demo account already exists and delete it first
       const existingUser = await storage.getUserByUsername(demoUsername);
@@ -241,9 +242,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         password: hashedPassword,
       });
       
-      // Update with Standard plan features
+      // Update with requested plan features
       await storage.updateUserStripeInfo(user.id, {
-        currentPlan: "standard",
+        currentPlan: requestedPlan,
         subscriptionStatus: "active",
         stripeSubscriptionId: "demo_subscription",
         subscriptionPeriod: "annual",
@@ -255,7 +256,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         message: "Demo account created successfully", 
         username: demoUsername,
         password: demoPassword,
-        plan: "standard"
+        plan: requestedPlan
       });
     } catch (error) {
       console.error("Error creating demo account:", error);
