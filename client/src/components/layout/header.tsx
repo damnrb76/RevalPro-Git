@@ -16,6 +16,7 @@ import { useTheme } from "@/components/ui/theme-provider";
 import AssistantButton from "@/components/ai/assistant-button";
 import ColorPaletteSelector from "./color-palette-selector";
 import NotificationCenter from "@/components/notification-center";
+import { PlanIndicator } from "@/components/ui/plan-indicator";
 
 type HeaderProps = {
   logo: string;
@@ -30,6 +31,16 @@ export default function Header({ logo }: HeaderProps) {
     queryKey: ['userProfile'],
     queryFn: async () => {
       return userProfileStorage.getCurrent();
+    },
+  });
+
+  // Fetch subscription info
+  const { data: subscriptionInfo } = useQuery({
+    queryKey: ['/api/subscription'],
+    queryFn: async () => {
+      const response = await fetch('/api/subscription');
+      if (!response.ok) throw new Error('Failed to fetch subscription');
+      return response.json();
     },
   });
   
@@ -75,6 +86,13 @@ export default function Header({ logo }: HeaderProps) {
           
           <div className="mr-3">
             <NotificationCenter />
+          </div>
+          
+          <div className="mr-3">
+            <PlanIndicator 
+              plan={subscriptionInfo?.currentPlan || 'free'} 
+              variant="header"
+            />
           </div>
           
           <DropdownMenu>

@@ -111,6 +111,10 @@ RevalPro is a comprehensive UK-specific nursing revalidation tracker application
 - December 28, 2025. Removed early founders promotional offer and locked pricing from subscription page
 - July 5, 2025. Fixed demo account authentication system with dedicated demo login button
 - July 5, 2025. Added development mode for subscription testing without Stripe integration
+- July 5, 2025. Enhanced visual subscription experience with plan-specific UI themes
+- July 5, 2025. Added AI assistant color themes (blue/green/purple) for different features
+- July 5, 2025. Implemented premium visual effects and background gradients
+- July 5, 2025. Added plan indicators in header and dashboard with crown/star/shield icons
 
 ## User Preferences
 

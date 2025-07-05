@@ -7,6 +7,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/hooks/use-auth";
 import { MenuLayoutProvider, useMenuLayout } from "@/hooks/use-menu-layout";
 import { ProtectedRoute } from "@/lib/protected-route";
+import { PremiumThemeWrapper } from "@/components/layout/premium-theme-wrapper";
 
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
@@ -128,7 +129,9 @@ function App() {
         <MenuLayoutProvider>
           <ThemeProvider defaultTheme="light" storageKey="revalpro-theme">
             <TooltipProvider>
-              <AppRouter />
+              <PremiumThemeWrapper>
+                <AppRouter />
+              </PremiumThemeWrapper>
 
               <Toaster />
             </TooltipProvider>

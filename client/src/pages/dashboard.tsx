@@ -22,9 +22,14 @@ import {
   CheckCircle,
   AlertCircle,
   XCircle,
-  ListChecks
+  ListChecks,
+  Crown,
+  Star,
+  Sparkles
 } from "lucide-react";
 import { userProfileStorage, practiceHoursStorage, cpdRecordsStorage, feedbackRecordsStorage, reflectiveAccountsStorage, healthDeclarationStorage } from "@/lib/storage";
+import { PlanIndicator } from "@/components/ui/plan-indicator";
+import { PremiumFeatureShowcase } from "@/components/premium/feature-showcase";
 // Import the logo
 import logo from "@assets/Leonardo_Phoenix_10_design_a_vibrant_and_professional_logo_for_3.jpg";
 
@@ -36,6 +41,16 @@ export default function DashboardPage() {
     queryKey: ['userProfile'],
     queryFn: async () => {
       return userProfileStorage.getCurrent();
+    },
+  });
+
+  // Fetch subscription info
+  const { data: subscriptionInfo } = useQuery({
+    queryKey: ['/api/subscription'],
+    queryFn: async () => {
+      const response = await fetch('/api/subscription');
+      if (!response.ok) throw new Error('Failed to fetch subscription');
+      return response.json();
     },
   });
 
@@ -249,13 +264,21 @@ export default function DashboardPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="text-center mb-6">
-        <motion.h1 
+        <motion.div 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-3xl font-bold"
+          className="flex items-center justify-center gap-4 mb-4"
         >
-          Welcome to <span className="bg-gradient-to-r from-revalpro-blue to-revalpro-teal bg-clip-text text-transparent">RevalPro</span>
-        </motion.h1>
+          <h1 className="text-3xl font-bold">
+            Welcome to <span className="bg-gradient-to-r from-revalpro-blue to-revalpro-teal bg-clip-text text-transparent">RevalPro</span>
+          </h1>
+          {subscriptionInfo && (
+            <PlanIndicator 
+              plan={subscriptionInfo.currentPlan || 'free'} 
+              variant="header"
+            />
+          )}
+        </motion.div>
         <motion.p 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -263,6 +286,18 @@ export default function DashboardPage() {
           className="text-gray-600 mt-2"
         >
           Your nursing revalidation management dashboard
+          {subscriptionInfo?.currentPlan === 'premium' && (
+            <span className="block text-sm text-purple-600 font-medium mt-1">
+              <Sparkles className="inline h-4 w-4 mr-1" />
+              Premium Experience Activated
+            </span>
+          )}
+          {subscriptionInfo?.currentPlan === 'standard' && (
+            <span className="block text-sm text-blue-600 font-medium mt-1">
+              <Star className="inline h-4 w-4 mr-1" />
+              Standard Plan Active
+            </span>
+          )}
         </motion.p>
       </div>
       
@@ -273,7 +308,13 @@ export default function DashboardPage() {
         transition={{ delay: 0.3 }}
         className="mb-8"
       >
-        <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
+        <Card className={`border-2 ${
+          subscriptionInfo?.currentPlan === 'premium' 
+            ? 'bg-gradient-to-r from-purple-50 via-pink-50 to-purple-50 border-purple-300 shadow-lg shadow-purple-200/50' 
+            : subscriptionInfo?.currentPlan === 'standard'
+            ? 'bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-300 shadow-md shadow-blue-100/50'
+            : 'bg-gradient-to-r from-gray-50 to-slate-50 border-gray-200'
+        }`}>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <ListChecks className="h-6 w-6 text-revalpro-blue" />
@@ -559,6 +600,16 @@ export default function DashboardPage() {
           </motion.div>
         </motion.div>
       </div>
+
+      {/* Premium Feature Showcase */}
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.8 }}
+        className="mb-8"
+      >
+        <PremiumFeatureShowcase />
+      </motion.div>
     </div>
   );
 }
