@@ -24,7 +24,7 @@ import {
   XCircle,
   ListChecks
 } from "lucide-react";
-import { userProfileStorage } from "@/lib/storage";
+import { userProfileStorage, practiceHoursStorage, cpdRecordsStorage, feedbackRecordsStorage, reflectiveAccountsStorage, healthDeclarationStorage } from "@/lib/storage";
 // Import the logo
 import logo from "@assets/Leonardo_Phoenix_10_design_a_vibrant_and_professional_logo_for_3.jpg";
 
@@ -36,6 +36,46 @@ export default function DashboardPage() {
     queryKey: ['userProfile'],
     queryFn: async () => {
       return userProfileStorage.getCurrent();
+    },
+  });
+
+  // Fetch practice hours data
+  const { data: practiceHours = [] } = useQuery({
+    queryKey: ['practiceHours'],
+    queryFn: async () => {
+      return practiceHoursStorage.getAll();
+    },
+  });
+
+  // Fetch CPD records data
+  const { data: cpdRecords = [] } = useQuery({
+    queryKey: ['cpdRecords'],
+    queryFn: async () => {
+      return cpdRecordsStorage.getAll();
+    },
+  });
+
+  // Fetch feedback records data
+  const { data: feedbackRecords = [] } = useQuery({
+    queryKey: ['feedbackRecords'],
+    queryFn: async () => {
+      return feedbackRecordsStorage.getAll();
+    },
+  });
+
+  // Fetch reflective accounts data
+  const { data: reflectiveAccounts = [] } = useQuery({
+    queryKey: ['reflectiveAccounts'],
+    queryFn: async () => {
+      return reflectiveAccountsStorage.getAll();
+    },
+  });
+
+  // Fetch health declarations data
+  const { data: healthDeclarations = [] } = useQuery({
+    queryKey: ['healthDeclarations'],
+    queryFn: async () => {
+      return healthDeclarationStorage.getAll();
     },
   });
   
@@ -58,38 +98,58 @@ export default function DashboardPage() {
   
   const daysUntilExpiry = getDaysUntilExpiry();
 
-  // Mock data for demonstration - replace with actual data queries
+  // Calculate real progress based on actual data
   const getRevalidationProgress = () => {
+    // Calculate total practice hours from all records
+    const totalPracticeHours = practiceHours.reduce((sum, record) => sum + record.hours, 0);
+    const requiredPracticeHours = 1500; // NMC requirement
+    
+    // Calculate CPD hours from all records
+    const totalCpdHours = cpdRecords.reduce((sum, record) => sum + record.hours, 0);
+    const requiredCpdHours = 35; // NMC requirement
+    
+    // Count feedback records
+    const feedbackCount = feedbackRecords.length;
+    const requiredFeedback = 5; // NMC requirement
+    
+    // Count reflective accounts
+    const reflectionsCount = reflectiveAccounts.length;
+    const requiredReflections = 5; // NMC requirement
+    
+    // Count health declarations
+    const declarationsCount = healthDeclarations.length;
+    const requiredDeclarations = 1; // NMC requirement
+    
     return {
       practiceHours: {
-        current: 900,
-        required: 1500,
-        percentage: Math.round((900 / 1500) * 100),
-        status: 'in-progress'
+        current: totalPracticeHours,
+        required: requiredPracticeHours,
+        percentage: Math.min(Math.round((totalPracticeHours / requiredPracticeHours) * 100), 100),
+        status: totalPracticeHours >= requiredPracticeHours ? 'complete' : 'in-progress'
       },
       cpdRecords: {
-        current: 25,
-        required: 35,
-        percentage: Math.round((25 / 35) * 100),
-        status: 'in-progress'
+        current: totalCpdHours,
+        required: requiredCpdHours,
+        percentage: Math.min(Math.round((totalCpdHours / requiredCpdHours) * 100), 100),
+        status: totalCpdHours >= requiredCpdHours ? 'complete' : 'in-progress'
       },
       feedback: {
-        current: 3,
-        required: 5,
-        percentage: Math.round((3 / 5) * 100),
-        status: 'in-progress'
+        current: feedbackCount,
+        required: requiredFeedback,
+        percentage: Math.min(Math.round((feedbackCount / requiredFeedback) * 100), 100),
+        status: feedbackCount >= requiredFeedback ? 'complete' : 'in-progress'
       },
       reflections: {
-        current: 4,
-        required: 5,
-        percentage: Math.round((4 / 5) * 100),
-        status: 'in-progress'
+        current: reflectionsCount,
+        required: requiredReflections,
+        percentage: Math.min(Math.round((reflectionsCount / requiredReflections) * 100), 100),
+        status: reflectionsCount >= requiredReflections ? 'complete' : 'in-progress'
       },
       declarations: {
-        current: 1,
-        required: 1,
-        percentage: 100,
-        status: 'complete'
+        current: declarationsCount,
+        required: requiredDeclarations,
+        percentage: Math.min(Math.round((declarationsCount / requiredDeclarations) * 100), 100),
+        status: declarationsCount >= requiredDeclarations ? 'complete' : 'in-progress'
       }
     };
   };
