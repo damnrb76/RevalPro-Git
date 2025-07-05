@@ -22,17 +22,17 @@ export function PremiumThemeWrapper({ children, className }: PremiumThemeWrapper
   // Plan-specific styling
   const planStyles = {
     free: {
-      background: "bg-gradient-to-br from-gray-50 to-gray-100",
+      background: "bg-white",
       accent: "border-gray-200",
       glow: "",
     },
     standard: {
-      background: "bg-gradient-to-br from-blue-50 to-indigo-100",
+      background: "bg-white",
       accent: "border-blue-200",
       glow: "shadow-blue-100/50",
     },
     premium: {
-      background: "bg-gradient-to-br from-purple-50 via-pink-50 to-indigo-100",
+      background: "bg-white",
       accent: "border-purple-200",
       glow: "shadow-purple-200/50 shadow-lg",
     }
