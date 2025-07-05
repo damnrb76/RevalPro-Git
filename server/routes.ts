@@ -221,6 +221,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/health', (req, res) => {
     res.json({ status: 'OK', message: 'RevalPro UK API is running' });
   });
+
+  // Demo account creation endpoint for testing
+  app.post("/api/create-demo-account", async (req, res) => {
+    try {
+      const demoUsername = "demo@revalpro.com";
+      const demoPassword = "demo123";
+      
+      // Check if demo account already exists
+      const existingUser = await storage.getUserByUsername(demoUsername);
+      if (existingUser) {
+        return res.json({ message: "Demo account already exists", username: demoUsername });
+      }
+      
+      // Create demo account
+      const hashedPassword = await hashPassword(demoPassword);
+      const user = await storage.createUser({
+        username: demoUsername,
+        password: hashedPassword,
+        email: demoUsername,
+        currentPlan: "standard", // Give demo account Standard plan
+        profileImage: null,
+        jobTitle: "Staff Nurse",
+      });
+      
+      res.json({ 
+        message: "Demo account created successfully", 
+        username: demoUsername,
+        password: demoPassword,
+        plan: "standard"
+      });
+    } catch (error) {
+      console.error("Error creating demo account:", error);
+      res.status(500).json({ error: "Failed to create demo account" });
+    }
+  });
   
   // NMC API integration endpoints
   // These endpoints provide integration with the UK Nursing & Midwifery Council
