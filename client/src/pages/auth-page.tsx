@@ -16,22 +16,46 @@ function DemoLoginButton() {
 
   const handleDemoLogin = async () => {
     try {
-      const response = await apiRequest("POST", "/api/demo-login");
+      toast({
+        title: "Logging in...",
+        description: "Setting up demo account",
+      });
+
+      const response = await fetch("/api/demo-login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include", // Important for session cookies
+      });
+
       if (response.ok) {
         const user = await response.json();
+        console.log("Demo login successful:", user);
+        
+        // Update auth state
         queryClient.setQueryData(["/api/user"], user);
+        queryClient.invalidateQueries({ queryKey: ["/api/user"] });
+        
         toast({
           title: "Demo Login Successful",
-          description: "Logged in with Standard plan access",
+          description: `Logged in as ${user.username} with ${user.currentPlan} plan`,
         });
-        window.location.href = "/dashboard";
+        
+        // Force page refresh to update authentication state
+        setTimeout(() => {
+          window.location.href = "/dashboard";
+        }, 1000);
       } else {
-        throw new Error("Demo login failed");
+        const errorData = await response.json();
+        console.error("Demo login failed:", errorData);
+        throw new Error(errorData.error || "Demo login failed");
       }
     } catch (error) {
+      console.error("Demo login error:", error);
       toast({
         title: "Demo Login Failed",
-        description: "Please try again or use regular login",
+        description: error.message || "Please try again or use regular login",
         variant: "destructive",
       });
     }
