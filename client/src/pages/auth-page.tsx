@@ -7,6 +7,46 @@ import GoogleSignInButton from "@/components/auth/google-signin-button";
 import { Card } from "@/components/ui/card";
 import { useAuth } from "@/hooks/use-auth";
 import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+
+function DemoLoginButton() {
+  const { toast } = useToast();
+
+  const handleDemoLogin = async () => {
+    try {
+      const response = await apiRequest("POST", "/api/demo-login");
+      if (response.ok) {
+        const user = await response.json();
+        queryClient.setQueryData(["/api/user"], user);
+        toast({
+          title: "Demo Login Successful",
+          description: "Logged in with Standard plan access",
+        });
+        window.location.href = "/dashboard";
+      } else {
+        throw new Error("Demo login failed");
+      }
+    } catch (error) {
+      toast({
+        title: "Demo Login Failed",
+        description: "Please try again or use regular login",
+        variant: "destructive",
+      });
+    }
+  };
+
+  return (
+    <Button 
+      onClick={handleDemoLogin}
+      variant="outline" 
+      className="w-full bg-orange-50 border-orange-200 text-orange-800 hover:bg-orange-100"
+    >
+      🔥 Try Demo (Standard Plan)
+    </Button>
+  );
+}
 
 export default function AuthPage() {
   const [activeTab, setActiveTab] = useState<string>("login");
@@ -30,8 +70,9 @@ export default function AuthPage() {
           </div>
 
           <Card className="p-6 border-2 border-revalpro-blue/20 shadow-md">
-            <div className="mb-6">
+            <div className="mb-6 space-y-3">
               <GoogleSignInButton />
+              <DemoLoginButton />
             </div>
             
             <div className="relative mb-6">
