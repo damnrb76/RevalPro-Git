@@ -178,9 +178,36 @@ export default function NhsAiAssistant({
     }
   };
 
+  // Define background colors based on active tab
+  const getBackgroundClass = () => {
+    switch (activeTab) {
+      case 'advice':
+        return 'bg-gradient-to-br from-blue-50/80 to-blue-100/60';
+      case 'reflection':
+        return 'bg-gradient-to-br from-green-50/80 to-green-100/60';
+      case 'cpd':
+        return 'bg-gradient-to-br from-purple-50/80 to-purple-100/60';
+      default:
+        return 'bg-gradient-to-br from-blue-50/80 to-blue-100/60';
+    }
+  };
+
+  const getHeaderClass = () => {
+    switch (activeTab) {
+      case 'advice':
+        return 'bg-gradient-to-r from-blue-600/90 via-blue-500/70 to-blue-700/90 pb-2';
+      case 'reflection':
+        return 'bg-gradient-to-r from-green-600/90 via-green-500/70 to-green-700/90 pb-2';
+      case 'cpd':
+        return 'bg-gradient-to-r from-purple-600/90 via-purple-500/70 to-purple-700/90 pb-2';
+      default:
+        return 'bg-gradient-to-r from-revalpro-blue/30 via-revalpro-teal/20 to-revalpro-purple/20 pb-2';
+    }
+  };
+
   return (
-    <Card className={`ai-assistant-card ${className} shadow-lg`}>
-      <CardHeader className="bg-gradient-to-r from-revalpro-blue/30 via-revalpro-teal/20 to-revalpro-purple/20 pb-2">
+    <Card className={`ai-assistant-card ${className} shadow-lg ${getBackgroundClass()}`}>
+      <CardHeader className={getHeaderClass()}>
         <CardTitle className="flex items-center gap-2 text-white">
           <div className="flex items-center justify-center w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm">
             <HelpCircle className="h-5 w-5 text-white" />
@@ -214,7 +241,7 @@ export default function NhsAiAssistant({
           </TabsList>
           
           {/* Advice Q&A Tab */}
-          <TabsContent value="advice" className="px-4 pb-1 space-y-4">
+          <TabsContent value="advice" className="px-4 pb-1 space-y-4 bg-blue-50/20 rounded-b-lg">
             <div className="max-h-[400px] overflow-y-auto pr-2">
               {messages.map((message, index) => (
                 <div 
@@ -303,7 +330,7 @@ export default function NhsAiAssistant({
           </TabsContent>
           
           {/* Reflection Helper Tab */}
-          <TabsContent value="reflection" className="p-4 space-y-4">
+          <TabsContent value="reflection" className="p-4 space-y-4 bg-green-50/20 rounded-b-lg">
             <Alert className="bg-revalpro-blue/5 border-revalpro-blue/20">
               <BookOpen className="h-4 w-4" />
               <AlertTitle>Reflective Account Helper</AlertTitle>
@@ -362,7 +389,7 @@ export default function NhsAiAssistant({
           </TabsContent>
           
           {/* CPD Suggestions Tab */}
-          <TabsContent value="cpd" className="p-4 space-y-4">
+          <TabsContent value="cpd" className="p-4 space-y-4 bg-purple-50/20 rounded-b-lg">
             <Alert className="bg-revalpro-blue/5 border-revalpro-blue/20">
               <FileText className="h-4 w-4" />
               <AlertTitle>CPD Activity Suggestions</AlertTitle>
