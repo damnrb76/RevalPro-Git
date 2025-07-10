@@ -115,6 +115,29 @@ RevalPro is a comprehensive UK-specific nursing revalidation tracker application
 - July 5, 2025. Added AI assistant color themes (blue/green/purple) for different features
 - July 5, 2025. Implemented premium visual effects and background gradients
 - July 5, 2025. Added plan indicators in header and dashboard with crown/star/shield icons
+- July 10, 2025. Implemented Stripe sandbox integration for subscription testing
+- July 10, 2025. Added test price IDs and checkout flow with proper Stripe Elements
+- July 10, 2025. Created webhook handling for subscription events
+- July 10, 2025. Added dedicated test page for Stripe sandbox testing
+
+## Stripe Sandbox Configuration
+
+### Test Price IDs
+- Standard Monthly: `price_1QSJflP5Z7J7yTy5TlOzlf2k`
+- Standard Annual: `price_1QSJgAP5Z7J7yTy5uXjqOtKl`
+- Premium Monthly: `price_1QSJgWP5Z7J7yTy5VnM9xK3p`
+- Premium Annual: `price_1QSJgqP5Z7J7yTy5H8wFzL7m`
+
+### Test Cards
+- Success: `4242 4242 4242 4242`
+- Declined: `4000 0000 0000 0002`
+- Insufficient Funds: `4000 0000 0000 9995`
+- 3D Secure: `4000 0027 6000 3184`
+
+### Development Mode
+- In development mode, subscriptions are activated immediately without payment
+- This allows testing premium features without completing Stripe checkout
+- Production mode requires actual Stripe payment processing
 
 ## User Preferences
 

@@ -1,16 +1,22 @@
 import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
+import express from "express";
 import { storage } from "./storage";
 import { setupAuth } from "./auth";
 import { scrypt, randomBytes } from "crypto";
 import { promisify } from "util";
-import { createCustomer, createSubscription, getSubscription, cancelSubscription, reactivateSubscription, changeSubscriptionPlan } from "./stripe";
+import { createCustomer, createSubscription, getSubscription, cancelSubscription, reactivateSubscription, changeSubscriptionPlan, handleWebhookEvent } from "./stripe";
 import { PLAN_DETAILS } from "../shared/subscription-plans";
 import Stripe from "stripe";
 import { checkNmcServiceStatus, verifyRegistration, calculateNmcImportantDates, getLatestRevalidationRequirements, checkNmcMaintenanceStatus } from "./nmc-api";
 import { getRevalidationAdvice, generateReflectiveTemplate, suggestCpdActivities } from "./ai-service";
 
 const scryptAsync = promisify(scrypt);
+
+// Initialize Stripe for webhook handling
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: '2023-10-16',
+});
 
 async function hashPassword(password: string) {
   const salt = randomBytes(16).toString("hex");
@@ -607,6 +613,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error reactivating subscription:", error);
       res.status(500).json({ error: "Failed to reactivate subscription" });
+    }
+  });
+
+  // Stripe webhook handler
+  app.post("/webhook/stripe", express.raw({ type: 'application/json' }), async (req, res) => {
+    const sig = req.headers['stripe-signature'];
+    const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+    if (!endpointSecret) {
+      console.log('Stripe webhook secret not configured');
+      return res.status(400).send('Webhook secret not configured');
+    }
+
+    let event;
+    try {
+      event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+    } catch (err) {
+      console.log(`Webhook signature verification failed:`, err.message);
+      return res.status(400).send(`Webhook Error: ${err.message}`);
+    }
+
+    try {
+      await handleWebhookEvent(event);
+      res.json({ received: true });
+    } catch (error) {
+      console.error('Error processing webhook:', error);
+      res.status(500).json({ error: 'Failed to process webhook' });
     }
   });
 

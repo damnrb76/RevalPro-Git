@@ -174,16 +174,14 @@ export default function PricingPlans() {
       return;
     }
 
-    setSelectedPlan(planId);
-
-    // If the user is already subscribed, handle plan change
-    if (subscription?.currentPlan && subscription.currentPlan !== "free") {
-      changePlanMutation.mutate({ planId, period });
+    // For free plan, handle directly
+    if (planId === "free") {
+      createSubscriptionMutation.mutate({ planId, period });
       return;
     }
 
-    // Otherwise, create a new subscription
-    createSubscriptionMutation.mutate({ planId, period });
+    // For paid plans, redirect to checkout page
+    setLocation(`/checkout?plan=${planId}&period=${period}`);
   };
 
   const isCurrentPlan = (planId: SubscriptionPlan) => {
