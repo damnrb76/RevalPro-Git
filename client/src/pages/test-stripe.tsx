@@ -3,12 +3,54 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { CreditCard, AlertCircle, CheckCircle, ExternalLink } from 'lucide-react';
+import { CreditCard, AlertCircle, CheckCircle, ExternalLink, User } from 'lucide-react';
 import { useLocation } from 'wouter';
+import { useToast } from '@/hooks/use-toast';
 
 export default function TestStripePage() {
   const [_, setLocation] = useLocation();
   const [selectedTest, setSelectedTest] = useState<string | null>(null);
+  const { toast } = useToast();
+
+  const handleDemoLogin = async () => {
+    try {
+      // First create demo account
+      const createResponse = await fetch("/api/create-demo-account", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plan: "premium" }),
+      });
+
+      if (!createResponse.ok) {
+        throw new Error("Failed to create demo account");
+      }
+
+      // Then login
+      const loginResponse = await fetch("/api/demo-login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      });
+
+      if (loginResponse.ok) {
+        toast({
+          title: "Demo Login Successful",
+          description: "You can now test subscription flows",
+        });
+        setTimeout(() => {
+          window.location.href = "/dashboard";
+        }, 1000);
+      } else {
+        throw new Error("Demo login failed");
+      }
+    } catch (error) {
+      toast({
+        title: "Demo Login Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
 
   const testCards = [
     {
@@ -195,7 +237,28 @@ export default function TestStripePage() {
 
         {/* Actions */}
         <div className="mt-8 text-center space-y-4">
-          <div className="flex gap-4 justify-center">
+          <Alert className="mb-4">
+            <User className="h-4 w-4" />
+            <AlertDescription>
+              <strong>Authentication Required:</strong> You need to be logged in to test subscription flows.
+              Use the demo login button below to quickly create a test account.
+            </AlertDescription>
+          </Alert>
+          
+          <div className="flex gap-4 justify-center flex-wrap">
+            <Button
+              onClick={handleDemoLogin}
+              className="bg-purple-600 hover:bg-purple-700 text-white"
+            >
+              <User className="h-4 w-4 mr-2" />
+              Quick Demo Login
+            </Button>
+            <Button
+              onClick={() => setLocation('/auth')}
+              variant="outline"
+            >
+              Go to Login Page
+            </Button>
             <Button
               onClick={() => setLocation('/subscription')}
               variant="outline"
