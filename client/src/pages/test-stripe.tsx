@@ -14,7 +14,13 @@ export default function TestStripePage() {
 
   const handleDemoLogin = async () => {
     try {
+      toast({
+        title: "Setting up demo account...",
+        description: "This may take a moment",
+      });
+
       // First create demo account
+      console.log("Creating demo account...");
       const createResponse = await fetch("/api/create-demo-account", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -22,10 +28,16 @@ export default function TestStripePage() {
       });
 
       if (!createResponse.ok) {
-        throw new Error("Failed to create demo account");
+        const errorData = await createResponse.json();
+        console.error("Demo account creation failed:", errorData);
+        throw new Error(errorData.error || "Failed to create demo account");
       }
 
+      const createResult = await createResponse.json();
+      console.log("Demo account created:", createResult);
+
       // Then login
+      console.log("Logging in to demo account...");
       const loginResponse = await fetch("/api/demo-login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -33,20 +45,27 @@ export default function TestStripePage() {
       });
 
       if (loginResponse.ok) {
+        const userData = await loginResponse.json();
+        console.log("Demo login successful:", userData);
+        
         toast({
           title: "Demo Login Successful",
-          description: "You can now test subscription flows",
+          description: `Logged in as ${userData.username} with ${userData.currentPlan?.toUpperCase()} plan`,
         });
+        
         setTimeout(() => {
           window.location.href = "/dashboard";
-        }, 1000);
+        }, 1500);
       } else {
-        throw new Error("Demo login failed");
+        const errorData = await loginResponse.json();
+        console.error("Demo login failed:", errorData);
+        throw new Error(errorData.error || "Demo login failed");
       }
     } catch (error) {
+      console.error("Demo login error:", error);
       toast({
         title: "Demo Login Failed",
-        description: error.message,
+        description: error.message || "Please try again",
         variant: "destructive",
       });
     }
@@ -93,28 +112,52 @@ export default function TestStripePage() {
       title: 'Test Standard Monthly',
       description: 'Test Standard plan with monthly billing',
       price: '£4.99/month',
-      action: () => setLocation('/checkout?plan=standard&period=monthly'),
+      action: () => {
+        toast({
+          title: "Redirect to Checkout",
+          description: "Make sure you're logged in first",
+        });
+        setTimeout(() => setLocation('/checkout?plan=standard&period=monthly'), 500);
+      },
     },
     {
       id: 'standard-annual',
       title: 'Test Standard Annual',
       description: 'Test Standard plan with annual billing',
       price: '£49.99/year',
-      action: () => setLocation('/checkout?plan=standard&period=annual'),
+      action: () => {
+        toast({
+          title: "Redirect to Checkout",
+          description: "Make sure you're logged in first",
+        });
+        setTimeout(() => setLocation('/checkout?plan=standard&period=annual'), 500);
+      },
     },
     {
       id: 'premium-monthly',
       title: 'Test Premium Monthly',
       description: 'Test Premium plan with monthly billing',
       price: '£9.99/month',
-      action: () => setLocation('/checkout?plan=premium&period=monthly'),
+      action: () => {
+        toast({
+          title: "Redirect to Checkout",
+          description: "Make sure you're logged in first",
+        });
+        setTimeout(() => setLocation('/checkout?plan=premium&period=monthly'), 500);
+      },
     },
     {
       id: 'premium-annual',
       title: 'Test Premium Annual',
       description: 'Test Premium plan with annual billing',
       price: '£99.99/year',
-      action: () => setLocation('/checkout?plan=premium&period=annual'),
+      action: () => {
+        toast({
+          title: "Redirect to Checkout",
+          description: "Make sure you're logged in first",
+        });
+        setTimeout(() => setLocation('/checkout?plan=premium&period=annual'), 500);
+      },
     },
   ];
 
