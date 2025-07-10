@@ -17,10 +17,25 @@ function DemoLoginButton() {
   const handleDemoLogin = async () => {
     try {
       toast({
-        title: "Logging in...",
-        description: "Setting up demo account",
+        title: "Setting up demo account...",
+        description: "This may take a moment",
       });
 
+      // First create demo account
+      const createResponse = await fetch("/api/create-demo-account", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ plan: "premium" }),
+      });
+
+      if (!createResponse.ok) {
+        const errorData = await createResponse.json();
+        throw new Error(errorData.error || "Failed to create demo account");
+      }
+
+      // Then login
       const response = await fetch("/api/demo-login", {
         method: "POST",
         headers: {
