@@ -440,7 +440,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     // If user has a Stripe subscription, get additional details
     let stripeSubscription = null;
-    if (user.stripeSubscriptionId) {
+    if (user.stripeSubscriptionId && !user.stripeSubscriptionId.startsWith('dev_sub_')) {
       try {
         stripeSubscription = await getSubscription(user.stripeSubscriptionId);
       } catch (error) {
