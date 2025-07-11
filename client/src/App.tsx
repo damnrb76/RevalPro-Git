@@ -25,6 +25,7 @@ import SubscriptionPage from "@/pages/subscription";
 import CheckoutPage from "@/pages/checkout";
 import SubscriptionSuccess from "@/pages/subscription-success";
 import TestStripePage from "@/pages/test-stripe";
+import StripeCheckoutTest from "@/pages/stripe-checkout-test";
 import NmcVerification from "@/pages/nmc-verification";
 import NmcRegistrationCheck from "@/pages/nmc-registration-check";
 import RevalidationDates from "@/pages/revalidation-dates";
@@ -101,6 +102,9 @@ function AppRouter() {
           
           {/* Test page - accessible without authentication */}
           <Route path="/test-stripe" component={TestStripePage} />
+          
+          {/* Real Stripe checkout test page */}
+          <ProtectedRoute path="/stripe-checkout-test" component={StripeCheckoutTest} />
           
           {/* Admin Panel Routes */}
           <ProtectedRoute path="/admin" component={AdminPanel} />

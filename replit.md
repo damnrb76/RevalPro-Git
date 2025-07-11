@@ -145,8 +145,16 @@ RevalPro is a comprehensive UK-specific nursing revalidation tracker application
 ### Development Mode
 - In development mode, subscriptions are activated immediately without payment
 - This allows testing premium features without completing Stripe checkout
-- To test real Stripe checkout, add ?useStripe=true to subscription creation requests
+- To test real Stripe checkout, visit `/stripe-checkout-test` page
 - Production mode requires actual Stripe payment processing
+
+### Testing the Real Stripe Checkout
+1. Go to `/auth` → Login with demo account
+2. Go to `/stripe-checkout-test` → New dedicated test page
+3. Click any "Test [Monthly/Annual] Checkout" button
+4. See the actual Stripe payment form with card input fields
+5. Use test card: 4242 4242 4242 4242 (any future date, any CVC)
+6. Complete the payment flow
 
 ## User Preferences
 
