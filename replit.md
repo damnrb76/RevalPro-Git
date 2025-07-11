@@ -128,13 +128,13 @@ RevalPro is a comprehensive UK-specific nursing revalidation tracker application
 - Real Stripe checkout flow can be tested by adding ?useStripe=true query parameter
 - Your actual Stripe price IDs are configured and ready for production use
 
-### Actual Stripe Price IDs (Live Environment)
-- Standard Monthly: `price_1RUL8jPAF9Ta2ncbzHd0vNfT`
-- Standard Annual: `price_1RWQRFPAF9Ta2ncbDyGqYENB`
-- Premium Monthly: `price_1RUL9gPAF9Ta2ncbT2lXlPm6`
-- Premium Annual: `price_1RWQS0PAF9Ta2ncbsY6WgLAR`
+### Working Stripe Test Price IDs
+- Standard Monthly: `price_1RjUz709FiF6gHZcRlW5NFzr` (£4.99/month)
+- Standard Annual: `price_1RjUzL09FiF6gHZc55zHojNz` (£49.99/year)
+- Premium Monthly: `price_1RjUzN09FiF6gHZcLmfds428` (£9.99/month)
+- Premium Annual: `price_1RjUzO09FiF6gHZci7WqEWro` (£99.99/year)
 
-**Note**: These are production price IDs. For testing the real Stripe checkout flow, you would need to create corresponding test price IDs in your Stripe test dashboard.
+**Note**: These are working test price IDs that enable real Stripe checkout flow testing with test cards.
 
 ### Test Cards (For Future Real Stripe Testing)
 - Success: `4242 4242 4242 4242`
