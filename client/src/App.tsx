@@ -99,6 +99,7 @@ function AppRouter() {
           <ProtectedRoute path="/subscription" component={SubscriptionPage} />
           <ProtectedRoute path="/checkout" component={CheckoutPage} />
           <ProtectedRoute path="/subscription/success" component={SubscriptionSuccess} />
+          <ProtectedRoute path="/subscription-success" component={SubscriptionSuccess} />
           
           {/* Test page - accessible without authentication */}
           <Route path="/test-stripe" component={TestStripePage} />
