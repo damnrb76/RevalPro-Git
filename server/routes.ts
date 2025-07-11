@@ -494,7 +494,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.json({ success: true, plan: "free" });
       }
 
-      // Development mode: Allow testing paid plans without Stripe integration
+      // Development mode: Allow testing without real Stripe integration
       if (process.env.NODE_ENV === "development") {
         // Simulate successful subscription for testing
         const endDate = new Date();

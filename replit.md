@@ -122,13 +122,18 @@ RevalPro is a comprehensive UK-specific nursing revalidation tracker application
 
 ## Stripe Sandbox Configuration
 
-### Test Price IDs
-- Standard Monthly: `price_1QSJflP5Z7J7yTy5TlOzlf2k`
-- Standard Annual: `price_1QSJgAP5Z7J7yTy5uXjqOtKl`
-- Premium Monthly: `price_1QSJgWP5Z7J7yTy5VnM9xK3p`
-- Premium Annual: `price_1QSJgqP5Z7J7yTy5H8wFzL7m`
+### Current Status
+- Development mode enabled for testing without real Stripe integration
+- Subscriptions are activated immediately for testing premium features
+- Real Stripe checkout flow requires actual price IDs to be created in Stripe dashboard
 
-### Test Cards
+### Test Price IDs (Placeholders)
+- Standard Monthly: `price_test_standard_monthly` (needs creation in Stripe dashboard)
+- Standard Annual: `price_test_standard_annual` (needs creation in Stripe dashboard)
+- Premium Monthly: `price_test_premium_monthly` (needs creation in Stripe dashboard)
+- Premium Annual: `price_test_premium_annual` (needs creation in Stripe dashboard)
+
+### Test Cards (For Future Real Stripe Testing)
 - Success: `4242 4242 4242 4242`
 - Declined: `4000 0000 0000 0002`
 - Insufficient Funds: `4000 0000 0000 9995`
@@ -137,6 +142,7 @@ RevalPro is a comprehensive UK-specific nursing revalidation tracker application
 ### Development Mode
 - In development mode, subscriptions are activated immediately without payment
 - This allows testing premium features without completing Stripe checkout
+- To enable real Stripe checkout, create actual products and prices in Stripe dashboard
 - Production mode requires actual Stripe payment processing
 
 ## User Preferences
