@@ -495,7 +495,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Development mode: Allow testing without real Stripe integration
-      if (process.env.NODE_ENV === "development") {
+      // Add ?useStripe=true to test real Stripe checkout flow
+      if (process.env.NODE_ENV === "development" && !req.query.useStripe) {
         // Simulate successful subscription for testing
         const endDate = new Date();
         endDate.setFullYear(endDate.getFullYear() + (period === "annual" ? 1 : 0));

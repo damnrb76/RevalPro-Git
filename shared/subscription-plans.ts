@@ -69,8 +69,8 @@ export const PLAN_DETAILS: Record<SubscriptionPlan, PlanDetails> = {
       annual: 49.99, // ~2 months free
     },
     stripePriceId: {
-      monthly: "price_test_standard_monthly", // Placeholder - needs to be created in Stripe dashboard
-      annual: "price_test_standard_annual", // Placeholder - needs to be created in Stripe dashboard
+      monthly: "price_1RUL8jPAF9Ta2ncbzHd0vNfT", // Standard Monthly
+      annual: "price_1RWQRFPAF9Ta2ncbDyGqYENB", // Standard Annual
     },
     mostPopular: true,
     features: [
@@ -99,8 +99,8 @@ export const PLAN_DETAILS: Record<SubscriptionPlan, PlanDetails> = {
       annual: 99.99, // ~2 months free
     },
     stripePriceId: {
-      monthly: "price_test_premium_monthly", // Placeholder - needs to be created in Stripe dashboard
-      annual: "price_test_premium_annual", // Placeholder - needs to be created in Stripe dashboard
+      monthly: "price_1RUL9gPAF9Ta2ncbT2lXlPm6", // Premium Monthly
+      annual: "price_1RWQS0PAF9Ta2ncbsY6WgLAR", // Premium Annual
     },
     recommended: true,
     features: [
