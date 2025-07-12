@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stripe Subscription Test</title>
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 600px; margin: 0 auto; }
+        button { background: #007cba; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin: 10px 0; }
+        button:hover { background: #005a8a; }
+        .result { margin: 20px 0; padding: 15px; background: #f0f8ff; border-radius: 5px; }
+        .error { background: #ffe6e6; color: #cc0000; }
+        .success { background: #e6ffe6; color: #006600; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Stripe Subscription Test</h1>
+        
+        <div class="result">
+            <h3>Test Cards:</h3>
+            <p><strong>Success:</strong> 4242 4242 4242 4242</p>
+            <p><strong>Declined:</strong> 4000 0000 0000 0002</p>
+            <p><strong>Insufficient Funds:</strong> 4000 0000 0000 9995</p>
+            <p><strong>3D Secure:</strong> 4000 0027 6000 3184</p>
+        </div>
+        
+        <button onclick="testCheckout('standard', 'monthly')">Test Standard Monthly (£4.99)</button>
+        <button onclick="testCheckout('standard', 'annual')">Test Standard Annual (£49.99)</button>
+        <button onclick="testCheckout('premium', 'monthly')">Test Premium Monthly (£9.99)</button>
+        <button onclick="testCheckout('premium', 'annual')">Test Premium Annual (£99.99)</button>
+        
+        <div id="result" class="result" style="display:none;"></div>
+        
+        <div id="checkout-form"></div>
+    </div>
+
+    <script>
+        const stripe = Stripe('pk_test_51RjU7j09FiF6gHZcpPsqvOzK4XLjx6LMbSgC9ZBBPvqkWJqmWgXJcV1VvE5TfOkXhw0yAyKkKm7RHWfcDfgXv0wl00KMiHkGW9');
+        
+        async function testCheckout(plan, period) {
+            const resultDiv = document.getElementById('result');
+            const checkoutDiv = document.getElementById('checkout-form');
+            
+            try {
+                resultDiv.innerHTML = '<p>Creating checkout session...</p>';
+                resultDiv.className = 'result';
+                resultDiv.style.display = 'block';
+                
+                // Create checkout session
+                const response = await fetch('/api/subscription/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ planId: plan, period })
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to create checkout session');
+                }
+                
+                if (data.clientSecret) {
+                    resultDiv.innerHTML = `
+                        <p><strong>Success!</strong> Checkout session created:</p>
+                        <p>Subscription ID: ${data.subscriptionId}</p>
+                        <p>Now showing Stripe payment form...</p>
+                    `;
+                    resultDiv.className = 'result success';
+                    
+                    // Show Stripe payment form
+                    showPaymentForm(data.clientSecret, plan, period);
+                } else {
+                    resultDiv.innerHTML = `<p><strong>Error:</strong> No client secret received</p>`;
+                    resultDiv.className = 'result error';
+                }
+                
+            } catch (error) {
+                resultDiv.innerHTML = `<p><strong>Error:</strong> ${error.message}</p>`;
+                resultDiv.className = 'result error';
+                resultDiv.style.display = 'block';
+            }
+        }
+        
+        function showPaymentForm(clientSecret, plan, period) {
+            const checkoutDiv = document.getElementById('checkout-form');
+            
+            checkoutDiv.innerHTML = `
+                <div style="border: 1px solid #ddd; padding: 20px; margin: 20px 0; border-radius: 5px;">
+                    <h3>Complete Payment for ${plan} ${period}</h3>
+                    <div id="payment-element"></div>
+                    <button id="submit-payment" style="margin-top: 20px;">Pay Now</button>
+                </div>
+            `;
+            
+            const elements = stripe.elements({
+                clientSecret: clientSecret
+            });
+            
+            const paymentElement = elements.create('payment');
+            paymentElement.mount('#payment-element');
+            
+            document.getElementById('submit-payment').addEventListener('click', async () => {
+                const result = await stripe.confirmPayment({
+                    elements,
+                    confirmParams: {
+                        return_url: window.location.href
+                    }
+                });
+                
+                if (result.error) {
+                    document.getElementById('result').innerHTML = `
+                        <p><strong>Payment Failed:</strong> ${result.error.message}</p>
+                    `;
+                    document.getElementById('result').className = 'result error';
+                } else {
+                    document.getElementById('result').innerHTML = `
+                        <p><strong>Payment Successful!</strong> Subscription activated.</p>
+                    `;
+                    document.getElementById('result').className = 'result success';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
