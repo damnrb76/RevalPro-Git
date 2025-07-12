@@ -37,6 +37,7 @@ import PrivacyPolicyPage from "@/pages/privacy-policy";
 import BetaSignupPage from "@/pages/beta-signup";
 import BetaApplicationsPage from "@/pages/beta-applications";
 import SimpleBetaView from "@/pages/simple-beta-view";
+import FirebaseTest from "@/pages/firebase-test";
 
 import Footer from "@/components/layout/footer";
 import NavigationTabs from "@/components/layout/navigation-tabs";
@@ -122,6 +123,9 @@ function AppRouter() {
           
           {/* Simple Beta Applications View */}
           <Route path="/simple-beta" component={SimpleBetaView} />
+          
+          {/* Firebase Test Page */}
+          <Route path="/firebase-test" component={FirebaseTest} />
           
 
           
