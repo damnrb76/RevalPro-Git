@@ -39,7 +39,8 @@ export const signInWithGoogle = async () => {
       alert("Please allow popups for this site to use Google sign-in");
     } else if (error.code === 'auth/unauthorized-domain') {
       console.error("Domain not authorized in Firebase");
-      alert("This domain is not authorized for authentication. Please contact support.");
+      const currentDomain = window.location.hostname;
+      alert(`Domain "${currentDomain}" is not authorized in Firebase Console. Please add this domain to your Firebase project's authorized domains list.`);
     }
     throw error;
   }
