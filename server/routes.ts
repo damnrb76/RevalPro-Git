@@ -567,6 +567,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "No active subscription" });
       }
 
+      // Don't allow canceling demo or dev subscriptions
+      if (user.stripeSubscriptionId.startsWith('demo_') || user.stripeSubscriptionId.startsWith('dev_sub_')) {
+        return res.status(400).json({ error: "Cannot cancel demo or development subscription" });
+      }
+
       await cancelSubscription(user.stripeSubscriptionId, immediate);
 
       if (immediate) {
@@ -601,6 +606,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       if (!user.stripeSubscriptionId) {
         return res.status(400).json({ error: "No active subscription" });
+      }
+
+      // Don't allow reactivating demo or dev subscriptions
+      if (user.stripeSubscriptionId.startsWith('demo_') || user.stripeSubscriptionId.startsWith('dev_sub_')) {
+        return res.status(400).json({ error: "Cannot reactivate demo or development subscription" });
       }
 
       if (!user.cancelAtPeriodEnd) {
@@ -694,6 +704,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // User wants to change to a different paid plan
       if (!user.stripeSubscriptionId) {
         return res.status(400).json({ error: "No active subscription to update" });
+      }
+
+      // Don't allow changing demo or dev subscriptions
+      if (user.stripeSubscriptionId.startsWith('demo_') || user.stripeSubscriptionId.startsWith('dev_sub_')) {
+        return res.status(400).json({ error: "Cannot change demo or development subscription" });
       }
 
       const priceId = planDetails.stripePriceId[period];
