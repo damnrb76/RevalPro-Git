@@ -19,8 +19,16 @@ export default function FirebaseTest() {
       appId: import.meta.env.VITE_FIREBASE_APP_ID,
     };
     
+    const domainInfo = {
+      currentDomain: window.location.hostname,
+      currentOrigin: window.location.origin,
+      currentUrl: window.location.href,
+      needsToBeAdded: `Add "${window.location.hostname}" to Firebase authorized domains`
+    };
+    
     console.log("Firebase Config:", config);
-    setTestResult({ type: "config", data: config });
+    console.log("Domain Info:", domainInfo);
+    setTestResult({ type: "config", data: { config, domainInfo } });
   };
 
   const testGoogleSignIn = async () => {
