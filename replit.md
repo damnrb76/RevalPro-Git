@@ -127,6 +127,7 @@ RevalPro is a comprehensive UK-specific nursing revalidation tracker application
 - July 12, 2025. Verified all Stripe test functionality working correctly with real checkout sessions
 - July 12, 2025. Fixed demo subscription error by preventing fake subscription IDs from being processed by Stripe
 - July 12, 2025. Added comprehensive error handling for demo and development subscriptions across all operations
+- July 13, 2025. Added mandatory training records section for tracking additional training outside of revalidation requirements
 
 ## Stripe Sandbox Configuration
 

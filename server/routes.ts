@@ -10,6 +10,7 @@ import { PLAN_DETAILS } from "../shared/subscription-plans";
 import Stripe from "stripe";
 import { checkNmcServiceStatus, verifyRegistration, calculateNmcImportantDates, getLatestRevalidationRequirements, checkNmcMaintenanceStatus } from "./nmc-api";
 import { getRevalidationAdvice, generateReflectiveTemplate, suggestCpdActivities } from "./ai-service";
+import { insertTrainingRecordSchema } from "@shared/schema";
 
 const scryptAsync = promisify(scrypt);
 
@@ -1030,6 +1031,72 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error in AI CPD suggestions endpoint:", error);
       res.status(500).json({ error: "Failed to generate CPD suggestions" });
+    }
+  });
+
+  // Training Records API Routes
+  app.get("/api/training-records", async (req, res) => {
+    try {
+      const records = await storage.getAllTrainingRecords();
+      res.json(records);
+    } catch (error) {
+      console.error("Error fetching training records:", error);
+      res.status(500).json({ error: "Failed to fetch training records" });
+    }
+  });
+
+  app.post("/api/training-records", async (req, res) => {
+    try {
+      const parsedRecord = insertTrainingRecordSchema.parse(req.body);
+      const record = await storage.createTrainingRecord(parsedRecord);
+      res.status(201).json(record);
+    } catch (error) {
+      console.error("Error creating training record:", error);
+      res.status(500).json({ error: "Failed to create training record" });
+    }
+  });
+
+  app.get("/api/training-records/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const record = await storage.getTrainingRecord(id);
+      
+      if (!record) {
+        return res.status(404).json({ error: "Training record not found" });
+      }
+      
+      res.json(record);
+    } catch (error) {
+      console.error("Error fetching training record:", error);
+      res.status(500).json({ error: "Failed to fetch training record" });
+    }
+  });
+
+  app.put("/api/training-records/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const parsedRecord = insertTrainingRecordSchema.partial().parse(req.body);
+      const updatedRecord = await storage.updateTrainingRecord(id, parsedRecord);
+      res.json(updatedRecord);
+    } catch (error) {
+      console.error("Error updating training record:", error);
+      res.status(500).json({ error: "Failed to update training record" });
+    }
+  });
+
+  app.delete("/api/training-records/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const deleted = await storage.deleteTrainingRecord(id);
+      
+      if (!deleted) {
+        return res.status(404).json({ error: "Training record not found" });
+      }
+      
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting training record:", error);
+      res.status(500).json({ error: "Failed to delete training record" });
     }
   });
 

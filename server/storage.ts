@@ -1,4 +1,4 @@
-import { users, type User, type InsertUser, betaApplications, type BetaApplication, type InsertBetaApplication } from "@shared/schema";
+import { users, type User, type InsertUser, betaApplications, type BetaApplication, type InsertBetaApplication, trainingRecords, type TrainingRecord, type InsertTrainingRecord } from "@shared/schema";
 import session from "express-session";
 import createMemoryStore from "memorystore";
 import { db } from "./db";
@@ -37,6 +37,14 @@ export interface IStorage {
   }>;
   createBetaApplication(application: Omit<BetaApplication, 'id' | 'submittedAt'>): Promise<BetaApplication>;
   getAllBetaApplications(): Promise<BetaApplication[]>;
+  
+  // Training record methods
+  getAllTrainingRecords(): Promise<TrainingRecord[]>;
+  createTrainingRecord(record: InsertTrainingRecord): Promise<TrainingRecord>;
+  updateTrainingRecord(id: number, record: Partial<InsertTrainingRecord>): Promise<TrainingRecord>;
+  deleteTrainingRecord(id: number): Promise<boolean>;
+  getTrainingRecord(id: number): Promise<TrainingRecord | undefined>;
+  
   sessionStore: session.Store;
 }
 
@@ -44,15 +52,19 @@ export interface IStorage {
 export class MemStorage implements IStorage {
   private users: Map<number, User>;
   private betaApplications: Map<number, BetaApplication>;
+  private trainingRecords: Map<number, TrainingRecord>;
   currentId: number;
   currentBetaId: number;
+  currentTrainingId: number;
   sessionStore: session.Store;
 
   constructor() {
     this.users = new Map();
     this.betaApplications = new Map();
+    this.trainingRecords = new Map();
     this.currentId = 1;
     this.currentBetaId = 1;
+    this.currentTrainingId = 1;
     this.sessionStore = new MemoryStore({
       checkPeriod: 86400000,
     });
@@ -163,6 +175,40 @@ export class MemStorage implements IStorage {
   async getAllBetaApplications(): Promise<BetaApplication[]> {
     return Array.from(this.betaApplications.values());
   }
+
+  // Training record methods
+  async getAllTrainingRecords(): Promise<TrainingRecord[]> {
+    return Array.from(this.trainingRecords.values());
+  }
+
+  async createTrainingRecord(record: InsertTrainingRecord): Promise<TrainingRecord> {
+    const trainingRecord: TrainingRecord = {
+      id: this.currentTrainingId++,
+      ...record,
+      created: new Date(),
+    };
+    this.trainingRecords.set(trainingRecord.id, trainingRecord);
+    return trainingRecord;
+  }
+
+  async updateTrainingRecord(id: number, record: Partial<InsertTrainingRecord>): Promise<TrainingRecord> {
+    const existingRecord = this.trainingRecords.get(id);
+    if (!existingRecord) {
+      throw new Error("Training record not found");
+    }
+    
+    const updatedRecord = { ...existingRecord, ...record };
+    this.trainingRecords.set(id, updatedRecord);
+    return updatedRecord;
+  }
+
+  async deleteTrainingRecord(id: number): Promise<boolean> {
+    return this.trainingRecords.delete(id);
+  }
+
+  async getTrainingRecord(id: number): Promise<TrainingRecord | undefined> {
+    return this.trainingRecords.get(id);
+  }
 }
 
 // Database Storage implementation
@@ -233,6 +279,52 @@ export class DatabaseStorage implements IStorage {
 
   async getAllBetaApplications(): Promise<BetaApplication[]> {
     return await db.select().from(betaApplications);
+  }
+
+  // Training records - use persistent database storage
+  async getAllTrainingRecords(): Promise<TrainingRecord[]> {
+    return await db.select().from(trainingRecords);
+  }
+
+  async createTrainingRecord(record: InsertTrainingRecord): Promise<TrainingRecord> {
+    const [trainingRecord] = await db
+      .insert(trainingRecords)
+      .values(record)
+      .returning();
+    return trainingRecord;
+  }
+
+  async updateTrainingRecord(id: number, record: Partial<InsertTrainingRecord>): Promise<TrainingRecord> {
+    const [updatedRecord] = await db
+      .update(trainingRecords)
+      .set(record)
+      .where(eq(trainingRecords.id, id))
+      .returning();
+    
+    if (!updatedRecord) {
+      throw new Error("Training record not found");
+    }
+    
+    return updatedRecord;
+  }
+
+  async deleteTrainingRecord(id: number): Promise<boolean> {
+    const result = await db
+      .delete(trainingRecords)
+      .where(eq(trainingRecords.id, id))
+      .returning();
+    
+    return result.length > 0;
+  }
+
+  async getTrainingRecord(id: number): Promise<TrainingRecord | undefined> {
+    const result = await db
+      .select()
+      .from(trainingRecords)
+      .where(eq(trainingRecords.id, id))
+      .limit(1);
+    
+    return result[0];
   }
 }
 

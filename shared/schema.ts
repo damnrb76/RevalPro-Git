@@ -216,6 +216,40 @@ export const insertHealthDeclarationSchema = createInsertSchema(healthDeclaratio
   completed: true,
 });
 
+// Mandatory Training Records
+export const trainingRecords = pgTable("training_records", {
+  id: serial("id").primaryKey(),
+  date: date("date").notNull(),
+  title: text("title").notNull(),
+  description: text("description"),
+  provider: text("provider").notNull(),
+  duration: integer("duration").notNull(), // in hours
+  category: text("category").notNull(), // e.g., "Mandatory", "Professional Development", "Specialist"
+  status: text("status").notNull().default("completed"), // "completed", "in_progress", "expired", "due"
+  expiryDate: date("expiry_date"),
+  certificateNumber: text("certificate_number"),
+  attachment: text("attachment"),
+  notes: text("notes"),
+  created: timestamp("created").notNull().defaultNow(),
+});
+
+export const insertTrainingRecordSchema = createInsertSchema(trainingRecords, {
+  date: z.coerce.date(),
+  expiryDate: z.coerce.date().optional(),
+}).pick({
+  date: true,
+  title: true,
+  description: true,
+  provider: true,
+  duration: true,
+  category: true,
+  status: true,
+  expiryDate: true,
+  certificateNumber: true,
+  attachment: true,
+  notes: true,
+});
+
 // Revalidation Confirmation
 export const confirmations = pgTable("confirmations", {
   id: serial("id").primaryKey(),
@@ -295,6 +329,9 @@ export type InsertReflectiveDiscussion = z.infer<typeof insertReflectiveDiscussi
 export type HealthDeclaration = typeof healthDeclarations.$inferSelect;
 export type InsertHealthDeclaration = z.infer<typeof insertHealthDeclarationSchema>;
 
+export type TrainingRecord = typeof trainingRecords.$inferSelect;
+export type InsertTrainingRecord = z.infer<typeof insertTrainingRecordSchema>;
+
 export type Confirmation = typeof confirmations.$inferSelect;
 export type InsertConfirmation = z.infer<typeof insertConfirmationSchema>;
 
@@ -332,3 +369,27 @@ export const ReflectiveModelEnum = {
 } as const;
 
 export type ReflectiveModel = typeof ReflectiveModelEnum[keyof typeof ReflectiveModelEnum];
+
+// Define training categories
+export const TrainingCategoryEnum = {
+  MANDATORY: "Mandatory",
+  PROFESSIONAL_DEVELOPMENT: "Professional Development", 
+  SPECIALIST: "Specialist",
+  CLINICAL_SKILLS: "Clinical Skills",
+  HEALTH_SAFETY: "Health & Safety",
+  LEADERSHIP: "Leadership",
+  RESEARCH: "Research",
+  OTHER: "Other",
+} as const;
+
+export type TrainingCategory = typeof TrainingCategoryEnum[keyof typeof TrainingCategoryEnum];
+
+// Define training status
+export const TrainingStatusEnum = {
+  COMPLETED: "completed",
+  IN_PROGRESS: "in_progress",
+  EXPIRED: "expired",
+  DUE: "due",
+} as const;
+
+export type TrainingStatus = typeof TrainingStatusEnum[keyof typeof TrainingStatusEnum];

@@ -25,7 +25,8 @@ import {
   ListChecks,
   Crown,
   Star,
-  Sparkles
+  Sparkles,
+  GraduationCap
 } from "lucide-react";
 import { userProfileStorage, practiceHoursStorage, cpdRecordsStorage, feedbackRecordsStorage, reflectiveAccountsStorage, healthDeclarationStorage } from "@/lib/storage";
 import { PlanIndicator } from "@/components/ui/plan-indicator";
@@ -93,6 +94,11 @@ export default function DashboardPage() {
       return healthDeclarationStorage.getAll();
     },
   });
+
+  // Fetch training records data
+  const { data: trainingRecords = [] } = useQuery({
+    queryKey: ['/api/training-records'],
+  });
   
   // Scroll to top on page load
   useEffect(() => {
@@ -135,6 +141,9 @@ export default function DashboardPage() {
     const declarationsCount = healthDeclarations.length;
     const requiredDeclarations = 1; // NMC requirement
     
+    // Count training records (not required for revalidation but useful for tracking)
+    const trainingRecordsCount = trainingRecords.length;
+    
     return {
       practiceHours: {
         current: totalPracticeHours,
@@ -165,6 +174,12 @@ export default function DashboardPage() {
         required: requiredDeclarations,
         percentage: Math.min(Math.round((declarationsCount / requiredDeclarations) * 100), 100),
         status: declarationsCount >= requiredDeclarations ? 'complete' : 'in-progress'
+      },
+      training: {
+        current: trainingRecordsCount,
+        required: 0, // Not required for revalidation but useful for tracking
+        percentage: trainingRecordsCount > 0 ? 100 : 0,
+        status: trainingRecordsCount > 0 ? 'complete' : 'not-started'
       }
     };
   };
@@ -242,6 +257,16 @@ export default function DashboardPage() {
       borderColor: "border-revalpro-pink/30",
       link: "/declarations",
       data: progressData.declarations
+    },
+    {
+      key: 'training',
+      title: "Training Records",
+      description: "Track your additional training and development",
+      icon: <GraduationCap className="h-8 w-8" />,
+      color: "from-revalpro-blue/20 to-revalpro-blue/10",
+      borderColor: "border-revalpro-blue/30",
+      link: "/training",
+      data: progressData.training
     }
   ];
   

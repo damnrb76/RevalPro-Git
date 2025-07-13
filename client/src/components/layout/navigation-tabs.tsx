@@ -24,7 +24,8 @@ import {
   Bot,
   User,
   TrendingUp,
-  ListChecks
+  ListChecks,
+  GraduationCap
 } from 'lucide-react';
 import { useMenuLayout } from "@/hooks/use-menu-layout";
 import { useAuth } from "@/hooks/use-auth";
@@ -109,6 +110,13 @@ export default function NavigationTabs({ currentPath }: NavigationTabsProps) {
           icon: <FileText size={16} />,
           color: "bg-revalpro-orange/20 text-revalpro-orange",
           hoverColor: "hover:bg-revalpro-orange/30"
+        },
+        { 
+          href: "/training", 
+          label: "Training Records", 
+          icon: <GraduationCap size={16} />,
+          color: "bg-revalpro-blue/20 text-revalpro-blue",
+          hoverColor: "hover:bg-revalpro-blue/30"
         },
         { 
           href: "/declarations", 

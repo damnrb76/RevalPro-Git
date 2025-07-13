@@ -18,6 +18,7 @@ import PracticeHours from "@/pages/practice-hours";
 import CPD from "@/pages/cpd";
 import Feedback from "@/pages/feedback";
 import Reflections from "@/pages/reflections";
+import Training from "@/pages/training";
 import Declarations from "@/pages/declarations";
 import Settings from "@/pages/settings";
 import AiAssistant from "@/pages/ai-assistant";
@@ -82,6 +83,7 @@ function AppRouter() {
           <ProtectedRoute path="/cpd" component={CPD} />
           <ProtectedRoute path="/feedback" component={Feedback} />
           <ProtectedRoute path="/reflections" component={Reflections} />
+          <ProtectedRoute path="/training" component={Training} />
           <ProtectedRoute path="/declarations" component={Declarations} />
           <ProtectedRoute path="/settings" component={Settings} />
           <ProtectedRoute path="/ai-assistant" component={AiAssistant} />
