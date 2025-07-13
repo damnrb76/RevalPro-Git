@@ -31,6 +31,7 @@ import {
 import { userProfileStorage, practiceHoursStorage, cpdRecordsStorage, feedbackRecordsStorage, reflectiveAccountsStorage, healthDeclarationStorage } from "@/lib/storage";
 import { PlanIndicator } from "@/components/ui/plan-indicator";
 import { PremiumFeatureShowcase } from "@/components/premium/feature-showcase";
+import RevalidationSummary from "@/components/dashboard/revalidation-summary";
 // Import the logo
 import logo from "@assets/Leonardo_Phoenix_10_design_a_vibrant_and_professional_logo_for_3.jpg";
 
@@ -397,6 +398,26 @@ export default function DashboardPage() {
             </div>
           </CardContent>
         </Card>
+      </motion.div>
+
+      {/* Revalidation Summary with Document Generation */}
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4 }}
+        className="mb-8"
+      >
+        <RevalidationSummary 
+          userProfile={userProfile || null}
+          practiceHours={practiceHours.reduce((sum, h) => sum + h.hours, 0)}
+          cpdHours={cpdRecords.reduce((sum, r) => sum + r.hours, 0)}
+          participatoryHours={cpdRecords.filter(r => r.participatory).reduce((sum, r) => sum + r.hours, 0)}
+          feedbackCount={feedbackRecords.length}
+          reflectionsCount={reflectiveAccounts.length}
+          reflectiveDiscussionCompleted={false}
+          healthDeclarationCompleted={healthDeclarations.length > 0}
+          confirmationCompleted={false}
+        />
       </motion.div>
 
       {/* Modern Analytics Dashboard */}
