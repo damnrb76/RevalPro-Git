@@ -193,7 +193,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         username,
         password: hashedPassword,
         email: email || null,
-        currentPlan: "free",
         profileImage: null,
         jobTitle: null,
       });
