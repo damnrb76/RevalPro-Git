@@ -13,7 +13,7 @@ import { getPlanDetails } from '@shared/subscription-plans';
 import StripeCheckout from '@/components/subscription/stripe-checkout';
 
 // Initialize Stripe
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 interface CheckoutPageProps {
   planId?: string;
