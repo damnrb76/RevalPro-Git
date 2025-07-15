@@ -57,7 +57,6 @@ export const PLAN_DETAILS: Record<SubscriptionPlan, PlanDetails> = {
       { title: "Unlimited reflective accounts", included: false },
       { title: "Advanced PDF templates", included: false },
       { title: "No reminders or notifications", included: false },
-      { title: "Priority email support", included: false },
     ],
   },
   standard: {
@@ -87,7 +86,6 @@ export const PLAN_DETAILS: Record<SubscriptionPlan, PlanDetails> = {
       { title: "Weekly progress check notifications", included: true },
       { title: "CPD activity reminders", included: true },
       { title: "Browser notification alerts", included: true },
-      { title: "Priority email support", included: false },
     ],
   },
   premium: {
@@ -119,7 +117,6 @@ export const PLAN_DETAILS: Record<SubscriptionPlan, PlanDetails> = {
       { title: "Smart reflection writing prompts", included: true },
       { title: "Progress analytics & completion rate alerts", included: true },
       { title: "Rich browser notifications with action buttons", included: true },
-      { title: "Priority email support", included: true, highlighted: true },
     ],
   },
 };
