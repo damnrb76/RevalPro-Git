@@ -14,13 +14,7 @@ export interface RegistrationVerificationResult {
   error?: string;
 }
 
-/**
- * Interface for NMC revalidation service status
- */
-export interface RevalidationServiceStatus {
-  status: 'Available' | 'Unavailable' | 'Maintenance';
-  lastChecked: string;
-}
+
 
 /**
  * Interface for NMC important dates

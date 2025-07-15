@@ -8,7 +8,7 @@ import { promisify } from "util";
 import { createCustomer, createSubscription, getSubscription, cancelSubscription, reactivateSubscription, changeSubscriptionPlan, handleWebhookEvent } from "./stripe";
 import { PLAN_DETAILS } from "../shared/subscription-plans";
 import Stripe from "stripe";
-import { checkNmcServiceStatus, verifyRegistration, calculateNmcImportantDates, getLatestRevalidationRequirements, checkNmcMaintenanceStatus } from "./nmc-api";
+import { verifyRegistration, calculateNmcImportantDates, getLatestRevalidationRequirements } from "./nmc-api";
 import { getRevalidationAdvice, generateReflectiveTemplate, suggestCpdActivities } from "./ai-service";
 import { insertTrainingRecordSchema } from "@shared/schema";
 
@@ -297,21 +297,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // NMC API integration endpoints
   // These endpoints provide integration with the UK Nursing & Midwifery Council
   
-  // Get NMC service status
-  app.get('/api/nmc/service-status', async (req, res) => {
-    try {
-      const status = await checkNmcServiceStatus();
-      res.json(status);
-    } catch (error) {
-      console.error('Error getting NMC service status:', error);
-      res.status(500).json({ 
-        error: 'Failed to check NMC service status',
-        status: 'Unavailable', 
-        lastChecked: new Date().toISOString() 
-      });
-    }
-  });
-  
   // Verify NMC registration
   app.post('/api/nmc/verify-registration', async (req, res) => {
     try {
@@ -362,19 +347,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  // Check if NMC portal is under maintenance
-  app.get('/api/nmc/maintenance-status', async (req, res) => {
-    try {
-      const underMaintenance = await checkNmcMaintenanceStatus();
-      res.json({ underMaintenance });
-    } catch (error) {
-      console.error('Error checking maintenance status:', error);
-      res.status(500).json({ 
-        error: 'Failed to check maintenance status',
-        underMaintenance: true 
-      });
-    }
-  });
+
   
 
 

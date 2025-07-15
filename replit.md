@@ -129,6 +129,7 @@ RevalPro is a comprehensive UK-specific nursing revalidation tracker application
 - July 12, 2025. Added comprehensive error handling for demo and development subscriptions across all operations
 - July 13, 2025. Added mandatory training records section for tracking additional training outside of revalidation requirements
 - July 13, 2025. Modified default account creation to grant premium access immediately for testing purposes before release
+- July 14, 2025. Removed NMC service status functionality including API endpoints, frontend components, and related types
 
 ## Stripe Sandbox Configuration
 

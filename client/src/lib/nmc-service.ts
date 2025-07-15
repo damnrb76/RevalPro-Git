@@ -20,13 +20,7 @@ export interface RegistrationVerificationResult {
   error?: string;
 }
 
-/**
- * Interface for NMC revalidation service status
- */
-export interface RevalidationServiceStatus {
-  status: 'Available' | 'Unavailable' | 'Maintenance';
-  lastChecked: string;
-}
+
 
 /**
  * Interface for NMC important dates
@@ -38,22 +32,7 @@ export interface NmcDates {
   renewalPeriodEnd?: string;
 }
 
-/**
- * Check the status of NMC Online Services
- */
-export async function checkNmcServiceStatus(): Promise<RevalidationServiceStatus> {
-  try {
-    const response = await apiRequest('GET', '/api/nmc/service-status');
-    return await response.json();
-  } catch (error) {
-    console.error('Error checking NMC service status:', error);
-    // Return a fallback response when the service is unavailable
-    return {
-      status: 'Unavailable',
-      lastChecked: new Date().toISOString()
-    };
-  }
-}
+
 
 /**
  * Verify a nurse's registration with the NMC

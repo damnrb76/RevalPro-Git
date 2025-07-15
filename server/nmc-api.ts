@@ -9,38 +9,14 @@
 import axios from 'axios';
 import * as cheerio from 'cheerio';
 // Import types defined in our own server/types.ts file
-import type { RevalidationServiceStatus, RegistrationVerificationResult, NmcDates } from '../server/types';
+import type { RegistrationVerificationResult, NmcDates } from '../server/types';
 
 // Base URLs for NMC services
 const NMC_BASE_URL = 'https://www.nmc.org.uk';
 const NMC_SEARCH_REGISTER_URL = `${NMC_BASE_URL}/registration/search-the-register/`;
 const NMC_ONLINE_SERVICES_URL = `${NMC_BASE_URL}/login/`;
 
-/**
- * Check the status of NMC Online Services
- * This function attempts to access the NMC login page to check if services are available
- */
-export async function checkNmcServiceStatus(): Promise<RevalidationServiceStatus> {
-  try {
-    const response = await axios.get(NMC_ONLINE_SERVICES_URL, {
-      timeout: 5000,
-      headers: {
-        'User-Agent': 'RevalPro NMC Integration Service - professional nursing application'
-      }
-    });
 
-    return {
-      status: response.status === 200 ? 'Available' : 'Unavailable',
-      lastChecked: new Date().toISOString()
-    };
-  } catch (error) {
-    console.error('Error checking NMC service status:', error);
-    return {
-      status: 'Unavailable',
-      lastChecked: new Date().toISOString()
-    };
-  }
-}
 
 /**
  * Verify a nurse's registration with the NMC
@@ -173,26 +149,3 @@ export async function getLatestRevalidationRequirements(): Promise<string[]> {
   }
 }
 
-/**
- * Check if the NMC revalidation portal is under maintenance
- */
-export async function checkNmcMaintenanceStatus(): Promise<boolean> {
-  try {
-    const response = await axios.get(NMC_ONLINE_SERVICES_URL, {
-      timeout: 5000,
-      headers: {
-        'User-Agent': 'RevalPro NMC Integration Service - professional nursing application'
-      }
-    });
-    
-    // In a real implementation, we would parse the response to check for
-    // maintenance notices - here we'll just check if the site is accessible
-    
-    return response.status !== 200;
-  } catch (error) {
-    console.error('Error checking NMC maintenance status:', error);
-    
-    // If we can't access the site at all, assume it could be maintenance
-    return true;
-  }
-}
