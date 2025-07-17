@@ -21,7 +21,7 @@ declare global {
 
 // For demo purposes, we'll use a very simple hash function
 // In a real app, you'd use a proper password hashing library
-function hashPassword(password: string) {
+export function hashPassword(password: string) {
   return `hashed_${password}`;
 }
 

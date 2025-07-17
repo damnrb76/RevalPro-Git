@@ -2,7 +2,7 @@ import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
 import express from "express";
 import { storage } from "./storage";
-import { setupAuth } from "./auth";
+import { setupAuth, hashPassword } from "./auth";
 import { scrypt, randomBytes } from "crypto";
 import { promisify } from "util";
 import { createCustomer, createSubscription, getSubscription, cancelSubscription, reactivateSubscription, changeSubscriptionPlan, handleWebhookEvent } from "./stripe";
@@ -19,7 +19,8 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2023-10-16',
 });
 
-async function hashPassword(password: string) {
+// Secure password hashing function for regular user accounts
+async function hashPasswordSecure(password: string) {
   const salt = randomBytes(16).toString("hex");
   const buf = (await scryptAsync(password, salt, 64)) as Buffer;
   return `${buf.toString("hex")}.${salt}`;
@@ -241,8 +242,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         await storage.deleteUser(existingUser.id);
       }
       
-      // Create fresh demo account using simple hash to match auth.ts
-      const hashedPassword = `hashed_${demoPassword}`;
+      // Create fresh demo account using proper hash function from auth.ts
+      const hashedPassword = hashPassword(demoPassword);
       const user = await storage.createUser({
         username: demoUsername,
         password: hashedPassword,
