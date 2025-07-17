@@ -28,6 +28,7 @@ function DemoLoginButton() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ plan: "premium" }),
+        credentials: "include",
       });
 
       if (!createResponse.ok) {
