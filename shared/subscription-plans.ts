@@ -65,7 +65,7 @@ export const PLAN_DETAILS: Record<SubscriptionPlan, PlanDetails> = {
     description: "Everything you need for a smooth revalidation",
     price: {
       monthly: 4.99,
-      annual: 49.99, // ~2 months free
+      annual: 49.99, // Save almost £10 - equivalent to ~2 months free
     },
     stripePriceId: {
       monthly: "price_1RjnSJApgglLl36M5X8I82Jl", // Standard Monthly
@@ -94,7 +94,7 @@ export const PLAN_DETAILS: Record<SubscriptionPlan, PlanDetails> = {
     description: "The ultimate revalidation companion for professionals",
     price: {
       monthly: 9.99,
-      annual: 99.99, // ~2 months free
+      annual: 89.99, // Save nearly £30 - equivalent to ~3 months free
     },
     stripePriceId: {
       monthly: "price_1RjnSJApgglLl36MUtHes4SP", // Premium Monthly

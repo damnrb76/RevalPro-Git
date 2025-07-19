@@ -131,6 +131,8 @@ RevalPro is a comprehensive UK-specific nursing revalidation tracker application
 - July 13, 2025. Modified default account creation to grant premium access immediately for testing purposes before release
 - July 14, 2025. Removed NMC service status functionality including API endpoints, frontend components, and related types
 - July 15, 2025. Removed priority email support feature from all subscription plans
+- July 17, 2025. Updated subscription pricing: Standard £4.99/month, £49.99/year (save ~£10); Premium £9.99/month, £89.99/year (save ~£30)
+- July 17, 2025. Added savings display to pricing plans showing annual savings and equivalent free months
 
 ## Stripe Sandbox Configuration
 

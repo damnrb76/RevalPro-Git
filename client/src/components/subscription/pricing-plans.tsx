@@ -231,7 +231,7 @@ export default function PricingPlans() {
             id="billing-period"
           />
           <Label htmlFor="billing-period" className={`${period === "annual" ? "text-blue-600 font-bold" : "text-gray-600"}`}>
-            Annual <span className="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">Save up to 20%</span>
+            Annual <span className="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">Save up to £30</span>
           </Label>
         </div>
       </div>
@@ -360,6 +360,23 @@ interface PlanCardProps {
 function PlanCard({ plan, period, isCurrentPlan, onSelect, disabled }: PlanCardProps) {
   const price = period === "monthly" ? plan.price.monthly : plan.price.annual;
   const priceText = price === 0 ? "Free" : `£${price}${period === "monthly" ? "/month" : "/year"}`;
+  
+  // Calculate savings for annual plans
+  const getSavingsInfo = () => {
+    if (period === "monthly" || price === 0) return null;
+    
+    const monthlyTotal = plan.price.monthly * 12;
+    const annualPrice = plan.price.annual;
+    const savings = monthlyTotal - annualPrice;
+    const monthsSaved = Math.round(savings / plan.price.monthly);
+    
+    return {
+      savings: savings.toFixed(2),
+      monthsSaved
+    };
+  };
+  
+  const savingsInfo = getSavingsInfo();
 
   return (
     <Card className={`
@@ -386,6 +403,16 @@ function PlanCard({ plan, period, isCurrentPlan, onSelect, disabled }: PlanCardP
       <CardContent className="flex-grow">
         <div className="mb-6">
           <span className="text-4xl font-extrabold">{priceText}</span>
+          {savingsInfo && (
+            <div className="mt-2 space-y-1">
+              <div className="text-sm text-green-600 font-medium">
+                Save £{savingsInfo.savings} per year
+              </div>
+              <div className="text-xs text-gray-500">
+                Equivalent to ~{savingsInfo.monthsSaved} months free
+              </div>
+            </div>
+          )}
         </div>
         <ul className="space-y-3">
           {plan.features.map((feature, index) => (
