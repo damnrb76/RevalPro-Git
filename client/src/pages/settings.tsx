@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { useTheme } from "@/components/ui/theme-provider";
 import { 
@@ -32,6 +33,8 @@ export default function SettingsPage() {
   const [isProfileFormOpen, setIsProfileFormOpen] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
   const [isClearing, setIsClearing] = useState(false);
+  const [showClearDialog, setShowClearDialog] = useState(false);
+  const [clearConfirmText, setClearConfirmText] = useState("");
   const [activeTab, setActiveTab] = useState<string>(() => {
     // Get tab from URL if present, otherwise default to "profile"
     const params = new URLSearchParams(window.location.search);
@@ -138,27 +141,32 @@ export default function SettingsPage() {
     }
   };
   
-  const handleClearData = async () => {
-    if (window.confirm("Are you sure you want to clear all data? This action cannot be undone.")) {
-      setIsClearing(true);
+  const handleClearData = () => {
+    setClearConfirmText("");
+    setShowClearDialog(true);
+  };
+
+  const confirmClearData = async () => {
+    setIsClearing(true);
+    setShowClearDialog(false);
+    
+    try {
+      await clearAllData();
+      queryClient.invalidateQueries();
       
-      try {
-        await clearAllData();
-        queryClient.invalidateQueries();
-        
-        toast({
-          title: "Data cleared",
-          description: "All your revalidation data has been cleared.",
-        });
-      } catch (error) {
-        toast({
-          title: "Clear failed",
-          description: error instanceof Error ? error.message : "Failed to clear data.",
-          variant: "destructive",
-        });
-      } finally {
-        setIsClearing(false);
-      }
+      toast({
+        title: "Data cleared",
+        description: "All your revalidation data has been cleared.",
+      });
+    } catch (error) {
+      toast({
+        title: "Clear failed",
+        description: error instanceof Error ? error.message : "Failed to clear data.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsClearing(false);
+      setClearConfirmText("");
     }
   };
   
@@ -515,6 +523,64 @@ export default function SettingsPage() {
           onSuccess={handleProfileFormSuccess}
         />
       )}
+
+      {/* Clear Data Confirmation Dialog */}
+      <Dialog open={showClearDialog} onOpenChange={setShowClearDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-red-600">
+              <AlertTriangle className="h-5 w-5" />
+              Confirm Data Deletion
+            </DialogTitle>
+            <DialogDescription>
+              This action will permanently delete all your revalidation data including practice hours, 
+              CPD records, feedback, reflective accounts, and all other data. This cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4 py-4">
+            <div>
+              <Label htmlFor="confirm-text" className="text-sm font-medium">
+                To confirm, please type <span className="font-mono bg-gray-100 px-1 rounded">CLEAR MY DATA</span> below:
+              </Label>
+              <Input
+                id="confirm-text"
+                value={clearConfirmText}
+                onChange={(e) => setClearConfirmText(e.target.value)}
+                placeholder="CLEAR MY DATA"
+                className="mt-2"
+                autoComplete="off"
+              />
+            </div>
+          </div>
+          
+          <DialogFooter className="flex gap-2">
+            <Button 
+              variant="outline" 
+              onClick={() => {
+                setShowClearDialog(false);
+                setClearConfirmText("");
+              }}
+            >
+              Cancel
+            </Button>
+            <Button 
+              variant="destructive"
+              onClick={confirmClearData}
+              disabled={clearConfirmText !== "CLEAR MY DATA" || isClearing}
+            >
+              {isClearing ? (
+                <>Clearing...</>
+              ) : (
+                <>
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Clear All Data
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </main>
   );
 }
