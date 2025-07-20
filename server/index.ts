@@ -133,7 +133,7 @@ app.use((req, res, next) => {
       
       res.send(html);
     } catch (error) {
-      res.status(500).send(`<h1>Error</h1><p>Failed to load beta applications: ${error.message}</p>`);
+      res.status(500).send(`<h1>Error</h1><p>Failed to load beta applications: ${error instanceof Error ? error.message : 'Unknown error'}</p>`);
     }
   });
 
