@@ -53,6 +53,17 @@ app.use((req, res, next) => {
 (async () => {
   const server = await registerRoutes(app);
 
+  // Add landing page preview route
+  app.get("/landing-preview", async (req, res) => {
+    try {
+      const fs = await import('fs/promises');
+      const landingHtml = await fs.readFile('landing-page.html', 'utf-8');
+      res.send(landingHtml);
+    } catch (error) {
+      res.status(500).send(`<h1>Error</h1><p>Failed to load landing page: ${error instanceof Error ? error.message : 'Unknown error'}</p>`);
+    }
+  });
+
   // Add direct beta applications HTML route before Vite middleware
   app.get("/view-beta-applications", async (req, res) => {
     try {
