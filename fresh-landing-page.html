@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RevalPro - The Ultimate Nursing Revalidation Assistant</title>
+    <meta name="description" content="The ultimate Nursing Revalidation Assistant that simplifies your NMC revalidation process. Launching Friday, August 1st at 6am.">
+    <meta name="keywords" content="NHS nursing, NMC revalidation, nursing CPD, practice hours tracker, reflective accounts, nursing professional development">
+    
+    <!-- Open Graph tags -->
+    <meta property="og:title" content="RevalPro - The Ultimate Nursing Revalidation Assistant">
+    <meta property="og:description" content="Simplify your NMC revalidation process with comprehensive tracking, AI assistance, and secure data storage.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.revalpro.co.uk">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background: #ffffff;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: #ffffff;
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #374151;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #2563eb;
+        }
+
+        /* Hero Section */
+        .hero {
+            margin-top: 80px;
+            padding: 80px 0;
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            line-height: 1.1;
+        }
+
+        .hero .subtitle {
+            font-size: 1.4rem;
+            margin-bottom: 60px;
+            opacity: 0.9;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Countdown */
+        .countdown-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 50px;
+            margin: 40px auto;
+            max-width: 800px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .countdown-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .launch-date {
+            font-size: 1.4rem;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+
+        .countdown-timer {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .time-unit {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 15px;
+            min-width: 120px;
+            backdrop-filter: blur(5px);
+        }
+
+        .time-value {
+            font-size: 3rem;
+            font-weight: 800;
+            display: block;
+            line-height: 1;
+        }
+
+        .time-label {
+            font-size: 1rem;
+            margin-top: 5px;
+            opacity: 0.8;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 100px 0;
+            background: #f8fafc;
+        }
+
+        .features h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 60px;
+            color: #1f2937;
+        }
+
+        .feature-category {
+            margin-bottom: 80px;
+        }
+
+        .feature-category h3 {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 40px;
+            color: #374151;
+            text-align: center;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h4 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #1f2937;
+        }
+
+        .feature-card p {
+            color: #6b7280;
+            line-height: 1.6;
+        }
+
+        /* Screenshots Section */
+        .screenshots {
+            padding: 100px 0;
+            background: white;
+        }
+
+        .screenshots h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 60px;
+            color: #1f2937;
+        }
+
+        .screenshots-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+        }
+
+        .screenshot-card {
+            text-align: center;
+        }
+
+        .screenshot-card img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .screenshot-card h4 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        /* Pricing Section */
+        .pricing {
+            padding: 100px 0;
+            background: #f8fafc;
+        }
+
+        .pricing h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 60px;
+            color: #1f2937;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .pricing-card {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .pricing-card.popular {
+            border: 3px solid #2563eb;
+            transform: scale(1.05);
+        }
+
+        .pricing-card.popular::before {
+            content: "Maximum Savings";
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2563eb;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .plan-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #1f2937;
+        }
+
+        .plan-price {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #2563eb;
+            margin-bottom: 5px;
+        }
+
+        .plan-period {
+            color: #6b7280;
+            margin-bottom: 10px;
+        }
+
+        .plan-annual {
+            color: #059669;
+            font-weight: 600;
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+        }
+
+        .plan-features {
+            list-style: none;
+            text-align: left;
+            margin-bottom: 30px;
+        }
+
+        .plan-features li {
+            padding: 8px 0;
+            color: #374151;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .plan-features li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #059669;
+            font-weight: bold;
+        }
+
+        .plan-features li.disabled {
+            color: #9ca3af;
+            text-decoration: line-through;
+        }
+
+        .plan-features li.disabled::before {
+            content: "✗";
+            color: #ef4444;
+        }
+
+        /* Footer */
+        footer {
+            background: #1f2937;
+            color: white;
+            padding: 60px 0 30px;
+            text-align: center;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+            text-align: left;
+        }
+
+        .footer-section h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #f9fafb;
+        }
+
+        .footer-section p,
+        .footer-section a {
+            color: #d1d5db;
+            text-decoration: none;
+            line-height: 1.8;
+        }
+
+        .footer-section a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #374151;
+            padding-top: 30px;
+            text-align: center;
+            color: #9ca3af;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero .subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .countdown-section {
+                padding: 30px 20px;
+            }
+            
+            .countdown-timer {
+                gap: 15px;
+            }
+            
+            .time-unit {
+                min-width: 80px;
+                padding: 15px;
+            }
+            
+            .time-value {
+                font-size: 2rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .pricing-card.popular {
+                transform: none;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .screenshots-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <a href="#" class="logo">RevalPro</a>
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#screenshots">Screenshots</a></li>
+                <li><a href="#pricing">Pricing</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>RevalPro</h1>
+            <p class="subtitle">The ultimate Nursing Revalidation Assistant that simplifies your NMC revalidation process</p>
+            
+            <div class="countdown-section">
+                <h2>Launching on</h2>
+                <div class="launch-date">Friday, August 1st at 6am</div>
+                <div class="countdown-timer" id="countdown">
+                    <div class="time-unit">
+                        <span class="time-value" id="days">00</span>
+                        <span class="time-label">Days</span>
+                    </div>
+                    <div class="time-unit">
+                        <span class="time-value" id="hours">00</span>
+                        <span class="time-label">Hours</span>
+                    </div>
+                    <div class="time-unit">
+                        <span class="time-value" id="minutes">00</span>
+                        <span class="time-label">Minutes</span>
+                    </div>
+                    <div class="time-unit">
+                        <span class="time-value" id="seconds">00</span>
+                        <span class="time-label">Seconds</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" id="features">
+        <div class="container">
+            <h2>Features</h2>
+            
+            <div class="feature-category">
+                <h3>Core NMC Revalidation Requirements</h3>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <img src="https://assets-persist.lovart.ai/img/4ef6e1b76f694fc8aaed3be96c328d09/7524fad8e978c782a0c97ed32ad38ad90d9ebac9ed927f9727a223514a413dd9.jpg" alt="Practice Hours Tracking">
+                        <h4>Practice Hours Tracking</h4>
+                        <p>Easily log and track your practice hours to meet the 450-hour requirement over three years.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <img src="https://assets-persist.lovart.ai/img/4ef6e1b76f694fc8aaed3be96c328d09/32d8fedbc8816e47815d2dca100c7cf5b95d11daa9ac42f131f06b118f825dff.jpg" alt="CPD Recording">
+                        <h4>CPD Recording</h4>
+                        <p>Document your 35 hours of CPD activities, including participatory learning, with ease.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <img src="https://assets-persist.lovart.ai/img/4ef6e1b76f694fc8aaed3be96c328d09/7d20c8e3a988082b9632530b2359d59197ebe77f82bf69f114fefa7b6c6e744b.jpg" alt="Reflective Accounts">
+                        <h4>Reflective Accounts</h4>
+                        <p>Create and store your five reflective accounts with guided templates and examples.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <img src="https://assets-persist.lovart.ai/img/4ef6e1b76f694fc8aaed3be96c328d09/003cb2697aa922c522cf5ee30c1e74ac67970043691315eb2708581b8787dbc1.jpg" alt="Reflective Discussion">
+                        <h4>Reflective Discussion</h4>
+                        <p>Record your reflective discussion details and store your confirmer's information securely.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="feature-category">
+                <h3>Advanced Features</h3>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <img src="https://assets-persist.lovart.ai/img/4ef6e1b76f694fc8aaed3be96c328d09/e7e538eca3ef51c80832e8c09394cab8d2948fa0fda54fa6b2768a06048cb25c.jpg" alt="Progress Dashboard">
+                        <h4>Progress Dashboard</h4>
+                        <p>Visual progress tracking with clear indicators of completed and pending requirements.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <img src="https://assets-persist.lovart.ai/img/4ef6e1b76f694fc8aaed3be96c328d09/8f08af1a38121ba6de8d13ed7b296b9a05ae0d6aee02a53874708533ffdf67f7.jpg" alt="Deadline Reminders">
+                        <h4>Deadline Reminders</h4>
+                        <p>Customizable notifications to keep you on track with your revalidation timeline.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <img src="https://assets-persist.lovart.ai/img/4ef6e1b76f694fc8aaed3be96c328d09/cfc2b9993c03d54a34fead23f08b670dc26fa6ff5d2490f6f78af0d1c671dbca.jpg" alt="Secure Data Storage">
+                        <h4>Secure Data Storage</h4>
+                        <p>All your revalidation evidence stored securely with end-to-end encryption.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <img src="https://assets-persist.lovart.ai/img/4ef6e1b76f694fc8aaed3be96c328d09/32d8fedbc8816e47815d2dca100c7cf5b95d11daa9ac42f131f06b118f825dff.jpg" alt="Export & Print">
+                        <h4>Export & Print</h4>
+                        <p>Generate professional PDF reports of your revalidation portfolio for submission.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="screenshots" id="screenshots">
+        <div class="container">
+            <h2>App Screenshots</h2>
+            <div class="screenshots-grid">
+                <div class="screenshot-card">
+                    <img src="https://assets-persist.lovart.ai/img/4ef6e1b76f694fc8aaed3be96c328d09/e7e538eca3ef51c80832e8c09394cab8d2948fa0fda54fa6b2768a06048cb25c.jpg" alt="Dashboard">
+                    <h4>Main Dashboard with Progress Tracking</h4>
+                </div>
+                
+                <div class="screenshot-card">
+                    <img src="https://assets-persist.lovart.ai/img/4ef6e1b76f694fc8aaed3be96c328d09/7524fad8e978c782a0c97ed32ad38ad90d9ebac9ed927f9727a223514a413dd9.jpg" alt="Practice Hours">
+                    <h4>Practice Hours Recording Interface</h4>
+                </div>
+                
+                <div class="screenshot-card">
+                    <img src="https://assets-persist.lovart.ai/img/4ef6e1b76f694fc8aaed3be96c328d09/32d8fedbc8816e47815d2dca100c7cf5b95d11daa9ac42f131f06b118f825dff.jpg" alt="CPD Tracking">
+                    <h4>CPD Hours Progress Tracking</h4>
+                </div>
+                
+                <div class="screenshot-card">
+                    <img src="https://assets-persist.lovart.ai/img/4ef6e1b76f694fc8aaed3be96c328d09/7d20c8e3a988082b9632530b2359d59197ebe77f82bf69f114fefa7b6c6e744b.jpg" alt="Reflections">
+                    <h4>Reflective Accounts Management</h4>
+                </div>
+                
+                <div class="screenshot-card">
+                    <img src="https://assets-persist.lovart.ai/img/4ef6e1b76f694fc8aaed3be96c328d09/8f08af1a38121ba6de8d13ed7b296b9a05ae0d6aee02a53874708533ffdf67f7.jpg" alt="Notifications">
+                    <h4>Notification and Reminder System</h4>
+                </div>
+                
+                <div class="screenshot-card">
+                    <img src="https://assets-persist.lovart.ai/img/4ef6e1b76f694fc8aaed3be96c328d09/cfc2b9993c03d54a34fead23f08b670dc26fa6ff5d2490f6f78af0d1c671dbca.jpg" alt="Privacy Settings">
+                    <h4>Privacy and Security Settings</h4>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="pricing" id="pricing">
+        <div class="container">
+            <h2>Subscription Plans</h2>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <div class="plan-name">Free</div>
+                    <div class="plan-price">£0</div>
+                    <div class="plan-period">Forever</div>
+                    <ul class="plan-features">
+                        <li>Basic progress tracking</li>
+                        <li>Practice hours logging</li>
+                        <li>3 reflective accounts</li>
+                        <li>Basic CPD recording</li>
+                        <li class="disabled">No cloud backup</li>
+                        <li class="disabled">No export functionality</li>
+                        <li class="disabled">Limited templates</li>
+                    </ul>
+                </div>
+                
+                <div class="pricing-card popular">
+                    <div class="plan-name">Standard</div>
+                    <div class="plan-price">£4.99</div>
+                    <div class="plan-period">per month</div>
+                    <div class="plan-annual">Annual: £49.99 (Save £9.89)</div>
+                    <ul class="plan-features">
+                        <li>Full progress tracking</li>
+                        <li>Unlimited practice hours</li>
+                        <li>5 reflective accounts</li>
+                        <li>Full CPD recording</li>
+                        <li>Cloud backup</li>
+                        <li>PDF export</li>
+                        <li>Basic templates</li>
+                    </ul>
+                </div>
+                
+                <div class="pricing-card">
+                    <div class="plan-name">Premium</div>
+                    <div class="plan-price">£7.99</div>
+                    <div class="plan-period">per month</div>
+                    <div class="plan-annual">Annual: £69.99 (Save £25.89)</div>
+                    <ul class="plan-features">
+                        <li>Everything in Standard</li>
+                        <li>Priority support</li>
+                        <li>Advanced templates</li>
+                        <li>Reflective discussion tools</li>
+                        <li>Confirmer management</li>
+                        <li>Custom reminders</li>
+                        <li>Multi-device sync</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>RevalPro</h3>
+                    <p>The ultimate nursing revalidation assistant designed specifically for NHS professionals in the UK.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <p><a href="#features">Features</a></p>
+                    <p><a href="#screenshots">Screenshots</a></p>
+                    <p><a href="#pricing">Pricing</a></p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Support</h3>
+                    <p><a href="mailto:support@revalpro.co.uk">support@revalpro.co.uk</a></p>
+                    <p>Help Center (Coming Soon)</p>
+                    <p>NMC Revalidation Guide</p>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 RevalPro. All rights reserved. | Designed for NHS nurses across the UK</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Countdown Timer - Set launch date to Friday, August 1st, 2025 at 6:00 AM GMT
+        const launchDate = new Date('August 1, 2025 06:00:00 GMT');
+        
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = launchDate.getTime() - now;
+            
+            if (distance < 0) {
+                document.getElementById('countdown').innerHTML = `
+                    <div style="text-align: center; padding: 40px;">
+                        <h2 style="font-size: 3rem; margin-bottom: 20px;">🎉 We're Live! 🎉</h2>
+                        <p style="font-size: 1.3rem; color: rgba(255,255,255,0.9);">
+                            Welcome to RevalPro - Your nursing revalidation journey starts now!
+                        </p>
+                        <a href="/auth" style="display: inline-block; margin-top: 30px; background: rgba(255,255,255,0.3); color: white; padding: 15px 30px; border-radius: 25px; text-decoration: none; font-weight: 600; transition: all 0.3s ease;">
+                            Launch the App →
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+            
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            
+            document.getElementById('days').textContent = days.toString().padStart(2, '0');
+            document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+            document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+            document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+        }
+        
+        // Update countdown every second
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+        
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
