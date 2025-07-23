@@ -39,6 +39,7 @@ import BetaSignupPage from "@/pages/beta-signup";
 import BetaApplicationsPage from "@/pages/beta-applications";
 import SimpleBetaView from "@/pages/simple-beta-view";
 import FirebaseTest from "@/pages/firebase-test";
+import LaunchCountdown from "@/pages/LaunchCountdown";
 
 import Footer from "@/components/layout/footer";
 import NavigationTabs from "@/components/layout/navigation-tabs";
@@ -56,10 +57,11 @@ function AppRouter() {
   const isPrivacyPage = location === '/privacy-policy' && window.location.hostname === 'revalpro.co.uk';
   const isBetaSignupPage = location === '/beta-signup';
   const isBetaApplicationsPage = location === '/beta-applications';
-  const showTabs = location !== '/auth' && location !== '/landing' && !isComingSoonPage && !isPrivacyPage && !isBetaSignupPage && !isBetaApplicationsPage;
+  const isLaunchCountdownPage = location === '/launch-countdown';
+  const showTabs = location !== '/auth' && location !== '/landing' && location !== '/launch-countdown' && !isComingSoonPage && !isPrivacyPage && !isBetaSignupPage && !isBetaApplicationsPage;
   const isAuthPage = location === '/auth';
   const isLandingPage = location === '/landing';
-  const showAppHeader = !isLandingPage && !isComingSoonPage && !isPrivacyPage && !isBetaSignupPage;
+  const showAppHeader = !isLandingPage && !isComingSoonPage && !isPrivacyPage && !isBetaSignupPage && !isLaunchCountdownPage;
   
   return (
     <div className={`min-h-screen flex flex-col ${isVerticalMenu && showTabs ? 'pl-64' : ''}`}>
@@ -129,12 +131,13 @@ function AppRouter() {
           {/* Firebase Test Page */}
           <Route path="/firebase-test" component={FirebaseTest} />
           
-
+          {/* Launch Countdown Page */}
+          <Route path="/launch-countdown" component={LaunchCountdown} />
           
           <Route component={NotFound} />
         </Switch>
       </div>
-      {!isLandingPage && !isComingSoonPage && !isPrivacyPage && !isBetaSignupPage && <Footer logo={logo} className={isVerticalMenu && showTabs ? 'ml-64' : ''} />}
+      {!isLandingPage && !isComingSoonPage && !isPrivacyPage && !isBetaSignupPage && !isLaunchCountdownPage && <Footer logo={logo} className={isVerticalMenu && showTabs ? 'ml-64' : ''} />}
     </div>
   );
 }
