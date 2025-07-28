@@ -36,6 +36,7 @@ import SummaryInfographic from "@/pages/summary-infographic";
 import AdminPanel from "@/pages/admin-panel";
 import PrivacyPolicyPage from "@/pages/privacy-policy";
 import TermsOfServicePage from "@/pages/terms-of-service";
+import NotificationTestPage from "@/pages/notification-test";
 import BetaSignupPage from "@/pages/beta-signup";
 import BetaApplicationsPage from "@/pages/beta-applications";
 import SimpleBetaView from "@/pages/simple-beta-view";
@@ -123,6 +124,9 @@ function AppRouter() {
           
           {/* Terms of Service Route */}
           <Route path="/terms-of-service" component={TermsOfServicePage} />
+          
+          {/* Notification Test Route */}
+          <ProtectedRoute path="/notification-test" component={NotificationTestPage} />
           
           {/* Beta Signup Route */}
           <Route path="/beta-signup" component={BetaSignupPage} />
