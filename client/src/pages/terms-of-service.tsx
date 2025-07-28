@@ -87,8 +87,10 @@ export default function TermsOfService() {
 
             <h3 className="text-xl font-semibold text-gray-700 mt-6 mb-3">5.2 User Content</h3>
             <p className="mb-4">
-              You retain ownership of content you upload but grant RevalPro a license to store, 
-              process, and display this content as necessary to provide our services.
+              You retain full ownership and control of all content you create within RevalPro. 
+              Your data is stored locally on your device and is not uploaded to our servers. 
+              RevalPro processes this data locally to provide our services, and you can export 
+              or delete your data at any time.
             </p>
 
             <h2 className="text-2xl font-semibold text-gray-800 mt-8 mb-4">6. Subscription and Payment</h2>
