@@ -136,6 +136,8 @@ RevalPro is a comprehensive UK-specific nursing revalidation tracker application
 - July 22, 2025. Updated launch date to Friday, August 1st, 2025 at 6:00 AM GMT
 - July 22, 2025. Implemented new custom landing page design with app screenshots and feature highlights
 - July 22, 2025. Updated pricing structure: Free (£0), Standard (£4.99/month, £49.99/year), Premium (£7.99/month, £69.99/year)
+- July 28, 2025. Added comprehensive Terms of Service page covering healthcare-specific legal requirements and user responsibilities
+- July 28, 2025. Integrated Terms of Service into navigation and footer alongside Privacy Policy
 
 ## Stripe Sandbox Configuration
 

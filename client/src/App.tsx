@@ -35,6 +35,7 @@ import NmcResources from "@/pages/nmc-resources";
 import SummaryInfographic from "@/pages/summary-infographic";
 import AdminPanel from "@/pages/admin-panel";
 import PrivacyPolicyPage from "@/pages/privacy-policy";
+import TermsOfServicePage from "@/pages/terms-of-service";
 import BetaSignupPage from "@/pages/beta-signup";
 import BetaApplicationsPage from "@/pages/beta-applications";
 import SimpleBetaView from "@/pages/simple-beta-view";
@@ -55,13 +56,14 @@ function AppRouter() {
   const isVerticalMenu = layout === "vertical";
   const isComingSoonPage = location === '/' && window.location.hostname === 'revalpro.co.uk';
   const isPrivacyPage = location === '/privacy-policy' && window.location.hostname === 'revalpro.co.uk';
+  const isTermsPage = location === '/terms-of-service' && window.location.hostname === 'revalpro.co.uk';
   const isBetaSignupPage = location === '/beta-signup';
   const isBetaApplicationsPage = location === '/beta-applications';
   const isLaunchCountdownPage = location === '/launch-countdown';
-  const showTabs = location !== '/auth' && location !== '/landing' && location !== '/launch-countdown' && !isComingSoonPage && !isPrivacyPage && !isBetaSignupPage && !isBetaApplicationsPage;
+  const showTabs = location !== '/auth' && location !== '/landing' && location !== '/launch-countdown' && !isComingSoonPage && !isPrivacyPage && !isTermsPage && !isBetaSignupPage && !isBetaApplicationsPage;
   const isAuthPage = location === '/auth';
   const isLandingPage = location === '/landing';
-  const showAppHeader = !isLandingPage && !isComingSoonPage && !isPrivacyPage && !isBetaSignupPage && !isLaunchCountdownPage;
+  const showAppHeader = !isLandingPage && !isComingSoonPage && !isPrivacyPage && !isTermsPage && !isBetaSignupPage && !isLaunchCountdownPage;
   
   return (
     <div className={`min-h-screen flex flex-col ${isVerticalMenu && showTabs ? 'pl-64' : ''}`}>
@@ -119,6 +121,9 @@ function AppRouter() {
           {/* Privacy Policy Route */}
           <Route path="/privacy-policy" component={PrivacyPolicyPage} />
           
+          {/* Terms of Service Route */}
+          <Route path="/terms-of-service" component={TermsOfServicePage} />
+          
           {/* Beta Signup Route */}
           <Route path="/beta-signup" component={BetaSignupPage} />
           
@@ -137,7 +142,7 @@ function AppRouter() {
           <Route component={NotFound} />
         </Switch>
       </div>
-      {!isLandingPage && !isComingSoonPage && !isPrivacyPage && !isBetaSignupPage && !isLaunchCountdownPage && <Footer logo={logo} className={isVerticalMenu && showTabs ? 'ml-64' : ''} />}
+      {!isLandingPage && !isComingSoonPage && !isPrivacyPage && !isTermsPage && !isBetaSignupPage && !isLaunchCountdownPage && <Footer logo={logo} className={isVerticalMenu && showTabs ? 'ml-64' : ''} />}
     </div>
   );
 }

@@ -60,8 +60,15 @@ export default function Footer({ logo, className }: FooterProps) {
               </li>
               <li>
                 <span className="text-revalpro-white/80 hover:text-white cursor-pointer">
-                  <Link href="/settings?tab=privacy">
+                  <Link href="/privacy-policy">
                     Privacy Policy
+                  </Link>
+                </span>
+              </li>
+              <li>
+                <span className="text-revalpro-white/80 hover:text-white cursor-pointer">
+                  <Link href="/terms-of-service">
+                    Terms of Service
                   </Link>
                 </span>
               </li>
