@@ -37,6 +37,7 @@ import AdminPanel from "@/pages/admin-panel";
 import PrivacyPolicyPage from "@/pages/privacy-policy";
 import TermsOfServicePage from "@/pages/terms-of-service";
 import NotificationTestPage from "@/pages/notification-test";
+import RevalidationAuditPage from "@/pages/revalidation-audit";
 import BetaSignupPage from "@/pages/beta-signup";
 import BetaApplicationsPage from "@/pages/beta-applications";
 import SimpleBetaView from "@/pages/simple-beta-view";
@@ -98,6 +99,9 @@ function AppRouter() {
           <ProtectedRoute path="/nmc-registration-check" component={NmcRegistrationCheck} />
           <ProtectedRoute path="/revalidation-dates" component={RevalidationDates} />
           <ProtectedRoute path="/nmc-resources" component={NmcResources} />
+          
+          {/* Revalidation Lifecycle Routes */}
+          <ProtectedRoute path="/revalidation-audit" component={RevalidationAuditPage} />
 
           
           {/* Infographic Routes - Changed to regular Route for preview */}

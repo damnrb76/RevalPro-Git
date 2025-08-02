@@ -1073,6 +1073,109 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Revalidation Lifecycle API Routes
+  
+  // Get current active cycle for user
+  app.get("/api/revalidation-cycles/current/:userId", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const cycle = await storage.getCurrentRevalidationCycle(userId);
+      res.json(cycle);
+    } catch (error) {
+      console.error("Error fetching current cycle:", error);
+      res.status(500).json({ error: "Failed to fetch current revalidation cycle" });
+    }
+  });
+
+  // Get last completed cycle for user
+  app.get("/api/revalidation-cycles/last/:userId", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const cycle = await storage.getLastRevalidationCycle(userId);
+      res.json(cycle);
+    } catch (error) {
+      console.error("Error fetching last cycle:", error);
+      res.status(500).json({ error: "Failed to fetch last revalidation cycle" });
+    }
+  });
+
+  // Get all cycles for user (audit purposes)
+  app.get("/api/revalidation-cycles/all/:userId", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const cycles = await storage.getAllRevalidationCycles(userId);
+      res.json(cycles);
+    } catch (error) {
+      console.error("Error fetching all cycles:", error);
+      res.status(500).json({ error: "Failed to fetch revalidation cycles" });
+    }
+  });
+
+  // Create new revalidation cycle
+  app.post("/api/revalidation-cycles", async (req, res) => {
+    try {
+      const cycleData = req.body;
+      const cycle = await storage.createRevalidationCycle(cycleData);
+      res.status(201).json(cycle);
+    } catch (error) {
+      console.error("Error creating revalidation cycle:", error);
+      res.status(500).json({ error: "Failed to create revalidation cycle" });
+    }
+  });
+
+  // Update revalidation cycle (for completion, submission, etc.)
+  app.patch("/api/revalidation-cycles/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const updateData = req.body;
+      const cycle = await storage.updateRevalidationCycle(id, updateData);
+      res.json(cycle);
+    } catch (error) {
+      console.error("Error updating revalidation cycle:", error);
+      res.status(500).json({ error: "Failed to update revalidation cycle" });
+    }
+  });
+
+  // Get archived data for specific cycle
+  app.get("/api/revalidation-cycles/:id/archived-data", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const cycle = await storage.getRevalidationCycle(id);
+      
+      if (!cycle) {
+        return res.status(404).json({ error: "Revalidation cycle not found" });
+      }
+      
+      res.json(cycle);
+    } catch (error) {
+      console.error("Error fetching archived data:", error);
+      res.status(500).json({ error: "Failed to fetch archived data" });
+    }
+  });
+
+  // Create revalidation submission record
+  app.post("/api/revalidation-submissions", async (req, res) => {
+    try {
+      const submissionData = req.body;
+      const submission = await storage.createRevalidationSubmission(submissionData);
+      res.status(201).json(submission);
+    } catch (error) {
+      console.error("Error creating revalidation submission:", error);
+      res.status(500).json({ error: "Failed to create revalidation submission" });
+    }
+  });
+
+  // Get user's IP address for audit trail
+  app.get("/api/user-ip", async (req, res) => {
+    try {
+      const ip = req.ip || req.connection.remoteAddress || 'unknown';
+      res.json({ ip });
+    } catch (error) {
+      console.error("Error getting user IP:", error);
+      res.json({ ip: 'unknown' });
+    }
+  });
+
   // Email signup for coming soon page
   app.post("/api/register-interest", async (req, res) => {
     try {

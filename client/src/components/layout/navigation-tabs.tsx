@@ -25,7 +25,8 @@ import {
   User,
   TrendingUp,
   ListChecks,
-  GraduationCap
+  GraduationCap,
+  Archive
 } from 'lucide-react';
 import { useMenuLayout } from "@/hooks/use-menu-layout";
 import { useAuth } from "@/hooks/use-auth";
@@ -160,6 +161,13 @@ export default function NavigationTabs({ currentPath }: NavigationTabsProps) {
           icon: <Link2 size={16} />,
           color: "bg-revalpro-teal/20 text-revalpro-teal",
           hoverColor: "hover:bg-revalpro-teal/30"
+        },
+        { 
+          href: "/revalidation-audit", 
+          label: "Audit & Archive", 
+          icon: <Archive size={16} />,
+          color: "bg-revalpro-purple/20 text-revalpro-purple",
+          hoverColor: "hover:bg-revalpro-purple/30"
         },
 
       ]

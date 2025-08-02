@@ -76,6 +76,7 @@ export const insertWeeklyHoursConfigSchema = createInsertSchema(weeklyHoursConfi
 // Practice Hours
 export const practiceHours = pgTable("practice_hours", {
   id: serial("id").primaryKey(),
+  cycleId: integer("cycle_id"), // Reference to revalidation cycle
   startDate: date("start_date").notNull(),
   endDate: date("end_date").notNull(),
   hours: integer("hours").notNull(),
@@ -103,6 +104,7 @@ export const insertPracticeHoursSchema = createInsertSchema(practiceHours, {
 // CPD Records
 export const cpdRecords = pgTable("cpd_records", {
   id: serial("id").primaryKey(),
+  cycleId: integer("cycle_id"), // Reference to revalidation cycle
   date: date("date").notNull(),
   title: text("title").notNull(),
   description: text("description"),
@@ -128,6 +130,7 @@ export const insertCpdRecordSchema = createInsertSchema(cpdRecords, {
 // Feedback Records
 export const feedbackRecords = pgTable("feedback_records", {
   id: serial("id").primaryKey(),
+  cycleId: integer("cycle_id"), // Reference to revalidation cycle
   date: date("date").notNull(),
   source: text("source").notNull(),
   content: text("content").notNull(),
@@ -149,6 +152,7 @@ export const insertFeedbackRecordSchema = createInsertSchema(feedbackRecords, {
 // Reflective Accounts
 export const reflectiveAccounts = pgTable("reflective_accounts", {
   id: serial("id").primaryKey(),
+  cycleId: integer("cycle_id"), // Reference to revalidation cycle
   date: date("date").notNull(),
   title: text("title").notNull(),
   reflectiveModel: text("reflective_model").notNull().default("Standard"),
@@ -327,6 +331,72 @@ export const insertBetaApplicationSchema = createInsertSchema(betaApplications).
   allowContact: true,
 });
 
+// Revalidation Cycles Management
+export const revalidationCycles = pgTable("revalidation_cycles", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(), // Reference to user
+  cycleNumber: integer("cycle_number").notNull(), // Sequential cycle number (1, 2, 3...)
+  startDate: date("start_date").notNull(),
+  endDate: date("end_date").notNull(),
+  status: text("status").notNull().default("active"), // "active", "completed", "archived"
+  submissionDate: timestamp("submission_date"),
+  nmcSubmissionReference: text("nmc_submission_reference"),
+  
+  // Core metrics carried forward from previous cycle
+  carryForwardData: text("carry_forward_data"), // JSON of core metrics (role, hours, etc.)
+  
+  // Archived data for audit purposes (JSON snapshot of all revalidation data)
+  archivedData: text("archived_data"),
+  
+  created: timestamp("created").notNull().defaultNow(),
+  updated: timestamp("updated").notNull().defaultNow(),
+});
+
+export const insertRevalidationCycleSchema = createInsertSchema(revalidationCycles, {
+  startDate: z.coerce.date(),
+  endDate: z.coerce.date(),
+  submissionDate: z.coerce.date().optional(),
+}).pick({
+  userId: true,
+  cycleNumber: true,
+  startDate: true,
+  endDate: true,
+  status: true,
+  submissionDate: true,
+  nmcSubmissionReference: true,
+  carryForwardData: true,
+  archivedData: true,
+});
+
+// Revalidation Submissions (for audit trail)
+export const revalidationSubmissions = pgTable("revalidation_submissions", {
+  id: serial("id").primaryKey(),
+  cycleId: integer("cycle_id").notNull(), // Reference to revalidation cycle
+  userId: integer("user_id").notNull(),
+  submissionData: text("submission_data").notNull(), // Complete JSON snapshot
+  submissionDate: timestamp("submission_date").notNull().defaultNow(),
+  nmcReference: text("nmc_reference"),
+  status: text("status").notNull().default("submitted"), // "submitted", "accepted", "returned"
+  
+  // Audit trail
+  ipAddress: text("ip_address"),
+  userAgent: text("user_agent"),
+  
+  created: timestamp("created").notNull().defaultNow(),
+});
+
+export const insertRevalidationSubmissionSchema = createInsertSchema(revalidationSubmissions, {
+  submissionDate: z.coerce.date().optional(),
+}).pick({
+  cycleId: true,
+  userId: true,
+  submissionData: true,
+  nmcReference: true,
+  status: true,
+  ipAddress: true,
+  userAgent: true,
+});
+
 // Export types for frontend use
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -360,6 +430,12 @@ export type InsertConfirmation = z.infer<typeof insertConfirmationSchema>;
 
 export type BetaApplication = typeof betaApplications.$inferSelect;
 export type InsertBetaApplication = z.infer<typeof insertBetaApplicationSchema>;
+
+export type RevalidationCycle = typeof revalidationCycles.$inferSelect;
+export type InsertRevalidationCycle = z.infer<typeof insertRevalidationCycleSchema>;
+
+export type RevalidationSubmission = typeof revalidationSubmissions.$inferSelect;
+export type InsertRevalidationSubmission = z.infer<typeof insertRevalidationSubmissionSchema>;
 
 // Define NHS Revalidation Status types
 export const RevalidationStatusEnum = {

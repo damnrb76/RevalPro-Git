@@ -1,4 +1,10 @@
-import { users, type User, type InsertUser, betaApplications, type BetaApplication, type InsertBetaApplication, trainingRecords, type TrainingRecord, type InsertTrainingRecord } from "@shared/schema";
+import {
+  users, type User, type InsertUser,
+  betaApplications, type BetaApplication, type InsertBetaApplication,
+  trainingRecords, type TrainingRecord, type InsertTrainingRecord,
+  revalidationCycles, type RevalidationCycle, type InsertRevalidationCycle,
+  revalidationSubmissions, type RevalidationSubmission, type InsertRevalidationSubmission
+} from "@shared/schema";
 import session from "express-session";
 import createMemoryStore from "memorystore";
 import { db } from "./db";
@@ -44,6 +50,18 @@ export interface IStorage {
   updateTrainingRecord(id: number, record: Partial<InsertTrainingRecord>): Promise<TrainingRecord>;
   deleteTrainingRecord(id: number): Promise<boolean>;
   getTrainingRecord(id: number): Promise<TrainingRecord | undefined>;
+  
+  // Revalidation cycle methods
+  getCurrentRevalidationCycle(userId: number): Promise<RevalidationCycle | null>;
+  getLastRevalidationCycle(userId: number): Promise<RevalidationCycle | null>;
+  getAllRevalidationCycles(userId: number): Promise<RevalidationCycle[]>;
+  createRevalidationCycle(cycle: InsertRevalidationCycle): Promise<RevalidationCycle>;
+  updateRevalidationCycle(id: number, cycle: Partial<InsertRevalidationCycle>): Promise<RevalidationCycle>;
+  getRevalidationCycle(id: number): Promise<RevalidationCycle | null>;
+  
+  // Revalidation submission methods
+  createRevalidationSubmission(submission: InsertRevalidationSubmission): Promise<RevalidationSubmission>;
+  getRevalidationSubmissions(cycleId: number): Promise<RevalidationSubmission[]>;
   
   sessionStore: session.Store;
 }
@@ -209,6 +227,40 @@ export class MemStorage implements IStorage {
   async getTrainingRecord(id: number): Promise<TrainingRecord | undefined> {
     return this.trainingRecords.get(id);
   }
+
+  // Revalidation cycle methods (stub implementations for memory storage)
+  async getCurrentRevalidationCycle(userId: number): Promise<RevalidationCycle | null> {
+    return null; // Memory storage doesn't support revalidation cycles
+  }
+
+  async getLastRevalidationCycle(userId: number): Promise<RevalidationCycle | null> {
+    return null;
+  }
+
+  async getAllRevalidationCycles(userId: number): Promise<RevalidationCycle[]> {
+    return [];
+  }
+
+  async createRevalidationCycle(cycle: InsertRevalidationCycle): Promise<RevalidationCycle> {
+    throw new Error("Revalidation cycles not supported in memory storage");
+  }
+
+  async updateRevalidationCycle(id: number, cycle: Partial<InsertRevalidationCycle>): Promise<RevalidationCycle> {
+    throw new Error("Revalidation cycles not supported in memory storage");
+  }
+
+  async getRevalidationCycle(id: number): Promise<RevalidationCycle | null> {
+    return null;
+  }
+
+  // Revalidation submission methods (stub implementations)
+  async createRevalidationSubmission(submission: InsertRevalidationSubmission): Promise<RevalidationSubmission> {
+    throw new Error("Revalidation submissions not supported in memory storage");
+  }
+
+  async getRevalidationSubmissions(cycleId: number): Promise<RevalidationSubmission[]> {
+    return [];
+  }
 }
 
 // Database Storage implementation
@@ -325,6 +377,86 @@ export class DatabaseStorage implements IStorage {
       .limit(1);
     
     return result[0];
+  }
+
+  // Revalidation cycle methods - use persistent database storage
+  async getCurrentRevalidationCycle(userId: number): Promise<RevalidationCycle | null> {
+    const result = await db
+      .select()
+      .from(revalidationCycles)
+      .where(eq(revalidationCycles.userId, userId))
+      .where(eq(revalidationCycles.status, 'active'))
+      .limit(1);
+    
+    return result[0] || null;
+  }
+
+  async getLastRevalidationCycle(userId: number): Promise<RevalidationCycle | null> {
+    const result = await db
+      .select()
+      .from(revalidationCycles)
+      .where(eq(revalidationCycles.userId, userId))
+      .orderBy(revalidationCycles.cycleNumber)
+      .limit(1);
+    
+    return result[0] || null;
+  }
+
+  async getAllRevalidationCycles(userId: number): Promise<RevalidationCycle[]> {
+    return await db
+      .select()
+      .from(revalidationCycles)
+      .where(eq(revalidationCycles.userId, userId))
+      .orderBy(revalidationCycles.cycleNumber);
+  }
+
+  async createRevalidationCycle(cycle: InsertRevalidationCycle): Promise<RevalidationCycle> {
+    const [revalidationCycle] = await db
+      .insert(revalidationCycles)
+      .values(cycle)
+      .returning();
+    return revalidationCycle;
+  }
+
+  async updateRevalidationCycle(id: number, cycle: Partial<InsertRevalidationCycle>): Promise<RevalidationCycle> {
+    const [updatedCycle] = await db
+      .update(revalidationCycles)
+      .set(cycle)
+      .where(eq(revalidationCycles.id, id))
+      .returning();
+    
+    if (!updatedCycle) {
+      throw new Error("Revalidation cycle not found");
+    }
+    
+    return updatedCycle;
+  }
+
+  async getRevalidationCycle(id: number): Promise<RevalidationCycle | null> {
+    const result = await db
+      .select()
+      .from(revalidationCycles)
+      .where(eq(revalidationCycles.id, id))
+      .limit(1);
+    
+    return result[0] || null;
+  }
+
+  // Revalidation submission methods
+  async createRevalidationSubmission(submission: InsertRevalidationSubmission): Promise<RevalidationSubmission> {
+    const [revalidationSubmission] = await db
+      .insert(revalidationSubmissions)
+      .values(submission)
+      .returning();
+    return revalidationSubmission;
+  }
+
+  async getRevalidationSubmissions(cycleId: number): Promise<RevalidationSubmission[]> {
+    return await db
+      .select()
+      .from(revalidationSubmissions)
+      .where(eq(revalidationSubmissions.cycleId, cycleId))
+      .orderBy(revalidationSubmissions.submissionDate);
   }
 }
 
