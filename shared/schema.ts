@@ -61,6 +61,7 @@ export const practiceHours = pgTable("practice_hours", {
   hours: integer("hours").notNull(),
   workSetting: text("work_setting").notNull(),
   scope: text("scope").notNull(),
+  registration: text("registration").notNull(),
   notes: text("notes"),
   created: timestamp("created").notNull().defaultNow(),
 });
@@ -74,6 +75,7 @@ export const insertPracticeHoursSchema = createInsertSchema(practiceHours, {
   hours: true,
   workSetting: true,
   scope: true,
+  registration: true,
   notes: true,
 });
 

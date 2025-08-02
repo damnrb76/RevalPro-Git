@@ -38,6 +38,7 @@ const formSchema = insertPracticeHoursSchema.extend({
   hours: z.coerce.number().min(1, "Hours must be a positive number"),
   workSetting: z.string().min(1, "Work setting is required"),
   scope: z.string().min(1, "Scope of practice is required"),
+  registration: z.string().min(1, "Registration is required"),
 });
 
 type PracticeHoursFormProps = {
@@ -58,6 +59,7 @@ export default function PracticeHoursForm({ initialData, onClose, onSuccess }: P
       hours: initialData.hours,
       workSetting: initialData.workSetting,
       scope: initialData.scope,
+      registration: initialData.registration,
       notes: initialData.notes || "",
     } : {
       startDate: new Date(),
@@ -65,6 +67,7 @@ export default function PracticeHoursForm({ initialData, onClose, onSuccess }: P
       hours: 0,
       workSetting: "",
       scope: "",
+      registration: "",
       notes: "",
     },
   });
@@ -80,6 +83,7 @@ export default function PracticeHoursForm({ initialData, onClose, onSuccess }: P
           hours: data.hours,
           workSetting: data.workSetting,
           scope: data.scope,
+          registration: data.registration,
           notes: data.notes || null,
         });
         return initialData.id;
@@ -91,6 +95,7 @@ export default function PracticeHoursForm({ initialData, onClose, onSuccess }: P
           hours: data.hours,
           workSetting: data.workSetting,
           scope: data.scope,
+          registration: data.registration,
           notes: data.notes || null,
         });
       }
@@ -145,6 +150,15 @@ export default function PracticeHoursForm({ initialData, onClose, onSuccess }: P
     "Education",
     "Research",
     "Other"
+  ];
+
+  const registrationOptions = [
+    "Registered Nurse",
+    "Midwife",
+    "Nursing Associate",
+    "Registered Nurse/SCPHN",
+    "Midwife/SCPHN",
+    "Registered Nurse and Midwife (including Registered Nurse/SCPHN and Midwife/SCPHN)"
   ];
   
   return (
@@ -288,6 +302,37 @@ export default function PracticeHoursForm({ initialData, onClose, onSuccess }: P
                   </Select>
                   <FormDescription>
                     Specify your scope of practice during this period
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="registration"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Registration</FormLabel>
+                  <Select 
+                    onValueChange={field.onChange} 
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select your registration type" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {registrationOptions.map((registration) => (
+                        <SelectItem key={registration} value={registration}>
+                          {registration}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormDescription>
+                    Select your NMC registration type
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
