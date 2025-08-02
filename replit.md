@@ -138,6 +138,10 @@ RevalPro is a comprehensive UK-specific nursing revalidation tracker application
 - July 22, 2025. Updated pricing structure: Free (£0), Standard (£4.99/month, £49.99/year), Premium (£7.99/month, £69.99/year)
 - July 28, 2025. Added comprehensive Terms of Service page covering healthcare-specific legal requirements and user responsibilities
 - July 28, 2025. Integrated Terms of Service into navigation and footer alongside Privacy Policy
+- August 2, 2025. Enhanced notification service with rich browser notifications featuring interactive action buttons
+- August 2, 2025. Implemented AI-powered adaptive reminder scheduling that analyzes user behavior patterns for optimal timing
+- August 2, 2025. Added comprehensive notification test page with service worker for handling action button clicks
+- August 2, 2025. Fixed practice hours form clear button issue - date clearing now resets to today instead of wiping entire form
 
 ## Stripe Sandbox Configuration
 

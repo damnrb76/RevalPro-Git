@@ -72,21 +72,27 @@ export default function PracticeHoursForm({ initialData, onClose, onSuccess }: P
   // Create or update mutation
   const mutation = useMutation({
     mutationFn: async (data: z.infer<typeof formSchema>) => {
-      // Convert dates to ISO strings for storage
-      const storageData = {
-        ...data,
-        startDate: data.startDate.toISOString(),
-        endDate: data.endDate.toISOString(),
-        notes: data.notes || null,
-      };
-      
       if (initialData) {
-        // Update existing record
-        await practiceHoursStorage.update(initialData.id, storageData);
+        // Update existing record - use original data types
+        await practiceHoursStorage.update(initialData.id, {
+          startDate: data.startDate.toISOString().split('T')[0], // Convert to YYYY-MM-DD string
+          endDate: data.endDate.toISOString().split('T')[0],
+          hours: data.hours,
+          workSetting: data.workSetting,
+          scope: data.scope,
+          notes: data.notes || null,
+        });
         return initialData.id;
       } else {
-        // Create new record
-        return await practiceHoursStorage.add(storageData);
+        // Create new record - use insert schema types
+        return await practiceHoursStorage.add({
+          startDate: data.startDate,
+          endDate: data.endDate,
+          hours: data.hours,
+          workSetting: data.workSetting,
+          scope: data.scope,
+          notes: data.notes || null,
+        });
       }
     },
     onSuccess: () => {
