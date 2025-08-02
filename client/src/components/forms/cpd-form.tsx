@@ -303,7 +303,7 @@ export default function CpdForm({ initialData, onClose, onSuccess }: CpdFormProp
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="">Not specified</SelectItem>
+                        <SelectItem value="not-specified">Not specified</SelectItem>
                         {Object.values(CodeSectionsEnum).map((section) => (
                           <SelectItem key={section} value={section}>
                             {section}
