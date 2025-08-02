@@ -26,6 +26,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { practiceHoursStorage } from "@/lib/storage";
 import { insertPracticeHoursSchema, type PracticeHours } from "@shared/schema";
+import WeeklyHoursCalculator from "./weekly-hours-calculator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useState } from "react";
+import { format } from "date-fns";
+import { Calendar as CalendarIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 // Extend the schema with form validation
 const formSchema = insertPracticeHoursSchema.extend({
@@ -49,6 +57,9 @@ type PracticeHoursFormProps = {
 
 export default function PracticeHoursForm({ initialData, onClose, onSuccess }: PracticeHoursFormProps) {
   const { toast } = useToast();
+  const [calculationMethod, setCalculationMethod] = useState<"manual" | "weekly">("manual");
+  const [calculatedHours, setCalculatedHours] = useState<number>(0);
+  const [weeklyBreakdown, setWeeklyBreakdown] = useState<any[]>([]);
   
   // Initialize form with default values or existing data
   const form = useForm<z.infer<typeof formSchema>>({
@@ -64,13 +75,22 @@ export default function PracticeHoursForm({ initialData, onClose, onSuccess }: P
     } : {
       startDate: new Date(),
       endDate: new Date(),
-      hours: 0,
+      hours: calculationMethod === "weekly" ? calculatedHours : 0,
       workSetting: "",
       scope: "",
       registration: "",
       notes: "",
     },
   });
+
+  // Update hours when calculation method or calculated hours change
+  const handleHoursCalculated = (totalHours: number, breakdown: any[]) => {
+    setCalculatedHours(totalHours);
+    setWeeklyBreakdown(breakdown);
+    if (calculationMethod === "weekly") {
+      form.setValue("hours", totalHours);
+    }
+  };
   
   // Create or update mutation
   const mutation = useMutation({
@@ -171,80 +191,117 @@ export default function PracticeHoursForm({ initialData, onClose, onSuccess }: P
           </DialogDescription>
         </DialogHeader>
         
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="startDate"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Start Date</FormLabel>
-                    <FormControl>
-                      <Input 
-                        type="date" 
-                        value={field.value instanceof Date ? field.value.toISOString().split('T')[0] : ''}
-                        onChange={(e) => {
-                          if (e.target.value) {
-                            field.onChange(new Date(e.target.value));
-                          } else {
-                            // Handle clear button - reset only this field to today's date
-                            field.onChange(new Date());
-                          }
-                        }}
-                        onBlur={field.onBlur}
-                        ref={field.ref}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name="endDate"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>End Date</FormLabel>
-                    <FormControl>
-                      <Input 
-                        type="date" 
-                        value={field.value instanceof Date ? field.value.toISOString().split('T')[0] : ''}
-                        onChange={(e) => {
-                          if (e.target.value) {
-                            field.onChange(new Date(e.target.value));
-                          } else {
-                            // Handle clear button - reset only this field to today's date
-                            field.onChange(new Date());
-                          }
-                        }}
-                        onBlur={field.onBlur}
-                        ref={field.ref}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            
-            <FormField
-              control={form.control}
-              name="hours"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Number of Hours</FormLabel>
-                  <FormControl>
-                    <Input type="number" min="1" {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    Enter the total number of practice hours for this period
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+        <Tabs value={calculationMethod} onValueChange={(value) => setCalculationMethod(value as "manual" | "weekly")}>
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="manual">Manual Entry</TabsTrigger>
+            <TabsTrigger value="weekly">Weekly Calculator</TabsTrigger>
+          </TabsList>
+
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              {/* Common Date Fields */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="startDate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Start Date</FormLabel>
+                      <FormControl>
+                        <Input 
+                          type="date" 
+                          value={field.value instanceof Date ? field.value.toISOString().split('T')[0] : ''}
+                          onChange={(e) => {
+                            if (e.target.value) {
+                              field.onChange(new Date(e.target.value));
+                            } else {
+                              field.onChange(new Date());
+                            }
+                          }}
+                          onBlur={field.onBlur}
+                          ref={field.ref}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="endDate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>End Date</FormLabel>
+                      <FormControl>
+                        <Input 
+                          type="date" 
+                          value={field.value instanceof Date ? field.value.toISOString().split('T')[0] : ''}
+                          onChange={(e) => {
+                            if (e.target.value) {
+                              field.onChange(new Date(e.target.value));
+                            } else {
+                              field.onChange(new Date());
+                            }
+                          }}
+                          onBlur={field.onBlur}
+                          ref={field.ref}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <TabsContent value="manual">
+                <FormField
+                  control={form.control}
+                  name="hours"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Number of Hours</FormLabel>
+                      <FormControl>
+                        <Input type="number" min="1" {...field} />
+                      </FormControl>
+                      <FormDescription>
+                        Enter the total number of practice hours for this period
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </TabsContent>
+
+              <TabsContent value="weekly">
+                <div className="space-y-4">
+                  <WeeklyHoursCalculator
+                    startDate={form.watch("startDate")}
+                    endDate={form.watch("endDate")}
+                    onHoursCalculated={handleHoursCalculated}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="hours"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Calculated Total Hours</FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="number" 
+                            value={calculatedHours}
+                            disabled
+                            className="bg-muted"
+                          />
+                        </FormControl>
+                        <FormDescription>
+                          Total hours calculated from your weekly schedule and adjustments
+                        </FormDescription>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </TabsContent>
             
             <FormField
               control={form.control}
@@ -358,24 +415,25 @@ export default function PracticeHoursForm({ initialData, onClose, onSuccess }: P
               )}
             />
             
-            <DialogFooter>
-              <Button 
-                type="button" 
-                variant="outline" 
-                onClick={onClose}
-                disabled={mutation.isPending}
-              >
-                Cancel
-              </Button>
-              <Button 
-                type="submit"
-                disabled={mutation.isPending}
-              >
-                {mutation.isPending ? "Saving..." : initialData ? "Update" : "Save"}
-              </Button>
-            </DialogFooter>
-          </form>
-        </Form>
+              <DialogFooter>
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={onClose}
+                  disabled={mutation.isPending}
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  type="submit"
+                  disabled={mutation.isPending}
+                >
+                  {mutation.isPending ? "Saving..." : initialData ? "Update" : "Save"}
+                </Button>
+              </DialogFooter>
+            </form>
+          </Form>
+        </Tabs>
       </DialogContent>
     </Dialog>
   );

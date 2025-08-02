@@ -53,6 +53,26 @@ export const insertUserProfileSchema = createInsertSchema(userProfiles, {
   profileImage: true,
 });
 
+// Weekly Hours Configuration
+export const weeklyHoursConfig = pgTable("weekly_hours_config", {
+  id: serial("id").primaryKey(),
+  startDate: date("start_date").notNull(),
+  endDate: date("end_date").notNull(),
+  weeklyHours: integer("weekly_hours").notNull(), // Store as hours * 10 for decimal precision
+  weeklyBreakdown: text("weekly_breakdown").notNull(), // JSON string of weekly entries
+  created: timestamp("created").notNull().defaultNow(),
+});
+
+export const insertWeeklyHoursConfigSchema = createInsertSchema(weeklyHoursConfig, {
+  startDate: z.coerce.date(),
+  endDate: z.coerce.date(),
+}).pick({
+  startDate: true,
+  endDate: true,
+  weeklyHours: true,
+  weeklyBreakdown: true,
+});
+
 // Practice Hours
 export const practiceHours = pgTable("practice_hours", {
   id: serial("id").primaryKey(),
@@ -63,6 +83,7 @@ export const practiceHours = pgTable("practice_hours", {
   scope: text("scope").notNull(),
   registration: text("registration").notNull(),
   notes: text("notes"),
+  weeklyConfigId: integer("weekly_config_id"), // Reference to weekly hours calculation
   created: timestamp("created").notNull().defaultNow(),
 });
 
