@@ -168,38 +168,53 @@ export default function WeeklyHoursCalculator({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <Label htmlFor="weekly-hours">Weekly Hours:</Label>
-              {isEditingWeeklyHours ? (
-                <div className="flex items-center gap-2">
-                  <Input
-                    id="weekly-hours"
-                    type="number"
-                    value={weeklyHours}
-                    onChange={(e) => setWeeklyHours(Number(e.target.value))}
-                    className="w-20"
-                    step="0.5"
-                    min="0"
-                    max="70"
-                  />
-                  <Button size="sm" onClick={() => updateWeeklyHours(weeklyHours)}>
-                    <Save className="h-4 w-4" />
-                  </Button>
-                  <Button size="sm" variant="outline" onClick={() => setIsEditingWeeklyHours(false)}>
-                    <X className="h-4 w-4" />
-                  </Button>
-                </div>
-              ) : (
-                <div className="flex items-center gap-2">
-                  <Badge variant="secondary" className="text-sm">
-                    {weeklyHours} hours/week
-                  </Badge>
-                  <Button size="sm" variant="ghost" onClick={() => setIsEditingWeeklyHours(true)}>
-                    <Edit2 className="h-4 w-4" />
-                  </Button>
-                </div>
-              )}
+          <div className="space-y-4">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <Label htmlFor="weekly-hours">Current Contract Hours:</Label>
+                {isEditingWeeklyHours ? (
+                  <div className="flex items-center gap-2">
+                    <Input
+                      id="weekly-hours"
+                      type="number"
+                      value={weeklyHours}
+                      onChange={(e) => setWeeklyHours(Number(e.target.value))}
+                      className="w-20"
+                      step="0.5"
+                      min="0"
+                      max="70"
+                    />
+                    <Button size="sm" onClick={() => updateWeeklyHours(weeklyHours)}>
+                      <Save className="h-4 w-4" />
+                    </Button>
+                    <Button size="sm" variant="outline" onClick={() => setIsEditingWeeklyHours(false)}>
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <Badge variant="secondary" className="text-sm">
+                      {weeklyHours} hours/week
+                    </Badge>
+                    <Button size="sm" variant="ghost" onClick={() => setIsEditingWeeklyHours(true)}>
+                      <Edit2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </div>
+            
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+              <div className="text-sm font-medium text-blue-900 mb-1">
+                Contract Hours Changed Mid-Period?
+              </div>
+              <div className="text-xs text-blue-700 space-y-1">
+                <div>Click the edit button above to update your weekly hours. The system will automatically recalculate all weeks while preserving any adjustments you've made for holidays, sick days, or extra shifts.</div>
+                <div className="font-medium">Example:</div>
+                <div>• Started with 37.5 hours/week, reduced to 30 hours/week from week 8</div>
+                <div>• Update your weekly hours to 30 - all remaining weeks recalculate automatically</div>
+                <div>• Your individual week adjustments (holidays, sick days) remain intact</div>
+              </div>
             </div>
           </div>
         </CardContent>
