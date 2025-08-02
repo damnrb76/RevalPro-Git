@@ -72,13 +72,21 @@ export default function PracticeHoursForm({ initialData, onClose, onSuccess }: P
   // Create or update mutation
   const mutation = useMutation({
     mutationFn: async (data: z.infer<typeof formSchema>) => {
+      // Convert dates to ISO strings for storage
+      const storageData = {
+        ...data,
+        startDate: data.startDate.toISOString(),
+        endDate: data.endDate.toISOString(),
+        notes: data.notes || null,
+      };
+      
       if (initialData) {
         // Update existing record
-        await practiceHoursStorage.update(initialData.id, data);
+        await practiceHoursStorage.update(initialData.id, storageData);
         return initialData.id;
       } else {
         // Create new record
-        return await practiceHoursStorage.add(data);
+        return await practiceHoursStorage.add(storageData);
       }
     },
     onSuccess: () => {
@@ -156,7 +164,14 @@ export default function PracticeHoursForm({ initialData, onClose, onSuccess }: P
                       <Input 
                         type="date" 
                         value={field.value instanceof Date ? field.value.toISOString().split('T')[0] : ''}
-                        onChange={(e) => field.onChange(new Date(e.target.value))}
+                        onChange={(e) => {
+                          if (e.target.value) {
+                            field.onChange(new Date(e.target.value));
+                          } else {
+                            // Handle clear button - reset only this field to today's date
+                            field.onChange(new Date());
+                          }
+                        }}
                         onBlur={field.onBlur}
                         ref={field.ref}
                       />
@@ -176,7 +191,14 @@ export default function PracticeHoursForm({ initialData, onClose, onSuccess }: P
                       <Input 
                         type="date" 
                         value={field.value instanceof Date ? field.value.toISOString().split('T')[0] : ''}
-                        onChange={(e) => field.onChange(new Date(e.target.value))}
+                        onChange={(e) => {
+                          if (e.target.value) {
+                            field.onChange(new Date(e.target.value));
+                          } else {
+                            // Handle clear button - reset only this field to today's date
+                            field.onChange(new Date());
+                          }
+                        }}
                         onBlur={field.onBlur}
                         ref={field.ref}
                       />
@@ -276,7 +298,8 @@ export default function PracticeHoursForm({ initialData, onClose, onSuccess }: P
                     <Textarea 
                       placeholder="Add any additional notes about this practice" 
                       className="resize-none" 
-                      {...field} 
+                      {...field}
+                      value={field.value || ''}
                     />
                   </FormControl>
                   <FormMessage />
