@@ -21,10 +21,98 @@ import {
   Shield,
   History
 } from 'lucide-react';
-import { format, isAfter, addMonths } from 'date-fns';
-import { RevalidationLifecycleService, RevalidationUtils, type RevalidationCycleData } from '../lib/revalidation-lifecycle';
+import { format, isAfter, addMonths, differenceInDays, differenceInMonths } from 'date-fns';
+import { useAuth } from '@/hooks/use-auth';
+
+// Define the type locally for demo purposes
+type RevalidationCycleData = {
+  id?: number;
+  userId: number;
+  cycleNumber: number;
+  startDate: string;
+  endDate: string;
+  status: 'active' | 'completed' | 'archived';
+  submissionDate?: string | null;
+  nmcSubmissionReference?: string | null;
+  archivedData?: any;
+  coreMetrics?: any;
+};
+
+// Demo utility functions
+const RevalidationUtils = {
+  getCycleStatusText: (cycle: RevalidationCycleData) => {
+    switch (cycle.status) {
+      case 'active': return 'Active';
+      case 'completed': return 'Completed';
+      case 'archived': return 'Archived';
+      default: return 'Unknown';
+    }
+  },
+  
+  formatCyclePeriod: (cycle: RevalidationCycleData) => {
+    return `${format(new Date(cycle.startDate), 'MMM yyyy')} - ${format(new Date(cycle.endDate), 'MMM yyyy')}`;
+  },
+  
+  getRemainingTime: (cycle: RevalidationCycleData) => {
+    const now = new Date();
+    const endDate = new Date(cycle.endDate);
+    const daysRemaining = differenceInDays(endDate, now);
+    const monthsRemaining = differenceInMonths(endDate, now);
+    
+    if (daysRemaining < 0) return 'Expired';
+    if (monthsRemaining < 1) return `${daysRemaining} days`;
+    if (monthsRemaining < 12) return `${monthsRemaining} months`;
+    
+    const years = Math.floor(monthsRemaining / 12);
+    const remainingMonths = monthsRemaining % 12;
+    return remainingMonths > 0 ? `${years}y ${remainingMonths}m` : `${years} years`;
+  }
+};
 
 interface RevalidationAuditPageProps {}
+
+// Demo data for demonstration purposes
+const DEMO_CYCLES: RevalidationCycleData[] = [
+  {
+    id: 1,
+    userId: 1,
+    cycleNumber: 2,
+    startDate: '2022-04-01',
+    endDate: '2025-03-31',
+    status: 'completed',
+    submissionDate: '2025-03-15',
+    nmcSubmissionReference: 'NMC-REV-2025-001234',
+    archivedData: {
+      practiceHours: 4500,
+      cpdActivities: 35,
+      reflections: 5,
+      feedbackRecords: 8
+    },
+    coreMetrics: {
+      registrationNumber: 'ABC123456',
+      role: 'Registered Nurse',
+      specialty: 'Critical Care',
+      contractedHours: 37.5
+    }
+  },
+  {
+    id: 2,
+    userId: 1,
+    cycleNumber: 3,
+    startDate: '2025-04-01',
+    endDate: '2028-03-31',
+    status: 'active',
+    submissionDate: null,
+    nmcSubmissionReference: null,
+    archivedData: null,
+    coreMetrics: {
+      registrationNumber: 'ABC123456',
+      role: 'Registered Nurse',
+      specialty: 'Critical Care',
+      contractedHours: 37.5
+    }
+  }
+];
 
 export default function RevalidationAuditPage({}: RevalidationAuditPageProps) {
   const [isSubmissionDialogOpen, setIsSubmissionDialogOpen] = useState(false);
@@ -33,48 +121,46 @@ export default function RevalidationAuditPage({}: RevalidationAuditPageProps) {
   const [selectedCycleForExport, setSelectedCycleForExport] = useState<number | null>(null);
   
   const queryClient = useQueryClient();
+  const { user } = useAuth();
   
-  // Get current user (assuming we have user context)
-  const userId = 1; // This would come from user context in real app
+  // For demo purposes, use hardcoded data when user is available
+  const cycles = user ? DEMO_CYCLES : [];
+  const currentCycle = cycles.find(c => c.status === 'active') || null;
+  const isLoading = false;
+
   
-  // Fetch all revalidation cycles for audit
-  const { data: cycles, isLoading } = useQuery({
-    queryKey: ['/api/revalidation-cycles/all', userId],
-    queryFn: () => RevalidationLifecycleService.getAllCycles(userId),
-  });
-  
-  // Get current active cycle
-  const { data: currentCycle } = useQuery({
-    queryKey: ['/api/revalidation-cycles/current', userId],
-    queryFn: () => RevalidationLifecycleService.getCurrentCycle(userId),
-  });
-  
-  // Submit revalidation mutation
-  const submitRevalidationMutation = useMutation({
-    mutationFn: async () => {
-      if (!currentCycle) throw new Error('No active cycle found');
-      
-      const snapshot = await RevalidationLifecycleService.completeCycle(userId, nmcReference);
-      
-      // Automatically start new cycle with carried forward data
-      await RevalidationLifecycleService.startNewCycleAfterCompletion(userId);
-      
-      return snapshot;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/revalidation-cycles'] });
+  // Submit revalidation mutation (demo version)
+  const submitRevalidationMutation = {
+    mutate: () => {
+      // Demo simulation
+      alert('Demo: Revalidation submitted successfully! New cycle automatically started.');
       setIsSubmissionDialogOpen(false);
       setNmcReference('');
       setSubmissionNotes('');
     },
-  });
+    isPending: false
+  };
   
-  // Export archived data
+  // Export archived data (demo version)
   const handleExportData = async (cycleId: number, format: 'json' | 'pdf' = 'json') => {
-    try {
-      await RevalidationLifecycleService.exportArchivedData(cycleId, format);
-    } catch (error) {
-      console.error('Export failed:', error);
+    // Demo simulation
+    const cycle = cycles.find(c => c.id === cycleId);
+    if (cycle && cycle.archivedData) {
+      const data = {
+        cycleInfo: cycle,
+        exportDate: new Date().toISOString(),
+        format: format
+      };
+      
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `revalidation-cycle-${cycle.cycleNumber}-audit.${format}`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
     }
   };
   
@@ -95,8 +181,9 @@ export default function RevalidationAuditPage({}: RevalidationAuditPageProps) {
     }
   };
   
-  const isNearingExpiry = currentCycle ? RevalidationLifecycleService.isCycleNearingExpiry(currentCycle) : false;
-  const isExpired = currentCycle ? RevalidationLifecycleService.isCycleExpired(currentCycle) : false;
+  // Demo versions of cycle status checks
+  const isNearingExpiry = currentCycle ? isAfter(addMonths(new Date(), 6), new Date(currentCycle.endDate)) : false;
+  const isExpired = currentCycle ? isAfter(new Date(), new Date(currentCycle.endDate)) : false;
   
   if (isLoading) {
     return (
