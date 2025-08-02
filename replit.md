@@ -142,6 +142,11 @@ RevalPro is a comprehensive UK-specific nursing revalidation tracker application
 - August 2, 2025. Implemented AI-powered adaptive reminder scheduling that analyzes user behavior patterns for optimal timing
 - August 2, 2025. Added comprehensive notification test page with service worker for handling action button clicks
 - August 2, 2025. Fixed practice hours form clear button issue - date clearing now resets to today instead of wiping entire form
+- August 2, 2025. Implemented comprehensive weekly hours calculator system for automated practice hours calculation
+- August 2, 2025. Added tabbed interface in Practice Hours form with Manual Entry and Weekly Calculator options
+- August 2, 2025. Created progressive week-by-week calculation with individual adjustments for non-working periods
+- August 2, 2025. Enhanced database schema with weekly hours configuration table for storing calculation data
+- August 2, 2025. Added facility to amend weekly hours when contracted hours change mid-period
 
 ## Stripe Sandbox Configuration
 
