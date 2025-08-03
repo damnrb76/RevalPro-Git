@@ -21,6 +21,8 @@ function DemoLoginButton() {
         description: "This may take a moment",
       });
 
+      console.log("Creating demo account...");
+      
       // First create demo account
       const createResponse = await fetch("/api/create-demo-account", {
         method: "POST",
@@ -31,12 +33,19 @@ function DemoLoginButton() {
         credentials: "include",
       });
 
+      console.log("Create response status:", createResponse.status);
+
       if (!createResponse.ok) {
         const errorData = await createResponse.json();
+        console.error("Demo account creation failed:", errorData);
         throw new Error(errorData.error || "Failed to create demo account");
       }
 
+      const createData = await createResponse.json();
+      console.log("Demo account created:", createData);
+
       // Then login
+      console.log("Attempting demo login...");
       const response = await fetch("/api/demo-login", {
         method: "POST",
         headers: {
@@ -45,23 +54,24 @@ function DemoLoginButton() {
         credentials: "include", // Important for session cookies
       });
 
+      console.log("Login response status:", response.status);
+
       if (response.ok) {
         const user = await response.json();
         console.log("Demo login successful:", user);
         
-        // Update auth state
+        // Update auth state immediately
         queryClient.setQueryData(["/api/user"], user);
         queryClient.invalidateQueries({ queryKey: ["/api/user"] });
+        queryClient.invalidateQueries({ queryKey: ["/api/subscription"] });
         
         toast({
           title: "Demo Login Successful",
           description: `Logged in as ${user.username} with ${user.currentPlan?.toUpperCase()} plan`,
         });
         
-        // Force page refresh to update authentication state
-        setTimeout(() => {
-          window.location.href = "/dashboard";
-        }, 1000);
+        // Force immediate redirect
+        window.location.href = "/dashboard";
       } else {
         const errorData = await response.json();
         console.error("Demo login failed:", errorData);
@@ -71,7 +81,7 @@ function DemoLoginButton() {
       console.error("Demo login error:", error);
       toast({
         title: "Demo Login Failed",
-        description: error.message || "Please try again or use regular login",
+        description: (error as Error).message || "Please try again or use regular login",
         variant: "destructive",
       });
     }
