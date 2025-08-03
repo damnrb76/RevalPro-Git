@@ -5,7 +5,7 @@ import { ThemeProvider } from "@/components/ui/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/hooks/use-auth";
-import { MenuLayoutProvider, useMenuLayout } from "@/hooks/use-menu-layout";
+
 import { ProtectedRoute } from "@/lib/protected-route";
 import { PremiumThemeWrapper } from "@/components/layout/premium-theme-wrapper";
 
@@ -54,8 +54,6 @@ import logo from "@assets/Leonardo_Phoenix_10_design_a_vibrant_and_professional_
 
 function AppRouter() {
   const [location] = useLocation();
-  const { layout } = useMenuLayout();
-  const isVerticalMenu = layout === "vertical";
   const isComingSoonPage = location === '/' && window.location.hostname === 'revalpro.co.uk';
   const isPrivacyPage = location === '/privacy-policy' && window.location.hostname === 'revalpro.co.uk';
   const isTermsPage = location === '/terms-of-service' && window.location.hostname === 'revalpro.co.uk';
@@ -68,7 +66,7 @@ function AppRouter() {
   const showAppHeader = !isLandingPage && !isComingSoonPage && !isPrivacyPage && !isTermsPage && !isBetaSignupPage && !isLaunchCountdownPage;
   
   return (
-    <div className={`min-h-screen flex flex-col ${isVerticalMenu && showTabs ? 'pl-64' : ''}`}>
+    <div className="min-h-screen flex flex-col">
       {showAppHeader && <ProminentHeader />}
       {showTabs && <NavigationTabs currentPath={location} />}
       <div className={`flex-grow ${!isAuthPage && !isLandingPage ? 'pt-4' : ''}`}>
@@ -150,7 +148,7 @@ function AppRouter() {
           <Route component={NotFound} />
         </Switch>
       </div>
-      {!isLandingPage && !isComingSoonPage && !isPrivacyPage && !isTermsPage && !isBetaSignupPage && !isLaunchCountdownPage && <Footer logo={logo} className={isVerticalMenu && showTabs ? 'ml-64' : ''} />}
+      {!isLandingPage && !isComingSoonPage && !isPrivacyPage && !isTermsPage && !isBetaSignupPage && !isLaunchCountdownPage && <Footer logo={logo} />}
     </div>
   );
 }
@@ -159,17 +157,15 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <MenuLayoutProvider>
-          <ThemeProvider defaultTheme="light" storageKey="revalpro-theme">
-            <TooltipProvider>
-              <PremiumThemeWrapper>
-                <AppRouter />
-              </PremiumThemeWrapper>
+        <ThemeProvider defaultTheme="light" storageKey="revalpro-theme">
+          <TooltipProvider>
+            <PremiumThemeWrapper>
+              <AppRouter />
+            </PremiumThemeWrapper>
 
-              <Toaster />
-            </TooltipProvider>
-          </ThemeProvider>
-        </MenuLayoutProvider>
+            <Toaster />
+          </TooltipProvider>
+        </ThemeProvider>
       </AuthProvider>
     </QueryClientProvider>
   );

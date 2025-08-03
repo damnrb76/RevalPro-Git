@@ -150,6 +150,8 @@ RevalPro is a comprehensive UK-specific nursing revalidation tracker application
 - August 2, 2025. Updated weekly calculator to only count completed weeks toward practice hours totals
 - August 2, 2025. Added completion status tracking with visual indicators for completed vs pending weeks
 - August 2, 2025. Implemented separate display of completed hours vs pending hours with clear explanatory text
+- August 3, 2025. Removed vertical menu layout option - application now uses horizontal navigation only
+- August 3, 2025. Cleaned up menu layout system and removed unused layout switching functionality
 
 ## Stripe Sandbox Configuration
 

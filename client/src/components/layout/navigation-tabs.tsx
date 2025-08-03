@@ -17,8 +17,6 @@ import {
   ActivitySquare,
   MessageCircle,
   BarChart3,
-  LayoutPanelTop,
-  PanelLeft,
   Shield,
   ChevronDown,
   Bot,
@@ -28,10 +26,7 @@ import {
   GraduationCap,
   Archive
 } from 'lucide-react';
-import { useMenuLayout } from "@/hooks/use-menu-layout";
 import { useAuth } from "@/hooks/use-auth";
-import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { 
   DropdownMenu,
   DropdownMenuContent,
@@ -63,9 +58,7 @@ type NavigationGroup = {
 };
 
 export default function NavigationTabs({ currentPath }: NavigationTabsProps) {
-  const { layout, toggleLayout } = useMenuLayout();
   const { user } = useAuth();
-  const isVertical = layout === "vertical";
   const [expandedGroups, setExpandedGroups] = useState<string[]>([]);
 
   const toggleGroup = (groupLabel: string) => {
@@ -243,192 +236,7 @@ export default function NavigationTabs({ currentPath }: NavigationTabsProps) {
     hoverColor: "hover:bg-revalpro-blue/30" 
   };
 
-  // Render the vertical sidebar navigation
-  if (isVertical) {
-    return (
-      <div className="flex h-screen">
-        <nav className="bg-white shadow-md w-64 flex-shrink-0 h-full fixed left-0 top-0 pt-16 z-10">
-          <div className="h-full overflow-y-auto hide-scrollbar">
-            <div className="flex justify-end py-2 px-4">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    onClick={toggleLayout} 
-                    className="h-8 w-8"
-                  >
-                    <LayoutPanelTop size={18} className="text-gray-500" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Switch to Horizontal Menu</p>
-                </TooltipContent>
-              </Tooltip>
-            </div>
-            
-            <div className="flex flex-col space-y-2 p-3">
-              {/* Dashboard Link */}
-              <motion.div 
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ 
-                  type: "spring", 
-                  stiffness: 260, 
-                  damping: 20
-                }}
-                whileHover={{ 
-                  scale: 1.03,
-                  transition: { duration: 0.2 }
-                }}
-                whileTap={{ scale: 0.97 }}
-              >
-                <Link href={dashboardLink.href}>
-                  <div 
-                    className={cn(
-                      "px-4 py-3 rounded-lg font-medium transition-all duration-300 cursor-pointer flex items-center gap-3 relative overflow-hidden",
-                      currentPath === dashboardLink.href
-                        ? `${dashboardLink.color} ring-2 ring-offset-1 shadow-sm`
-                        : `text-gray-600 hover:${dashboardLink.color.split(' ')[0]} ${dashboardLink.hoverColor}`
-                    )}
-                  >
-                    <motion.span
-                      animate={{ 
-                        rotate: currentPath === dashboardLink.href ? [0, 10, -10, 0] : 0,
-                        scale: currentPath === dashboardLink.href ? [1, 1.2, 1] : 1
-                      }}
-                      transition={{ 
-                        duration: 0.5, 
-                        ease: "easeInOut", 
-                        delay: 0.1 
-                      }}
-                      className="inline-flex"
-                    >
-                      {dashboardLink.icon}
-                    </motion.span>
-                    <span className="text-sm">{dashboardLink.label}</span>
-                  </div>
-                </Link>
-              </motion.div>
 
-              {/* Navigation Groups */}
-              {navigationGroups.map((group, groupIndex) => {
-                const isGroupExpanded = expandedGroups.includes(group.label);
-                const hasActiveItem = group.items.some(item => currentPath === item.href);
-                
-                return (
-                  <motion.div 
-                    key={group.label}
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ 
-                      type: "spring", 
-                      stiffness: 260, 
-                      damping: 20, 
-                      delay: (groupIndex + 1) * 0.1
-                    }}
-                    className="space-y-1"
-                  >
-                    {/* Group Header */}
-                    <div 
-                      onClick={() => toggleGroup(group.label)}
-                      className={cn(
-                        "px-4 py-3 rounded-lg font-medium transition-all duration-300 cursor-pointer flex items-center gap-3 justify-between",
-                        hasActiveItem
-                          ? `${group.color} ring-1 ring-offset-1 shadow-sm`
-                          : `text-gray-600 ${group.hoverColor}`
-                      )}
-                    >
-                      <div className="flex items-center gap-3">
-                        <motion.span
-                          animate={{ 
-                            rotate: hasActiveItem ? [0, 10, -10, 0] : 0,
-                            scale: hasActiveItem ? [1, 1.2, 1] : 1
-                          }}
-                          transition={{ 
-                            duration: 0.5, 
-                            ease: "easeInOut"
-                          }}
-                          className="inline-flex"
-                        >
-                          {group.icon}
-                        </motion.span>
-                        <span className="text-sm">{group.label}</span>
-                      </div>
-                      <motion.span
-                        animate={{ rotate: isGroupExpanded ? 180 : 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="inline-flex"
-                      >
-                        <ChevronDown size={14} />
-                      </motion.span>
-                    </div>
-
-                    {/* Group Items */}
-                    {isGroupExpanded && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="ml-4 space-y-1"
-                      >
-                        {group.items.map((item, itemIndex) => {
-                          const isActive = currentPath === item.href;
-                          return (
-                            <motion.div
-                              key={item.href}
-                              initial={{ opacity: 0, x: -10 }}
-                              animate={{ opacity: 1, x: 0 }}
-                              transition={{ 
-                                delay: itemIndex * 0.05
-                              }}
-                              whileHover={{ 
-                                scale: 1.02,
-                                transition: { duration: 0.2 }
-                              }}
-                              whileTap={{ scale: 0.98 }}
-                            >
-                              <Link href={item.href}>
-                                <div 
-                                  className={cn(
-                                    "px-3 py-2 rounded-md font-medium transition-all duration-300 cursor-pointer flex items-center gap-2 relative overflow-hidden",
-                                    isActive
-                                      ? `${item.color} ring-1 ring-offset-1 shadow-sm`
-                                      : `text-gray-500 hover:${item.color.split(' ')[0]} ${item.hoverColor}`
-                                  )}
-                                >
-                                  <motion.span
-                                    animate={{ 
-                                      rotate: isActive ? [0, 10, -10, 0] : 0,
-                                      scale: isActive ? [1, 1.1, 1] : 1
-                                    }}
-                                    transition={{ 
-                                      duration: 0.5, 
-                                      ease: "easeInOut"
-                                    }}
-                                    className="inline-flex"
-                                  >
-                                    {item.icon}
-                                  </motion.span>
-                                  <span className="text-xs">{item.label}</span>
-                                </div>
-                              </Link>
-                            </motion.div>
-                          );
-                        })}
-                      </motion.div>
-                    )}
-                  </motion.div>
-                );
-              })}
-            </div>
-          </div>
-        </nav>
-        <div className="ml-64 w-full pt-16"></div>
-      </div>
-    );
-  }
 
   // Render horizontal navigation with grouped dropdowns
   return (
@@ -566,21 +374,6 @@ export default function NavigationTabs({ currentPath }: NavigationTabsProps) {
               );
             })}
           </div>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                onClick={toggleLayout} 
-                className="ml-3 h-8 w-8 flex-shrink-0"
-              >
-                <PanelLeft size={18} className="text-gray-500" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Switch to Vertical Menu</p>
-            </TooltipContent>
-          </Tooltip>
         </div>
       </div>
     </nav>
