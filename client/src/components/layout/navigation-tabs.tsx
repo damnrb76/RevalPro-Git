@@ -166,6 +166,28 @@ export default function NavigationTabs({ currentPath }: NavigationTabsProps) {
       ]
     },
     {
+      label: "Guides",
+      icon: <BookOpen size={16} />,
+      color: "bg-indigo-100 text-indigo-700",
+      hoverColor: "hover:bg-indigo-200",
+      items: [
+        { 
+          href: "/user-guide", 
+          label: "User Guides", 
+          icon: <BookOpen size={16} />,
+          color: "bg-indigo-100 text-indigo-700",
+          hoverColor: "hover:bg-indigo-200"
+        },
+        { 
+          href: "/help-guide.html", 
+          label: "Quick Start", 
+          icon: <FileText size={16} />,
+          color: "bg-green-100 text-green-700",
+          hoverColor: "hover:bg-green-200"
+        },
+      ]
+    },
+    {
       label: "AI Assistant",
       icon: <Bot size={16} />,
       color: "bg-gradient-to-r from-revalpro-purple/30 to-revalpro-blue/30 text-revalpro-blue",

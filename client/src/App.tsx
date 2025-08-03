@@ -43,6 +43,7 @@ import BetaApplicationsPage from "@/pages/beta-applications";
 import SimpleBetaView from "@/pages/simple-beta-view";
 import FirebaseTest from "@/pages/firebase-test";
 import LaunchCountdown from "@/pages/LaunchCountdown";
+import UserGuidePage from "@/pages/user-guide";
 
 import Footer from "@/components/layout/footer";
 import NavigationTabs from "@/components/layout/navigation-tabs";
@@ -100,6 +101,9 @@ function AppRouter() {
           
           {/* Revalidation Lifecycle Routes */}
           <ProtectedRoute path="/revalidation-audit" component={RevalidationAuditPage} />
+          
+          {/* User Guide Routes */}
+          <ProtectedRoute path="/user-guide" component={UserGuidePage} />
 
           
           {/* Infographic Routes - Changed to regular Route for preview */}
