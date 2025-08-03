@@ -152,6 +152,7 @@ RevalPro is a comprehensive UK-specific nursing revalidation tracker application
 - August 2, 2025. Implemented separate display of completed hours vs pending hours with clear explanatory text
 - August 3, 2025. Removed vertical menu layout option - application now uses horizontal navigation only
 - August 3, 2025. Cleaned up menu layout system and removed unused layout switching functionality
+- August 3, 2025. Created comprehensive user guide (REVALPRO_USER_GUIDE.md) covering all features and functionality
 
 ## Stripe Sandbox Configuration
 
