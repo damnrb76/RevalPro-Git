@@ -192,10 +192,10 @@ export default function FeedbackForm({ initialData, onClose, onSuccess }: Feedba
               name="reflection"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Your Reflection (Optional)</FormLabel>
+                  <FormLabel>Your Reflection</FormLabel>
                   <FormControl>
                     <Textarea 
-                      placeholder="How did this feedback affect your practice?" 
+                      placeholder="How did this feedback influence your practice?" 
                       className="resize-none min-h-[100px]" 
                       {...field} 
                     />
