@@ -15,11 +15,13 @@ import {
   InsertHealthDeclaration,
   Confirmation,
   InsertConfirmation,
+  TrainingRecord,
+  InsertTrainingRecord,
 } from '@shared/schema';
 
 // Database name and version
 const DB_NAME = 'nursevalidate-uk';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 
 // Store names
 const STORES = {
@@ -31,6 +33,7 @@ const STORES = {
   REFLECTIVE_DISCUSSION: 'reflectiveDiscussion',
   HEALTH_DECLARATION: 'healthDeclaration',
   CONFIRMATION: 'confirmation',
+  TRAINING_RECORDS: 'trainingRecords',
   SETTINGS: 'settings',
 };
 
@@ -86,6 +89,12 @@ export function initializeStorage(): Promise<void> {
 
       if (!db.objectStoreNames.contains(STORES.CONFIRMATION)) {
         db.createObjectStore(STORES.CONFIRMATION, { keyPath: 'id', autoIncrement: true });
+      }
+
+      if (!db.objectStoreNames.contains(STORES.TRAINING_RECORDS)) {
+        const trainingStore = db.createObjectStore(STORES.TRAINING_RECORDS, { keyPath: 'id', autoIncrement: true });
+        trainingStore.createIndex('date', 'date', { unique: false });
+        trainingStore.createIndex('title', 'title', { unique: false });
       }
 
       if (!db.objectStoreNames.contains(STORES.SETTINGS)) {
@@ -343,11 +352,16 @@ export const confirmationStorage = {
   getCurrent: async () => {
     const confirmations = await getAll<Confirmation>(STORES.CONFIRMATION);
     return confirmations.length > 0 ? confirmations[0] : null;
-  },
-  isCompleted: async (): Promise<boolean> => {
-    const confirmations = await getAll<Confirmation>(STORES.CONFIRMATION);
-    return confirmations.length > 0;
   }
+};
+
+// Training Records Storage
+export const trainingRecordsStorage = {
+  add: (data: InsertTrainingRecord) => add<InsertTrainingRecord>(STORES.TRAINING_RECORDS, data),
+  update: (id: number, data: Partial<TrainingRecord>) => update<TrainingRecord>(STORES.TRAINING_RECORDS, id, data),
+  getById: (id: number) => getById<TrainingRecord>(STORES.TRAINING_RECORDS, id),
+  getAll: () => getAll<TrainingRecord>(STORES.TRAINING_RECORDS),
+  delete: (id: number) => deleteById(STORES.TRAINING_RECORDS, id)
 };
 
 // Settings storage

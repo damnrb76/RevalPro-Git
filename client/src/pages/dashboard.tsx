@@ -28,7 +28,7 @@ import {
   Sparkles,
   GraduationCap
 } from "lucide-react";
-import { userProfileStorage, practiceHoursStorage, cpdRecordsStorage, feedbackRecordsStorage, reflectiveAccountsStorage, healthDeclarationStorage } from "@/lib/storage";
+import { userProfileStorage, practiceHoursStorage, cpdRecordsStorage, feedbackRecordsStorage, reflectiveAccountsStorage, healthDeclarationStorage, trainingRecordsStorage } from "@/lib/storage";
 import { PlanIndicator } from "@/components/ui/plan-indicator";
 import { PremiumFeatureShowcase } from "@/components/premium/feature-showcase";
 import RevalidationSummary from "@/components/dashboard/revalidation-summary";
@@ -98,7 +98,10 @@ export default function DashboardPage() {
 
   // Fetch training records data
   const { data: trainingRecords = [] } = useQuery({
-    queryKey: ['/api/training-records'],
+    queryKey: ['trainingRecords'],
+    queryFn: async () => {
+      return trainingRecordsStorage.getAll();
+    },
   });
   
   // Scroll to top on page load
@@ -187,11 +190,17 @@ export default function DashboardPage() {
 
   const progressData = getRevalidationProgress();
 
-  // Calculate overall completion percentage
+  // Calculate overall completion percentage (excluding training records as they're optional)
   const getOverallProgress = () => {
-    const elements = Object.values(progressData);
-    const totalPercentage = elements.reduce((sum, element) => sum + element.percentage, 0);
-    return Math.round(totalPercentage / elements.length);
+    const requiredElements = [
+      progressData.practiceHours,
+      progressData.cpdRecords,
+      progressData.feedback,
+      progressData.reflections,
+      progressData.declarations
+    ];
+    const totalPercentage = requiredElements.reduce((sum, element) => sum + element.percentage, 0);
+    return Math.round(totalPercentage / requiredElements.length);
   };
 
   const overallProgress = getOverallProgress();
@@ -207,7 +216,7 @@ export default function DashboardPage() {
     }
   };
   
-  // Define the revalidation elements with progress tracking
+  // Define the core revalidation elements (required by NMC)
   const revalidationElements = [
     {
       key: 'practiceHours',
@@ -258,18 +267,21 @@ export default function DashboardPage() {
       borderColor: "border-revalpro-pink/30",
       link: "/declarations",
       data: progressData.declarations
-    },
-    {
-      key: 'training',
-      title: "Training Records",
-      description: "Track your additional training and development",
-      icon: <GraduationCap className="h-8 w-8" />,
-      color: "from-revalpro-blue/20 to-revalpro-blue/10",
-      borderColor: "border-revalpro-blue/30",
-      link: "/training",
-      data: progressData.training
     }
   ];
+
+  // Define optional training records (not required for revalidation)
+  const optionalTrainingElement = {
+    key: 'training',
+    title: "Training Records",
+    description: "Track your additional training and development",
+    subtitle: "(Optional - not required for revalidation)",
+    icon: <GraduationCap className="h-8 w-8" />,
+    color: "from-revalpro-blue/20 to-revalpro-blue/10",
+    borderColor: "border-revalpro-blue/30",
+    link: "/training",
+    data: progressData.training
+  };
   
   // Define card animations
   const container = {
@@ -584,9 +596,62 @@ export default function DashboardPage() {
             );
           })}
         </div>
-        
-
       </div>
+
+      {/* Optional Training Records Section */}
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.7 }}
+        className="mb-8"
+      >
+        <div className="flex items-center gap-3 mb-6">
+          <h2 className="text-xl font-semibold text-gray-800">
+            Additional Training Records
+          </h2>
+          <Badge variant="outline" className="bg-gray-100 text-gray-600 text-xs">
+            Optional
+          </Badge>
+        </div>
+        <p className="text-sm text-gray-600 mb-4">
+          Track additional training and development that's not required for revalidation but valuable for your professional growth.
+        </p>
+        
+        <div className="max-w-md">
+          {(() => {
+            const colors = { primary: '#6366f1', secondary: '#4f46e5' }; // Indigo colors for training
+            
+            return (
+              <Link href={optionalTrainingElement.link}>
+                <Card className="relative overflow-hidden border-0 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group">
+                  <div className="absolute inset-0 bg-gradient-to-br" style={{
+                    background: `linear-gradient(135deg, ${colors.primary}15, ${colors.secondary}10, transparent)`
+                  }}></div>
+                  <CardContent className="relative p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <div style={{ color: colors.primary }} className="text-lg">
+                        {optionalTrainingElement.icon}
+                      </div>
+                      <div className="text-xs text-gray-400">
+                        {optionalTrainingElement.data.current} records
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <h3 className="text-sm font-medium text-gray-700">{optionalTrainingElement.title}</h3>
+                      <p className="text-xs text-gray-500">{optionalTrainingElement.subtitle}</p>
+                      <div className="flex items-baseline gap-2">
+                        <span className="text-lg font-bold" style={{ color: colors.primary }}>
+                          {optionalTrainingElement.data.current} training records
+                        </span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+            );
+          })()}
+        </div>
+      </motion.div>
 
       {/* Quick Actions */}
       <div className="mb-8">

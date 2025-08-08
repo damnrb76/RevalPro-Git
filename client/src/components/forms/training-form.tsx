@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -8,8 +9,9 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { toast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
+import { trainingRecordsStorage } from "@/lib/storage";
 import { insertTrainingRecordSchema, TrainingRecord, TrainingCategoryEnum, TrainingStatusEnum } from "@shared/schema";
+import { Camera, X, FileText } from "lucide-react";
 import { z } from "zod";
 
 // Form schema with client validation
@@ -28,6 +30,8 @@ interface TrainingFormProps {
 export default function TrainingForm({ record, onSuccess }: TrainingFormProps) {
   const queryClient = useQueryClient();
   const isEditing = !!record;
+  const [certificatePhoto, setCertificatePhoto] = useState<string | null>(record?.attachment || null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const form = useForm<TrainingFormData>({
     resolver: zodResolver(trainingFormSchema),
@@ -47,24 +51,23 @@ export default function TrainingForm({ record, onSuccess }: TrainingFormProps) {
   });
 
   const mutation = useMutation({
-    mutationFn: (data: TrainingFormData) => {
-      const url = isEditing ? `/api/training-records/${record.id}` : "/api/training-records";
-      const method = isEditing ? "PUT" : "POST";
-      
-      // Convert string dates to proper format
+    mutationFn: async (data: TrainingFormData) => {
+      // Convert string dates to proper format and include photo
       const formattedData = {
         ...data,
         date: new Date(data.date).toISOString().split('T')[0],
         expiryDate: data.expiryDate ? new Date(data.expiryDate).toISOString().split('T')[0] : null,
+        attachment: certificatePhoto || null,
       };
       
-      return apiRequest(url, {
-        method,
-        body: JSON.stringify(formattedData),
-      });
+      if (isEditing && record) {
+        return await trainingRecordsStorage.update(record.id!, formattedData);
+      } else {
+        return await trainingRecordsStorage.add(formattedData);
+      }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/training-records"] });
+      queryClient.invalidateQueries({ queryKey: ["trainingRecords"] });
       toast({
         title: "Success",
         description: isEditing ? "Training record updated successfully" : "Training record added successfully",
@@ -80,6 +83,32 @@ export default function TrainingForm({ record, onSuccess }: TrainingFormProps) {
       });
     },
   });
+
+  // Photo capture functionality
+  const handlePhotoCapture = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const result = e.target?.result as string;
+        setCertificatePhoto(result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleCameraCapture = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const removeCertificatePhoto = () => {
+    setCertificatePhoto(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
 
   const onSubmit = (data: TrainingFormData) => {
     mutation.mutate(data);
@@ -234,6 +263,74 @@ export default function TrainingForm({ record, onSuccess }: TrainingFormProps) {
             </FormItem>
           )}
         />
+
+        {/* Certificate Photo Section */}
+        <div className="space-y-3">
+          <Label className="text-sm font-medium">Certificate Photo (Optional)</Label>
+          <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+            {certificatePhoto ? (
+              <div className="space-y-3">
+                <div className="relative">
+                  <img 
+                    src={certificatePhoto} 
+                    alt="Certificate" 
+                    className="w-full max-w-md h-auto rounded border shadow-sm"
+                  />
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="destructive"
+                    className="absolute top-2 right-2 h-8 w-8 p-0"
+                    onClick={removeCertificatePhoto}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={handleCameraCapture}
+                  className="w-full"
+                >
+                  <Camera className="h-4 w-4 mr-2" />
+                  Replace Photo
+                </Button>
+              </div>
+            ) : (
+              <div className="text-center space-y-3">
+                <div className="mx-auto w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
+                  <FileText className="h-6 w-6 text-gray-500" />
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600 mb-2">
+                    Take a photo of your training certificate for your records
+                  </p>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleCameraCapture}
+                    className="w-full"
+                  >
+                    <Camera className="h-4 w-4 mr-2" />
+                    Take Photo
+                  </Button>
+                </div>
+              </div>
+            )}
+            <input
+              type="file"
+              ref={fileInputRef}
+              accept="image/*"
+              capture="environment"
+              onChange={handlePhotoCapture}
+              className="hidden"
+            />
+          </div>
+          <p className="text-xs text-gray-500">
+            Photos are stored securely on your device only and never uploaded to servers.
+          </p>
+        </div>
 
         <FormField
           control={form.control}
