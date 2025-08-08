@@ -34,6 +34,7 @@ import { formatDateForInput, toDate } from "@/lib/date-utils";
 const formSchema = z.object({
   date: z.string().min(1, "Date is required"),
   title: z.string().min(2, "Title must be at least 2 characters"),
+  method: z.string().min(1, "Method is required"),
   hours: z.union([
     z.literal(''),
     z.number().min(0.5, "Hours must be at least 0.5")
@@ -62,6 +63,7 @@ export default function CpdForm({ initialData, onClose, onSuccess }: CpdFormProp
     defaultValues: initialData ? {
       date: new Date(initialData.date).toISOString().split('T')[0],
       title: initialData.title,
+      method: (initialData as any).method || "",
       description: initialData.description || "",
       hours: initialData.hours,
       participatory: initialData.participatory,
@@ -70,6 +72,7 @@ export default function CpdForm({ initialData, onClose, onSuccess }: CpdFormProp
     } : {
       date: new Date().toISOString().split('T')[0],
       title: "",
+      method: "",
       description: "",
       hours: 1,
       participatory: false,
@@ -201,8 +204,9 @@ export default function CpdForm({ initialData, onClose, onSuccess }: CpdFormProp
               />
             </motion.div>
             
-            {/* Activity Title */}
-            <motion.div
+            {/* Activity Title and Method */}
+            <motion.div 
+              className="grid grid-cols-1 md:grid-cols-2 gap-4"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.2 }}
@@ -220,6 +224,40 @@ export default function CpdForm({ initialData, onClose, onSuccess }: CpdFormProp
                         {...field} 
                       />
                     </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="method"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-revalpro-blue font-medium">Method</FormLabel>
+                    <FormControl>
+                      <Input 
+                        list="cpd-methods"
+                        placeholder="e.g., Course attendance, Online learning" 
+                        className="focus-visible:ring-2 ring-revalpro-blue/20 transition-all"
+                        {...field} 
+                      />
+                    </FormControl>
+                    <datalist id="cpd-methods">
+                      <option value="Online learning" />
+                      <option value="Course attendance" />
+                      <option value="Independent learning" />
+                      <option value="Conference attendance" />
+                      <option value="Workshop" />
+                      <option value="Seminar" />
+                      <option value="Webinar" />
+                      <option value="Meeting attendance" />
+                      <option value="Reading" />
+                      <option value="Research" />
+                      <option value="Study day" />
+                      <option value="Training session" />
+                      <option value="Other" />
+                    </datalist>
                     <FormMessage />
                   </FormItem>
                 )}

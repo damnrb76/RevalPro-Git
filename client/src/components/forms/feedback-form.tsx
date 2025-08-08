@@ -46,7 +46,7 @@ export default function FeedbackForm({ initialData, onClose, onSuccess }: Feedba
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData ? {
-      date: new Date(initialData.date).toISOString().split('T')[0],
+      date: typeof initialData.date === 'string' ? initialData.date : new Date(initialData.date).toISOString().split('T')[0],
       source: initialData.source,
       content: initialData.content,
       reflection: initialData.reflection || "",
@@ -68,14 +68,14 @@ export default function FeedbackForm({ initialData, onClose, onSuccess }: Feedba
         await feedbackRecordsStorage.update(initialData.id, {
           ...data,
           date: new Date(data.date),
-        });
+        } as any);
         return initialData.id;
       } else {
         // Create new record
         return await feedbackRecordsStorage.add({
           ...data,
           date: new Date(data.date),
-        });
+        } as any);
       }
     },
     onSuccess: () => {
@@ -197,7 +197,8 @@ export default function FeedbackForm({ initialData, onClose, onSuccess }: Feedba
                     <Textarea 
                       placeholder="How did this feedback influence your practice?" 
                       className="resize-none min-h-[100px]" 
-                      {...field} 
+                      {...field}
+                      value={field.value || ''}
                     />
                   </FormControl>
                   <FormDescription>

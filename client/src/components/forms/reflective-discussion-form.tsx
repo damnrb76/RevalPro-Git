@@ -54,7 +54,7 @@ export default function ReflectiveDiscussionForm({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData ? {
-      date: new Date(initialData.date).toISOString().split('T')[0],
+      date: typeof initialData.date === 'string' ? initialData.date : new Date(initialData.date).toISOString().split('T')[0],
       partnerName: initialData.partnerName,
       partnerNmcPin: initialData.partnerNmcPin,
       email: initialData.email || "",
@@ -78,14 +78,14 @@ export default function ReflectiveDiscussionForm({
         await reflectiveDiscussionStorage.update(initialData.id, {
           ...data,
           date: new Date(data.date),
-        });
+        } as any);
         return initialData.id;
       } else {
         // Create new record
         return await reflectiveDiscussionStorage.add({
           ...data,
           date: new Date(data.date),
-        });
+        } as any);
       }
     },
     onSuccess: () => {

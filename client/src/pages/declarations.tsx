@@ -84,7 +84,7 @@ export default function DeclarationsPage() {
               Declaration of good health and good character
             </CardDescription>
           </div>
-          <Badge variant={healthDeclaration?.completed ? "completed" : "not-started"}>
+          <Badge variant={healthDeclaration?.completed ? "default" : "destructive"}>
             {healthDeclaration?.completed ? "Completed" : "Not Started"}
           </Badge>
         </CardHeader>
@@ -172,7 +172,7 @@ export default function DeclarationsPage() {
               Confirmation from an appropriate person that you've met the revalidation requirements
             </CardDescription>
           </div>
-          <Badge variant={confirmation?.completed ? "completed" : "not-started"}>
+          <Badge variant={confirmation?.completed ? "default" : "destructive"}>
             {confirmation?.completed ? "Completed" : "Not Started"}
           </Badge>
         </CardHeader>
