@@ -143,33 +143,43 @@ export default function PracticeHoursForm({ initialData, onClose, onSuccess }: P
   };
   
   const workSettings = [
-    "NHS Hospital",
-    "Private Hospital",
-    "GP Practice",
-    "Community Care",
-    "Care Home",
-    "Hospice",
-    "Education",
-    "Research",
-    "Management",
-    "Policy",
+    "Ambulance service",
+    "Care home sector",
+    "Community setting (including district nursing and community psychiatric nursing)",
+    "Consultancy",
+    "Cosmetic or aesthetic sector",
+    "Governing body or other leadership",
+    "GP practice or other primary care",
+    "Hospital or other secondary care",
+    "Inspectorate or regulator",
+    "Insurance or legal",
+    "Maternity unit or birth centre",
+    "Military",
+    "Occupational health",
+    "Police",
+    "Policy organisation",
+    "Prison",
+    "Private domestic setting",
+    "Public health organisation",
+    "School",
+    "Specialist or other tertiary care including hospice",
+    "Telephone or e-health advice",
+    "Trade union or professional body",
+    "University or other research facility",
+    "Voluntary or charity sector",
     "Other"
   ];
   
   const scopeOptions = [
-    "Adult Nursing",
-    "Children's Nursing",
-    "Learning Disability Nursing",
-    "Mental Health Nursing",
-    "Midwifery",
-    "Health Visiting",
-    "District Nursing",
-    "Practice Nursing",
-    "Specialist Nursing",
-    "Management",
+    "Direct clinical care",
     "Education",
     "Research",
-    "Other"
+    "Management",
+    "Leadership",
+    "Policy",
+    "Commissioning",
+    "Consultancy",
+    "Quality assurance or inspection"
   ];
 
   const registrationOptions = [
