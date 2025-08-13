@@ -446,7 +446,7 @@ function PlanCard({ plan, period, isCurrentPlan, onSelect, disabled }: PlanCardP
         {period === "monthly" && price > 0 && (
           <div className="text-center">
             <p className="text-xs text-gray-500">
-              💡 Switch to annual billing for approximately {plan.id === "standard" ? "1 free month" : "3 free months"}
+              💡 Switch to annual billing for approximately {plan.id === "standard" ? "2 free months" : "3 free months"}
             </p>
           </div>
         )}
