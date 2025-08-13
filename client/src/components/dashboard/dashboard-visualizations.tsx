@@ -52,11 +52,12 @@ export default function DashboardVisualizations({
   const getRequiredHours = (practiceHoursRecords: any[] = []): number => {
     if (practiceHoursRecords.length === 0) return 450;
     
-    // Check the most recent entry for dual registration
-    const mostRecentEntry = practiceHoursRecords[practiceHoursRecords.length - 1];
-    const isDualRegistration = mostRecentEntry.registration === "Registered Nurse and Midwife (including Registered Nurse/SCPHN and Midwife/SCPHN)";
+    // Check if ANY practice hours record has dual registration
+    const hasDualRegistration = practiceHoursRecords.some(record => 
+      record.registration === "Registered Nurse and Midwife (including Registered Nurse/SCPHN and Midwife/SCPHN)"
+    );
     
-    return isDualRegistration ? 900 : 450;
+    return hasDualRegistration ? 900 : 450;
   };
 
   const requiredPracticeHours = getRequiredHours(practiceHoursData);

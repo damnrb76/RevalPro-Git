@@ -46,12 +46,16 @@ export interface RevalidationProgress {
  */
 export function calculateProgress(data: RevalidationSummaryData): RevalidationProgress {
   // NMC Requirements
-  // Function to get required practice hours based on registration type
-  const getRequiredPracticeHours = (registrationType?: string): number => {
-    if (registrationType === "Registered Nurse and Midwife (including Registered Nurse/SCPHN and Midwife/SCPHN)") {
-      return 900; // Double requirement for combined registration
-    }
-    return 450; // Standard requirement
+  // Function to get required practice hours based on registration type from practice hours records
+  const getRequiredPracticeHours = (practiceHoursData: any[] = []): number => {
+    if (practiceHoursData.length === 0) return 450;
+    
+    // Check if ANY practice hours record has dual registration
+    const hasDualRegistration = practiceHoursData.some(record => 
+      record.registration === "Registered Nurse and Midwife (including Registered Nurse/SCPHN and Midwife/SCPHN)"
+    );
+    
+    return hasDualRegistration ? 900 : 450;
   };
   
   const REQUIRED_CPD_HOURS = 35;
@@ -63,7 +67,7 @@ export function calculateProgress(data: RevalidationSummaryData): RevalidationPr
     ? data.practiceHours[data.practiceHours.length - 1].registration 
     : undefined;
   
-  const REQUIRED_PRACTICE_HOURS = getRequiredPracticeHours(mostRecentRegistration);
+  const REQUIRED_PRACTICE_HOURS = getRequiredPracticeHours(data.practiceHours);
   
   // Calculate total practice hours
   const totalPracticeHours = data.practiceHours.reduce((sum, record) => sum + record.hours, 0);
