@@ -22,7 +22,7 @@ export default function PricingPlans() {
   const { user } = useAuth();
   const { toast } = useToast();
   const [_, setLocation] = useLocation();
-  const [period, setPeriod] = useState<"monthly" | "annual">("annual"); // Default to annual
+  const [period, setPeriod] = useState<"monthly" | "annual">("monthly"); // Default to monthly
   const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlan | null>(null);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
 
@@ -432,7 +432,7 @@ function PlanCard({ plan, period, isCurrentPlan, onSelect, disabled }: PlanCardP
           ))}
         </ul>
       </CardContent>
-      <CardFooter className="pt-4">
+      <CardFooter className="pt-4 space-y-3">
         <Button
           className={`w-full ${plan.recommended ? 'bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800' : ''}`}
           onClick={() => onSelect(plan.id)}
@@ -441,6 +441,15 @@ function PlanCard({ plan, period, isCurrentPlan, onSelect, disabled }: PlanCardP
         >
           {isCurrentPlan ? "Current Plan" : "Select Plan"}
         </Button>
+        
+        {/* Annual savings info for monthly plans */}
+        {period === "monthly" && price > 0 && (
+          <div className="text-center">
+            <p className="text-xs text-gray-500">
+              💡 Switch to annual billing to save £{(plan.price.monthly * 12 - plan.price.annual).toFixed(2)} per year
+            </p>
+          </div>
+        )}
       </CardFooter>
     </Card>
   );
