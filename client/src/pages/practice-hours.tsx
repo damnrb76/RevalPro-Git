@@ -11,6 +11,17 @@ import { practiceHoursStorage } from "@/lib/storage";
 import PracticeHoursForm from "@/components/forms/practice-hours-form";
 import type { PracticeHours } from "@shared/schema";
 
+// Function to get required practice hours based on registration type
+const getRequiredHours = (practiceHoursData: PracticeHours[] = []): number => {
+  if (practiceHoursData.length === 0) return 450;
+  
+  // Check the most recent entry for dual registration
+  const mostRecentEntry = practiceHoursData[practiceHoursData.length - 1];
+  const isDualRegistration = mostRecentEntry.registration === "Registered Nurse and Midwife (including Registered Nurse/SCPHN and Midwife/SCPHN)";
+  
+  return isDualRegistration ? 900 : 450;
+};
+
 export default function PracticeHoursPage() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingHours, setEditingHours] = useState<PracticeHours | null>(null);
@@ -104,7 +115,8 @@ export default function PracticeHoursPage() {
         <CardHeader>
           <CardTitle>Practice Hours Summary</CardTitle>
           <CardDescription>
-            You need 450 practice hours for revalidation (900 hours for dual registration)
+            You need {getRequiredHours(practiceHours)} practice hours for revalidation
+            {getRequiredHours(practiceHours) === 900 && " (dual registration requirement)"}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -113,13 +125,13 @@ export default function PracticeHoursPage() {
               <h3 className="text-nhs-dark-grey mb-2">Total Hours Recorded</h3>
               <div className="flex items-baseline">
                 <span className="text-3xl font-bold text-nhs-blue">{totalHours || 0}</span>
-                <span className="ml-2 text-nhs-dark-grey">/450 required</span>
+                <span className="ml-2 text-nhs-dark-grey">/{getRequiredHours(practiceHours)} required</span>
               </div>
               
               <div className="mt-3 progress-bar">
                 <div 
-                  className={`progress-fill ${totalHours && totalHours >= 450 ? 'bg-nhs-green' : 'bg-nhs-blue'}`} 
-                  style={{ width: `${Math.min((totalHours || 0) / 450 * 100, 100)}%` }}
+                  className={`progress-fill ${totalHours && totalHours >= getRequiredHours(practiceHours) ? 'bg-nhs-green' : 'bg-nhs-blue'}`} 
+                  style={{ width: `${Math.min((totalHours || 0) / getRequiredHours(practiceHours) * 100, 100)}%` }}
                 ></div>
               </div>
             </div>
@@ -127,7 +139,7 @@ export default function PracticeHoursPage() {
             {totalHours !== undefined && (
               <div className="flex-shrink-0 bg-gray-50 p-4 rounded-lg">
                 <div className="flex items-center">
-                  {totalHours >= 450 ? (
+                  {totalHours >= getRequiredHours(practiceHours) ? (
                     <>
                       <div className="mr-3 text-nhs-green">
                         <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -147,7 +159,7 @@ export default function PracticeHoursPage() {
                       <div>
                         <h4 className="font-semibold text-nhs-black">In Progress</h4>
                         <p className="text-sm text-nhs-dark-grey">
-                          {450 - (totalHours || 0)} more hours needed
+                          {getRequiredHours(practiceHours) - (totalHours || 0)} more hours needed
                         </p>
                       </div>
                     </>
@@ -164,8 +176,9 @@ export default function PracticeHoursPage() {
         <InfoIcon className="h-4 w-4 text-nhs-light-blue" />
         <AlertTitle>NMC Requirement</AlertTitle>
         <AlertDescription>
-          You must have practiced for a minimum of 450 hours (or 900 hours if you have dual registration) 
+          You must have practiced for a minimum of {getRequiredHours(practiceHours)} hours 
           in the three-year period since your last registration renewal or since joining the register.
+          {getRequiredHours(practiceHours) === 900 && " (900 hours required for dual registration)"}
         </AlertDescription>
       </Alert>
       

@@ -13,6 +13,7 @@ import type { UserProfile } from "@shared/schema";
 type DashboardVisualizationsProps = {
   userProfile: UserProfile | null;
   practiceHours: number;
+  practiceHoursData?: any[]; // Add practice hours records to determine registration type
   cpdHours: number;
   participatoryHours: number;
   feedbackCount: number;
@@ -36,6 +37,7 @@ const COLORS = [
 export default function DashboardVisualizations({
   userProfile,
   practiceHours,
+  practiceHoursData = [],
   cpdHours,
   participatoryHours,
   feedbackCount,
@@ -46,8 +48,21 @@ export default function DashboardVisualizations({
 }: DashboardVisualizationsProps) {
   const [activeTab, setActiveTab] = useState("overview");
 
+  // Function to get required practice hours based on registration type
+  const getRequiredHours = (practiceHoursRecords: any[] = []): number => {
+    if (practiceHoursRecords.length === 0) return 450;
+    
+    // Check the most recent entry for dual registration
+    const mostRecentEntry = practiceHoursRecords[practiceHoursRecords.length - 1];
+    const isDualRegistration = mostRecentEntry.registration === "Registered Nurse and Midwife (including Registered Nurse/SCPHN and Midwife/SCPHN)";
+    
+    return isDualRegistration ? 900 : 450;
+  };
+
+  const requiredPracticeHours = getRequiredHours(practiceHoursData);
+
   // Calculate percentages
-  const practiceHoursPercentage = Math.min(100, (practiceHours / 450) * 100);
+  const practiceHoursPercentage = Math.min(100, (practiceHours / requiredPracticeHours) * 100);
   const cpdPercentage = Math.min(100, (cpdHours / 35) * 100);
   const participatoryPercentage = Math.min(100, (participatoryHours / 20) * 100);
   const feedbackPercentage = Math.min(100, (feedbackCount / 5) * 100);
@@ -71,7 +86,7 @@ export default function DashboardVisualizations({
   // Data for practice hours line chart
   // This would ideally come from actual user data
   // Here we're creating a mock progression based on the total hours
-  const practiceHoursData = [
+  const practiceHoursChartData = [
     { month: "Jan", hours: Math.min(65, practiceHours) },
     { month: "Feb", hours: Math.min(120, practiceHours) },
     { month: "Mar", hours: Math.min(180, practiceHours) },
@@ -79,7 +94,7 @@ export default function DashboardVisualizations({
     { month: "May", hours: Math.min(310, practiceHours) },
     { month: "Jun", hours: Math.min(370, practiceHours) },
     { month: "Jul", hours: Math.min(430, practiceHours) },
-    { month: "Aug", hours: Math.min(450, practiceHours) },
+    { month: "Aug", hours: Math.min(requiredPracticeHours, practiceHours) },
     { month: "Sep", hours: practiceHours },
   ].filter((item, index) => {
     // Only include data points up to the current progress
@@ -222,7 +237,7 @@ export default function DashboardVisualizations({
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart
                       data={[
-                        { name: "Practice Hours", completed: practiceHours, required: 450 },
+                        { name: "Practice Hours", completed: practiceHours, required: requiredPracticeHours },
                         { name: "CPD Hours", completed: cpdHours, required: 35 },
                         { name: "Participatory", completed: participatoryHours, required: 20 },
                         { name: "Feedback", completed: feedbackCount, required: 5 },
@@ -250,7 +265,7 @@ export default function DashboardVisualizations({
                 <div className="h-96">
                   <ResponsiveContainer width="100%" height="100%">
                     <AreaChart
-                      data={practiceHoursData}
+                      data={practiceHoursChartData}
                       margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
                     >
                       <CartesianGrid strokeDasharray="3 3" />
@@ -285,9 +300,9 @@ export default function DashboardVisualizations({
                   </ResponsiveContainer>
                 </div>
                 <div className="mt-4 text-sm text-gray-600">
-                  <p>Target: 450 hours minimum</p>
+                  <p>Target: {requiredPracticeHours} hours minimum</p>
                   <p>Current progress: {practiceHours} hours ({practiceHoursPercentage.toFixed(0)}%)</p>
-                  <p>Hours needed: {Math.max(0, 450 - practiceHours)} more hours required</p>
+                  <p>Hours needed: {Math.max(0, requiredPracticeHours - practiceHours)} more hours required</p>
                 </div>
               </div>
             </TabsContent>

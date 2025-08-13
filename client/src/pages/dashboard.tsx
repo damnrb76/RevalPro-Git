@@ -127,7 +127,18 @@ export default function DashboardPage() {
   const getRevalidationProgress = () => {
     // Calculate total practice hours from all records
     const totalPracticeHours = practiceHours.reduce((sum, record) => sum + record.hours, 0);
-    const requiredPracticeHours = 1500; // NMC requirement
+    // Function to get required practice hours based on registration type
+    const getRequiredHours = (practiceHoursData: any[] = []): number => {
+      if (practiceHoursData.length === 0) return 450;
+      
+      // Check the most recent entry for dual registration
+      const mostRecentEntry = practiceHoursData[practiceHoursData.length - 1];
+      const isDualRegistration = mostRecentEntry.registration === "Registered Nurse and Midwife (including Registered Nurse/SCPHN and Midwife/SCPHN)";
+      
+      return isDualRegistration ? 900 : 450;
+    };
+    
+    const requiredPracticeHours = getRequiredHours(practiceHours); // NMC requirement
     
     // Calculate CPD hours from all records
     const totalCpdHours = cpdRecords.reduce((sum, record) => sum + record.hours, 0);

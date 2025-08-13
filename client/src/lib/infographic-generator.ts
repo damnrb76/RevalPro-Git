@@ -46,10 +46,24 @@ export interface RevalidationProgress {
  */
 export function calculateProgress(data: RevalidationSummaryData): RevalidationProgress {
   // NMC Requirements
-  const REQUIRED_PRACTICE_HOURS = 450;
+  // Function to get required practice hours based on registration type
+  const getRequiredPracticeHours = (registrationType?: string): number => {
+    if (registrationType === "Registered Nurse and Midwife (including Registered Nurse/SCPHN and Midwife/SCPHN)") {
+      return 900; // Double requirement for combined registration
+    }
+    return 450; // Standard requirement
+  };
+  
   const REQUIRED_CPD_HOURS = 35;
   const REQUIRED_FEEDBACK_RECORDS = 5;
   const REQUIRED_REFLECTIVE_ACCOUNTS = 5;
+  
+  // Determine registration type from practice hours records (use most recent if multiple)
+  const mostRecentRegistration = data.practiceHours.length > 0 
+    ? data.practiceHours[data.practiceHours.length - 1].registration 
+    : undefined;
+  
+  const REQUIRED_PRACTICE_HOURS = getRequiredPracticeHours(mostRecentRegistration);
   
   // Calculate total practice hours
   const totalPracticeHours = data.practiceHours.reduce((sum, record) => sum + record.hours, 0);

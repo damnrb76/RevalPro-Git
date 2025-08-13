@@ -33,6 +33,13 @@ export default function Home() {
     },
   });
   
+  const { data: practiceHours } = useQuery({
+    queryKey: ['practiceHours'],
+    queryFn: async () => {
+      return practiceHoursStorage.getAll();
+    },
+  });
+
   const { data: practiceHoursTotal } = useQuery({
     queryKey: ['practiceHoursTotal'],
     queryFn: async () => {
@@ -85,7 +92,8 @@ export default function Home() {
   const { data: confirmationCompleted } = useQuery({
     queryKey: ['confirmationCompleted'],
     queryFn: async () => {
-      return confirmationStorage.isCompleted();
+      const confirmations = await confirmationStorage.getAll();
+      return confirmations.length > 0;
     },
   });
 
@@ -133,6 +141,7 @@ export default function Home() {
         <DashboardVisualizations 
           userProfile={userProfile || null}
           practiceHours={practiceHoursTotal || 0}
+          practiceHoursData={practiceHours || []}
           cpdHours={cpdHoursTotal || 0}
           participatoryHours={cpdParticipatory || 0}
           feedbackCount={feedbackCount || 0}
