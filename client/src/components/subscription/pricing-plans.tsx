@@ -409,7 +409,7 @@ function PlanCard({ plan, period, isCurrentPlan, onSelect, disabled }: PlanCardP
                 Save £{savingsInfo.savings} per year
               </div>
               <div className="text-xs text-gray-500">
-                Equivalent to ~{savingsInfo.monthsSaved} months free
+                Approximately {savingsInfo.monthsSaved} free {savingsInfo.monthsSaved === 1 ? 'month' : 'months'}
               </div>
             </div>
           )}
@@ -446,7 +446,7 @@ function PlanCard({ plan, period, isCurrentPlan, onSelect, disabled }: PlanCardP
         {period === "monthly" && price > 0 && (
           <div className="text-center">
             <p className="text-xs text-gray-500">
-              💡 Switch to annual billing to save £{(plan.price.monthly * 12 - plan.price.annual).toFixed(2)} per year
+              💡 Switch to annual billing for approximately {plan.id === "standard" ? "1 free month" : "3 free months"}
             </p>
           </div>
         )}
