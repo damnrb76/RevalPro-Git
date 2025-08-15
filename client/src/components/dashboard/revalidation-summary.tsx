@@ -2,7 +2,7 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Download, FileDown, FileText, ListCheck, Printer } from "lucide-react";
+import { Download, FileDown, FileText, ListCheck, Printer, Crown } from "lucide-react";
 import { calculatePercentage, getColorFromPercentage } from "@/lib/utils";
 import { formatDateFull } from "@/lib/date-utils";
 import { 
@@ -13,6 +13,7 @@ import {
 } from "@/lib/pdf-generator";
 import type { UserProfile } from "@shared/schema";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { 
   DropdownMenu,
   DropdownMenuContent,
@@ -46,6 +47,19 @@ export default function RevalidationSummary({
 }: RevalidationSummaryProps) {
   const [isGenerating, setIsGenerating] = useState(false);
   
+  // Subscription info for access control
+  const { data: subscriptionInfo } = useQuery({
+    queryKey: ['/api/subscription'],
+    queryFn: async () => {
+      const response = await fetch('/api/subscription');
+      if (!response.ok) throw new Error('Failed to fetch subscription');
+      return response.json();
+    },
+  });
+  
+  const currentPlan = subscriptionInfo?.currentPlan || 'free';
+  const isFreePlan = currentPlan === 'free';
+  
   // Calculate percentages
   const practiceHoursPercentage = calculatePercentage(practiceHours, 450);
   const cpdPercentage = calculatePercentage(cpdHours, 35);
@@ -71,6 +85,15 @@ export default function RevalidationSummary({
   
   // Handle document download functions
   const handleDownloadCompletePack = async () => {
+    if (isFreePlan) {
+      toast({
+        title: "Upgrade Required",
+        description: "Complete revalidation pack requires Standard or Premium subscription.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     try {
       setIsGenerating(true);
       await downloadRevalidationPack();
@@ -91,6 +114,15 @@ export default function RevalidationSummary({
   };
   
   const handleDownloadSummaryReport = async () => {
+    if (isFreePlan) {
+      toast({
+        title: "Upgrade Required",
+        description: "Summary report requires Standard or Premium subscription.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     try {
       setIsGenerating(true);
       await downloadSummaryReport();
@@ -111,6 +143,15 @@ export default function RevalidationSummary({
   };
   
   const handleDownloadForm = async (formType: string) => {
+    if (isFreePlan) {
+      toast({
+        title: "Upgrade Required",
+        description: "Individual form downloads require Standard or Premium subscription.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     try {
       setIsGenerating(true);
       await downloadSpecificForm(formType);
@@ -292,21 +333,23 @@ export default function RevalidationSummary({
                 <Button 
                   className="bg-revalpro-blue hover:bg-revalpro-dark-blue"
                   onClick={handleDownloadSummaryReport}
-                  disabled={isGenerating}
+                  disabled={isGenerating || isFreePlan}
                 >
-                  <ListCheck className="mr-2 h-4 w-4" />
+                  {isFreePlan ? <Crown className="mr-2 h-4 w-4" /> : <ListCheck className="mr-2 h-4 w-4" />}
                   {isGenerating ? "Generating..." : "Download Revalidation Summary"}
+                  {isFreePlan && <span className="ml-2 text-xs">(Premium)</span>}
                 </Button>
                 
                 <div className="grid grid-cols-2 gap-2 mb-2">
                   <Button 
                     variant="outline" 
                     onClick={handleDownloadCompletePack}
-                    disabled={isGenerating}
+                    disabled={isGenerating || isFreePlan}
                     className="text-revalpro-dark-blue border-revalpro-dark-blue hover:bg-revalpro-grey"
                   >
-                    <Printer className="mr-2 h-4 w-4" />
+                    {isFreePlan ? <Crown className="mr-2 h-4 w-4" /> : <Printer className="mr-2 h-4 w-4" />}
                     Complete Pack
+                    {isFreePlan && <span className="text-xs ml-1">(Premium)</span>}
                   </Button>
                   
                   <Link href="/summary-infographic">

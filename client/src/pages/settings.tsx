@@ -52,6 +52,19 @@ export default function SettingsPage() {
     },
   });
   
+  // Subscription info for access control
+  const { data: subscriptionInfo } = useQuery({
+    queryKey: ['/api/subscription'],
+    queryFn: async () => {
+      const response = await fetch('/api/subscription');
+      if (!response.ok) throw new Error('Failed to fetch subscription');
+      return response.json();
+    },
+  });
+  
+  const currentPlan = subscriptionInfo?.currentPlan || 'free';
+  const isFreePlan = currentPlan === 'free';
+  
   // Notification settings
   const [notificationsEnabled, setNotificationsEnabled] = useState<boolean>(false);
   
@@ -95,6 +108,15 @@ export default function SettingsPage() {
   };
   
   const handleExportSummary = async () => {
+    if (isFreePlan) {
+      toast({
+        title: "Upgrade Required",
+        description: "Summary export requires Standard or Premium subscription. You can export raw data instead.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     try {
       await downloadSummaryReport();
       toast({
@@ -171,6 +193,15 @@ export default function SettingsPage() {
   };
   
   const toggleNotifications = async (enabled: boolean) => {
+    if (isFreePlan && enabled) {
+      toast({
+        title: "Upgrade Required",
+        description: "Notifications require Standard or Premium subscription.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     setNotificationsEnabled(enabled);
     await setSetting('notificationsEnabled', enabled);
     
@@ -330,11 +361,22 @@ export default function SettingsPage() {
                     <Download className="mr-2 h-4 w-4" />
                     Export Raw Data
                   </Button>
-                  <Button variant="outline" onClick={handleExportSummary}>
+                  <Button 
+                    variant="outline" 
+                    onClick={handleExportSummary}
+                    disabled={isFreePlan}
+                  >
                     <Download className="mr-2 h-4 w-4" />
                     Export Summary
+                    {isFreePlan && <span className="text-xs ml-2">(Premium)</span>}
                   </Button>
                 </div>
+                {isFreePlan && (
+                  <p className="text-sm text-amber-600 mt-2">
+                    Summary export requires Standard or Premium plan. 
+                    <a href="/subscription" className="underline">Upgrade here</a>
+                  </p>
+                )}
               </div>
               
               <Separator />
@@ -444,12 +486,21 @@ export default function SettingsPage() {
                 <div className="space-y-0.5">
                   <Label className="text-base">Notifications</Label>
                   <p className="text-sm text-nhs-dark-grey">
-                    Enable or disable notifications about revalidation deadlines
+                    {isFreePlan 
+                      ? "Enable notifications about revalidation deadlines (Premium feature)"
+                      : "Enable or disable notifications about revalidation deadlines"}
                   </p>
+                  {isFreePlan && (
+                    <p className="text-xs text-amber-600">
+                      Upgrade to Standard or Premium for notification features. 
+                      <a href="/subscription" className="underline ml-1">Upgrade here</a>
+                    </p>
+                  )}
                 </div>
                 <Switch
-                  checked={notificationsEnabled}
+                  checked={notificationsEnabled && !isFreePlan}
                   onCheckedChange={toggleNotifications}
+                  disabled={isFreePlan}
                 />
               </div>
             </CardContent>

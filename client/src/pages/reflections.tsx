@@ -5,7 +5,7 @@ import { formatDateShort } from "@/lib/date-utils";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { InfoIcon, PlusCircle, AlertTriangle, Clock, CheckCircle2, FileText } from "lucide-react";
+import { InfoIcon, PlusCircle, AlertTriangle, Clock, CheckCircle2, FileText, Crown } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { reflectiveAccountsStorage, reflectiveDiscussionStorage } from "@/lib/storage";
@@ -50,6 +50,21 @@ export default function ReflectionsPage() {
       return reflectiveAccountsStorage.getCount();
     },
   });
+  
+  // Fetch subscription info for access control
+  const { data: subscriptionInfo } = useQuery({
+    queryKey: ['/api/subscription'],
+    queryFn: async () => {
+      const response = await fetch('/api/subscription');
+      if (!response.ok) throw new Error('Failed to fetch subscription');
+      return response.json();
+    },
+  });
+  
+  const currentPlan = subscriptionInfo?.currentPlan || 'free';
+  const isFreePlan = currentPlan === 'free';
+  const maxFreeReflections = 3;
+  const hasReachedFreeLimit = isFreePlan && reflectionsCount >= maxFreeReflections;
   
   // Delete mutation
   const deleteMutation = useMutation({
@@ -115,7 +130,7 @@ export default function ReflectionsPage() {
         <div className="mt-4 md:mt-0 flex flex-col sm:flex-row gap-2">
           <Button 
             onClick={() => setIsReflectionFormOpen(true)}
-            disabled={isReflectionFormOpen}
+            disabled={isReflectionFormOpen || hasReachedFreeLimit}
           >
             <PlusCircle className="mr-2 h-4 w-4" />
             Add Reflection
@@ -201,6 +216,23 @@ export default function ReflectionsPage() {
         </CardContent>
       </Card>
       
+      {/* Free Plan Limit Warning */}
+      {hasReachedFreeLimit && (
+        <Alert className="mb-6 bg-amber-50 border-amber-200">
+          <Crown className="h-4 w-4 text-amber-600" />
+          <AlertTitle className="text-amber-800">Reflection Limit Reached</AlertTitle>
+          <AlertDescription className="text-amber-700">
+            You've reached the maximum of {maxFreeReflections} reflective accounts on the Free plan. 
+            Upgrade to Standard or Premium for unlimited reflective accounts and AI assistance.
+            <div className="mt-2">
+              <Button size="sm" className="bg-amber-600 hover:bg-amber-700 text-white" asChild>
+                <a href="/subscription">Upgrade Plan</a>
+              </Button>
+            </div>
+          </AlertDescription>
+        </Alert>
+      )}
+      
       {/* Information Alert */}
       <Alert className="mb-6 bg-nhs-pale-grey border-nhs-light-blue">
         <InfoIcon className="h-4 w-4 text-nhs-light-blue" />
@@ -279,10 +311,18 @@ export default function ReflectionsPage() {
                     You haven't recorded any reflective accounts yet. Add your reflections to track 
                     your progress toward the 5 required reflections.
                   </p>
-                  <Button onClick={() => setIsReflectionFormOpen(true)}>
+                  <Button 
+                    onClick={() => setIsReflectionFormOpen(true)}
+                    disabled={hasReachedFreeLimit}
+                  >
                     <PlusCircle className="mr-2 h-4 w-4" />
                     Add Reflection
                   </Button>
+                  {hasReachedFreeLimit && (
+                    <p className="text-amber-600 text-sm mt-2">
+                      Upgrade to add more reflective accounts
+                    </p>
+                  )}
                 </div>
               </CardContent>
             </Card>
