@@ -199,7 +199,7 @@ export default function LandingPage() {
               {
                 icon: <MessageSquare className="h-12 w-12 text-revalpro-purple" />,
                 title: "Feedback Collection",
-                description: "Gather and organize practice-related feedback from patients, colleagues, and managers."
+                description: "Gather and organise practice-related feedback from patients, colleagues, and managers."
               },
               {
                 icon: <Shield className="h-12 w-12 text-revalpro-red" />,
@@ -552,7 +552,7 @@ export default function LandingPage() {
                 </div>
                 <div className="p-4">
                   <h4 className="font-bold text-lg mb-1">CPD Management</h4>
-                  <p className="text-gray-600 text-sm">Record and organize your CPD activities, with automatic calculation of hours and distinction between participatory and self-directed learning.</p>
+                  <p className="text-gray-600 text-sm">Record and organise your CPD activities, with automatic calculation of hours and distinction between participatory and self-directed learning.</p>
                 </div>
               </div>
               
@@ -578,7 +578,7 @@ export default function LandingPage() {
                 </div>
                 <div className="p-4">
                   <h4 className="font-bold text-lg mb-1">Feedback Collection</h4>
-                  <p className="text-gray-600 text-sm">Gather and organize practice-related feedback from patients, colleagues, and managers. Export collected feedback for your revalidation portfolio.</p>
+                  <p className="text-gray-600 text-sm">Gather and organise practice-related feedback from patients, colleagues, and managers. Export collected feedback for your revalidation portfolio.</p>
                 </div>
               </div>
               

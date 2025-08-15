@@ -253,7 +253,7 @@ export default function DashboardPage() {
     {
       key: 'feedback',
       title: "Feedback",
-      description: "Collect and organize feedback for revalidation",
+      description: "Collect and organise feedback for revalidation",
       icon: <MessageSquare className="h-8 w-8" />,
       color: "from-revalpro-purple/20 to-revalpro-purple/10",
       borderColor: "border-revalpro-purple/30",

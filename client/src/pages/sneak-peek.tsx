@@ -228,7 +228,7 @@ export default function SneakPeekPage() {
               </div>
               <h3 className="font-bold mb-2 text-gray-800">Feedback Collection</h3>
               <p className="text-gray-600 text-sm">
-                Easily gather and organize feedback from patients, colleagues, and supervisors with our templates.
+                Easily gather and organise feedback from patients, colleagues, and supervisors with our templates.
               </p>
             </motion.div>
             

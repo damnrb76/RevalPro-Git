@@ -26,6 +26,64 @@ async function hashPasswordSecure(password: string) {
   return `${buf.toString("hex")}.${salt}`;
 }
 
+// Helper function to check if user has access to AI features
+async function checkAIAccess(req: Request, res: Response): Promise<{ hasAccess: boolean; user?: any }> {
+  if (!req.user) {
+    res.status(401).json({ error: "Authentication required" });
+    return { hasAccess: false };
+  }
+  
+  const user = await storage.getUser(req.user.id);
+  if (!user) {
+    res.status(404).json({ error: "User not found" });
+    return { hasAccess: false };
+  }
+  
+  // AI features require Standard or Premium plans
+  if (user.currentPlan === "free") {
+    res.status(403).json({ 
+      error: "AI assistant features require Standard or Premium subscription",
+      upgradeRequired: true,
+      currentPlan: user.currentPlan
+    });
+    return { hasAccess: false };
+  }
+  
+  return { hasAccess: true, user };
+}
+
+// Helper function to check reflective accounts limit for free users
+async function checkReflectiveAccountsLimit(req: Request, res: Response): Promise<{ canCreate: boolean; user?: any }> {
+  if (!req.user) {
+    res.status(401).json({ error: "Authentication required" });
+    return { canCreate: false };
+  }
+  
+  const user = await storage.getUser(req.user.id);
+  if (!user) {
+    res.status(404).json({ error: "User not found" });
+    return { canCreate: false };
+  }
+  
+  // Free users are limited to 3 reflective accounts
+  if (user.currentPlan === "free") {
+    // Get current count - this would need to be implemented in storage
+    // For now, we'll add a placeholder that should be implemented
+    // const currentCount = await storage.getReflectiveAccountsCount(user.id);
+    // if (currentCount >= 3) {
+    //   res.status(403).json({ 
+    //     error: "Free plan is limited to 3 reflective accounts. Upgrade to Standard or Premium for unlimited access.",
+    //     limit: 3,
+    //     currentCount,
+    //     upgradeRequired: true
+    //   });
+    //   return { canCreate: false };
+    // }
+  }
+  
+  return { canCreate: true, user };
+}
+
 // Simple server to serve the static frontend
 // The actual data is stored in the browser using IndexedDB
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -125,9 +183,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
 
 
-  // AI Assistant API routes
+  // AI Assistant API routes - require Standard/Premium subscription
   app.post("/api/ai/revalidation-advice", async (req, res) => {
     try {
+      // Check subscription access first
+      const { hasAccess } = await checkAIAccess(req, res);
+      if (!hasAccess) return; // Response already sent by checkAIAccess
+      
       const { question } = req.body;
       if (!question) {
         return res.status(400).json({ error: "Question is required" });
@@ -143,6 +205,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/ai/reflection-template", async (req, res) => {
     try {
+      // Check subscription access first
+      const { hasAccess } = await checkAIAccess(req, res);
+      if (!hasAccess) return; // Response already sent by checkAIAccess
+      
       const { experience, codeSection } = req.body;
       if (!experience || !codeSection) {
         return res.status(400).json({ error: "Experience and code section are required" });
@@ -158,6 +224,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/ai/cpd-suggestions", async (req, res) => {
     try {
+      // Check subscription access first
+      const { hasAccess } = await checkAIAccess(req, res);
+      if (!hasAccess) return; // Response already sent by checkAIAccess
+      
       const { specialty, interests } = req.body;
       if (!specialty) {
         return res.status(400).json({ error: "Specialty is required" });
@@ -958,9 +1028,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // AI Assistant Routes
+  // AI Assistant Routes - require Standard/Premium subscription
   app.post("/api/ai/advice", async (req, res) => {
     try {
+      // Check subscription access first
+      const { hasAccess } = await checkAIAccess(req, res);
+      if (!hasAccess) return; // Response already sent by checkAIAccess
+      
       const { question } = req.body;
       
       if (!question) {
@@ -977,6 +1051,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/ai/reflection", async (req, res) => {
     try {
+      // Check subscription access first
+      const { hasAccess } = await checkAIAccess(req, res);
+      if (!hasAccess) return; // Response already sent by checkAIAccess
+      
       const { experience, codeSection } = req.body;
       
       if (!experience || !codeSection) {
@@ -993,6 +1071,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/ai/cpd-suggestions", async (req, res) => {
     try {
+      // Check subscription access first
+      const { hasAccess } = await checkAIAccess(req, res);
+      if (!hasAccess) return; // Response already sent by checkAIAccess
+      
       const { specialty, interests } = req.body;
       
       if (!specialty || !interests) {

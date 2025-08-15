@@ -455,9 +455,9 @@ class NotificationService {
   }
 
   // Calculate optimal reminder time using AI patterns
-  private async calculateOptimalReminderTime(behavior: UserBehaviorData): Promise<AIScheduleResult> {
+  private async calculateOptimalReminderTime(behaviour: UserBehaviorData): Promise<AIScheduleResult> {
     // Analyze user patterns
-    const patterns = this.analyzeUserPatterns(behavior);
+    const patterns = this.analyseUserPatterns(behaviour);
     
     // Determine optimal scheduling based on:
     // 1. Most active app usage times
@@ -482,12 +482,12 @@ class NotificationService {
     };
   }
 
-  // Analyze user behavior patterns
-  private analyzeUserPatterns(behavior: UserBehaviorData): UserPatterns {
+  // Analyse user behaviour patterns
+  private analyseUserPatterns(behaviour: UserBehaviorData): UserPatterns {
     // Mock AI analysis - in production this would use ML
-    const loginTimes = behavior.loginTimes || [];
-    const completionRates = behavior.completionRates || {};
-    const preferences = behavior.preferences || {};
+    const loginTimes = behaviour.loginTimes || [];
+    const completionRates = behaviour.completionRates || {};
+    const preferences = behaviour.preferences || {};
     
     // Find most active hour
     const hourCounts = loginTimes.reduce((acc, time) => {
@@ -510,10 +510,10 @@ class NotificationService {
       mostActiveHour: parseInt(mostActiveHour),
       preferredDays,
       mostNeededReminder: bestPerformingType as any,
-      urgencyLevel: this.calculateUrgency(behavior),
+      urgencyLevel: this.calculateUrgency(behaviour),
       confidence: 0.85, // AI confidence score
       completionPatterns: completionRates,
-      engagementScore: this.calculateEngagement(behavior)
+      engagementScore: this.calculateEngagement(behaviour)
     };
   }
 
@@ -577,7 +577,7 @@ class NotificationService {
   }
 
   // Calculate urgency level
-  private calculateUrgency(behavior: UserBehaviorData): 'low' | 'medium' | 'high' {
+  private calculateUrgency(behaviour: UserBehaviorData): 'low' | 'medium' | 'high' {
     // Mock urgency calculation based on deadlines and completion rates
     const daysUntilDeadline = behavior.daysUntilDeadline || 365;
     const completionPercentage = behavior.overallCompletion || 0;
