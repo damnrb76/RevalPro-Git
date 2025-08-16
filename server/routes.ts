@@ -5,7 +5,7 @@ import { storage } from "./storage";
 import { setupAuth, hashPassword } from "./auth";
 import { scrypt, randomBytes } from "crypto";
 import { promisify } from "util";
-import { createCustomer, createSubscription, getSubscription, cancelSubscription, reactivateSubscription, changeSubscriptionPlan, handleWebhookEvent } from "./stripe";
+import { createCustomer, createSubscription, createCheckoutSession, getSubscription, cancelSubscription, reactivateSubscription, changeSubscriptionPlan, handleWebhookEvent } from "./stripe";
 import { PLAN_DETAILS } from "../shared/subscription-plans";
 import Stripe from "stripe";
 import { verifyRegistration, calculateNmcImportantDates, getLatestRevalidationRequirements } from "./nmc-api";
@@ -508,7 +508,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
-  // Create or update Stripe customer and start subscription
+  // Create Checkout Session (recommended approach per GPT)
+  app.post("/api/subscription/checkout", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ error: "You must be logged in" });
+    }
+
+    try {
+      const { lookupKey } = req.body;
+      const user = req.user;
+
+      if (!lookupKey) {
+        return res.status(400).json({ error: "lookupKey is required" });
+      }
+
+      // Validate lookup key
+      const validLookupKeys = ['standard_monthly_gbp', 'standard_annual_gbp', 'premium_monthly_gbp', 'premium_annual_gbp'];
+      if (!validLookupKeys.includes(lookupKey)) {
+        return res.status(400).json({ error: "Invalid lookup key" });
+      }
+
+      const session = await createCheckoutSession({
+        lookupKey,
+        userId: user.id,
+        customerEmail: user.email || `user${user.id}@revalpro.co.uk`,
+      });
+
+      res.json(session);
+    } catch (error) {
+      console.error("Error creating checkout session:", error);
+      res.status(500).json({ error: "Failed to create checkout session" });
+    }
+  });
+
+  // Create or update Stripe customer and start subscription (legacy method)
   app.post("/api/subscription/create", async (req, res) => {
     if (!req.isAuthenticated()) {
       return res.status(401).json({ error: "You must be logged in" });

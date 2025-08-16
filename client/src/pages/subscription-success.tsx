@@ -13,8 +13,9 @@ export default function SubscriptionSuccessPage() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
 
-  // Extract plan details from URL
+  // Extract session details from URL (works with Stripe checkout sessions)
   const urlParams = new URLSearchParams(window.location.search);
+  const sessionId = urlParams.get('session_id');
   const planId = urlParams.get('plan') || 'standard';
   const period = urlParams.get('period') || 'monthly';
   

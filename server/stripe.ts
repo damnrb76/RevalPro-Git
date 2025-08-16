@@ -2,6 +2,9 @@ import Stripe from 'stripe';
 import { PLAN_DETAILS } from '../shared/subscription-plans';
 import { storage } from './storage';
 
+// Store processed event IDs for idempotency
+const processedEvents = new Set<string>();
+
 if (!process.env.STRIPE_SECRET_KEY) {
   throw new Error('Missing required environment variable: STRIPE_SECRET_KEY');
 }
@@ -21,6 +24,14 @@ export interface CreateSubscriptionParams {
   customerId: string;
   priceId: string;
   userId: number;
+}
+
+export interface CreateCheckoutSessionParams {
+  lookupKey: string;
+  userId: number;
+  customerEmail: string;
+  successUrl?: string;
+  cancelUrl?: string;
 }
 
 // Create a Stripe customer
@@ -66,11 +77,13 @@ export async function createSubscription({ customerId, priceId, userId }: Create
 
     // Return the client secret so the client can complete the payment
     const invoice = subscription.latest_invoice as Stripe.Invoice;
-    const paymentIntent = invoice.payment_intent as Stripe.PaymentIntent;
+    const paymentIntent = typeof invoice.payment_intent === 'string' 
+      ? await stripe.paymentIntents.retrieve(invoice.payment_intent)
+      : invoice.payment_intent as Stripe.PaymentIntent | null;
     
     return {
       subscriptionId: subscription.id,
-      clientSecret: paymentIntent.client_secret,
+      clientSecret: paymentIntent?.client_secret || null,
     };
   } catch (error) {
     console.error('Error creating Stripe subscription:', error);
@@ -118,6 +131,45 @@ export async function reactivateSubscription(subscriptionId: string) {
   }
 }
 
+// Create Checkout Session (recommended by GPT for better conversion)
+export async function createCheckoutSession({
+  lookupKey,
+  userId,
+  customerEmail,
+  successUrl = 'https://test.revalpro.co.uk/success?session_id={CHECKOUT_SESSION_ID}',
+  cancelUrl = 'https://test.revalpro.co.uk/pricing'
+}: CreateCheckoutSessionParams) {
+  try {
+    const session = await stripe.checkout.sessions.create({
+      mode: 'subscription',
+      line_items: [
+        {
+          price: lookupKey, // Using lookup key as GPT suggested
+          quantity: 1,
+        },
+      ],
+      success_url: successUrl,
+      cancel_url: cancelUrl,
+      allow_promotion_codes: true,
+      automatic_tax: { enabled: true },
+      customer_creation: 'always',
+      customer_email: customerEmail,
+      client_reference_id: userId.toString(),
+      metadata: {
+        app_user_id: userId.toString(),
+      },
+    });
+
+    return {
+      sessionId: session.id,
+      url: session.url,
+    };
+  } catch (error) {
+    console.error('Error creating checkout session:', error);
+    throw error;
+  }
+}
+
 // Change a subscription's plan
 export async function changeSubscriptionPlan(subscriptionId: string, newPriceId: string) {
   try {
@@ -153,11 +205,14 @@ export async function setupWebhookEndpoint(url: string) {
       // Update existing endpoint
       return await stripe.webhookEndpoints.update(existingEndpoint.id, {
         enabled_events: [
+          'checkout.session.completed',
           'customer.subscription.created',
           'customer.subscription.updated',
           'customer.subscription.deleted',
           'invoice.payment_succeeded',
           'invoice.payment_failed',
+          'customer.subscription.trial_will_end',
+          'charge.refunded',
         ],
       });
     } else {
@@ -165,11 +220,14 @@ export async function setupWebhookEndpoint(url: string) {
       return await stripe.webhookEndpoints.create({
         url,
         enabled_events: [
+          'checkout.session.completed',
           'customer.subscription.created',
           'customer.subscription.updated',
           'customer.subscription.deleted',
           'invoice.payment_succeeded',
           'invoice.payment_failed',
+          'customer.subscription.trial_will_end',
+          'charge.refunded',
         ],
       });
     }
@@ -181,10 +239,65 @@ export async function setupWebhookEndpoint(url: string) {
 
 // Handle Stripe webhook events
 export async function handleWebhookEvent(event: Stripe.Event) {
-  const { type, data } = event;
+  const { type, data, id } = event;
+
+  // Idempotency: check if we've already processed this event
+  if (processedEvents.has(id)) {
+    console.log(`Event ${id} already processed, skipping`);
+    return;
+  }
 
   try {
+    console.log(`Processing webhook event: ${type} (${id})`);
+    
     switch (type) {
+      case 'checkout.session.completed': {
+        const session = data.object as Stripe.Checkout.Session;
+        const customerId = session.customer as string;
+        const subscriptionId = session.subscription as string;
+        const clientReferenceId = session.client_reference_id;
+        
+        if (!clientReferenceId) {
+          console.error('No client_reference_id in checkout session');
+          return;
+        }
+        
+        const userId = parseInt(clientReferenceId);
+        
+        // Get subscription details to determine plan
+        const subscription = await stripe.subscriptions.retrieve(subscriptionId, {
+          expand: ['items.data.price']
+        });
+        const priceId = subscription.items.data[0]?.price.id;
+        
+        // Map price to plan using lookup keys
+        let planId = 'free';
+        let period: 'monthly' | 'annual' = 'monthly';
+        
+        Object.entries(PLAN_DETAILS).forEach(([id, plan]) => {
+          if (plan.stripePriceId.monthly === priceId) {
+            planId = id;
+            period = 'monthly';
+          } else if (plan.stripePriceId.annual === priceId) {
+            planId = id;
+            period = 'annual';
+          }
+        });
+        
+        // Update user with subscription details
+        await storage.updateUserStripeInfo(userId, {
+          stripeCustomerId: customerId,
+          stripeSubscriptionId: subscriptionId,
+          subscriptionStatus: subscription.status,
+          currentPlan: planId,
+          subscriptionPeriod: period,
+          subscriptionEndDate: new Date(subscription.current_period_end * 1000),
+          cancelAtPeriodEnd: subscription.cancel_at_period_end ?? false,
+        });
+        
+        console.log(`Checkout completed for user ${userId}, plan: ${planId}`);
+        break;
+      }
       case 'customer.subscription.created':
       case 'customer.subscription.updated': {
         const subscription = data.object as Stripe.Subscription;
@@ -213,7 +326,7 @@ export async function handleWebhookEvent(event: Stripe.Event) {
         });
 
         // Determine if it's a monthly or annual subscription
-        const period = subscription.items.data[0].plan.interval === 'year' ? 'annual' : 'monthly';
+        const period = subscription.items.data[0]?.price.recurring?.interval === 'year' ? 'annual' : 'monthly';
 
         // Update the user's subscription details
         await storage.updateUserStripeInfo(user.id, {
@@ -221,7 +334,7 @@ export async function handleWebhookEvent(event: Stripe.Event) {
           currentPlan: planId,
           subscriptionPeriod: period,
           subscriptionEndDate: new Date(subscription.current_period_end * 1000),
-          cancelAtPeriodEnd: subscription.cancel_at_period_end,
+          cancelAtPeriodEnd: subscription.cancel_at_period_end ?? false,
         });
         
         break;
@@ -256,7 +369,9 @@ export async function handleWebhookEvent(event: Stripe.Event) {
         
         // If this invoice is for a subscription payment
         if (invoice.subscription) {
-          const subscriptionId = invoice.subscription as string;
+          const subscriptionId = typeof invoice.subscription === 'string' 
+            ? invoice.subscription 
+            : (invoice.subscription as Stripe.Subscription).id;
           
           // Get the subscription to get customer ID
           const subscription = await stripe.subscriptions.retrieve(subscriptionId);
@@ -286,7 +401,7 @@ export async function handleWebhookEvent(event: Stripe.Event) {
         
         // If this invoice is for a subscription payment
         if (invoice.subscription) {
-          const subscriptionId = invoice.subscription as string;
+          const subscriptionId = typeof invoice.subscription === 'string' ? invoice.subscription : invoice.subscription.id;
           
           // Get the subscription to get customer ID
           const subscription = await stripe.subscriptions.retrieve(subscriptionId);
@@ -300,15 +415,46 @@ export async function handleWebhookEvent(event: Stripe.Event) {
             return;
           }
 
-          // Update subscription status to past_due
+          // Mark account in grace period and limit features
           await storage.updateUserStripeInfo(user.id, {
             subscriptionStatus: 'past_due',
           });
+          
+          console.log(`Payment failed for user ${user.id}, marked as past_due`);
         }
         
         break;
       }
+      
+      case 'customer.subscription.trial_will_end': {
+        const subscription = data.object as Stripe.Subscription;
+        const customerId = subscription.customer as string;
+        
+        const user = await storage.getUserByStripeCustomerId(customerId);
+        if (!user) {
+          console.error(`No user found with Stripe customer ID: ${customerId}`);
+          return;
+        }
+        
+        // Notify user about trial ending (implement notification logic as needed)
+        console.log(`Trial ending for user ${user.id}`);
+        break;
+      }
+      
+      case 'charge.refunded': {
+        const charge = data.object as Stripe.Charge;
+        console.log(`Refund processed for charge: ${charge.id}`);
+        // Handle refund logic as needed
+        break;
+      }
+      
+      default:
+        console.log(`Unhandled event type: ${type}`);
     }
+    
+    // Mark event as processed for idempotency
+    processedEvents.add(id);
+    
   } catch (error) {
     console.error('Error handling webhook event:', error);
     throw error;
