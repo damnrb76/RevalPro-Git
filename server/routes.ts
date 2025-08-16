@@ -491,126 +491,177 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
-  // Serve test page  
+  // Mobile-friendly test page
   app.get("/test-stripe.html", (req, res) => {
-    res.setHeader('Content-Type', 'text/html; charset=utf-8');
     res.send(`<!DOCTYPE html>
 <html>
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Stripe Test - RevalPro</title>
     <style>
-        body { font-family: Arial, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; }
-        .test-section { background: #f5f5f5; padding: 20px; margin: 20px 0; border-radius: 8px; }
-        .success { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
-        .error { background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
-        button { background: #007bff; color: white; padding: 12px 24px; border: none; border-radius: 4px; cursor: pointer; margin: 5px; }
+        * { box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; 
+            max-width: 100%; 
+            margin: 0; 
+            padding: 20px; 
+            background: #f0f2f5;
+        }
+        .card { 
+            background: white; 
+            padding: 20px; 
+            margin: 15px 0; 
+            border-radius: 12px; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .success { background: #d4edda; border-left: 4px solid #28a745; }
+        .error { background: #f8d7da; border-left: 4px solid #dc3545; }
+        .info { background: #d1ecf1; border-left: 4px solid #17a2b8; }
+        button { 
+            background: #007bff; 
+            color: white; 
+            padding: 14px 20px; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            margin: 8px 0; 
+            width: 100%;
+            font-size: 16px;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
         button:hover { background: #0056b3; }
-        pre { background: #f8f9fa; padding: 15px; border-radius: 4px; overflow-x: auto; }
+        button:active { transform: translateY(1px); }
+        h1 { color: #333; margin-bottom: 10px; }
+        h2 { color: #495057; margin-bottom: 15px; }
+        pre { 
+            background: #f8f9fa; 
+            padding: 15px; 
+            border-radius: 6px; 
+            overflow-x: auto; 
+            font-size: 14px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .test-cards { 
+            background: #fff3cd; 
+            border: 1px solid #ffeaa7; 
+            padding: 15px; 
+            border-radius: 8px; 
+            margin: 10px 0;
+        }
+        .test-cards strong { color: #856404; }
         #results { margin-top: 20px; }
+        .loading { opacity: 0.6; pointer-events: none; }
     </style>
 </head>
 <body>
-    <h1>🧪 Stripe Test Suite - RevalPro</h1>
+    <h1>🧪 Stripe Test - RevalPro</h1>
     
-    <div class="test-section">
-        <h2>1. Login First (Required)</h2>
-        <p>You need to be logged in to test subscriptions. Open your app and login, then come back to this page.</p>
-        <button onclick="checkLogin()">Check Login Status</button>
+    <div class="card">
+        <h2>Step 1: Check Login</h2>
+        <p>Make sure you're logged in first:</p>
+        <button id="loginBtn" onclick="checkLogin()">Check Login Status</button>
+        <div id="loginStatus"></div>
     </div>
 
-    <div class="test-section">
-        <h2>2. Test Checkout Session Creation</h2>
-        <p>Test the new checkout endpoint with your lookup keys:</p>
-        
-        <button onclick="testCheckout('standard_monthly_gbp')">Standard Monthly (£4.99)</button>
-        <button onclick="testCheckout('standard_annual_gbp')">Standard Annual (£49.99)</button>
-        <button onclick="testCheckout('premium_monthly_gbp')">Premium Monthly (£9.99)</button>
-        <button onclick="testCheckout('premium_annual_gbp')">Premium Annual (£89.99)</button>
+    <div class="card">
+        <h2>Step 2: Test Checkout</h2>
+        <p>Test your Stripe checkout sessions:</p>
+        <button onclick="testPlan('standard_monthly_gbp', 'Standard Monthly - £4.99')">Standard Monthly</button>
+        <button onclick="testPlan('standard_annual_gbp', 'Standard Annual - £49.99')">Standard Annual</button>
+        <button onclick="testPlan('premium_monthly_gbp', 'Premium Monthly - £9.99')">Premium Monthly</button>
+        <button onclick="testPlan('premium_annual_gbp', 'Premium Annual - £89.99')">Premium Annual</button>
     </div>
 
-    <div class="test-section">
-        <h2>3. Test Cards to Use</h2>
-        <ul>
-            <li><strong>Success:</strong> 4242 4242 4242 4242 (Any future date, any CVC)</li>
-            <li><strong>3DS Challenge:</strong> 4000 0027 6000 3184</li>
-            <li><strong>Declined:</strong> 4000 0000 0000 0002</li>
-            <li><strong>Insufficient Funds:</strong> 4000 0000 0000 9995</li>
-        </ul>
+    <div class="card test-cards">
+        <h2>📱 Test Cards for Payment</h2>
+        <p><strong>Success:</strong> 4242 4242 4242 4242</p>
+        <p><strong>3DS Challenge:</strong> 4000 0027 6000 3184</p>
+        <p><strong>Declined:</strong> 4000 0000 0000 0002</p>
+        <p>Use any future expiry date and any 3-digit CVC</p>
     </div>
 
-    <div class="test-section">
-        <h2>4. Quick API Tests</h2>
-        <button onclick="getSubscriptionInfo()">Get My Subscription</button>
-        <button onclick="getPlans()">Get Available Plans</button>
+    <div class="card">
+        <h2>Step 3: Quick Tests</h2>
+        <button onclick="getCurrentSub()">Check My Subscription</button>
+        <button onclick="getPlans()">Show All Plans</button>
     </div>
 
     <div id="results"></div>
 
     <script>
-        function log(message, type = 'info') {
+        function showResult(message, type = 'info') {
             const results = document.getElementById('results');
             const div = document.createElement('div');
-            div.className = type === 'success' ? 'test-section success' : 
-                           type === 'error' ? 'test-section error' : 'test-section';
+            div.className = 'card ' + type;
             div.innerHTML = '<pre>' + message + '</pre>';
             results.appendChild(div);
             results.scrollTop = results.scrollHeight;
         }
 
         async function checkLogin() {
+            const btn = document.getElementById('loginBtn');
+            const status = document.getElementById('loginStatus');
+            
+            btn.textContent = 'Checking...';
+            btn.classList.add('loading');
+            
             try {
                 const response = await fetch('/api/user');
                 if (response.ok) {
                     const user = await response.json();
-                    log('✅ Logged in as: ' + JSON.stringify(user, null, 2), 'success');
+                    status.innerHTML = '<div class="card success">✅ Logged in as: ' + user.username + '</div>';
+                    btn.textContent = '✅ Logged In';
+                    btn.style.background = '#28a745';
                 } else {
-                    log('❌ Not logged in. Please login first.', 'error');
+                    status.innerHTML = '<div class="card error">❌ Not logged in - Go to your app and login first</div>';
+                    btn.textContent = '❌ Not Logged In';
+                    btn.style.background = '#dc3545';
                 }
             } catch (error) {
-                log('❌ Error checking login: ' + error.message, 'error');
+                status.innerHTML = '<div class="card error">❌ Error: ' + error.message + '</div>';
+                btn.textContent = 'Check Login Status';
+                btn.style.background = '#007bff';
             }
+            
+            btn.classList.remove('loading');
         }
 
-        async function testCheckout(lookupKey) {
+        async function testPlan(lookupKey, planName) {
+            showResult('🧪 Testing: ' + planName + ' (' + lookupKey + ')', 'info');
+            
             try {
-                log('🧪 Testing checkout for: ' + lookupKey);
-                
                 const response = await fetch('/api/subscription/checkout', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ lookupKey })
                 });
 
                 const data = await response.json();
                 
-                if (response.ok) {
-                    log('✅ Checkout session created successfully!', 'success');
-                    if (data.url) {
-                        log('🚀 Opening Stripe checkout...', 'success');
+                if (response.ok && data.url) {
+                    showResult('✅ SUCCESS! Checkout session created for ' + planName + '\\n\\n🚀 Opening Stripe checkout in new tab...', 'success');
+                    // Small delay then open checkout
+                    setTimeout(() => {
                         window.open(data.url, '_blank');
-                    }
+                    }, 500);
                 } else {
-                    log('❌ Checkout failed: ' + JSON.stringify(data, null, 2), 'error');
+                    showResult('❌ FAILED: ' + JSON.stringify(data, null, 2), 'error');
                 }
             } catch (error) {
-                log('❌ Error creating checkout: ' + error.message, 'error');
+                showResult('❌ ERROR: ' + error.message, 'error');
             }
         }
 
-        async function getSubscriptionInfo() {
+        async function getCurrentSub() {
             try {
                 const response = await fetch('/api/subscription');
                 const data = await response.json();
-                
-                if (response.ok) {
-                    log('✅ Current subscription: ' + JSON.stringify(data, null, 2), 'success');
-                } else {
-                    log('❌ Subscription check failed: ' + JSON.stringify(data, null, 2), 'error');
-                }
+                showResult('Current subscription:\\n' + JSON.stringify(data, null, 2), response.ok ? 'success' : 'error');
             } catch (error) {
-                log('❌ Error getting subscription: ' + error.message, 'error');
+                showResult('❌ Error: ' + error.message, 'error');
             }
         }
 
@@ -618,14 +669,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
             try {
                 const response = await fetch('/api/subscription/plans');
                 const data = await response.json();
-                log('📋 Available plans: ' + JSON.stringify(data, null, 2));
+                showResult('Available plans:\\n' + JSON.stringify(data, null, 2), 'info');
             } catch (error) {
-                log('❌ Error getting plans: ' + error.message, 'error');
+                showResult('❌ Error: ' + error.message, 'error');
             }
         }
 
-        // Auto-check login on page load
-        window.onload = checkLogin;
+        // Check login when page loads
+        setTimeout(checkLogin, 500);
     </script>
 </body>
 </html>`);
