@@ -473,7 +473,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json(PLAN_DETAILS);
   });
 
-  // Serve test page
+  // Simple test endpoint
+  app.get("/test-stripe", (req, res) => {
+    res.json({
+      message: "Stripe test endpoints ready!",
+      endpoints: {
+        "POST /api/subscription/checkout": "Create checkout session with {lookupKey}",
+        "GET /api/subscription": "Get current subscription",
+        "GET /api/subscription/plans": "Get available plans"
+      },
+      lookup_keys: ['standard_monthly_gbp', 'standard_annual_gbp', 'premium_monthly_gbp', 'premium_annual_gbp'],
+      test_cards: {
+        success: '4242 4242 4242 4242',
+        sca: '4000 0027 6000 3184',
+        declined: '4000 0000 0000 0002'
+      }
+    });
+  });
+
+  // Serve test page  
   app.get("/test-stripe.html", (req, res) => {
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     res.send(`<!DOCTYPE html>
