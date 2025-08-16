@@ -732,14 +732,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "lookupKey is required" });
       }
 
-      // Validate lookup key
-      const validLookupKeys = ['standard_monthly_gbp', 'standard_annual_gbp', 'premium_monthly_gbp', 'premium_annual_gbp'];
-      if (!validLookupKeys.includes(lookupKey)) {
+      // Map lookup key to actual price ID for testing
+      const lookupToPriceId: Record<string, string> = {
+        'standard_monthly_gbp': 'price_1RjnSJApgglLl36M5X8I82Jl',
+        'standard_annual_gbp': 'price_1RjnSJApgglLl36Mk1ebPraW', 
+        'premium_monthly_gbp': 'price_1RjnSJApgglLl36MUtHes4SP',
+        'premium_annual_gbp': 'price_1RjnSJApgglLl36MzYUwBNkp'
+      };
+      
+      const priceId = lookupToPriceId[lookupKey];
+      if (!priceId) {
         return res.status(400).json({ error: "Invalid lookup key" });
       }
 
       const session = await createCheckoutSession({
-        lookupKey,
+        lookupKey: priceId, // Use actual price ID instead of lookup key
         userId: user.id,
         customerEmail: user.email || `user${user.id}@revalpro.co.uk`,
       });

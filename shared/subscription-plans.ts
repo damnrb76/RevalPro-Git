@@ -27,6 +27,10 @@ export interface PlanDetails {
     monthly: string | null;
     annual: string | null;
   };
+  lookupKeys?: {
+    monthly: string;
+    annual: string;
+  };
   features: PlanFeature[];
   recommended?: boolean;
   mostPopular?: boolean;
@@ -69,8 +73,12 @@ export const PLAN_DETAILS: Record<SubscriptionPlan, PlanDetails> = {
       annual: 49.99, // Save almost £10 - equivalent to ~2 months free
     },
     stripePriceId: {
-      monthly: "standard_monthly_gbp", // Using lookup key
-      annual: "standard_annual_gbp", // Using lookup key
+      monthly: "price_1RjnSJApgglLl36M5X8I82Jl", // Standard Monthly (fallback to price ID)
+      annual: "price_1RjnSJApgglLl36Mk1ebPraW", // Standard Annual (fallback to price ID)
+    },
+    lookupKeys: {
+      monthly: "standard_monthly_gbp",
+      annual: "standard_annual_gbp",
     },
     mostPopular: true,
     features: [
@@ -100,8 +108,12 @@ export const PLAN_DETAILS: Record<SubscriptionPlan, PlanDetails> = {
       annual: 89.99, // Save nearly £30 - equivalent to ~3 months free
     },
     stripePriceId: {
-      monthly: "premium_monthly_gbp", // Using lookup key
-      annual: "premium_annual_gbp", // Using lookup key
+      monthly: "price_1RjnSJApgglLl36MUtHes4SP", // Premium Monthly (fallback to price ID)
+      annual: "price_1RjnSJApgglLl36MzYUwBNkp", // Premium Annual (fallback to price ID)
+    },
+    lookupKeys: {
+      monthly: "premium_monthly_gbp",
+      annual: "premium_annual_gbp",
     },
     recommended: true,
     features: [
