@@ -475,7 +475,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Serve test page
   app.get("/test-stripe.html", (req, res) => {
-    res.sendFile(path.join(__dirname, "../test-stripe.html"));
+    res.setHeader('Content-Type', 'text/html');
+    const fs = require('fs');
+    fs.readFile('test-stripe.html', 'utf8', (err, data) => {
+      if (err) {
+        res.status(404).send('Test page not found');
+        return;
+      }
+      res.send(data);
+    });
   });
 
   // Get current user's subscription
