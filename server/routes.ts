@@ -492,6 +492,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
+  // TEST ONLY: List all prices and lookup keys in your Stripe account
+  app.get("/api/test/stripe-prices", async (req, res) => {
+    try {
+      if (!process.env.STRIPE_SECRET_KEY) {
+        return res.status(500).json({ error: "Stripe not configured" });
+      }
+      
+      const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+        apiVersion: '2023-10-16' as any,
+      });
+      
+      // Get all prices
+      const prices = await stripe.prices.list({
+        limit: 100,
+        expand: ['data.product']
+      });
+      
+      const priceInfo = prices.data.map(price => ({
+        id: price.id,
+        lookup_key: price.lookup_key,
+        amount: price.unit_amount,
+        currency: price.currency,
+        interval: price.recurring?.interval,
+        product_name: (price.product as any)?.name,
+        active: price.active,
+        product_active: (price.product as any)?.active
+      }));
+      
+      res.json({
+        total_prices: prices.data.length,
+        prices: priceInfo,
+        lookup_keys_found: priceInfo.filter(p => p.lookup_key).map(p => p.lookup_key)
+      });
+    } catch (error: any) {
+      console.error("Error listing Stripe prices:", error);
+      res.status(500).json({ 
+        error: "Failed to list Stripe prices",
+        details: error.message
+      });
+    }
+  });
+
   // TEST ONLY: Checkout endpoint without authentication (for testing purposes)
   app.post("/api/test/checkout", async (req, res) => {
     try {
@@ -614,7 +656,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     </div>
 
     <div class="card">
-        <h2>Step 3: Quick Tests</h2>
+        <h2>Step 3: Diagnostic & Quick Tests</h2>
+        <button onclick="checkStripePrices()" style="background: #28a745;">🔍 Show My Stripe Prices & Lookup Keys</button>
         <button onclick="getCurrentSub()">Check My Subscription</button>
         <button onclick="getPlans()">Show All Plans</button>
     </div>
@@ -692,6 +735,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 showResult('Current subscription:\\n' + JSON.stringify(data, null, 2), response.ok ? 'success' : 'error');
             } catch (error) {
                 showResult('❌ Error: ' + error.message, 'error');
+            }
+        }
+
+        async function checkStripePrices() {
+            showResult('🔍 Fetching your Stripe prices and lookup keys...', 'info');
+            try {
+                const response = await fetch('/api/test/stripe-prices');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    let message = '✅ STRIPE ACCOUNT ANALYSIS:\\n\\n';
+                    message += `Found ${data.total_prices} prices in your account\\n\\n`;
+                    
+                    if (data.lookup_keys_found.length > 0) {
+                        message += '🔑 LOOKUP KEYS FOUND:\\n';
+                        data.lookup_keys_found.forEach(key => {
+                            message += `  • ${key}\\n`;
+                        });
+                        message += '\\n';
+                    }
+                    
+                    message += '📋 ALL PRICES (showing first 10):\\n';
+                    data.prices.slice(0, 10).forEach(price => {
+                        message += `\\n• Price ID: ${price.id}\\n`;
+                        message += `  Lookup Key: ${price.lookup_key || 'none'}\\n`;
+                        message += `  Amount: ${price.amount/100} ${price.currency.toUpperCase()}\\n`;
+                        message += `  Interval: ${price.interval || 'one-time'}\\n`;
+                        message += `  Product: ${price.product_name}\\n`;
+                        message += `  Active: ${price.active ? '✅' : '❌'} | Product Active: ${price.product_active ? '✅' : '❌'}\\n`;
+                    });
+                    
+                    showResult(message, 'success');
+                } else {
+                    showResult('❌ FAILED: ' + JSON.stringify(data, null, 2), 'error');
+                }
+            } catch (error) {
+                showResult('❌ Error fetching Stripe prices: ' + error.message, 'error');
             }
         }
 

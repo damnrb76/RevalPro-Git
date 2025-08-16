@@ -140,50 +140,15 @@ export async function createCheckoutSession({
   cancelUrl = 'https://test.revalpro.co.uk/pricing'
 }: CreateCheckoutSessionParams) {
   try {
-    // First, resolve the lookup key to get the actual price ID
-    let priceId: string;
-    
-    try {
-      // Try to find the price using the lookup key
-      const prices = await stripe.prices.list({
-        lookup_keys: [lookupKey],
-        limit: 1,
-      });
-      
-      if (prices.data.length === 0) {
-        throw new Error(`No price found with lookup key: ${lookupKey}`);
-      }
-      
-      priceId = prices.data[0].id;
-      console.log(`Resolved lookup key '${lookupKey}' to price ID: ${priceId}`);
-      
-    } catch (lookupError) {
-      console.error('Error resolving lookup key, trying fallback:', lookupError);
-      
-      // Fallback: use predefined price IDs from subscription plans
-      let fallbackPriceId: string | null = null;
-      
-      Object.values(PLAN_DETAILS).forEach(plan => {
-        if (plan.lookupKeys?.monthly === lookupKey) {
-          fallbackPriceId = plan.stripePriceId.monthly;
-        } else if (plan.lookupKeys?.annual === lookupKey) {
-          fallbackPriceId = plan.stripePriceId.annual;
-        }
-      });
-      
-      if (!fallbackPriceId) {
-        throw new Error(`No fallback price ID found for lookup key: ${lookupKey}`);
-      }
-      
-      priceId = fallbackPriceId;
-      console.log(`Using fallback price ID: ${priceId} for lookup key: ${lookupKey}`);
-    }
+    // Use the lookup key directly in the checkout session
+    // Stripe will resolve it automatically if it exists in your account
+    console.log(`Creating checkout session with lookup key: ${lookupKey}`);
 
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
       line_items: [
         {
-          price: priceId, // Using resolved price ID
+          price: lookupKey, // Using lookup key directly - Stripe will resolve it
           quantity: 1,
         },
       ],
