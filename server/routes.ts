@@ -5,6 +5,7 @@ import { storage } from "./storage";
 import { setupAuth, hashPassword } from "./auth";
 import { scrypt, randomBytes } from "crypto";
 import { promisify } from "util";
+import path from "path";
 import { createCustomer, createSubscription, createCheckoutSession, getSubscription, cancelSubscription, reactivateSubscription, changeSubscriptionPlan, handleWebhookEvent } from "./stripe";
 import { PLAN_DETAILS } from "../shared/subscription-plans";
 import Stripe from "stripe";
@@ -470,6 +471,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get available subscription plans
   app.get("/api/subscription/plans", (req, res) => {
     res.json(PLAN_DETAILS);
+  });
+
+  // Serve test page
+  app.get("/test-stripe.html", (req, res) => {
+    res.sendFile(path.join(__dirname, "../test-stripe.html"));
   });
 
   // Get current user's subscription
