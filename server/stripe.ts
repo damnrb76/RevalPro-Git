@@ -140,15 +140,24 @@ export async function createCheckoutSession({
   cancelUrl = 'https://test.revalpro.co.uk/pricing'
 }: CreateCheckoutSessionParams) {
   try {
-    // Use the lookup key directly in the checkout session
-    // Stripe will resolve it automatically if it exists in your account
-    console.log(`Creating checkout session with lookup key: ${lookupKey}`);
+    // Map lookup keys to actual price IDs (since lookup keys aren't working reliably)
+    const lookupKeyToPriceId: Record<string, string> = {
+      'standard_monthly_gbp': 'price_1RjnEzApgglLl36MNDNsVpIo',
+      'standard_annual_gbp': 'price_1RjnBeApgglLl36MFKY5oFAq',
+      'premium_monthly_gbp': 'price_1RjnPAApgglLl36MBzM1EdZ7',
+      'premium_annual_gbp': 'price_1RjnKyApgglLl36MueJyRm68'
+    };
+
+    // Use price ID if lookup key exists, otherwise assume lookupKey is already a price ID
+    const priceId = lookupKeyToPriceId[lookupKey] || lookupKey;
+    
+    console.log(`Creating checkout session: ${lookupKey} → ${priceId}`);
 
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
       line_items: [
         {
-          price: lookupKey, // Using lookup key directly - Stripe will resolve it
+          price: priceId, // Using actual price ID
           quantity: 1,
         },
       ],
@@ -156,7 +165,6 @@ export async function createCheckoutSession({
       cancel_url: cancelUrl,
       allow_promotion_codes: true,
       automatic_tax: { enabled: true },
-      customer_creation: 'always',
       customer_email: customerEmail,
       client_reference_id: userId.toString(),
       metadata: {
