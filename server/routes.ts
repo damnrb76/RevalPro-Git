@@ -745,25 +745,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 const data = await response.json();
                 
                 if (response.ok) {
-                    let message = '✅ STRIPE ACCOUNT ANALYSIS:\\n\\n';
-                    message += `Found ${data.total_prices} prices in your account\\n\\n`;
+                    let message = '✅ STRIPE ACCOUNT ANALYSIS:' + String.fromCharCode(10) + String.fromCharCode(10);
+                    message += 'Found ' + data.total_prices + ' prices in your account' + String.fromCharCode(10) + String.fromCharCode(10);
                     
                     if (data.lookup_keys_found.length > 0) {
-                        message += '🔑 LOOKUP KEYS FOUND:\\n';
+                        message += '🔑 LOOKUP KEYS FOUND:' + String.fromCharCode(10);
                         data.lookup_keys_found.forEach(key => {
-                            message += `  • ${key}\\n`;
+                            message += '  • ' + key + String.fromCharCode(10);
                         });
-                        message += '\\n';
+                        message += String.fromCharCode(10);
+                    } else {
+                        message += '❌ NO LOOKUP KEYS FOUND' + String.fromCharCode(10) + String.fromCharCode(10);
                     }
                     
-                    message += '📋 ALL PRICES (showing first 10):\\n';
-                    data.prices.slice(0, 10).forEach(price => {
-                        message += `\\n• Price ID: ${price.id}\\n`;
-                        message += `  Lookup Key: ${price.lookup_key || 'none'}\\n`;
-                        message += `  Amount: ${price.amount/100} ${price.currency.toUpperCase()}\\n`;
-                        message += `  Interval: ${price.interval || 'one-time'}\\n`;
-                        message += `  Product: ${price.product_name}\\n`;
-                        message += `  Active: ${price.active ? '✅' : '❌'} | Product Active: ${price.product_active ? '✅' : '❌'}\\n`;
+                    message += '📋 ALL PRICES (showing first 5):' + String.fromCharCode(10);
+                    data.prices.slice(0, 5).forEach(price => {
+                        message += String.fromCharCode(10) + '• Price ID: ' + price.id + String.fromCharCode(10);
+                        message += '  Lookup Key: ' + (price.lookup_key || 'none') + String.fromCharCode(10);
+                        message += '  Amount: ' + (price.amount/100) + ' ' + price.currency.toUpperCase() + String.fromCharCode(10);
+                        message += '  Interval: ' + (price.interval || 'one-time') + String.fromCharCode(10);
+                        message += '  Product: ' + price.product_name + String.fromCharCode(10);
+                        message += '  Active: ' + (price.active ? '✅' : '❌') + ' | Product Active: ' + (price.product_active ? '✅' : '❌') + String.fromCharCode(10);
                     });
                     
                     showResult(message, 'success');
