@@ -479,6 +479,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       message: "Stripe test endpoints ready!",
       endpoints: {
         "POST /api/subscription/checkout": "Create checkout session with {lookupKey}",
+        "POST /api/test/checkout": "Test checkout session (NO AUTH REQUIRED)",
         "GET /api/subscription": "Get current subscription",
         "GET /api/subscription/plans": "Get available plans"
       },
@@ -489,6 +490,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
         declined: '4000 0000 0000 0002'
       }
     });
+  });
+
+  // TEST ONLY: Checkout endpoint without authentication (for testing purposes)
+  app.post("/api/test/checkout", async (req, res) => {
+    try {
+      const { lookupKey } = req.body;
+      
+      if (!lookupKey) {
+        return res.status(400).json({ error: "lookupKey is required" });
+      }
+      
+      // For testing, use dummy values
+      const result = await createCheckoutSession({
+        lookupKey,
+        userId: 999, // Test user ID
+        customerEmail: 'test@revalpro.co.uk',
+        successUrl: 'https://test.revalpro.co.uk/success?session_id={CHECKOUT_SESSION_ID}',
+        cancelUrl: 'https://test.revalpro.co.uk/pricing'
+      });
+      
+      res.json(result);
+    } catch (error: any) {
+      console.error("Test checkout error:", error);
+      res.status(500).json({ 
+        error: "Failed to create checkout session",
+        details: error.message,
+        lookupKey: req.body.lookupKey
+      });
+    }
   });
 
   // Mobile-friendly test page
@@ -633,7 +663,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             showResult('🧪 Testing: ' + planName + ' (' + lookupKey + ')', 'info');
             
             try {
-                const response = await fetch('/api/subscription/checkout', {
+                const response = await fetch('/api/test/checkout', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ lookupKey })
@@ -642,7 +672,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 const data = await response.json();
                 
                 if (response.ok && data.url) {
-                    showResult('✅ SUCCESS! Checkout session created for ' + planName + '\\n\\n🚀 Opening Stripe checkout in new tab...', 'success');
+                    showResult('✅ SUCCESS! Checkout session created for ' + planName + '\\n\\nSession ID: ' + data.sessionId + '\\n\\n🚀 Opening Stripe checkout in new tab...', 'success');
                     // Small delay then open checkout
                     setTimeout(() => {
                         window.open(data.url, '_blank');
