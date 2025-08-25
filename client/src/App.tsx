@@ -27,6 +27,7 @@ import CheckoutPage from "@/pages/checkout";
 import SubscriptionSuccess from "@/pages/subscription-success";
 import TestStripePage from "@/pages/test-stripe";
 import StripeCheckoutTest from "@/pages/stripe-checkout-test";
+import StripePaymentTest from "@/pages/stripe-payment-test";
 import NmcVerification from "@/pages/nmc-verification";
 import NmcRegistrationCheck from "@/pages/nmc-registration-check";
 import RevalidationDates from "@/pages/revalidation-dates";
@@ -120,6 +121,9 @@ function AppRouter() {
           
           {/* Real Stripe checkout test page */}
           <ProtectedRoute path="/stripe-checkout-test" component={StripeCheckoutTest} />
+          
+          {/* Comprehensive Stripe payment testing */}
+          <Route path="/stripe-payment-test" component={StripePaymentTest} />
           
           {/* Admin Panel Routes */}
           <ProtectedRoute path="/admin" component={AdminPanel} />
