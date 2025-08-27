@@ -223,6 +223,7 @@ export async function setupWebhookEndpoint(url: string) {
           'customer.subscription.deleted',
           'invoice.payment_succeeded',
           'invoice.payment_failed',
+          'payment_intent.succeeded',
           'customer.subscription.trial_will_end',
           'charge.refunded',
         ],
@@ -238,6 +239,7 @@ export async function setupWebhookEndpoint(url: string) {
           'customer.subscription.deleted',
           'invoice.payment_succeeded',
           'invoice.payment_failed',
+          'payment_intent.succeeded',
           'customer.subscription.trial_will_end',
           'charge.refunded',
         ],
@@ -450,6 +452,23 @@ export async function handleWebhookEvent(event: Stripe.Event) {
         
         // Notify user about trial ending (implement notification logic as needed)
         console.log(`Trial ending for user ${user.id}`);
+        break;
+      }
+      
+      case 'payment_intent.succeeded': {
+        const paymentIntent = data.object as Stripe.PaymentIntent;
+        
+        // Handle one-time payments or successful payment intents
+        // This is useful for single charges that aren't part of subscriptions
+        console.log(`Payment succeeded for PaymentIntent: ${paymentIntent.id}`);
+        
+        // If this payment intent has metadata with user info, update accordingly
+        if (paymentIntent.metadata?.userId) {
+          const userId = parseInt(paymentIntent.metadata.userId);
+          console.log(`One-time payment succeeded for user: ${userId}`);
+          // Add any specific logic for one-time payments here
+        }
+        
         break;
       }
       
