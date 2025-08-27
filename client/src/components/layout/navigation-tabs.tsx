@@ -72,6 +72,50 @@ export default function NavigationTabs({ currentPath }: NavigationTabsProps) {
   // Grouped navigation structure
   const navigationGroups: NavigationGroup[] = [
     {
+      label: "Guides",
+      icon: <BookOpen size={16} />,
+      color: "bg-indigo-100 text-indigo-700",
+      hoverColor: "hover:bg-indigo-200",
+      items: [
+        { 
+          href: "/user-guide", 
+          label: "User Guides", 
+          icon: <BookOpen size={16} />,
+          color: "bg-indigo-100 text-indigo-700",
+          hoverColor: "hover:bg-indigo-200"
+        },
+        { 
+          href: "/help-guide.html", 
+          label: "Quick Start", 
+          icon: <FileText size={16} />,
+          color: "bg-green-100 text-green-700",
+          hoverColor: "hover:bg-green-200"
+        },
+      ]
+    },
+    {
+      label: "Profile & Settings",
+      icon: <User size={16} />,
+      color: "bg-gray-200 text-gray-700",
+      hoverColor: "hover:bg-gray-300",
+      items: [
+        { 
+          href: "/subscription", 
+          label: "Subscription", 
+          icon: <CreditCard size={16} />,
+          color: "bg-revalpro-fuchsia/20 text-revalpro-fuchsia",
+          hoverColor: "hover:bg-revalpro-fuchsia/30"
+        },
+        { 
+          href: "/settings", 
+          label: "Settings", 
+          icon: <SettingsIcon size={16} />,
+          color: "bg-gray-200 text-gray-700",
+          hoverColor: "hover:bg-gray-300"
+        },
+      ]
+    },
+    {
       label: "Revalidation Elements",
       icon: <ListChecks size={16} />,
       color: "bg-revalpro-blue/20 text-revalpro-blue",
@@ -166,28 +210,6 @@ export default function NavigationTabs({ currentPath }: NavigationTabsProps) {
       ]
     },
     {
-      label: "Guides",
-      icon: <BookOpen size={16} />,
-      color: "bg-indigo-100 text-indigo-700",
-      hoverColor: "hover:bg-indigo-200",
-      items: [
-        { 
-          href: "/user-guide", 
-          label: "User Guides", 
-          icon: <BookOpen size={16} />,
-          color: "bg-indigo-100 text-indigo-700",
-          hoverColor: "hover:bg-indigo-200"
-        },
-        { 
-          href: "/help-guide.html", 
-          label: "Quick Start", 
-          icon: <FileText size={16} />,
-          color: "bg-green-100 text-green-700",
-          hoverColor: "hover:bg-green-200"
-        },
-      ]
-    },
-    {
       label: "AI Assistant",
       icon: <Bot size={16} />,
       color: "bg-gradient-to-r from-revalpro-purple/30 to-revalpro-blue/30 text-revalpro-blue",
@@ -199,28 +221,6 @@ export default function NavigationTabs({ currentPath }: NavigationTabsProps) {
           icon: <HelpCircle size={16} />,
           color: "bg-gradient-to-r from-revalpro-purple/30 to-revalpro-blue/30 text-revalpro-blue font-semibold",
           hoverColor: "hover:from-revalpro-purple/40 hover:to-revalpro-blue/40"
-        },
-      ]
-    },
-    {
-      label: "Profile & Settings",
-      icon: <User size={16} />,
-      color: "bg-gray-200 text-gray-700",
-      hoverColor: "hover:bg-gray-300",
-      items: [
-        { 
-          href: "/subscription", 
-          label: "Subscription", 
-          icon: <CreditCard size={16} />,
-          color: "bg-revalpro-fuchsia/20 text-revalpro-fuchsia",
-          hoverColor: "hover:bg-revalpro-fuchsia/30"
-        },
-        { 
-          href: "/settings", 
-          label: "Settings", 
-          icon: <SettingsIcon size={16} />,
-          color: "bg-gray-200 text-gray-700",
-          hoverColor: "hover:bg-gray-300"
         },
       ]
     },
@@ -254,8 +254,8 @@ export default function NavigationTabs({ currentPath }: NavigationTabsProps) {
     href: "/dashboard", 
     label: "Dashboard", 
     icon: <LayoutDashboard size={16} />,
-    color: "bg-revalpro-blue/20 text-revalpro-blue",
-    hoverColor: "hover:bg-revalpro-blue/30" 
+    color: "bg-pink-200 text-pink-700",
+    hoverColor: "hover:bg-pink-300" 
   };
 
 
