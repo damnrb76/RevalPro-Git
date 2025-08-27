@@ -77,9 +77,15 @@ export async function createSubscription({ customerId, priceId, userId }: Create
 
     // Return the client secret so the client can complete the payment
     const invoice = subscription.latest_invoice as Stripe.Invoice;
-    const paymentIntent = typeof invoice.payment_intent === 'string' 
-      ? await stripe.paymentIntents.retrieve(invoice.payment_intent)
-      : invoice.payment_intent as Stripe.PaymentIntent | null;
+    let paymentIntent: Stripe.PaymentIntent | null = null;
+    
+    if (invoice && 'payment_intent' in invoice && invoice.payment_intent) {
+      if (typeof invoice.payment_intent === 'string') {
+        paymentIntent = await stripe.paymentIntents.retrieve(invoice.payment_intent);
+      } else {
+        paymentIntent = invoice.payment_intent as Stripe.PaymentIntent;
+      }
+    }
     
     return {
       subscriptionId: subscription.id,
@@ -305,7 +311,7 @@ export async function handleWebhookEvent(event: Stripe.Event) {
           subscriptionStatus: subscription.status,
           currentPlan: planId,
           subscriptionPeriod: period,
-          subscriptionEndDate: new Date(subscription.current_period_end * 1000),
+          subscriptionEndDate: new Date((subscription as any).current_period_end * 1000),
           cancelAtPeriodEnd: subscription.cancel_at_period_end ?? false,
         });
         
@@ -347,7 +353,7 @@ export async function handleWebhookEvent(event: Stripe.Event) {
           subscriptionStatus: subscription.status,
           currentPlan: planId,
           subscriptionPeriod: period,
-          subscriptionEndDate: new Date(subscription.current_period_end * 1000),
+          subscriptionEndDate: new Date((subscription as any).current_period_end * 1000),
           cancelAtPeriodEnd: subscription.cancel_at_period_end ?? false,
         });
         
@@ -382,10 +388,10 @@ export async function handleWebhookEvent(event: Stripe.Event) {
         const invoice = data.object as Stripe.Invoice;
         
         // If this invoice is for a subscription payment
-        if (invoice.subscription) {
+        if ('subscription' in invoice && invoice.subscription) {
           const subscriptionId = typeof invoice.subscription === 'string' 
             ? invoice.subscription 
-            : (invoice.subscription as Stripe.Subscription).id;
+            : (invoice.subscription as any).id;
           
           // Get the subscription to get customer ID
           const subscription = await stripe.subscriptions.retrieve(subscriptionId);
@@ -414,8 +420,10 @@ export async function handleWebhookEvent(event: Stripe.Event) {
         const invoice = data.object as Stripe.Invoice;
         
         // If this invoice is for a subscription payment
-        if (invoice.subscription) {
-          const subscriptionId = typeof invoice.subscription === 'string' ? invoice.subscription : invoice.subscription.id;
+        if ('subscription' in invoice && invoice.subscription) {
+          const subscriptionId = typeof invoice.subscription === 'string' 
+            ? invoice.subscription 
+            : (invoice.subscription as any).id;
           
           // Get the subscription to get customer ID
           const subscription = await stripe.subscriptions.retrieve(subscriptionId);
