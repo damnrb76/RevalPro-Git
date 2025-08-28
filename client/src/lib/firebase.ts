@@ -34,13 +34,15 @@ export const signInWithGoogle = async () => {
   } catch (error) {
     console.error("Error signing in with Google:", error);
     // Handle specific Firebase auth errors
-    if (error.code === 'auth/popup-blocked') {
-      console.error("Popup was blocked by the browser");
-      alert("Please allow popups for this site to use Google sign-in");
-    } else if (error.code === 'auth/unauthorized-domain') {
-      console.error("Domain not authorized in Firebase");
-      const currentDomain = window.location.hostname;
-      alert(`Domain "${currentDomain}" is not authorized in Firebase Console. Please add this domain to your Firebase project's authorized domains list.`);
+    if (error instanceof Error && 'code' in error) {
+      if ((error as any).code === 'auth/popup-blocked') {
+        console.error("Popup was blocked by the browser");
+        alert("Please allow popups for this site to use Google sign-in");
+      } else if ((error as any).code === 'auth/unauthorized-domain') {
+        console.error("Domain not authorized in Firebase");
+        const currentDomain = window.location.hostname;
+        alert(`Domain "${currentDomain}" is not authorized in Firebase Console. Please add this domain to your Firebase project's authorized domains list.`);
+      }
     }
     throw error;
   }
