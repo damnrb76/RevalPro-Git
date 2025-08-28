@@ -780,12 +780,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "lookupKey is required" });
       }
 
-      // Map lookup key to actual price ID for testing
+      // Map lookup key to actual price ID (matching shared/subscription-plans.ts)
       const lookupToPriceId: Record<string, string> = {
-        'standard_monthly_gbp': 'price_1RjnSJApgglLl36M5X8I82Jl',
-        'standard_annual_gbp': 'price_1RjnSJApgglLl36Mk1ebPraW', 
-        'premium_monthly_gbp': 'price_1RjnSJApgglLl36MUtHes4SP',
-        'premium_annual_gbp': 'price_1RjnSJApgglLl36MzYUwBNkp'
+        'standard_monthly_gbp': 'price_1RjnEzApgglLl36MNDNsVpIo',
+        'standard_annual_gbp': 'price_1RjnBeApgglLl36MFKY5oFAq',
+        'premium_monthly_gbp': 'price_1RjnPAApgglLl36MBzM1EdZ7',
+        'premium_annual_gbp': 'price_1RjnKyApgglLl36MueJyRm68'
       };
       
       const priceId = lookupToPriceId[lookupKey];

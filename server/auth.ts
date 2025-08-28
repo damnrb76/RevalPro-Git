@@ -9,12 +9,24 @@ import { User } from "@shared/schema";
 
 declare global {
   namespace Express {
-    // Define User interface for Express session
+    // Define User interface for Express session - matches our schema
     interface User {
       id: number;
       username: string;
       password: string;
+      email?: string | null;
+      profilePicture?: string | null;
       created: Date;
+      currentPlan?: string | null;
+      stripeCustomerId?: string | null;
+      stripeSubscriptionId?: string | null;
+      subscriptionStatus?: string | null;
+      subscriptionPeriod?: string | null;
+      subscriptionEndDate?: Date | null;
+      cancelAtPeriodEnd?: boolean | null;
+      isAdmin?: boolean | null;
+      isSuperAdmin?: boolean | null;
+      hasCompletedInitialSetup?: boolean | null;
     }
   }
 }
