@@ -288,7 +288,7 @@ export default function NavigationTabs({ currentPath }: NavigationTabsProps) {
                     "px-3 py-2 rounded-full font-medium transition-all duration-300 cursor-pointer inline-flex items-center gap-1.5 relative overflow-hidden",
                     currentPath === dashboardLink.href
                       ? `${dashboardLink.color} ring-2 ring-offset-1 shadow-sm`
-                      : `text-gray-600 hover:${dashboardLink.color.split(' ')[0]} ${dashboardLink.hoverColor}`
+                      : `${dashboardLink.color} ${dashboardLink.hoverColor}`
                   )}
                 >
                   <motion.span
@@ -339,7 +339,7 @@ export default function NavigationTabs({ currentPath }: NavigationTabsProps) {
                           "px-3 py-2 rounded-full font-medium transition-all duration-300 cursor-pointer inline-flex items-center gap-1.5 relative overflow-hidden",
                           hasActiveItem
                             ? `${group.color} ring-2 ring-offset-1 shadow-sm`
-                            : `text-gray-600 ${group.hoverColor}`
+                            : `${group.color} ${group.hoverColor}`
                         )}
                       >
                         <motion.span
