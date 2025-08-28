@@ -109,12 +109,12 @@ export class MemStorage implements IStorage {
       email: null,
       profilePicture: null,
       created: new Date(),
-      currentPlan: "premium", // Changed from "free" to "premium" for testing before release
+      currentPlan: "free", // Production default - users start with free plan
       stripeCustomerId: null,
-      stripeSubscriptionId: "test_premium_subscription", // Test subscription ID
-      subscriptionStatus: "active", // Changed from "inactive" to "active"
-      subscriptionPeriod: "annual", // Set to annual for testing
-      subscriptionEndDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // Set 1 year from now
+      stripeSubscriptionId: null,
+      subscriptionStatus: "inactive", // Production default
+      subscriptionPeriod: null,
+      subscriptionEndDate: null,
       cancelAtPeriodEnd: false,
       isAdmin: false,
       isSuperAdmin: false,

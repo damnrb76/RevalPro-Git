@@ -300,71 +300,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json({ status: 'OK', message: 'RevalPro UK API is running' });
   });
 
-  // Demo account creation endpoint for testing
-  app.post("/api/create-demo-account", async (req, res) => {
-    try {
-      const demoUsername = "demo@revalpro.com";
-      const demoPassword = "demo123";
-      const requestedPlan = req.body?.plan || "standard"; // Default to standard, allow override
-      
-      // Check if demo account already exists and delete it first
-      const existingUser = await storage.getUserByUsername(demoUsername);
-      if (existingUser) {
-        await storage.deleteUser(existingUser.id);
-      }
-      
-      // Create fresh demo account using proper hash function from auth.ts
-      const hashedPassword = hashPassword(demoPassword);
-      const user = await storage.createUser({
-        username: demoUsername,
-        password: hashedPassword,
-      });
-      
-      // Update with requested plan features
-      await storage.updateUserStripeInfo(user.id, {
-        currentPlan: requestedPlan,
-        subscriptionStatus: "active",
-        stripeSubscriptionId: "demo_subscription",
-        subscriptionPeriod: "annual",
-        subscriptionEndDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 year from now
-        cancelAtPeriodEnd: false,
-      });
-      
-      res.json({ 
-        message: "Demo account created successfully", 
-        username: demoUsername,
-        password: demoPassword,
-        plan: requestedPlan
-      });
-    } catch (error) {
-      console.error("Error creating demo account:", error);
-      res.status(500).json({ error: "Failed to create demo account" });
-    }
-  });
-
-  // Demo login endpoint that bypasses password verification
-  app.post("/api/demo-login", async (req, res) => {
-    try {
-      const demoUsername = "demo@revalpro.com";
-      const user = await storage.getUserByUsername(demoUsername);
-      
-      if (!user) {
-        return res.status(404).json({ error: "Demo account not found. Create it first." });
-      }
-      
-      // Log the user in directly (bypassing password check)
-      req.login(user, (err) => {
-        if (err) {
-          console.error("Demo login error:", err);
-          return res.status(500).json({ error: "Failed to log in demo user" });
-        }
-        res.status(200).json(user);
-      });
-    } catch (error) {
-      console.error("Error with demo login:", error);
-      res.status(500).json({ error: "Failed to demo login" });
-    }
-  });
+  // Demo account endpoints removed for production launch
   
   // NMC API integration endpoints
   // These endpoints provide integration with the UK Nursing & Midwifery Council
