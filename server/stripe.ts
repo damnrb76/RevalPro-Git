@@ -146,12 +146,12 @@ export async function createCheckoutSession({
   cancelUrl = 'https://test.revalpro.co.uk/pricing'
 }: CreateCheckoutSessionParams) {
   try {
-    // Map lookup keys to actual price IDs (since lookup keys aren't working reliably)
+    // Map lookup keys to actual price IDs (live Stripe prices)
     const lookupKeyToPriceId: Record<string, string> = {
-      'standard_monthly_gbp': 'price_1RjnEzApgglLl36MNDNsVpIo',
-      'standard_annual_gbp': 'price_1RjnBeApgglLl36MFKY5oFAq',
-      'premium_monthly_gbp': 'price_1RjnPAApgglLl36MBzM1EdZ7',
-      'premium_annual_gbp': 'price_1RjnKyApgglLl36MueJyRm68'
+      'standard_monthly_gbp': 'price_1RXVwJApgglLl36M6hRdROQU',
+      'standard_annual_gbp': 'price_1S0oveApgglLl36M6U2t0byU',
+      'premium_monthly_gbp': 'price_1RXVwIApgglLl36Mmk8XXEAO',
+      'premium_annual_gbp': 'price_1S0ozAApgglLl36MNHXL1VJn'
     };
 
     // Use price ID if lookup key exists, otherwise assume lookupKey is already a price ID
