@@ -26,7 +26,7 @@ export default function Footer({ logo, className }: FooterProps) {
           </div>
           
           <div>
-            <h3 className="font-bold text-lg mb-4">Important Links</h3>
+            <h3 className="font-bold text-lg mb-4">NMC Resources</h3>
             <ul className="space-y-2 text-sm">
               <li>
                 <a 
@@ -58,6 +58,10 @@ export default function Footer({ logo, className }: FooterProps) {
                   Revalidation Guidelines
                 </a>
               </li>
+            </ul>
+            
+            <h4 className="font-semibold text-md mb-3 mt-6">Legal Documents</h4>
+            <ul className="space-y-2 text-sm">
               <li>
                 <span className="text-revalpro-white/80 hover:text-white cursor-pointer">
                   <Link href="/privacy-policy">
@@ -69,6 +73,27 @@ export default function Footer({ logo, className }: FooterProps) {
                 <span className="text-revalpro-white/80 hover:text-white cursor-pointer">
                   <Link href="/terms-of-service">
                     Terms of Service
+                  </Link>
+                </span>
+              </li>
+              <li>
+                <span className="text-revalpro-white/80 hover:text-white cursor-pointer">
+                  <Link href="/cancellation-refund-policy">
+                    Cancellation & Refunds
+                  </Link>
+                </span>
+              </li>
+              <li>
+                <span className="text-revalpro-white/80 hover:text-white cursor-pointer">
+                  <Link href="/business-information">
+                    Business Information
+                  </Link>
+                </span>
+              </li>
+              <li>
+                <span className="text-revalpro-white/80 hover:text-white cursor-pointer">
+                  <Link href="/vat-invoicing-policy">
+                    VAT & Invoicing
                   </Link>
                 </span>
               </li>

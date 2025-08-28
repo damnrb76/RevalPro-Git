@@ -344,6 +344,19 @@ export default function PricingPlans() {
         <p className="mt-2">
           Have questions? Contact us at <a href="mailto:support@revalpro.uk" className="text-blue-600 hover:underline">support@revalpro.uk</a>
         </p>
+        <p className="mt-4 text-xs">
+          By subscribing, you agree to our{' '}
+          <a href="/terms-of-service" className="text-blue-600 hover:text-blue-800 underline">Terms of Service</a>
+          {', '}
+          <a href="/privacy-policy" className="text-blue-600 hover:text-blue-800 underline">Privacy Policy</a>
+          {' and '}
+          <a href="/cancellation-refund-policy" className="text-blue-600 hover:text-blue-800 underline">Cancellation & Refund Policy</a>.
+          <br />
+          See also:{' '}
+          <a href="/business-information" className="text-blue-600 hover:text-blue-800 underline">Business Information</a>
+          {' • '}
+          <a href="/vat-invoicing-policy" className="text-blue-600 hover:text-blue-800 underline">VAT & Invoicing</a>
+        </p>
       </div>
     </div>
   );

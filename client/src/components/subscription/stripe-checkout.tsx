@@ -169,6 +169,31 @@ export default function StripeCheckout({
             </Alert>
           )}
 
+          {/* Legal Agreement */}
+          <div className="text-xs text-gray-600 bg-gray-50 p-3 rounded">
+            <p className="mb-2">
+              By completing your payment, you agree to our{' '}
+              <a href="/terms-of-service" target="_blank" className="text-blue-600 hover:text-blue-800 underline">
+                Terms of Service
+              </a>
+              {' '}and{' '}
+              <a href="/cancellation-refund-policy" target="_blank" className="text-blue-600 hover:text-blue-800 underline">
+                Cancellation & Refund Policy
+              </a>.
+            </p>
+            <p>
+              Your data is protected under our{' '}
+              <a href="/privacy-policy" target="_blank" className="text-blue-600 hover:text-blue-800 underline">
+                Privacy Policy
+              </a>. 
+              See{' '}
+              <a href="/vat-invoicing-policy" target="_blank" className="text-blue-600 hover:text-blue-800 underline">
+                VAT & Invoicing
+              </a>{' '}
+              for billing details.
+            </p>
+          </div>
+
           {/* Action Buttons */}
           <div className="flex gap-3">
             <Button

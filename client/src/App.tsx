@@ -37,6 +37,9 @@ import SummaryInfographic from "@/pages/summary-infographic";
 import AdminPanel from "@/pages/admin-panel";
 import PrivacyPolicyPage from "@/pages/privacy-policy";
 import TermsOfServicePage from "@/pages/terms-of-service";
+import CancellationRefundPolicy from "@/pages/cancellation-refund-policy";
+import BusinessInformation from "@/pages/business-information";
+import VATInvoicingPolicy from "@/pages/vat-invoicing-policy";
 import NotificationTestPage from "@/pages/notification-test";
 import RevalidationAuditPage from "@/pages/revalidation-audit";
 import BetaSignupPage from "@/pages/beta-signup";
@@ -59,13 +62,17 @@ function AppRouter() {
   const isComingSoonPage = location === '/' && window.location.hostname === 'revalpro.co.uk';
   const isPrivacyPage = location === '/privacy-policy' && window.location.hostname === 'revalpro.co.uk';
   const isTermsPage = location === '/terms-of-service' && window.location.hostname === 'revalpro.co.uk';
+  const isCancellationPage = location === '/cancellation-refund-policy';
+  const isBusinessInfoPage = location === '/business-information';
+  const isVATPage = location === '/vat-invoicing-policy';
+  const isLegalPage = isPrivacyPage || isTermsPage || isCancellationPage || isBusinessInfoPage || isVATPage;
   const isBetaSignupPage = location === '/beta-signup';
   const isBetaApplicationsPage = location === '/beta-applications';
   const isLaunchCountdownPage = location === '/launch-countdown';
-  const showTabs = location !== '/auth' && location !== '/landing' && location !== '/launch-countdown' && !isComingSoonPage && !isPrivacyPage && !isTermsPage && !isBetaSignupPage && !isBetaApplicationsPage;
+  const showTabs = location !== '/auth' && location !== '/landing' && location !== '/launch-countdown' && !isComingSoonPage && !isLegalPage && !isBetaSignupPage && !isBetaApplicationsPage;
   const isAuthPage = location === '/auth';
   const isLandingPage = location === '/landing';
-  const showAppHeader = !isLandingPage && !isComingSoonPage && !isPrivacyPage && !isTermsPage && !isBetaSignupPage && !isLaunchCountdownPage;
+  const showAppHeader = !isLandingPage && !isComingSoonPage && !isLegalPage && !isBetaSignupPage && !isLaunchCountdownPage;
   
   return (
     <div className="min-h-screen flex flex-col">
@@ -135,6 +142,15 @@ function AppRouter() {
           {/* Terms of Service Route */}
           <Route path="/terms-of-service" component={TermsOfServicePage} />
           
+          {/* Cancellation and Refund Policy Route */}
+          <Route path="/cancellation-refund-policy" component={CancellationRefundPolicy} />
+          
+          {/* Business Information Route */}
+          <Route path="/business-information" component={BusinessInformation} />
+          
+          {/* VAT and Invoicing Policy Route */}
+          <Route path="/vat-invoicing-policy" component={VATInvoicingPolicy} />
+          
           {/* Notification Test Route */}
           <ProtectedRoute path="/notification-test" component={NotificationTestPage} />
           
@@ -156,7 +172,7 @@ function AppRouter() {
           <Route component={NotFound} />
         </Switch>
       </div>
-      {!isLandingPage && !isComingSoonPage && !isPrivacyPage && !isTermsPage && !isBetaSignupPage && !isLaunchCountdownPage && <Footer logo={logo} />}
+      {!isLandingPage && !isComingSoonPage && !isLegalPage && !isBetaSignupPage && !isLaunchCountdownPage && <Footer logo={logo} />}
     </div>
   );
 }
