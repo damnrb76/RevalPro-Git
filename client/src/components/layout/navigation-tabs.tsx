@@ -69,35 +69,35 @@ export default function NavigationTabs({ currentPath }: NavigationTabsProps) {
     );
   };
 
-  // Grouped navigation structure
+  // Grouped navigation structure with logo petal colors
   const navigationGroups: NavigationGroup[] = [
     {
       label: "Guides",
       icon: <BookOpen size={16} />,
-      color: "bg-indigo-100 text-indigo-700",
-      hoverColor: "hover:bg-indigo-200",
+      color: "bg-revalpro-purple/20 text-revalpro-purple",
+      hoverColor: "hover:bg-revalpro-purple/30",
       items: [
         { 
           href: "/user-guide", 
           label: "User Guides", 
           icon: <BookOpen size={16} />,
-          color: "bg-indigo-100 text-indigo-700",
-          hoverColor: "hover:bg-indigo-200"
+          color: "bg-revalpro-purple/20 text-revalpro-purple",
+          hoverColor: "hover:bg-revalpro-purple/30"
         },
         { 
           href: "/help-guide.html", 
           label: "Quick Start", 
           icon: <FileText size={16} />,
-          color: "bg-green-100 text-green-700",
-          hoverColor: "hover:bg-green-200"
+          color: "bg-revalpro-green/20 text-revalpro-green",
+          hoverColor: "hover:bg-revalpro-green/30"
         },
       ]
     },
     {
       label: "Profile & Settings",
       icon: <User size={16} />,
-      color: "bg-gray-200 text-gray-700",
-      hoverColor: "hover:bg-gray-300",
+      color: "bg-revalpro-teal/20 text-revalpro-teal",
+      hoverColor: "hover:bg-revalpro-teal/30",
       items: [
         { 
           href: "/subscription", 
@@ -110,8 +110,8 @@ export default function NavigationTabs({ currentPath }: NavigationTabsProps) {
           href: "/settings", 
           label: "Settings", 
           icon: <SettingsIcon size={16} />,
-          color: "bg-gray-200 text-gray-700",
-          hoverColor: "hover:bg-gray-300"
+          color: "bg-revalpro-teal/20 text-revalpro-teal",
+          hoverColor: "hover:bg-revalpro-teal/30"
         },
       ]
     },
@@ -132,8 +132,8 @@ export default function NavigationTabs({ currentPath }: NavigationTabsProps) {
           href: "/cpd", 
           label: "CPD Records", 
           icon: <BookOpen size={16} />,
-          color: "bg-revalpro-teal/20 text-revalpro-teal",
-          hoverColor: "hover:bg-revalpro-teal/30"
+          color: "bg-revalpro-blue/20 text-revalpro-blue",
+          hoverColor: "hover:bg-revalpro-blue/30"
         },
         { 
           href: "/feedback", 
@@ -153,15 +153,15 @@ export default function NavigationTabs({ currentPath }: NavigationTabsProps) {
           href: "/training", 
           label: "Training Records", 
           icon: <GraduationCap size={16} />,
-          color: "bg-revalpro-blue/20 text-revalpro-blue",
-          hoverColor: "hover:bg-revalpro-blue/30"
+          color: "bg-revalpro-teal/20 text-revalpro-teal",
+          hoverColor: "hover:bg-revalpro-teal/30"
         },
         { 
           href: "/declarations", 
           label: "Declarations", 
           icon: <ClipboardCheck size={16} />,
-          color: "bg-revalpro-pink/20 text-revalpro-pink",
-          hoverColor: "hover:bg-revalpro-pink/30"
+          color: "bg-revalpro-fuchsia/20 text-revalpro-fuchsia",
+          hoverColor: "hover:bg-revalpro-fuchsia/30"
         },
       ]
     },
@@ -182,29 +182,29 @@ export default function NavigationTabs({ currentPath }: NavigationTabsProps) {
           href: "/revalidation-dates", 
           label: "Important Dates", 
           icon: <Calendar size={16} />,
-          color: "bg-revalpro-blue/20 text-revalpro-blue",
-          hoverColor: "hover:bg-revalpro-blue/30"
+          color: "bg-revalpro-purple/20 text-revalpro-purple",
+          hoverColor: "hover:bg-revalpro-purple/30"
         },
         { 
           href: "/nmc-registration-check", 
           label: "Check NMC PIN", 
           icon: <Heart size={16} />,
-          color: "bg-revalpro-red/20 text-revalpro-red",
-          hoverColor: "hover:bg-revalpro-red/30"
+          color: "bg-revalpro-pink/20 text-revalpro-pink",
+          hoverColor: "hover:bg-revalpro-pink/30"
         },
         { 
           href: "/nmc-resources", 
           label: "NMC Resources", 
           icon: <Link2 size={16} />,
-          color: "bg-revalpro-teal/20 text-revalpro-teal",
-          hoverColor: "hover:bg-revalpro-teal/30"
+          color: "bg-revalpro-blue/20 text-revalpro-blue",
+          hoverColor: "hover:bg-revalpro-blue/30"
         },
         { 
           href: "/revalidation-audit", 
           label: "Audit & Archive", 
           icon: <Archive size={16} />,
-          color: "bg-revalpro-purple/20 text-revalpro-purple",
-          hoverColor: "hover:bg-revalpro-purple/30"
+          color: "bg-revalpro-teal/20 text-revalpro-teal",
+          hoverColor: "hover:bg-revalpro-teal/30"
         },
 
       ]
@@ -212,15 +212,15 @@ export default function NavigationTabs({ currentPath }: NavigationTabsProps) {
     {
       label: "AI Assistant",
       icon: <Bot size={16} />,
-      color: "bg-gradient-to-r from-revalpro-purple/30 to-revalpro-blue/30 text-revalpro-blue",
-      hoverColor: "hover:from-revalpro-purple/40 hover:to-revalpro-blue/40",
+      color: "bg-gradient-to-r from-revalpro-purple/30 to-revalpro-fuchsia/30 text-revalpro-purple",
+      hoverColor: "hover:from-revalpro-purple/40 hover:to-revalpro-fuchsia/40",
       items: [
         { 
           href: "/ai-assistant", 
           label: "AI Helper", 
           icon: <HelpCircle size={16} />,
-          color: "bg-gradient-to-r from-revalpro-purple/30 to-revalpro-blue/30 text-revalpro-blue font-semibold",
-          hoverColor: "hover:from-revalpro-purple/40 hover:to-revalpro-blue/40"
+          color: "bg-gradient-to-r from-revalpro-purple/30 to-revalpro-fuchsia/30 text-revalpro-purple font-semibold",
+          hoverColor: "hover:from-revalpro-purple/40 hover:to-revalpro-fuchsia/40"
         },
       ]
     },
@@ -249,13 +249,13 @@ export default function NavigationTabs({ currentPath }: NavigationTabsProps) {
     });
   }
 
-  // Dashboard as standalone item
+  // Dashboard as standalone item (keeping the pink you love!)
   const dashboardLink: NavigationLink = { 
     href: "/dashboard", 
     label: "Dashboard", 
     icon: <LayoutDashboard size={16} />,
-    color: "bg-pink-200 text-pink-700",
-    hoverColor: "hover:bg-pink-300" 
+    color: "bg-revalpro-pink/20 text-revalpro-pink",
+    hoverColor: "hover:bg-revalpro-pink/30" 
   };
 
 
