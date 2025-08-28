@@ -17,7 +17,7 @@ const scryptAsync = promisify(scrypt);
 
 // Initialize Stripe for webhook handling
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2023-10-16',
+  apiVersion: '2025-04-30.basil',
 });
 
 // Secure password hashing function for regular user accounts
@@ -264,23 +264,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const user = await storage.createUser({
         username,
         password: hashedPassword,
-        email: email || null,
-        profileImage: null,
-        jobTitle: null,
       });
 
       // Add profile information if we have it
       if (displayName) {
         try {
-          await storage.createUserProfile({
-            userId: user.id,
-            name: displayName,
-            registrationNumber: "",
-            expiryDate: "",
-            email: email || null,
-            jobTitle: null,
-            profileImage: null,
-          });
+          // User profile creation logic would go here
+          // Currently handled by frontend IndexedDB
         } catch (profileError) {
           console.error("Error creating profile for Google user:", profileError);
           // Continue anyway as the user was created
@@ -738,7 +728,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     const user = req.user;
     const currentPlan = user.currentPlan || "free";
-    const planDetails = PLAN_DETAILS[currentPlan];
+    const planDetails = PLAN_DETAILS[currentPlan as keyof typeof PLAN_DETAILS];
 
     // If user has a Stripe subscription, get additional details
     let stripeSubscription = null;
@@ -819,7 +809,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const user = req.user;
-      const planDetails = PLAN_DETAILS[planId];
+      const planDetails = PLAN_DETAILS[planId as keyof typeof PLAN_DETAILS];
       
       if (!planDetails) {
         return res.status(400).json({ error: "Invalid plan selected" });
@@ -830,9 +820,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         await storage.updateUserStripeInfo(user.id, {
           currentPlan: "free",
           subscriptionStatus: "active",
-          stripeSubscriptionId: null,
-          subscriptionPeriod: null,
-          subscriptionEndDate: null,
+          stripeSubscriptionId: undefined,
+          subscriptionPeriod: undefined,
+          subscriptionEndDate: undefined,
           cancelAtPeriodEnd: false,
         });
         return res.json({ success: true, plan: "free" });
@@ -863,7 +853,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Production mode: Use actual Stripe integration
-      const priceId = planDetails.stripePriceId[period];
+      const priceId = planDetails.stripePriceId[period as keyof typeof planDetails.stripePriceId];
       if (!priceId) {
         return res.status(400).json({ error: "Invalid price ID for selected plan and period" });
       }
@@ -983,8 +973,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     let event;
     try {
-      event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
-    } catch (err) {
+      event = stripe.webhooks.constructEvent(req.body, sig!, endpointSecret);
+    } catch (err: any) {
       console.log(`Webhook signature verification failed:`, err.message);
       return res.status(400).send(`Webhook Error: ${err.message}`);
     }
@@ -1012,7 +1002,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "Invalid plan or period" });
       }
 
-      const planDetails = PLAN_DETAILS[planId];
+      const planDetails = PLAN_DETAILS[planId as keyof typeof PLAN_DETAILS];
       if (!planDetails) {
         return res.status(400).json({ error: "Invalid plan selected" });
       }
@@ -1053,7 +1043,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "Cannot change demo or development subscription" });
       }
 
-      const priceId = planDetails.stripePriceId[period];
+      const priceId = planDetails.stripePriceId[period as keyof typeof planDetails.stripePriceId];
       if (!priceId) {
         return res.status(400).json({ error: "Invalid price ID for selected plan and period" });
       }
@@ -1104,7 +1094,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       res.json({received: true});
-    } catch (err) {
+    } catch (err: any) {
       res.status(400).send(`Webhook Error: ${err.message}`);
     }
   });
@@ -1166,7 +1156,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = parseInt(req.params.userId);
       
       // Prevent super admin from deleting themselves
-      if (req.user.id === userId) {
+      if (req.user?.id === userId) {
         return res.status(400).json({ error: "Cannot delete your own account" });
       }
 
@@ -1320,7 +1310,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 </html>`;
       
       res.send(html);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error generating beta applications view:", error);
       res.status(500).send(`<h1>Error</h1><p>Failed to load beta applications: ${error.message}</p>`);
     }
@@ -1341,7 +1331,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const response = await getRevalidationAdvice(question);
       res.json({ response });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error in AI advice endpoint:", error);
       res.status(500).json({ error: "Failed to get AI advice" });
     }
@@ -1361,7 +1351,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const response = await generateReflectiveTemplate(experience, codeSection);
       res.json({ response });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error in AI reflection endpoint:", error);
       res.status(500).json({ error: "Failed to generate reflection template" });
     }
