@@ -128,4 +128,27 @@ export function setupAuth(app: Express) {
     const { password, ...userWithoutPassword } = req.user as User;
     res.json(userWithoutPassword);
   });
+
+  // Complete initial setup endpoint
+  app.post("/api/user/complete-setup", async (req, res) => {
+    if (!req.isAuthenticated()) return res.sendStatus(401);
+    
+    try {
+      const user = req.user as User;
+      await storage.updateUserSetupStatus(user.id, true);
+      
+      // Update the user in the session
+      const updatedUser = await storage.getUser(user.id);
+      req.login(updatedUser!, (err) => {
+        if (err) {
+          console.error('Session update error:', err);
+        }
+      });
+      
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Complete setup error:', error);
+      res.status(500).json({ error: 'Failed to complete setup' });
+    }
+  });
 }

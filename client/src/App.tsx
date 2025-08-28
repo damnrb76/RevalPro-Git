@@ -48,6 +48,7 @@ import SimpleBetaView from "@/pages/simple-beta-view";
 import FirebaseTest from "@/pages/firebase-test";
 import LaunchCountdown from "@/pages/LaunchCountdown";
 import UserGuidePage from "@/pages/user-guide";
+import ProfileSetupPage from "@/pages/profile-setup";
 
 import Footer from "@/components/layout/footer";
 import NavigationTabs from "@/components/layout/navigation-tabs";
@@ -90,6 +91,7 @@ function AppRouter() {
           <Route path="/landing" component={LandingPage} />
           <Route path="/auth" component={AuthPage} />
           <Route path="/original" component={LandingPage} />
+          <ProtectedRoute path="/profile-setup" component={ProfileSetupPage} />
           <ProtectedRoute path="/dashboard" component={Dashboard} />
           <ProtectedRoute path="/home" component={Home} />
           <ProtectedRoute path="/practice-hours" component={PracticeHours} />

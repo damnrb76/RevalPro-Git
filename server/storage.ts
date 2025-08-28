@@ -32,6 +32,7 @@ export interface IStorage {
   updateUserStripeInfo(userId: number, info: SubscriptionInfo): Promise<User>;
   getAllUsers(): Promise<User[]>;
   updateUserPlan(userId: number, plan: string): Promise<User>;
+  updateUserSetupStatus(userId: number, completed: boolean): Promise<User>;
   deleteUser(userId: number): Promise<boolean>;
   getAdminStats(): Promise<{
     totalUsers: number;
@@ -117,6 +118,7 @@ export class MemStorage implements IStorage {
       cancelAtPeriodEnd: false,
       isAdmin: false,
       isSuperAdmin: false,
+      hasCompletedInitialSetup: false,
     };
     this.users.set(user.id, user);
     return user;
@@ -153,6 +155,17 @@ export class MemStorage implements IStorage {
     }
     
     const updatedUser = { ...user, currentPlan: plan };
+    this.users.set(userId, updatedUser);
+    return updatedUser;
+  }
+
+  async updateUserSetupStatus(userId: number, completed: boolean): Promise<User> {
+    const user = this.users.get(userId);
+    if (!user) {
+      throw new Error("User not found");
+    }
+    
+    const updatedUser = { ...user, hasCompletedInitialSetup: completed };
     this.users.set(userId, updatedUser);
     return updatedUser;
   }
@@ -299,6 +312,10 @@ export class DatabaseStorage implements IStorage {
 
   async updateUserPlan(userId: number, plan: string): Promise<User> {
     return this.memStorage.updateUserPlan(userId, plan);
+  }
+
+  async updateUserSetupStatus(userId: number, completed: boolean): Promise<User> {
+    return this.memStorage.updateUserSetupStatus(userId, completed);
   }
 
   async deleteUser(userId: number): Promise<boolean> {

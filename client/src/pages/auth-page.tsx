@@ -101,8 +101,11 @@ export default function AuthPage() {
   const [activeTab, setActiveTab] = useState<string>("login");
   const { user } = useAuth();
 
-  // If user is already logged in, redirect to dashboard page
+  // If user is already logged in, redirect based on setup completion
   if (user) {
+    if (!user.hasCompletedInitialSetup) {
+      return <Redirect to="/profile-setup" />;
+    }
     return <Redirect to="/dashboard" />;
   }
 

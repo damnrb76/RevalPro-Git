@@ -21,6 +21,7 @@ export const users = pgTable("users", {
   cancelAtPeriodEnd: boolean("cancel_at_period_end").default(false),
   isAdmin: boolean("is_admin").default(false),
   isSuperAdmin: boolean("is_super_admin").default(false),
+  hasCompletedInitialSetup: boolean("has_completed_initial_setup").default(false),
 });
 
 export const insertUserSchema = createInsertSchema(users).pick({
