@@ -3,7 +3,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Redirect } from "wouter";
 import RegisterForm from "@/components/auth/register-form";
 import LoginForm from "@/components/auth/login-form";
-import GoogleSignInButton from "@/components/auth/google-signin-button";
 import { Card } from "@/components/ui/card";
 import { useAuth } from "@/hooks/use-auth";
 import { Separator } from "@/components/ui/separator";
@@ -120,8 +119,7 @@ export default function AuthPage() {
           </div>
 
           <Card className="p-6 border-2 border-revalpro-blue/20 shadow-md">
-            <div className="mb-6 space-y-3">
-              <GoogleSignInButton />
+            <div className="mb-6">
               <DemoLoginButton />
             </div>
             
@@ -130,7 +128,7 @@ export default function AuthPage() {
                 <Separator className="w-full" />
               </div>
               <div className="relative flex justify-center">
-                <span className="bg-white px-2 text-xs text-gray-500">OR CONTINUE WITH</span>
+                <span className="bg-white px-2 text-xs text-gray-500">OR SIGN IN WITH EMAIL</span>
               </div>
             </div>
             
