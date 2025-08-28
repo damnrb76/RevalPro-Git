@@ -170,12 +170,16 @@ export async function createCheckoutSession({
       success_url: successUrl,
       cancel_url: cancelUrl,
       allow_promotion_codes: true,
+      discounts: [], // Allow for discounts to be applied
       automatic_tax: { enabled: true },
       customer_email: customerEmail,
       client_reference_id: userId.toString(),
       metadata: {
         app_user_id: userId.toString(),
       },
+      // Ensure promotion code field is visible
+      payment_method_collection: 'always',
+      billing_address_collection: 'auto',
     });
 
     return {
