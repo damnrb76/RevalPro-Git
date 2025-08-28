@@ -131,7 +131,7 @@ export default function BusinessInformation() {
               <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
                 <h4 className="font-semibold text-purple-800 mb-2">Premium Plan</h4>
                 <p className="text-sm text-purple-700">Full feature access and priority support</p>
-                <p className="text-lg font-bold text-purple-800">£7.99/month</p>
+                <p className="text-lg font-bold text-purple-800">£9.99/month</p>
               </div>
             </div>
 
