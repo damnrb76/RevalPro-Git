@@ -285,41 +285,85 @@ export class DatabaseStorage implements IStorage {
     this.memStorage = new MemStorage();
   }
 
-  // Delegate user methods to memory storage
+  // Use database for user methods
   async getUser(id: number): Promise<User | undefined> {
-    return this.memStorage.getUser(id);
+    const results = await db.select().from(users).where(eq(users.id, id));
+    return results[0];
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    return this.memStorage.getUserByUsername(username);
+    const results = await db.select().from(users).where(eq(users.username, username));
+    return results[0];
   }
 
   async getUserByStripeCustomerId(customerId: string): Promise<User | undefined> {
-    return this.memStorage.getUserByStripeCustomerId(customerId);
+    const results = await db.select().from(users).where(eq(users.stripeCustomerId, customerId));
+    return results[0];
   }
 
   async createUser(user: InsertUser): Promise<User> {
-    return this.memStorage.createUser(user);
+    const [createdUser] = await db.insert(users).values(user).returning();
+    return createdUser;
   }
 
   async updateUserStripeInfo(userId: number, info: SubscriptionInfo): Promise<User> {
-    return this.memStorage.updateUserStripeInfo(userId, info);
+    const updateData: any = {};
+    if (info.stripeCustomerId !== undefined) updateData.stripeCustomerId = info.stripeCustomerId;
+    if (info.stripeSubscriptionId !== undefined) updateData.stripeSubscriptionId = info.stripeSubscriptionId;
+    if (info.subscriptionStatus !== undefined) updateData.subscriptionStatus = info.subscriptionStatus;
+    if (info.currentPlan !== undefined) updateData.currentPlan = info.currentPlan;
+    if (info.subscriptionPeriod !== undefined) updateData.subscriptionPeriod = info.subscriptionPeriod;
+    if (info.subscriptionEndDate !== undefined) updateData.subscriptionEndDate = info.subscriptionEndDate;
+    if (info.cancelAtPeriodEnd !== undefined) updateData.cancelAtPeriodEnd = info.cancelAtPeriodEnd;
+    
+    const [updatedUser] = await db
+      .update(users)
+      .set(updateData)
+      .where(eq(users.id, userId))
+      .returning();
+    
+    if (!updatedUser) {
+      throw new Error("User not found");
+    }
+    
+    return updatedUser;
   }
 
   async getAllUsers(): Promise<User[]> {
-    return this.memStorage.getAllUsers();
+    return await db.select().from(users);
   }
 
   async updateUserPlan(userId: number, plan: string): Promise<User> {
-    return this.memStorage.updateUserPlan(userId, plan);
+    const [updatedUser] = await db
+      .update(users)
+      .set({ currentPlan: plan })
+      .where(eq(users.id, userId))
+      .returning();
+    
+    if (!updatedUser) {
+      throw new Error("User not found");
+    }
+    
+    return updatedUser;
   }
 
   async updateUserSetupStatus(userId: number, completed: boolean): Promise<User> {
-    return this.memStorage.updateUserSetupStatus(userId, completed);
+    const [updatedUser] = await db
+      .update(users)
+      .set({ hasCompletedInitialSetup: completed })
+      .where(eq(users.id, userId))
+      .returning();
+    
+    if (!updatedUser) {
+      throw new Error("User not found");
+    }
+    
+    return updatedUser;
   }
 
   async deleteUser(userId: number): Promise<boolean> {
-    return this.memStorage.deleteUser(userId);
+    const result = await db.delete(users).where(eq(users.id, userId));
+    return (result.rowCount ?? 0) > 0;
   }
 
   async getAdminStats(): Promise<{

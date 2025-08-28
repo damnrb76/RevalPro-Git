@@ -29,13 +29,13 @@ export default function UserGuidePage() {
       badge: "Essential",
       badgeColor: "bg-green-500",
       content: `
-        <h3>🚀 Quick Start - Demo Account</h3>
-        <p>Get started in 30 seconds with full premium access!</p>
+        <h3>🚀 Quick Start Guide</h3>
+        <p>Get started with RevalPro in just a few minutes!</p>
         <ol>
           <li>Visit the application in your browser</li>
-          <li>Click the <strong>"Demo Account"</strong> button</li>
-          <li>Explore all features with sample data</li>
-          <li>Experience the complete revalidation system</li>
+          <li>Click <strong>"Register"</strong> to create your account</li>
+          <li>Complete the profile setup with your NMC details</li>
+          <li>Start tracking your revalidation progress</li>
         </ol>
         
         <h3>Essential First Steps</h3>
@@ -173,11 +173,6 @@ export default function UserGuidePage() {
       title: "Export Often",
       description: "Keep regular backups of your revalidation progress"
     },
-    {
-      icon: <Users className="w-5 h-5 text-purple-500" />,
-      title: "Demo Account",
-      description: "Try all premium features risk-free with sample data"
-    }
   ];
 
   const externalResources = [
@@ -264,12 +259,6 @@ export default function UserGuidePage() {
                               View Markdown
                             </Button>
                           </>
-                        )}
-                        {guide.id === "quick-start" && (
-                          <Button className="flex items-center gap-2">
-                            <PlayCircle className="w-4 h-4" />
-                            Try Demo Account
-                          </Button>
                         )}
                         {guide.id === "nmc-requirements" && (
                           <Button variant="outline" className="flex items-center gap-2">

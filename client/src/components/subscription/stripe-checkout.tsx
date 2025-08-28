@@ -118,13 +118,6 @@ export default function StripeCheckout({
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Test Card Information Banner */}
-          <Alert>
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription>
-              <strong>Test Mode:</strong> Use card number 4242 4242 4242 4242 with any future date and CVC for testing.
-            </AlertDescription>
-          </Alert>
 
           {/* Subscription Summary */}
           <div className="bg-gray-50 p-4 rounded-lg space-y-2">
