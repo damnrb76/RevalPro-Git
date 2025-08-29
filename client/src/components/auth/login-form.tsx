@@ -141,20 +141,6 @@ export default function LoginForm() {
         {/* Login Options */}
         <div className="text-sm text-muted-foreground text-center space-y-2">
           <p>Don't have an account? <a href="/auth?tab=register" className="text-revalpro-blue hover:underline">Create one</a></p>
-          <p className="text-xs">or try the <button 
-            type="button"
-            onClick={() => {
-              form.setValue("username", "demouser");
-              form.setValue("password", "hello");
-              // Submit the form after a short delay to ensure values are set
-              setTimeout(() => {
-                form.handleSubmit(onSubmit)();
-              }, 100);
-            }}
-            className="text-revalpro-teal hover:underline text-xs"
-          >
-            demo account
-          </button></p>
         </div>
       </form>
     </Form>
