@@ -31,10 +31,15 @@ import { addYears } from "date-fns";
 // Extend the schema with form validation
 const formSchema = insertUserProfileSchema.extend({
   name: z.string().min(2, "Name must be at least 2 characters"),
-  registrationNumber: z.string().min(5, "Registration number is required").regex(/^\d{2}[A-Z]\d{4}[A-Z]$/, "NMC PIN format should be like 08I3421E"),
-  expiryDate: z.string().min(1, "Expiry date is required"),
+  registrationNumber: z.string().optional().refine((val) => {
+    if (!val || val.trim() === "") return true;
+    return /^\d{2}[A-Z]\d{4}[A-Z]$/.test(val);
+  }, "NMC PIN format should be like 08I3421E"),
+  expiryDate: z.string().optional(),
   email: z.string().email("Invalid email address").optional().or(z.literal("")),
 });
+
+type FormSchemaType = z.infer<typeof formSchema>;
 
 type UserProfileFormProps = {
   initialData: UserProfile | null;
@@ -53,26 +58,26 @@ export default function UserProfileForm({ initialData, onClose, onSuccess }: Use
     resolver: zodResolver(formSchema),
     defaultValues: initialData ? {
       name: initialData.name,
-      registrationNumber: initialData.registrationNumber,
-      expiryDate: new Date(initialData.expiryDate).toISOString().split('T')[0],
+      registrationNumber: initialData.registrationNumber || "",
+      expiryDate: initialData.expiryDate ? new Date(initialData.expiryDate).toISOString().split('T')[0] : "",
       email: initialData.email || "",
     } : {
       name: "",
       registrationNumber: "",
-      expiryDate: defaultExpiryDate,
+      expiryDate: "",
       email: "",
     },
   });
   
   // Create or update mutation
   const mutation = useMutation({
-    mutationFn: async (data: z.infer<typeof formSchema>) => {
+    mutationFn: async (data: FormSchemaType) => {
       if (initialData) {
         // Update existing profile, preserving the profile image if it exists
         await userProfileStorage.update(initialData.id, {
           name: data.name,
-          registrationNumber: data.registrationNumber,
-          expiryDate: data.expiryDate, 
+          registrationNumber: data.registrationNumber || "",
+          expiryDate: data.expiryDate || "", 
           email: data.email,
           profileImage: initialData.profileImage, // Preserve the existing profile image
         });
@@ -81,8 +86,8 @@ export default function UserProfileForm({ initialData, onClose, onSuccess }: Use
         // Create new profile
         return await userProfileStorage.add({
           name: data.name,
-          registrationNumber: data.registrationNumber,
-          expiryDate: data.expiryDate,
+          registrationNumber: data.registrationNumber || "",
+          expiryDate: data.expiryDate || "",
           email: data.email,
           profileImage: null, // Initialize with no profile image
         });
@@ -106,7 +111,7 @@ export default function UserProfileForm({ initialData, onClose, onSuccess }: Use
     },
   });
   
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
+  const onSubmit = (data: FormSchemaType) => {
     mutation.mutate(data);
   };
   
@@ -148,12 +153,12 @@ export default function UserProfileForm({ initialData, onClose, onSuccess }: Use
               name="registrationNumber"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>NMC PIN</FormLabel>
+                  <FormLabel>NMC PIN (Optional)</FormLabel>
                   <FormControl>
                     <Input placeholder="e.g., 08I3421E" {...field} />
                   </FormControl>
                   <FormDescription>
-                    Your Nursing & Midwifery Council registration number
+                    Your Nursing & Midwifery Council registration number. You can add this later if needed.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -165,12 +170,12 @@ export default function UserProfileForm({ initialData, onClose, onSuccess }: Use
               name="expiryDate"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Registration Expiry Date</FormLabel>
+                  <FormLabel>Registration Expiry Date (Optional)</FormLabel>
                   <FormControl>
                     <Input type="date" {...field} />
                   </FormControl>
                   <FormDescription>
-                    The date when your current NMC registration expires
+                    The date when your current NMC registration expires. You can add this later if needed.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

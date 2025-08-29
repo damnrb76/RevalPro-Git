@@ -35,8 +35,8 @@ export const insertUserSchema = createInsertSchema(users).pick({
 export const userProfiles = pgTable("user_profiles", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
-  registrationNumber: text("registration_number").notNull(),
-  expiryDate: date("expiry_date").notNull(),
+  registrationNumber: text("registration_number"),
+  expiryDate: date("expiry_date"),
   jobTitle: text("job_title"),
   email: text("email"),
   profileImage: text("profile_image"),
@@ -44,7 +44,7 @@ export const userProfiles = pgTable("user_profiles", {
 });
 
 export const insertUserProfileSchema = createInsertSchema(userProfiles, {
-  expiryDate: z.coerce.date(),
+  expiryDate: z.coerce.date().optional(),
 }).pick({
   name: true,
   registrationNumber: true,
@@ -52,6 +52,9 @@ export const insertUserProfileSchema = createInsertSchema(userProfiles, {
   jobTitle: true,
   email: true,
   profileImage: true,
+}).extend({
+  registrationNumber: z.string().optional(),
+  expiryDate: z.coerce.date().optional(),
 });
 
 // Weekly Hours Configuration
