@@ -113,7 +113,7 @@ export class MemStorage implements IStorage {
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    for (const user of this.users.values()) {
+    for (const user of Array.from(this.users.values())) {
       if (user.username === username) {
         return user;
       }
@@ -144,7 +144,7 @@ export class MemStorage implements IStorage {
   }
 
   async getUserByStripeCustomerId(customerId: string): Promise<User | undefined> {
-    for (const user of this.users.values()) {
+    for (const user of Array.from(this.users.values())) {
       if (user.stripeCustomerId === customerId) {
         return user;
       }
@@ -349,7 +349,7 @@ export class MemStorage implements IStorage {
 
   // Coupon methods
   async getCouponByCode(code: string): Promise<CouponCode | null> {
-    for (const coupon of this.coupons.values()) {
+    for (const coupon of Array.from(this.coupons.values())) {
       if (coupon.code === code) {
         return coupon;
       }
@@ -386,7 +386,7 @@ export class MemStorage implements IStorage {
       }
 
       // Check if user already redeemed this coupon
-      for (const redemption of this.couponRedemptions.values()) {
+      for (const redemption of Array.from(this.couponRedemptions.values())) {
         if (redemption.couponId === coupon.id && redemption.userId === userId) {
           return { success: false, error: "You have already redeemed this coupon" };
         }
