@@ -10,7 +10,7 @@ import {
 import session from "express-session";
 import createMemoryStore from "memorystore";
 import { db } from "./db";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 
 // Define the session store type
 const MemoryStore = createMemoryStore(session);
@@ -235,7 +235,14 @@ export class MemStorage implements IStorage {
     const trainingRecord: TrainingRecord = {
       id: this.currentTrainingId++,
       ...record,
+      date: record.date instanceof Date ? record.date.toISOString().split('T')[0] : record.date,
+      expiryDate: record.expiryDate instanceof Date ? record.expiryDate.toISOString().split('T')[0] : (record.expiryDate || null),
       created: new Date(),
+      status: record.status || 'completed',
+      description: record.description || null,
+      certificateNumber: record.certificateNumber || null,
+      attachment: record.attachment || null,
+      notes: record.notes || null
     };
     this.trainingRecords.set(trainingRecord.id, trainingRecord);
     return trainingRecord;
@@ -247,7 +254,17 @@ export class MemStorage implements IStorage {
       throw new Error("Training record not found");
     }
     
-    const updatedRecord = { ...existingRecord, ...record };
+    const updateData: any = { ...record };
+    if (updateData.date instanceof Date) {
+      updateData.date = updateData.date.toISOString().split('T')[0];
+    }
+    if (updateData.expiryDate instanceof Date) {
+      updateData.expiryDate = updateData.expiryDate.toISOString().split('T')[0];
+    } else if (updateData.expiryDate === undefined) {
+      updateData.expiryDate = null;
+    }
+    
+    const updatedRecord = { ...existingRecord, ...updateData } as TrainingRecord;
     this.trainingRecords.set(id, updatedRecord);
     return updatedRecord;
   }
@@ -435,6 +452,12 @@ export class MemStorage implements IStorage {
     const newCoupon: CouponCode = {
       id: this.currentCouponId++,
       ...coupon,
+      description: coupon.description ?? null,
+      maxRedemptions: coupon.maxRedemptions ?? null,
+      isActive: coupon.isActive ?? true,
+      validFrom: coupon.validFrom ?? null,
+      validUntil: coupon.validUntil ?? null,
+      createdBy: coupon.createdBy ?? null,
       currentRedemptions: 0,
       created: new Date(),
     };
@@ -571,17 +594,30 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createTrainingRecord(record: InsertTrainingRecord): Promise<TrainingRecord> {
+    const recordData = {
+      ...record,
+      date: record.date instanceof Date ? record.date.toISOString().split('T')[0] : record.date,
+      expiryDate: record.expiryDate instanceof Date ? record.expiryDate.toISOString().split('T')[0] : record.expiryDate
+    };
     const [trainingRecord] = await db
       .insert(trainingRecords)
-      .values(record)
+      .values(recordData)
       .returning();
     return trainingRecord;
   }
 
   async updateTrainingRecord(id: number, record: Partial<InsertTrainingRecord>): Promise<TrainingRecord> {
+    const updateData: any = { ...record };
+    if (updateData.date instanceof Date) {
+      updateData.date = updateData.date.toISOString().split('T')[0];
+    }
+    if (updateData.expiryDate instanceof Date) {
+      updateData.expiryDate = updateData.expiryDate.toISOString().split('T')[0];
+    }
+    
     const [updatedRecord] = await db
       .update(trainingRecords)
-      .set(record)
+      .set(updateData)
       .where(eq(trainingRecords.id, id))
       .returning();
     
@@ -616,8 +652,10 @@ export class DatabaseStorage implements IStorage {
     const result = await db
       .select()
       .from(revalidationCycles)
-      .where(eq(revalidationCycles.userId, userId))
-      .where(eq(revalidationCycles.status, 'active'))
+      .where(and(
+        eq(revalidationCycles.userId, userId),
+        eq(revalidationCycles.status, 'active')
+      ))
       .limit(1);
     
     return result[0] || null;
@@ -643,17 +681,36 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createRevalidationCycle(cycle: InsertRevalidationCycle): Promise<RevalidationCycle> {
+    const cycleData: any = {
+      ...cycle,
+      startDate: cycle.startDate instanceof Date ? cycle.startDate.toISOString().split('T')[0] : cycle.startDate,
+      endDate: cycle.endDate instanceof Date ? cycle.endDate.toISOString().split('T')[0] : cycle.endDate,
+      submissionDate: cycle.submissionDate instanceof Date 
+        ? cycle.submissionDate.toISOString().split('T')[0] 
+        : (cycle.submissionDate || null)
+    };
     const [revalidationCycle] = await db
       .insert(revalidationCycles)
-      .values(cycle)
+      .values(cycleData)
       .returning();
     return revalidationCycle;
   }
 
   async updateRevalidationCycle(id: number, cycle: Partial<InsertRevalidationCycle>): Promise<RevalidationCycle> {
+    const updateData: any = { ...cycle };
+    if (updateData.startDate instanceof Date) {
+      updateData.startDate = updateData.startDate.toISOString().split('T')[0];
+    }
+    if (updateData.endDate instanceof Date) {
+      updateData.endDate = updateData.endDate.toISOString().split('T')[0];
+    }
+    if (updateData.submissionDate instanceof Date) {
+      updateData.submissionDate = updateData.submissionDate.toISOString().split('T')[0];
+    }
+    
     const [updatedCycle] = await db
       .update(revalidationCycles)
-      .set(cycle)
+      .set(updateData)
       .where(eq(revalidationCycles.id, id))
       .returning();
     
@@ -734,8 +791,10 @@ export class DatabaseStorage implements IStorage {
       const existingRedemption = await db
         .select()
         .from(couponRedemptions)
-        .where(eq(couponRedemptions.couponId, coupon.id))
-        .where(eq(couponRedemptions.userId, userId))
+        .where(and(
+          eq(couponRedemptions.couponId, coupon.id),
+          eq(couponRedemptions.userId, userId)
+        ))
         .limit(1);
 
       if (existingRedemption.length > 0) {
