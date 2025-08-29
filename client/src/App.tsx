@@ -111,7 +111,7 @@ function AppRouter() {
           <ProtectedRoute path="/nmc-resources" component={NmcResources} />
           
           {/* Revalidation Lifecycle Routes */}
-          <ProtectedRoute path="/revalidation-audit" component={RevalidationAuditPage} />
+          <ProtectedRoute path="/revalidation-audit" component={() => <RevalidationAuditPage />} />
           
           {/* User Guide Routes */}
           <ProtectedRoute path="/user-guide" component={UserGuidePage} />
@@ -122,7 +122,7 @@ function AppRouter() {
           
           {/* Subscription Routes */}
           <ProtectedRoute path="/subscription" component={SubscriptionPage} />
-          <ProtectedRoute path="/checkout" component={CheckoutPage} />
+          <ProtectedRoute path="/checkout" component={() => <CheckoutPage />} />
           <ProtectedRoute path="/subscription/success" component={SubscriptionSuccess} />
           <ProtectedRoute path="/subscription-success" component={SubscriptionSuccess} />
           
