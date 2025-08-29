@@ -140,7 +140,7 @@ export default function LoginForm() {
 
         {/* Login Options */}
         <div className="text-sm text-muted-foreground text-center space-y-2">
-          <p>Don't have an account? <a href="/auth?tab=register" className="text-revalpro-blue hover:underline">Create one</a></p>
+          <p><a href="/auth?tab=register" className="text-revalpro-blue hover:underline">Create one</a></p>
         </div>
       </form>
     </Form>
