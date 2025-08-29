@@ -169,17 +169,19 @@ export async function createCheckoutSession({
       ],
       success_url: successUrl,
       cancel_url: cancelUrl,
-      allow_promotion_codes: true,
-      discounts: [], // Allow for discounts to be applied
+      allow_promotion_codes: true, // Enable promotion/coupon codes
       automatic_tax: { enabled: true },
       customer_email: customerEmail,
       client_reference_id: userId.toString(),
       metadata: {
         app_user_id: userId.toString(),
       },
-      // Ensure promotion code field is visible
+      // Optimize for coupon code visibility
       payment_method_collection: 'always',
       billing_address_collection: 'auto',
+      phone_number_collection: {
+        enabled: false, // Reduce form clutter to make coupon field more visible
+      },
     });
 
     return {

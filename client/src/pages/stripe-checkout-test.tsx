@@ -59,10 +59,7 @@ function CheckoutForm({ subscriptionData, onSuccess }: { subscriptionData: any, 
         <PaymentElement />
       </div>
       
-      <div className="flex justify-between items-center">
-        <div className="text-sm text-muted-foreground">
-          Test Card: 4242 4242 4242 4242
-        </div>
+      <div className="flex justify-end items-center">
         <Button 
           type="submit" 
           disabled={!stripe || isProcessing}
