@@ -3,7 +3,9 @@ import {
   betaApplications, type BetaApplication, type InsertBetaApplication,
   trainingRecords, type TrainingRecord, type InsertTrainingRecord,
   revalidationCycles, type RevalidationCycle, type InsertRevalidationCycle,
-  revalidationSubmissions, type RevalidationSubmission, type InsertRevalidationSubmission
+  revalidationSubmissions, type RevalidationSubmission, type InsertRevalidationSubmission,
+  couponCodes, type CouponCode, type InsertCouponCode,
+  couponRedemptions, type CouponRedemption, type InsertCouponRedemption
 } from "@shared/schema";
 import session from "express-session";
 import createMemoryStore from "memorystore";
@@ -64,6 +66,12 @@ export interface IStorage {
   createRevalidationSubmission(submission: InsertRevalidationSubmission): Promise<RevalidationSubmission>;
   getRevalidationSubmissions(cycleId: number): Promise<RevalidationSubmission[]>;
   
+  // Coupon methods
+  getCouponByCode(code: string): Promise<CouponCode | null>;
+  redeemCoupon(couponCode: string, userId: number, ipAddress?: string, userAgent?: string): Promise<{ success: boolean; coupon?: CouponCode; error?: string }>;
+  createCoupon(coupon: InsertCouponCode): Promise<CouponCode>;
+  getAllCoupons(): Promise<CouponCode[]>;
+  
   sessionStore: session.Store;
 }
 
@@ -72,21 +80,32 @@ export class MemStorage implements IStorage {
   private users: Map<number, User>;
   private betaApplications: Map<number, BetaApplication>;
   private trainingRecords: Map<number, TrainingRecord>;
+  private coupons: Map<number, CouponCode>;
+  private couponRedemptions: Map<number, CouponRedemption>;
   currentId: number;
   currentBetaId: number;
   currentTrainingId: number;
+  currentCouponId: number;
+  currentRedemptionId: number;
   sessionStore: session.Store;
 
   constructor() {
     this.users = new Map();
     this.betaApplications = new Map();
     this.trainingRecords = new Map();
+    this.coupons = new Map();
+    this.couponRedemptions = new Map();
     this.currentId = 1;
     this.currentBetaId = 1;
     this.currentTrainingId = 1;
+    this.currentCouponId = 1;
+    this.currentRedemptionId = 1;
     this.sessionStore = new MemoryStore({
       checkPeriod: 86400000,
     });
+    
+    // Create some test coupons
+    this.createTestCoupons();
   }
 
   async getUser(id: number): Promise<User | undefined> {
@@ -273,6 +292,158 @@ export class MemStorage implements IStorage {
 
   async getRevalidationSubmissions(cycleId: number): Promise<RevalidationSubmission[]> {
     return [];
+  }
+
+  // Create test coupons
+  private createTestCoupons() {
+    // Create some test coupons for development
+    const testCoupons: CouponCode[] = [
+      {
+        id: 1,
+        code: "STANDARD30",
+        description: "30 days Standard plan",
+        planId: "standard",
+        period: "monthly",
+        maxRedemptions: null,
+        currentRedemptions: 0,
+        isActive: true,
+        validFrom: null,
+        validUntil: null,
+        createdBy: null,
+        created: new Date(),
+      },
+      {
+        id: 2,
+        code: "PREMIUM90",
+        description: "90 days Premium plan",
+        planId: "premium",
+        period: "monthly",
+        maxRedemptions: 10,
+        currentRedemptions: 0,
+        isActive: true,
+        validFrom: null,
+        validUntil: null,
+        createdBy: null,
+        created: new Date(),
+      },
+      {
+        id: 3,
+        code: "YEARLY20",
+        description: "1 year Standard plan",
+        planId: "standard",
+        period: "annual",
+        maxRedemptions: 5,
+        currentRedemptions: 0,
+        isActive: true,
+        validFrom: null,
+        validUntil: null,
+        createdBy: null,
+        created: new Date(),
+      }
+    ];
+
+    testCoupons.forEach(coupon => {
+      this.coupons.set(coupon.id, coupon);
+    });
+  }
+
+  // Coupon methods
+  async getCouponByCode(code: string): Promise<CouponCode | null> {
+    for (const coupon of this.coupons.values()) {
+      if (coupon.code === code) {
+        return coupon;
+      }
+    }
+    return null;
+  }
+
+  async redeemCoupon(couponCode: string, userId: number, ipAddress?: string, userAgent?: string): Promise<{ success: boolean; coupon?: CouponCode; error?: string }> {
+    try {
+      // Get coupon details
+      const coupon = await this.getCouponByCode(couponCode);
+      
+      if (!coupon) {
+        return { success: false, error: "Invalid coupon code" };
+      }
+
+      if (!coupon.isActive) {
+        return { success: false, error: "This coupon is no longer active" };
+      }
+
+      // Check validity dates
+      const now = new Date();
+      if (coupon.validFrom && new Date(coupon.validFrom) > now) {
+        return { success: false, error: "This coupon is not yet valid" };
+      }
+
+      if (coupon.validUntil && new Date(coupon.validUntil) < now) {
+        return { success: false, error: "This coupon has expired" };
+      }
+
+      // Check redemption limits
+      if (coupon.maxRedemptions && coupon.currentRedemptions >= coupon.maxRedemptions) {
+        return { success: false, error: "This coupon has reached its redemption limit" };
+      }
+
+      // Check if user already redeemed this coupon
+      for (const redemption of this.couponRedemptions.values()) {
+        if (redemption.couponId === coupon.id && redemption.userId === userId) {
+          return { success: false, error: "You have already redeemed this coupon" };
+        }
+      }
+
+      // Create redemption record
+      const redemption: CouponRedemption = {
+        id: this.currentRedemptionId++,
+        couponId: coupon.id,
+        userId,
+        redeemedAt: new Date(),
+        ipAddress: ipAddress || null,
+        userAgent: userAgent || null,
+      };
+      this.couponRedemptions.set(redemption.id, redemption);
+
+      // Update coupon redemption count
+      coupon.currentRedemptions++;
+      this.coupons.set(coupon.id, coupon);
+
+      // Award subscription to user
+      const endDate = new Date();
+      if (coupon.period === "annual") {
+        endDate.setFullYear(endDate.getFullYear() + 1);
+      } else {
+        endDate.setMonth(endDate.getMonth() + 1);
+      }
+
+      await this.updateUserStripeInfo(userId, {
+        currentPlan: coupon.planId,
+        subscriptionStatus: "active",
+        stripeSubscriptionId: `coupon_${coupon.id}_${userId}_${Date.now()}`,
+        subscriptionPeriod: coupon.period,
+        subscriptionEndDate: endDate,
+        cancelAtPeriodEnd: false,
+      });
+
+      return { success: true, coupon };
+    } catch (error) {
+      console.error("Error redeeming coupon:", error);
+      return { success: false, error: "Failed to redeem coupon" };
+    }
+  }
+
+  async createCoupon(coupon: InsertCouponCode): Promise<CouponCode> {
+    const newCoupon: CouponCode = {
+      id: this.currentCouponId++,
+      ...coupon,
+      currentRedemptions: 0,
+      created: new Date(),
+    };
+    this.coupons.set(newCoupon.id, newCoupon);
+    return newCoupon;
+  }
+
+  async getAllCoupons(): Promise<CouponCode[]> {
+    return Array.from(this.coupons.values());
   }
 }
 
@@ -518,6 +689,107 @@ export class DatabaseStorage implements IStorage {
       .from(revalidationSubmissions)
       .where(eq(revalidationSubmissions.cycleId, cycleId))
       .orderBy(revalidationSubmissions.submissionDate);
+  }
+
+  // Coupon methods - use persistent database storage
+  async getCouponByCode(code: string): Promise<CouponCode | null> {
+    const result = await db
+      .select()
+      .from(couponCodes)
+      .where(eq(couponCodes.code, code))
+      .limit(1);
+    
+    return result[0] || null;
+  }
+
+  async redeemCoupon(couponCode: string, userId: number, ipAddress?: string, userAgent?: string): Promise<{ success: boolean; coupon?: CouponCode; error?: string }> {
+    try {
+      // Get coupon details
+      const coupon = await this.getCouponByCode(couponCode);
+      
+      if (!coupon) {
+        return { success: false, error: "Invalid coupon code" };
+      }
+
+      if (!coupon.isActive) {
+        return { success: false, error: "This coupon is no longer active" };
+      }
+
+      // Check validity dates
+      const now = new Date();
+      if (coupon.validFrom && new Date(coupon.validFrom) > now) {
+        return { success: false, error: "This coupon is not yet valid" };
+      }
+
+      if (coupon.validUntil && new Date(coupon.validUntil) < now) {
+        return { success: false, error: "This coupon has expired" };
+      }
+
+      // Check redemption limits
+      if (coupon.maxRedemptions && coupon.currentRedemptions >= coupon.maxRedemptions) {
+        return { success: false, error: "This coupon has reached its redemption limit" };
+      }
+
+      // Check if user already redeemed this coupon
+      const existingRedemption = await db
+        .select()
+        .from(couponRedemptions)
+        .where(eq(couponRedemptions.couponId, coupon.id))
+        .where(eq(couponRedemptions.userId, userId))
+        .limit(1);
+
+      if (existingRedemption.length > 0) {
+        return { success: false, error: "You have already redeemed this coupon" };
+      }
+
+      // Create redemption record
+      await db.insert(couponRedemptions).values({
+        couponId: coupon.id,
+        userId,
+        ipAddress: ipAddress || null,
+        userAgent: userAgent || null,
+      });
+
+      // Update coupon redemption count
+      await db
+        .update(couponCodes)
+        .set({ currentRedemptions: coupon.currentRedemptions + 1 })
+        .where(eq(couponCodes.id, coupon.id));
+
+      // Award subscription to user
+      const endDate = new Date();
+      if (coupon.period === "annual") {
+        endDate.setFullYear(endDate.getFullYear() + 1);
+      } else {
+        endDate.setMonth(endDate.getMonth() + 1);
+      }
+
+      await this.updateUserStripeInfo(userId, {
+        currentPlan: coupon.planId,
+        subscriptionStatus: "active",
+        stripeSubscriptionId: `coupon_${coupon.id}_${userId}_${Date.now()}`,
+        subscriptionPeriod: coupon.period,
+        subscriptionEndDate: endDate,
+        cancelAtPeriodEnd: false,
+      });
+
+      return { success: true, coupon };
+    } catch (error) {
+      console.error("Error redeeming coupon:", error);
+      return { success: false, error: "Failed to redeem coupon" };
+    }
+  }
+
+  async createCoupon(coupon: InsertCouponCode): Promise<CouponCode> {
+    const [newCoupon] = await db
+      .insert(couponCodes)
+      .values(coupon)
+      .returning();
+    return newCoupon;
+  }
+
+  async getAllCoupons(): Promise<CouponCode[]> {
+    return await db.select().from(couponCodes);
   }
 }
 

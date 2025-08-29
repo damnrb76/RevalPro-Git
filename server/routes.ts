@@ -756,6 +756,104 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
+  // Coupon management endpoints
+  app.post("/api/coupons/validate", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ error: "You must be logged in" });
+    }
+
+    try {
+      const { couponCode } = req.body;
+      
+      if (!couponCode || typeof couponCode !== 'string') {
+        return res.status(400).json({ error: "Coupon code is required" });
+      }
+
+      const coupon = await storage.getCouponByCode(couponCode.trim().toUpperCase());
+      
+      if (!coupon) {
+        return res.status(404).json({ error: "Invalid coupon code" });
+      }
+
+      if (!coupon.isActive) {
+        return res.status(400).json({ error: "This coupon is no longer active" });
+      }
+
+      // Check validity dates
+      const now = new Date();
+      if (coupon.validFrom && new Date(coupon.validFrom) > now) {
+        return res.status(400).json({ error: "This coupon is not yet valid" });
+      }
+
+      if (coupon.validUntil && new Date(coupon.validUntil) < now) {
+        return res.status(400).json({ error: "This coupon has expired" });
+      }
+
+      // Check redemption limits
+      if (coupon.maxRedemptions && coupon.currentRedemptions >= coupon.maxRedemptions) {
+        return res.status(400).json({ error: "This coupon has reached its redemption limit" });
+      }
+
+      res.json({
+        valid: true,
+        coupon: {
+          code: coupon.code,
+          description: coupon.description,
+          planId: coupon.planId,
+          period: coupon.period,
+        }
+      });
+    } catch (error) {
+      console.error("Error validating coupon:", error);
+      res.status(500).json({ error: "Failed to validate coupon" });
+    }
+  });
+
+  app.post("/api/coupons/redeem", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ error: "You must be logged in" });
+    }
+
+    try {
+      const { couponCode } = req.body;
+      const userId = req.user.id;
+      
+      if (!couponCode || typeof couponCode !== 'string') {
+        return res.status(400).json({ error: "Coupon code is required" });
+      }
+
+      // Get IP address for audit trail
+      const ipAddress = req.ip || req.connection.remoteAddress || 'unknown';
+      const userAgent = req.headers['user-agent'] || '';
+
+      const result = await storage.redeemCoupon(
+        couponCode.trim().toUpperCase(), 
+        userId, 
+        ipAddress, 
+        userAgent
+      );
+
+      if (!result.success) {
+        return res.status(400).json({ error: result.error });
+      }
+
+      res.json({
+        success: true,
+        message: "Coupon redeemed successfully! Your subscription has been activated.",
+        coupon: result.coupon ? {
+          code: result.coupon.code,
+          description: result.coupon.description,
+          planId: result.coupon.planId,
+          period: result.coupon.period,
+        } : undefined
+      });
+    } catch (error) {
+      console.error("Error redeeming coupon:", error);
+      res.status(500).json({ error: "Failed to redeem coupon" });
+    }
+  });
+
+
   // Create Checkout Session (recommended approach per GPT)
   app.post("/api/subscription/checkout", async (req, res) => {
     if (!req.isAuthenticated()) {
@@ -1118,6 +1216,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching admin stats:", error);
       res.status(500).json({ error: "Failed to fetch admin statistics" });
+    }
+  });
+
+  // Admin coupon management routes
+  app.get("/api/admin/coupons", requireAdmin, async (req, res) => {
+    try {
+      const coupons = await storage.getAllCoupons();
+      res.json(coupons);
+    } catch (error) {
+      console.error("Error fetching coupons:", error);
+      res.status(500).json({ error: "Failed to fetch coupons" });
+    }
+  });
+
+  app.post("/api/admin/coupons", requireAdmin, async (req, res) => {
+    try {
+      const couponData = req.body;
+      
+      // Convert code to uppercase for consistency
+      couponData.code = couponData.code.toUpperCase();
+      
+      // Set created by admin user
+      couponData.createdBy = req.user.id;
+      
+      const coupon = await storage.createCoupon(couponData);
+      res.json(coupon);
+    } catch (error) {
+      console.error("Error creating coupon:", error);
+      res.status(500).json({ error: "Failed to create coupon" });
     }
   });
 

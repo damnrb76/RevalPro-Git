@@ -386,6 +386,32 @@ export const revalidationSubmissions = pgTable("revalidation_submissions", {
   created: timestamp("created").notNull().defaultNow(),
 });
 
+// Coupon Codes
+export const couponCodes = pgTable("coupon_codes", {
+  id: serial("id").primaryKey(),
+  code: text("code").notNull().unique(),
+  description: text("description"),
+  planId: text("plan_id").notNull(), // "standard" or "premium" - what plan this coupon awards
+  period: text("period").notNull(), // "monthly" or "annual" - billing period for awarded plan
+  maxRedemptions: integer("max_redemptions"), // null for unlimited
+  currentRedemptions: integer("current_redemptions").notNull().default(0),
+  isActive: boolean("is_active").notNull().default(true),
+  validFrom: timestamp("valid_from"),
+  validUntil: timestamp("valid_until"),
+  createdBy: integer("created_by"), // Admin user who created it
+  created: timestamp("created").notNull().defaultNow(),
+});
+
+// Coupon Redemptions (audit trail)
+export const couponRedemptions = pgTable("coupon_redemptions", {
+  id: serial("id").primaryKey(),
+  couponId: integer("coupon_id").notNull(), // Reference to coupon
+  userId: integer("user_id").notNull(), // User who redeemed it
+  redeemedAt: timestamp("redeemed_at").notNull().defaultNow(),
+  ipAddress: text("ip_address"),
+  userAgent: text("user_agent"),
+});
+
 export const insertRevalidationSubmissionSchema = createInsertSchema(revalidationSubmissions, {
   submissionDate: z.coerce.date().optional(),
 }).pick({
@@ -394,6 +420,30 @@ export const insertRevalidationSubmissionSchema = createInsertSchema(revalidatio
   submissionData: true,
   nmcReference: true,
   status: true,
+  ipAddress: true,
+  userAgent: true,
+});
+
+export const insertCouponCodeSchema = createInsertSchema(couponCodes, {
+  validFrom: z.coerce.date().optional(),
+  validUntil: z.coerce.date().optional(),
+}).pick({
+  code: true,
+  description: true,
+  planId: true,
+  period: true,
+  maxRedemptions: true,
+  isActive: true,
+  validFrom: true,
+  validUntil: true,
+  createdBy: true,
+});
+
+export const insertCouponRedemptionSchema = createInsertSchema(couponRedemptions, {
+  redeemedAt: z.coerce.date().optional(),
+}).pick({
+  couponId: true,
+  userId: true,
   ipAddress: true,
   userAgent: true,
 });
@@ -437,6 +487,12 @@ export type InsertRevalidationCycle = z.infer<typeof insertRevalidationCycleSche
 
 export type RevalidationSubmission = typeof revalidationSubmissions.$inferSelect;
 export type InsertRevalidationSubmission = z.infer<typeof insertRevalidationSubmissionSchema>;
+
+export type CouponCode = typeof couponCodes.$inferSelect;
+export type InsertCouponCode = z.infer<typeof insertCouponCodeSchema>;
+
+export type CouponRedemption = typeof couponRedemptions.$inferSelect;
+export type InsertCouponRedemption = z.infer<typeof insertCouponRedemptionSchema>;
 
 // Define NHS Revalidation Status types
 export const RevalidationStatusEnum = {

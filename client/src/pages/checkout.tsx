@@ -5,12 +5,15 @@ import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, ArrowLeft, AlertCircle } from 'lucide-react';
+import { Loader2, ArrowLeft, AlertCircle, Tag } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Separator } from '@/components/ui/separator';
 import { useAuth } from '@/hooks/use-auth';
+import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 import { getPlanDetails } from '@shared/subscription-plans';
 import StripeCheckout from '@/components/subscription/stripe-checkout';
+import InlineCouponInput from '@/components/coupons/inline-coupon-input';
 
 // Initialize Stripe
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
@@ -20,12 +23,22 @@ interface CheckoutPageProps {
   period?: 'monthly' | 'annual';
 }
 
+interface ValidCoupon {
+  code: string;
+  description: string;
+  planId: string;
+  period: string;
+}
+
 export default function CheckoutPage({ planId, period }: CheckoutPageProps) {
   const [_, setLocation] = useLocation();
   const { user, isLoading: authLoading } = useAuth();
+  const { toast } = useToast();
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isCreatingSubscription, setIsCreatingSubscription] = useState(false);
+  const [validCoupon, setValidCoupon] = useState<ValidCoupon | null>(null);
+  const [isRedeeming, setIsRedeeming] = useState(false);
 
   // Extract parameters from URL if not provided as props
   const urlParams = new URLSearchParams(window.location.search);
@@ -91,6 +104,51 @@ export default function CheckoutPage({ planId, period }: CheckoutPageProps) {
 
   const handleCancel = () => {
     setLocation('/subscription');
+  };
+
+  const handleValidCoupon = (coupon: ValidCoupon) => {
+    setValidCoupon(coupon);
+    setError(null);
+  };
+
+  const handleRemoveCoupon = () => {
+    setValidCoupon(null);
+  };
+
+  const handleCouponRedeemSuccess = (coupon: ValidCoupon) => {
+    toast({
+      title: "Coupon Redeemed!",
+      description: `Your ${coupon.planId} subscription has been activated.`,
+    });
+    setLocation('/subscription/success?plan=' + coupon.planId + '&period=' + coupon.period + '&coupon=true');
+  };
+
+  const redeemCouponDirectly = async () => {
+    if (!validCoupon) return;
+
+    setIsRedeeming(true);
+    setError(null);
+
+    try {
+      const response = await apiRequest("POST", "/api/coupons/redeem", {
+        couponCode: validCoupon.code
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        handleCouponRedeemSuccess(validCoupon);
+      } else {
+        setError(data.error || "Failed to redeem coupon");
+        setValidCoupon(null);
+      }
+    } catch (error) {
+      console.error("Error redeeming coupon:", error);
+      setError("Failed to redeem coupon code");
+      setValidCoupon(null);
+    } finally {
+      setIsRedeeming(false);
+    }
   };
 
   // Loading state
@@ -194,24 +252,148 @@ export default function CheckoutPage({ planId, period }: CheckoutPageProps) {
           </p>
         </div>
 
-        {/* Checkout Form */}
-        <Elements
-          stripe={stripePromise}
-          options={{
-            clientSecret,
-            appearance,
-          }}
-        >
-          <StripeCheckout
-            planId={actualPlanId}
-            period={actualPeriod}
-            planName={planDetails.name}
-            price={planDetails.price[actualPeriod]}
-            clientSecret={clientSecret}
-            onSuccess={handleSuccess}
-            onCancel={handleCancel}
-          />
-        </Elements>
+        <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+          {/* Left Column - Coupon Section */}
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Tag className="h-5 w-5 text-blue-600" />
+                  Have a Coupon Code?
+                </CardTitle>
+                <CardDescription>
+                  Enter your coupon code to get instant access to your subscription without payment.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <InlineCouponInput
+                  onValidCoupon={handleValidCoupon}
+                  onRemoveCoupon={handleRemoveCoupon}
+                  disabled={isRedeeming}
+                  placeholder="Enter coupon code"
+                  label="Coupon Code"
+                />
+                
+                {validCoupon && (
+                  <div className="space-y-3">
+                    <Alert className="border-green-200 bg-green-50">
+                      <AlertCircle className="h-4 w-4 text-green-600" />
+                      <AlertDescription className="text-green-800">
+                        <strong>Great!</strong> This coupon will give you instant access to {validCoupon.planId} plan 
+                        ({validCoupon.period === 'annual' ? 'Annual' : 'Monthly'}) without payment.
+                      </AlertDescription>
+                    </Alert>
+                    
+                    <Button 
+                      onClick={redeemCouponDirectly}
+                      disabled={isRedeeming}
+                      className="w-full bg-green-600 hover:bg-green-700"
+                      size="lg"
+                    >
+                      {isRedeeming ? (
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                          Activating Subscription...
+                        </>
+                      ) : (
+                        'Activate Subscription with Coupon'
+                      )}
+                    </Button>
+                  </div>
+                )}
+
+                {error && (
+                  <Alert variant="destructive">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertDescription>{error}</AlertDescription>
+                  </Alert>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Plan Summary */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Subscription Summary</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span>Plan:</span>
+                    <span className="font-semibold">{planDetails.name}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Billing:</span>
+                    <span className="capitalize">{actualPeriod}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Price:</span>
+                    <span className="font-semibold">
+                      {validCoupon ? (
+                        <span className="text-green-600">FREE with coupon</span>
+                      ) : (
+                        `£${planDetails.price[actualPeriod]}/${actualPeriod.slice(0, -2)}`
+                      )}
+                    </span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Right Column - Payment Section */}
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>
+                  {validCoupon ? 'Payment Method (Optional)' : 'Payment Method'}
+                </CardTitle>
+                <CardDescription>
+                  {validCoupon 
+                    ? 'You can activate your subscription with the coupon above, or pay normally below.'
+                    : 'Enter your payment details to complete the subscription.'
+                  }
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {!validCoupon && (
+                  <div className="text-center py-6">
+                    <p className="text-gray-600 mb-4">
+                      Complete your payment to activate your {planDetails.name} subscription
+                    </p>
+                  </div>
+                )}
+                
+                <Elements
+                  stripe={stripePromise}
+                  options={{
+                    clientSecret,
+                    appearance,
+                  }}
+                >
+                  <StripeCheckout
+                    planId={actualPlanId}
+                    period={actualPeriod}
+                    planName={planDetails.name}
+                    price={planDetails.price[actualPeriod]}
+                    clientSecret={clientSecret}
+                    onSuccess={handleSuccess}
+                    onCancel={handleCancel}
+                  />
+                </Elements>
+              </CardContent>
+            </Card>
+            
+            {validCoupon && (
+              <div className="text-center">
+                <Separator className="my-4" />
+                <p className="text-sm text-gray-500">
+                  Or use the coupon above for instant activation
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
