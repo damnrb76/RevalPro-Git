@@ -61,13 +61,6 @@ export default function Header({ logo }: HeaderProps) {
       <div className="container mx-auto px-4 py-2 flex justify-between items-center">
         <Link href="/">
           <div className="flex items-center cursor-pointer">
-            <div className="h-12 w-auto mr-3">
-              <img 
-                src={logo} 
-                alt="RevalPro Logo" 
-                className="h-full object-contain"
-              />
-            </div>
             <div>
               <div className="text-white font-bold text-2xl leading-tight">
                 RevalPro
@@ -75,6 +68,13 @@ export default function Header({ logo }: HeaderProps) {
               <div className="text-revalpro-white/80 text-xs">
                 Nursing Revalidation Assistance App
               </div>
+            </div>
+            <div className="h-12 w-auto ml-3">
+              <img 
+                src={logo} 
+                alt="RevalPro Logo" 
+                className="h-full object-contain"
+              />
             </div>
           </div>
         </Link>
