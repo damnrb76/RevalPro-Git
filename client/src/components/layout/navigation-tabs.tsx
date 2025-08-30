@@ -260,143 +260,141 @@ export default function NavigationTabs({ currentPath }: NavigationTabsProps) {
 
 
 
-  // Render horizontal navigation with grouped dropdowns
+  // Render vertical navigation with right-side submenus
   return (
-    <nav className="bg-white shadow-md">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between py-2">
-          <div className="flex overflow-x-auto whitespace-nowrap items-center gap-2">
-            {/* Dashboard Link */}
+    <nav className="bg-white shadow-lg h-screen fixed left-0 top-0 w-64 overflow-y-auto">
+      <div className="p-4">
+        {/* Dashboard Link */}
+        <motion.div 
+          className="mb-2"
+          initial={{ opacity: 0, x: -10 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ 
+            type: "spring", 
+            stiffness: 260, 
+            damping: 20
+          }}
+          whileHover={{ 
+            scale: 1.02,
+            transition: { duration: 0.2 }
+          }}
+          whileTap={{ scale: 0.98 }}
+        >
+          <Link href={dashboardLink.href}>
+            <div 
+              className={cn(
+                "px-4 py-3 rounded-lg font-medium transition-all duration-300 cursor-pointer flex items-center gap-3 w-full relative overflow-hidden",
+                currentPath === dashboardLink.href
+                  ? `${dashboardLink.color} ring-2 ring-offset-1 shadow-sm`
+                  : `${dashboardLink.color} ${dashboardLink.hoverColor}`
+              )}
+            >
+              <motion.span
+                animate={{ 
+                  rotate: currentPath === dashboardLink.href ? [0, 10, -10, 0] : 0,
+                  scale: currentPath === dashboardLink.href ? [1, 1.2, 1] : 1
+                }}
+                transition={{ 
+                  duration: 0.5, 
+                  ease: "easeInOut", 
+                  delay: 0.1 
+                }}
+                className="inline-flex"
+              >
+                {dashboardLink.icon}
+              </motion.span>
+              <span className="text-sm">{dashboardLink.label}</span>
+            </div>
+          </Link>
+        </motion.div>
+
+        {/* Navigation Groups */}
+        {navigationGroups.map((group, groupIndex) => {
+          const hasActiveItem = group.items.some(item => currentPath === item.href);
+          
+          return (
             <motion.div 
-              className="mr-2"
-              initial={{ opacity: 0, y: 5 }}
-              animate={{ opacity: 1, y: 0 }}
+              key={group.label}
+              className="mb-2"
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
               transition={{ 
                 type: "spring", 
                 stiffness: 260, 
-                damping: 20
+                damping: 20, 
+                delay: (groupIndex + 1) * 0.1
               }}
               whileHover={{ 
-                scale: 1.05,
+                scale: 1.02,
                 transition: { duration: 0.2 }
               }}
-              whileTap={{ scale: 0.95 }}
+              whileTap={{ scale: 0.98 }}
             >
-              <Link href={dashboardLink.href}>
-                <div 
-                  className={cn(
-                    "px-3 py-2 rounded-full font-medium transition-all duration-300 cursor-pointer inline-flex items-center gap-1.5 relative overflow-hidden",
-                    currentPath === dashboardLink.href
-                      ? `${dashboardLink.color} ring-2 ring-offset-1 shadow-sm`
-                      : `${dashboardLink.color} ${dashboardLink.hoverColor}`
-                  )}
-                >
-                  <motion.span
-                    animate={{ 
-                      rotate: currentPath === dashboardLink.href ? [0, 10, -10, 0] : 0,
-                      scale: currentPath === dashboardLink.href ? [1, 1.2, 1] : 1
-                    }}
-                    transition={{ 
-                      duration: 0.5, 
-                      ease: "easeInOut", 
-                      delay: 0.1 
-                    }}
-                    className="inline-flex"
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <div 
+                    className={cn(
+                      "px-4 py-3 rounded-lg font-medium transition-all duration-300 cursor-pointer flex items-center gap-3 w-full relative overflow-hidden justify-between",
+                      hasActiveItem
+                        ? `${group.color} ring-2 ring-offset-1 shadow-sm`
+                        : `${group.color} ${group.hoverColor}`
+                    )}
                   >
-                    {dashboardLink.icon}
-                  </motion.span>
-                  <span className="text-sm">{dashboardLink.label}</span>
-                </div>
-              </Link>
-            </motion.div>
-
-            {/* Navigation Groups */}
-            {navigationGroups.map((group, groupIndex) => {
-              const hasActiveItem = group.items.some(item => currentPath === item.href);
-              
-              return (
-                <motion.div 
-                  key={group.label}
-                  className="mr-2"
-                  initial={{ opacity: 0, y: 5 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ 
-                    type: "spring", 
-                    stiffness: 260, 
-                    damping: 20, 
-                    delay: (groupIndex + 1) * 0.1
-                  }}
-                  whileHover={{ 
-                    scale: 1.05,
-                    transition: { duration: 0.2 }
-                  }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <div 
-                        className={cn(
-                          "px-3 py-2 rounded-full font-medium transition-all duration-300 cursor-pointer inline-flex items-center gap-1.5 relative overflow-hidden",
-                          hasActiveItem
-                            ? `${group.color} ring-2 ring-offset-1 shadow-sm`
-                            : `${group.color} ${group.hoverColor}`
-                        )}
+                    <div className="flex items-center gap-3">
+                      <motion.span
+                        animate={{ 
+                          rotate: hasActiveItem ? [0, 10, -10, 0] : 0,
+                          scale: hasActiveItem ? [1, 1.2, 1] : 1
+                        }}
+                        transition={{ 
+                          duration: 0.5, 
+                          ease: "easeInOut"
+                        }}
+                        className="inline-flex"
                       >
-                        <motion.span
-                          animate={{ 
-                            rotate: hasActiveItem ? [0, 10, -10, 0] : 0,
-                            scale: hasActiveItem ? [1, 1.2, 1] : 1
-                          }}
-                          transition={{ 
-                            duration: 0.5, 
-                            ease: "easeInOut"
-                          }}
-                          className="inline-flex"
-                        >
-                          {group.icon}
-                        </motion.span>
-                        <span className="text-sm">{group.label}</span>
-                        <ChevronDown size={12} />
-                      </div>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="start" className="w-56">
-                      <DropdownMenuLabel>{group.label}</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      {group.items.map((item) => {
-                        const isActive = currentPath === item.href;
-                        return (
-                          <DropdownMenuItem key={item.href} asChild>
-                            <Link href={item.href}>
-                              <div className={cn(
-                                "flex items-center gap-2 w-full",
-                                isActive ? "font-semibold" : ""
-                              )}>
-                                <motion.span
-                                  animate={{ 
-                                    rotate: isActive ? [0, 10, -10, 0] : 0,
-                                    scale: isActive ? [1, 1.1, 1] : 1
-                                  }}
-                                  transition={{ 
-                                    duration: 0.5, 
-                                    ease: "easeInOut"
-                                  }}
-                                  className="inline-flex"
-                                >
-                                  {item.icon}
-                                </motion.span>
-                                <span>{item.label}</span>
-                              </div>
-                            </Link>
-                          </DropdownMenuItem>
-                        );
-                      })}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </motion.div>
-              );
-            })}
-          </div>
-        </div>
+                        {group.icon}
+                      </motion.span>
+                      <span className="text-sm">{group.label}</span>
+                    </div>
+                    <ChevronDown size={12} className="transform rotate-[-90deg]" />
+                  </div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent side="right" align="start" className="w-56 ml-2">
+                  <DropdownMenuLabel>{group.label}</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  {group.items.map((item) => {
+                    const isActive = currentPath === item.href;
+                    return (
+                      <DropdownMenuItem key={item.href} asChild>
+                        <Link href={item.href}>
+                          <div className={cn(
+                            "flex items-center gap-2 w-full",
+                            isActive ? "font-semibold" : ""
+                          )}>
+                            <motion.span
+                              animate={{ 
+                                rotate: isActive ? [0, 10, -10, 0] : 0,
+                                scale: isActive ? [1, 1.1, 1] : 1
+                              }}
+                              transition={{ 
+                                duration: 0.5, 
+                                ease: "easeInOut"
+                              }}
+                              className="inline-flex"
+                            >
+                              {item.icon}
+                            </motion.span>
+                            <span>{item.label}</span>
+                          </div>
+                        </Link>
+                      </DropdownMenuItem>
+                    );
+                  })}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </motion.div>
+          );
+        })}
       </div>
     </nav>
   );

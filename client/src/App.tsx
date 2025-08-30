@@ -80,7 +80,7 @@ function AppRouter() {
     <div className="min-h-screen flex flex-col">
       {showAppHeader && <ProminentHeader />}
       {showTabs && <NavigationTabs currentPath={location} />}
-      <div className={`flex-grow ${!isAuthPage && !isLandingPage ? 'pt-4' : ''}`}>
+      <div className={`flex-grow ${!isAuthPage && !isLandingPage ? 'pt-4' : ''} ${showTabs ? 'ml-64' : ''}`}>
         <Switch>
           {/* Main route */}
           <Route path="/" component={AuthPage} />
