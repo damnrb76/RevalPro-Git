@@ -29,7 +29,7 @@ import { insertUserProfileSchema, type UserProfile } from "@shared/schema";
 import { addYears } from "date-fns";
 
 // Extend the schema with form validation
-const formSchema = insertUserProfileSchema.extend({
+const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   registrationNumber: z.string().optional().refine((val) => {
     if (!val || val.trim() === "") return true;
@@ -37,6 +37,8 @@ const formSchema = insertUserProfileSchema.extend({
   }, "NMC PIN format should be like 08I3421E"),
   expiryDate: z.string().optional(),
   email: z.string().email("Invalid email address").optional().or(z.literal("")),
+  jobTitle: z.string().optional(),
+  profileImage: z.string().optional(),
 });
 
 type FormSchemaType = z.infer<typeof formSchema>;
@@ -54,18 +56,22 @@ export default function UserProfileForm({ initialData, onClose, onSuccess }: Use
   const defaultExpiryDate = addYears(new Date(), 3).toISOString().split('T')[0];
   
   // Initialize form with default values or existing data
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormSchemaType>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData ? {
       name: initialData.name,
       registrationNumber: initialData.registrationNumber || "",
       expiryDate: initialData.expiryDate ? new Date(initialData.expiryDate).toISOString().split('T')[0] : "",
       email: initialData.email || "",
+      jobTitle: initialData.jobTitle || "",
+      profileImage: initialData.profileImage || "",
     } : {
       name: "",
       registrationNumber: "",
       expiryDate: "",
       email: "",
+      jobTitle: "",
+      profileImage: "",
     },
   });
   
@@ -86,9 +92,10 @@ export default function UserProfileForm({ initialData, onClose, onSuccess }: Use
         // Create new profile
         return await userProfileStorage.add({
           name: data.name,
-          registrationNumber: data.registrationNumber || "",
-          expiryDate: data.expiryDate || "",
+          registrationNumber: data.registrationNumber || null,
+          expiryDate: data.expiryDate || null,
           email: data.email,
+          jobTitle: data.jobTitle || null,
           profileImage: null, // Initialize with no profile image
         });
       }
