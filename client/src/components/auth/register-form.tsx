@@ -62,7 +62,7 @@ export default function RegisterForm() {
     const { confirmPassword, ...registerData } = values;
     registerMutation.mutate(registerData, {
       onSuccess: () => {
-        setLocation("/");
+        setLocation("/dashboard");
       },
     });
   };

@@ -23,9 +23,18 @@ export default function SubscriptionSuccessPage() {
 
   // Invalidate queries to refresh subscription data
   useEffect(() => {
-    // Invalidate subscription and user queries to refresh data
+    // Immediate invalidation
     queryClient.invalidateQueries({ queryKey: ['/api/subscription'] });
     queryClient.invalidateQueries({ queryKey: ['/api/user'] });
+    
+    // Also do a delayed refetch to ensure webhook has processed
+    // Sometimes there's a small delay between user returning and webhook processing
+    const timer = setTimeout(() => {
+      queryClient.invalidateQueries({ queryKey: ['/api/subscription'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/user'] });
+    }, 2000); // 2 second delay
+    
+    return () => clearTimeout(timer);
   }, [queryClient]);
 
   const getPlanIcon = (plan: string) => {
