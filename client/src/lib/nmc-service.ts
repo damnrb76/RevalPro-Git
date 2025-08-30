@@ -8,17 +8,6 @@ import { apiRequest } from "./queryClient";
  * to access their public services and information.
  */
 
-/**
- * Interface for NMC registration verification response
- */
-export interface RegistrationVerificationResult {
-  pin: string;
-  name: string;
-  registrationStatus: 'Registered' | 'Lapsed' | 'Not Found';
-  expiryDate?: string;
-  qualifications?: string[];
-  error?: string;
-}
 
 
 
@@ -34,33 +23,6 @@ export interface NmcDates {
 
 
 
-/**
- * Verify a nurse's registration with the NMC
- * 
- * @param pin - NMC PIN number
- * @param dateOfBirth - Date of birth (optional, for additional verification)
- */
-export async function verifyRegistration(
-  pin: string, 
-  dateOfBirth?: string
-): Promise<RegistrationVerificationResult> {
-  try {
-    const response = await apiRequest('POST', '/api/nmc/verify-registration', {
-      pin,
-      dateOfBirth
-    });
-    
-    return await response.json();
-  } catch (error) {
-    console.error('Error verifying registration:', error);
-    return {
-      pin,
-      name: '',
-      registrationStatus: 'Not Found',
-      error: 'Unable to verify registration at this time. Please try again later.'
-    };
-  }
-}
 
 /**
  * Get important NMC dates for the user based on their registration expiry

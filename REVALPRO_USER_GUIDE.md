@@ -158,7 +158,6 @@ RevalPro uses a horizontal navigation bar with organized dropdown menus:
 #### **Analytics & Visuals**
 - **Export Infographic**: Generate summary reports
 - **Important Dates**: Revalidation calendar and deadlines
-- **Check NMC PIN**: Verify registration status
 - **NMC Resources**: Direct links to official resources
 - **Audit & Archive**: Historical data and cycle management
 
@@ -501,25 +500,6 @@ RevalPro uses a horizontal navigation bar with organized dropdown menus:
    - Configure email notifications
    - Mobile push notifications (if enabled)
 
-### NMC PIN Verification
-
-**Purpose**: Verify current NMC registration status and validity.
-
-#### **Verification Process**
-
-1. **Access Verification Tool**
-   - Go to "Analytics & Visuals" → "Check NMC PIN"
-
-2. **Enter Registration Details**
-   - NMC PIN number
-   - Full name (as registered)
-   - Date of birth
-
-3. **Verification Results**
-   - **Registration Status**: Active, Lapsed, Suspended
-   - **Expiry Date**: When renewal required
-   - **Conditions**: Any registration conditions
-   - **Scope of Practice**: Authorized practice areas
 
 ### Audit & Archive System
 

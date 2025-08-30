@@ -29,8 +29,6 @@ import SubscriptionSuccess from "@/pages/subscription-success";
 import TestStripePage from "@/pages/test-stripe";
 import StripeCheckoutTest from "@/pages/stripe-checkout-test";
 import StripePaymentTest from "@/pages/stripe-payment-test";
-import NmcVerification from "@/pages/nmc-verification";
-import NmcRegistrationCheck from "@/pages/nmc-registration-check";
 import RevalidationDates from "@/pages/revalidation-dates";
 import NmcResources from "@/pages/nmc-resources";
 
@@ -107,8 +105,6 @@ function AppRouter() {
           <ProtectedRoute path="/ai-assistant" component={AiAssistant} />
           
           {/* NMC Related Routes */}
-          <ProtectedRoute path="/nmc-verification" component={NmcVerification} />
-          <ProtectedRoute path="/nmc-registration-check" component={NmcRegistrationCheck} />
           <ProtectedRoute path="/revalidation-dates" component={RevalidationDates} />
           <ProtectedRoute path="/nmc-resources" component={NmcResources} />
           

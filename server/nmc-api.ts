@@ -9,7 +9,7 @@
 import axios from 'axios';
 import * as cheerio from 'cheerio';
 // Import types defined in our own server/types.ts file
-import type { RegistrationVerificationResult, NmcDates } from '../server/types';
+import type { NmcDates } from '../server/types';
 
 // Base URLs for NMC services
 const NMC_BASE_URL = 'https://www.nmc.org.uk';
@@ -18,61 +18,6 @@ const NMC_ONLINE_SERVICES_URL = `${NMC_BASE_URL}/login/`;
 
 
 
-/**
- * Verify a nurse's registration with the NMC
- * This function attempts to search the public NMC register
- * 
- * @param pin - NMC PIN number
- * @param dateOfBirth - Date of birth (optional, for additional verification)
- */
-export async function verifyRegistration(
-  pin: string,
-  dateOfBirth?: string
-): Promise<RegistrationVerificationResult> {
-  try {
-    // Validate PIN format (generally 6-8 digits)
-    const pinRegex = /^\d{6,8}$/;
-    if (!pinRegex.test(pin)) {
-      return {
-        pin,
-        name: '',
-        registrationStatus: 'Not Found',
-        error: 'Invalid PIN format. NMC PINs are typically 6-8 digits.'
-      };
-    }
-
-    // In a real implementation, this would use a proper web scraping or
-    // API approach to check the NMC register. For now, we'll simulate with
-    // a direct request to their search page.
-    const response = await axios.get(NMC_SEARCH_REGISTER_URL, {
-      timeout: 8000,
-      headers: {
-        'User-Agent': 'RevalPro NMC Integration Service - professional nursing application'
-      }
-    });
-
-    // This is where we would parse the response and extract registration data
-    // Since we don't want to implement actual scraping (could violate terms),
-    // we'll return a simulated response
-    
-    console.log(`NMC registration lookup attempted for PIN: ${pin}`);
-    
-    return {
-      pin,
-      name: 'Registration lookup requested',
-      registrationStatus: 'Not Found',
-      error: 'Direct verification not available. Please check the NMC website directly.'
-    };
-  } catch (error) {
-    console.error('Error verifying registration:', error);
-    return {
-      pin,
-      name: '',
-      registrationStatus: 'Not Found',
-      error: 'Unable to verify registration at this time. Please try again later.'
-    };
-  }
-}
 
 /**
  * Calculate important NMC dates for the user based on their registration expiry

@@ -9,7 +9,7 @@ import path from "path";
 import { createCustomer, createSubscription, createCheckoutSession, getSubscription, cancelSubscription, reactivateSubscription, changeSubscriptionPlan, handleWebhookEvent } from "./stripe";
 import { PLAN_DETAILS } from "../shared/subscription-plans";
 import Stripe from "stripe";
-import { verifyRegistration, calculateNmcImportantDates, getLatestRevalidationRequirements } from "./nmc-api";
+import { calculateNmcImportantDates, getLatestRevalidationRequirements } from "./nmc-api";
 import { getRevalidationAdvice, generateReflectiveTemplate, suggestCpdActivities } from "./ai-service";
 import { insertTrainingRecordSchema } from "@shared/schema";
 
@@ -295,27 +295,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // NMC API integration endpoints
   // These endpoints provide integration with the UK Nursing & Midwifery Council
   
-  // Verify NMC registration
-  app.post('/api/nmc/verify-registration', async (req, res) => {
-    try {
-      const { pin, dateOfBirth } = req.body;
-      
-      if (!pin) {
-        return res.status(400).json({ error: 'NMC PIN is required' });
-      }
-      
-      const result = await verifyRegistration(pin, dateOfBirth);
-      res.json(result);
-    } catch (error) {
-      console.error('Error verifying NMC registration:', error);
-      res.status(500).json({ 
-        error: 'Failed to verify registration',
-        pin: req.body.pin || '',
-        name: '',
-        registrationStatus: 'Not Found'
-      });
-    }
-  });
   
   // Get important NMC dates based on expiry date
   app.post('/api/nmc/important-dates', async (req, res) => {

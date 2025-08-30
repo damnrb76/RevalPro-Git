@@ -193,13 +193,6 @@ export default function NavigationTabs({ currentPath, onSidebarToggle }: Navigat
           hoverColor: "hover:bg-revalpro-purple/30"
         },
         { 
-          href: "/nmc-registration-check", 
-          label: "Check NMC PIN", 
-          icon: <Heart size={16} />,
-          color: "bg-revalpro-pink/20 text-revalpro-pink",
-          hoverColor: "hover:bg-revalpro-pink/30"
-        },
-        { 
           href: "/nmc-resources", 
           label: "NMC Resources", 
           icon: <Link2 size={16} />,

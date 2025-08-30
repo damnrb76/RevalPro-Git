@@ -2,17 +2,6 @@
  * Server-side type definitions for the RevalPro application
  */
 
-/**
- * Interface for NMC registration verification response
- */
-export interface RegistrationVerificationResult {
-  pin: string;
-  name: string;
-  registrationStatus: 'Registered' | 'Lapsed' | 'Not Found';
-  expiryDate?: string;
-  qualifications?: string[];
-  error?: string;
-}
 
 
 
