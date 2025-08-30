@@ -27,7 +27,6 @@ import {
   Archive
 } from 'lucide-react';
 import { useAuth } from "@/hooks/use-auth";
-import logo from "@assets/Leonardo_Phoenix_10_design_a_vibrant_and_professional_logo_for_3.jpg";
 import { 
   DropdownMenu,
   DropdownMenuContent,
@@ -274,47 +273,24 @@ export default function NavigationTabs({ currentPath, onSidebarToggle }: Navigat
       sidebarExpanded ? 'w-64' : 'w-16'
     }`}>
       <div className="p-4">
-        {/* Logo and Toggle Section */}
-        <div className="mb-4 p-3 rounded-lg bg-gradient-to-r from-revalpro-dark-blue to-revalpro-blue">
-          <div className="flex items-center justify-between">
-            {/* Logo */}
-            <Link href="/">
-              <div className="flex items-center cursor-pointer">
-                <div className={cn("transition-all duration-300", sidebarExpanded ? "h-8 w-8 mr-2" : "h-8 w-8")}>
-                  <img 
-                    src={logo} 
-                    alt="RevalPro Logo" 
-                    className="h-full w-full object-contain"
-                  />
-                </div>
-                {sidebarExpanded && (
-                  <div className="text-white font-bold text-sm leading-tight">
-                    RevalPro
-                  </div>
-                )}
-              </div>
-            </Link>
-            
-            {/* Toggle Button */}
-            <motion.button
-              onClick={() => {
-                const newState = !sidebarExpanded;
-                setSidebarExpanded(newState);
-                onSidebarToggle?.(newState);
-              }}
-              className="p-1 rounded-md bg-white/20 hover:bg-white/30 transition-colors duration-200 flex items-center justify-center"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <motion.div
-                animate={{ rotate: sidebarExpanded ? 180 : 0 }}
-                transition={{ duration: 0.3 }}
-              >
-                <ChevronDown size={16} className="text-white transform rotate-90" />
-              </motion.div>
-            </motion.button>
-          </div>
-        </div>
+        {/* Toggle Button */}
+        <motion.button
+          onClick={() => {
+            const newState = !sidebarExpanded;
+            setSidebarExpanded(newState);
+            onSidebarToggle?.(newState);
+          }}
+          className="w-full mb-4 p-2 rounded-lg bg-revalpro-blue/10 hover:bg-revalpro-blue/20 transition-colors duration-200 flex items-center justify-center"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <motion.div
+            animate={{ rotate: sidebarExpanded ? 180 : 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <ChevronDown size={20} className="text-revalpro-blue transform rotate-90" />
+          </motion.div>
+        </motion.button>
         {/* Dashboard Link */}
         <motion.div 
           className="mb-2"
