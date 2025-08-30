@@ -265,7 +265,7 @@ export default function NavigationTabs({ currentPath }: NavigationTabsProps) {
     <nav className="bg-white shadow-md">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between py-2">
-          <div className="flex overflow-x-auto whitespace-nowrap hide-scrollbar items-center gap-2">
+          <div className="flex overflow-x-auto whitespace-nowrap items-center gap-2">
             {/* Dashboard Link */}
             <motion.div 
               className="mr-2"
