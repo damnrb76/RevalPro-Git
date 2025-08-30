@@ -1,4 +1,5 @@
 import { Switch, Route, useLocation } from "wouter";
+import { useState } from "react";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./lib/queryClient";
 import { ThemeProvider } from "@/components/ui/theme-provider";
@@ -61,6 +62,7 @@ import logo from "@assets/Leonardo_Phoenix_10_design_a_vibrant_and_professional_
 
 function AppRouter() {
   const [location] = useLocation();
+  const [sidebarExpanded, setSidebarExpanded] = useState(false);
   const isComingSoonPage = location === '/' && window.location.hostname === 'revalpro.co.uk';
   const isPrivacyPage = location === '/privacy-policy' && window.location.hostname === 'revalpro.co.uk';
   const isTermsPage = location === '/terms-of-service' && window.location.hostname === 'revalpro.co.uk';
@@ -79,8 +81,8 @@ function AppRouter() {
   return (
     <div className="min-h-screen flex flex-col">
       {showAppHeader && <ProminentHeader />}
-      {showTabs && <NavigationTabs currentPath={location} />}
-      <div className={`flex-grow ${!isAuthPage && !isLandingPage ? 'pt-4' : ''} ${showTabs ? 'ml-64' : ''}`}>
+      {showTabs && <NavigationTabs currentPath={location} onSidebarToggle={setSidebarExpanded} />}
+      <div className={`flex-grow ${!isAuthPage && !isLandingPage ? 'pt-4' : ''} transition-all duration-300 ${showTabs ? (sidebarExpanded ? 'ml-64' : 'ml-16') : ''}`}>
         <Switch>
           {/* Main route */}
           <Route path="/" component={AuthPage} />

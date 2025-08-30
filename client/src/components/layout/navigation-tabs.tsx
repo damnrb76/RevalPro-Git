@@ -39,6 +39,7 @@ import { useState } from "react";
 
 type NavigationTabsProps = {
   currentPath: string;
+  onSidebarToggle?: (expanded: boolean) => void;
 };
 
 type NavigationLink = {
@@ -57,9 +58,15 @@ type NavigationGroup = {
   items: NavigationLink[];
 };
 
-export default function NavigationTabs({ currentPath }: NavigationTabsProps) {
+export default function NavigationTabs({ currentPath, onSidebarToggle }: NavigationTabsProps) {
   const { user } = useAuth();
   const [expandedGroups, setExpandedGroups] = useState<string[]>([]);
+  const [sidebarExpanded, setSidebarExpanded] = useState(false);
+
+  // Don't render navigation if user is not authenticated
+  if (!user) {
+    return null;
+  }
 
   const toggleGroup = (groupLabel: string) => {
     setExpandedGroups(prev => 
@@ -260,10 +267,30 @@ export default function NavigationTabs({ currentPath }: NavigationTabsProps) {
 
 
 
-  // Render vertical navigation with right-side submenus
+  // Render collapsible vertical navigation
   return (
-    <nav className="bg-white shadow-lg h-screen fixed left-0 top-0 w-64 overflow-y-auto">
+    <nav className={`bg-white shadow-lg h-screen fixed left-0 top-0 overflow-y-auto transition-all duration-300 ease-in-out z-50 ${
+      sidebarExpanded ? 'w-64' : 'w-16'
+    }`}>
       <div className="p-4">
+        {/* Toggle Button */}
+        <motion.button
+          onClick={() => {
+            const newState = !sidebarExpanded;
+            setSidebarExpanded(newState);
+            onSidebarToggle?.(newState);
+          }}
+          className="w-full mb-4 p-2 rounded-lg bg-revalpro-blue/10 hover:bg-revalpro-blue/20 transition-colors duration-200 flex items-center justify-center"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <motion.div
+            animate={{ rotate: sidebarExpanded ? 180 : 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <ChevronDown size={20} className="text-revalpro-blue transform rotate-90" />
+          </motion.div>
+        </motion.button>
         {/* Dashboard Link */}
         <motion.div 
           className="mb-2"
@@ -283,7 +310,8 @@ export default function NavigationTabs({ currentPath }: NavigationTabsProps) {
           <Link href={dashboardLink.href}>
             <div 
               className={cn(
-                "px-4 py-3 rounded-lg font-medium transition-all duration-300 cursor-pointer flex items-center gap-3 w-full relative overflow-hidden",
+                "px-4 py-3 rounded-lg font-medium transition-all duration-300 cursor-pointer flex items-center w-full relative overflow-hidden",
+                sidebarExpanded ? "gap-3" : "justify-center",
                 currentPath === dashboardLink.href
                   ? `${dashboardLink.color} ring-2 ring-offset-1 shadow-sm`
                   : `${dashboardLink.color} ${dashboardLink.hoverColor}`
@@ -303,7 +331,7 @@ export default function NavigationTabs({ currentPath }: NavigationTabsProps) {
               >
                 {dashboardLink.icon}
               </motion.span>
-              <span className="text-sm">{dashboardLink.label}</span>
+              {sidebarExpanded && <span className="text-sm">{dashboardLink.label}</span>}
             </div>
           </Link>
         </motion.div>
@@ -334,13 +362,14 @@ export default function NavigationTabs({ currentPath }: NavigationTabsProps) {
                 <DropdownMenuTrigger asChild>
                   <div 
                     className={cn(
-                      "px-4 py-3 rounded-lg font-medium transition-all duration-300 cursor-pointer flex items-center gap-3 w-full relative overflow-hidden justify-between",
+                      "px-4 py-3 rounded-lg font-medium transition-all duration-300 cursor-pointer flex items-center w-full relative overflow-hidden",
+                      sidebarExpanded ? "gap-3 justify-between" : "justify-center",
                       hasActiveItem
                         ? `${group.color} ring-2 ring-offset-1 shadow-sm`
                         : `${group.color} ${group.hoverColor}`
                     )}
                   >
-                    <div className="flex items-center gap-3">
+                    <div className={cn("flex items-center", sidebarExpanded ? "gap-3" : "")}>
                       <motion.span
                         animate={{ 
                           rotate: hasActiveItem ? [0, 10, -10, 0] : 0,
@@ -354,12 +383,12 @@ export default function NavigationTabs({ currentPath }: NavigationTabsProps) {
                       >
                         {group.icon}
                       </motion.span>
-                      <span className="text-sm">{group.label}</span>
+                      {sidebarExpanded && <span className="text-sm">{group.label}</span>}
                     </div>
-                    <ChevronDown size={12} className="transform rotate-[-90deg]" />
+                    {sidebarExpanded && <ChevronDown size={12} className="transform rotate-[-90deg]" />}
                   </div>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent side="right" align="start" className="w-56 ml-2">
+                <DropdownMenuContent side={sidebarExpanded ? "right" : "right"} align="start" className={cn("w-56", sidebarExpanded ? "ml-2" : "ml-4")}>
                   <DropdownMenuLabel>{group.label}</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   {group.items.map((item) => {
