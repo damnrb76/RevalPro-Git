@@ -336,7 +336,7 @@ export default function RevalidationSummary({
                   disabled={isGenerating || isFreePlan}
                 >
                   {isFreePlan ? <Crown className="mr-2 h-4 w-4" /> : <ListCheck className="mr-2 h-4 w-4" />}
-                  {isGenerating ? "Generating..." : "Download Revalidation Summary"}
+                  {isGenerating ? "Generating..." : "Summary Report"}
                   {isFreePlan && <span className="ml-2 text-xs">(Premium)</span>}
                 </Button>
                 
@@ -408,7 +408,7 @@ export default function RevalidationSummary({
                   className="text-gray-500 border-gray-300 hover:bg-gray-100"
                 >
                   <FileDown className="mr-2 h-4 w-4" />
-                  Export Raw Data (JSON)
+                  Raw Data (JSON)
                 </Button>
               </div>
             </div>
