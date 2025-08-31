@@ -12,18 +12,16 @@ import Stripe from "stripe";
 import { calculateNmcImportantDates, getLatestRevalidationRequirements } from "./nmc-api";
 import { getRevalidationAdvice, generateReflectiveTemplate, suggestCpdActivities } from "./ai-service";
 import { insertTrainingRecordSchema } from "@shared/schema";
-import { hashPassword } from "./auth";
 
 // Email service for password reset
 async function sendPasswordResetEmail(email: string, resetUrl: string): Promise<void> {
   // Check if we have SendGrid configured
   if (process.env.SENDGRID_API_KEY) {
     try {
-      const { MailService } = await import('@sendgrid/mail');
-      const mailService = new MailService();
-      mailService.setApiKey(process.env.SENDGRID_API_KEY);
+      const sgMail = await import('@sendgrid/mail');
+      sgMail.default.setApiKey(process.env.SENDGRID_API_KEY);
       
-      await mailService.send({
+      await sgMail.default.send({
         to: email,
         from: 'noreply@revalpro.co.uk', // This should be a verified sender domain
         subject: 'Reset Your RevalPro Password',
@@ -75,7 +73,7 @@ const scryptAsync = promisify(scrypt);
 
 // Initialize Stripe for webhook handling
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-04-30.basil',
+  apiVersion: '2025-08-27.basil',
 });
 
 // Secure password hashing function for regular user accounts
@@ -1367,7 +1365,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       couponData.code = couponData.code.toUpperCase();
       
       // Set created by admin user
-      couponData.createdBy = req.user.id;
+      couponData.createdBy = req.user!.id;
       
       const coupon = await storage.createCoupon(couponData);
       res.json(coupon);
