@@ -420,6 +420,14 @@ export const couponCodes = pgTable("coupon_codes", {
   isActive: boolean("is_active").notNull().default(true),
   validFrom: timestamp("valid_from"),
   validUntil: timestamp("valid_until"),
+  
+  // Enhanced promotional pricing support
+  isPromotional: boolean("is_promotional").notNull().default(false), // True for special promotional campaigns
+  promotionalPrice: integer("promotional_price"), // Price in pence (e.g., 499 for £4.99)
+  promotionalDuration: integer("promotional_duration"), // Duration in months for promotional price
+  regularPrice: integer("regular_price"), // Price in pence after promotional period
+  stripeCouponId: text("stripe_coupon_id"), // Reference to Stripe coupon for checkout integration
+  
   createdBy: integer("created_by"), // Admin user who created it
   created: timestamp("created").notNull().defaultNow(),
 });
@@ -458,6 +466,11 @@ export const insertCouponCodeSchema = createInsertSchema(couponCodes, {
   isActive: true,
   validFrom: true,
   validUntil: true,
+  isPromotional: true,
+  promotionalPrice: true,
+  promotionalDuration: true,
+  regularPrice: true,
+  stripeCouponId: true,
   createdBy: true,
 });
 

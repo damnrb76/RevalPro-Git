@@ -334,6 +334,11 @@ export class MemStorage implements IStorage {
         isActive: true,
         validFrom: null,
         validUntil: null,
+        isPromotional: false,
+        promotionalPrice: null,
+        promotionalDuration: null,
+        regularPrice: null,
+        stripeCouponId: null,
         createdBy: null,
         created: new Date(),
       },
@@ -348,6 +353,11 @@ export class MemStorage implements IStorage {
         isActive: true,
         validFrom: null,
         validUntil: null,
+        isPromotional: false,
+        promotionalPrice: null,
+        promotionalDuration: null,
+        regularPrice: null,
+        stripeCouponId: null,
         createdBy: null,
         created: new Date(),
       },
@@ -362,6 +372,11 @@ export class MemStorage implements IStorage {
         isActive: true,
         validFrom: null,
         validUntil: null,
+        isPromotional: false,
+        promotionalPrice: null,
+        promotionalDuration: null,
+        regularPrice: null,
+        stripeCouponId: null,
         createdBy: null,
         created: new Date(),
       }
@@ -434,10 +449,18 @@ export class MemStorage implements IStorage {
 
       // Award subscription to user
       const endDate = new Date();
-      if (coupon.period === "annual") {
-        endDate.setFullYear(endDate.getFullYear() + 1);
+      
+      // Handle promotional pricing differently
+      if (coupon.isPromotional && coupon.promotionalDuration) {
+        // For promotional coupons, set end date based on promotional duration
+        endDate.setMonth(endDate.getMonth() + coupon.promotionalDuration);
       } else {
-        endDate.setMonth(endDate.getMonth() + 1);
+        // Regular coupon behavior
+        if (coupon.period === "annual") {
+          endDate.setFullYear(endDate.getFullYear() + 1);
+        } else {
+          endDate.setMonth(endDate.getMonth() + 1);
+        }
       }
 
       await this.updateUserStripeInfo(userId, {
@@ -465,6 +488,11 @@ export class MemStorage implements IStorage {
       isActive: coupon.isActive ?? true,
       validFrom: coupon.validFrom ?? null,
       validUntil: coupon.validUntil ?? null,
+      isPromotional: coupon.isPromotional ?? false,
+      promotionalPrice: coupon.promotionalPrice ?? null,
+      promotionalDuration: coupon.promotionalDuration ?? null,
+      regularPrice: coupon.regularPrice ?? null,
+      stripeCouponId: coupon.stripeCouponId ?? null,
       createdBy: coupon.createdBy ?? null,
       currentRedemptions: 0,
       created: new Date(),
@@ -851,10 +879,18 @@ export class DatabaseStorage implements IStorage {
 
       // Award subscription to user
       const endDate = new Date();
-      if (coupon.period === "annual") {
-        endDate.setFullYear(endDate.getFullYear() + 1);
+      
+      // Handle promotional pricing differently
+      if (coupon.isPromotional && coupon.promotionalDuration) {
+        // For promotional coupons, set end date based on promotional duration
+        endDate.setMonth(endDate.getMonth() + coupon.promotionalDuration);
       } else {
-        endDate.setMonth(endDate.getMonth() + 1);
+        // Regular coupon behavior
+        if (coupon.period === "annual") {
+          endDate.setFullYear(endDate.getFullYear() + 1);
+        } else {
+          endDate.setMonth(endDate.getMonth() + 1);
+        }
       }
 
       await this.updateUserStripeInfo(userId, {

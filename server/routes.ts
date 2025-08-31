@@ -928,6 +928,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
           description: coupon.description,
           planId: coupon.planId,
           period: coupon.period,
+          isPromotional: coupon.isPromotional,
+          promotionalPrice: coupon.promotionalPrice, // in pence
+          promotionalDuration: coupon.promotionalDuration, // in months
+          regularPrice: coupon.regularPrice, // in pence
         }
       });
     } catch (error) {
@@ -972,6 +976,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
           description: result.coupon.description,
           planId: result.coupon.planId,
           period: result.coupon.period,
+          isPromotional: result.coupon.isPromotional,
+          promotionalPrice: result.coupon.promotionalPrice,
+          promotionalDuration: result.coupon.promotionalDuration,
+          regularPrice: result.coupon.regularPrice,
         } : undefined
       });
     } catch (error) {

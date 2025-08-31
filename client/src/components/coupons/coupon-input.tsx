@@ -12,6 +12,10 @@ interface ValidCoupon {
   description: string;
   planId: string;
   period: string;
+  isPromotional?: boolean;
+  promotionalPrice?: number; // in pence
+  promotionalDuration?: number; // in months
+  regularPrice?: number; // in pence
 }
 
 interface CouponInputProps {
@@ -177,12 +181,25 @@ export default function CouponInput({
           <Alert className="border-green-200 bg-green-50">
             <CheckCircle className="h-4 w-4 text-green-600" />
             <AlertDescription className="text-green-800">
-              <div className="space-y-1">
+              <div className="space-y-2">
                 <p className="font-semibold">✓ Valid Coupon: {validCoupon.code}</p>
                 <p className="text-sm">{validCoupon.description}</p>
-                <p className="text-sm">
-                  Plan: {getPlanDisplayName(validCoupon.planId)} ({getPeriodDisplayName(validCoupon.period)})
-                </p>
+                
+                {/* Show promotional pricing details */}
+                {validCoupon.isPromotional && validCoupon.promotionalPrice && validCoupon.regularPrice ? (
+                  <div className="bg-green-100 p-3 rounded-md border border-green-200">
+                    <p className="font-semibold text-green-900 mb-1">🎉 Special Promotional Offer!</p>
+                    <div className="text-sm space-y-1">
+                      <p>• <strong>First {validCoupon.promotionalDuration} month{(validCoupon.promotionalDuration || 0) > 1 ? 's' : ''}:</strong> £{(validCoupon.promotionalPrice / 100).toFixed(2)}</p>
+                      <p>• <strong>Then:</strong> £{(validCoupon.regularPrice / 100).toFixed(2)}/month</p>
+                      <p>• <strong>Plan:</strong> {getPlanDisplayName(validCoupon.planId)} features</p>
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-sm">
+                    Plan: {getPlanDisplayName(validCoupon.planId)} ({getPeriodDisplayName(validCoupon.period)})
+                  </p>
+                )}
               </div>
             </AlertDescription>
           </Alert>
