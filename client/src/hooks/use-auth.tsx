@@ -17,7 +17,7 @@ type AuthContextType = {
   registerMutation: UseMutationResult<User, Error, InsertUser>;
 };
 
-type LoginData = Pick<InsertUser, "username" | "password">;
+type LoginData = Pick<InsertUser, "email" | "password">;
 
 export const AuthContext = createContext<AuthContextType | null>(null);
 
@@ -41,13 +41,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       queryClient.setQueryData(["/api/user"], user);
       toast({
         title: "Welcome back!",
-        description: `You've successfully signed in as ${user.username}.`,
+        description: `You've successfully signed in as ${user.email}.`,
       });
     },
     onError: (error: Error) => {
       toast({
         title: "Login failed",
-        description: error.message || "Invalid username or password",
+        description: error.message || "Invalid email or password",
         variant: "destructive",
       });
     },
@@ -62,7 +62,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       queryClient.setQueryData(["/api/user"], user);
       toast({
         title: "Account created",
-        description: `Welcome to RevalPro! You are now signed in as ${user.username}.`,
+        description: `Welcome to RevalPro! You are now signed in as ${user.email}.`,
       });
     },
     onError: (error: Error) => {

@@ -303,12 +303,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { username, email, uid, displayName } = req.body;
 
-      if (!username || !uid) {
+      if (!email || !uid) {
         return res.status(400).json({ error: "Missing required fields" });
       }
 
       // Check if user already exists
-      const existingUser = await storage.getUserByUsername(username);
+      const existingUser = await storage.getUserByEmail(email);
       if (existingUser) {
         return res.status(200).json({ message: "User already exists" });
       }
@@ -318,7 +318,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Create user in our system with additional fields
       const user = await storage.createUser({
-        username,
+        email,
         password: hashedPassword,
       });
 
@@ -1087,8 +1087,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let customerId = user.stripeCustomerId;
       if (!customerId) {
         customerId = await createCustomer({
-          email: user.email || "unknown@example.com",
-          name: user.username,
+          email: user.email,
+          name: user.username || "User",
           userId: user.id,
         });
       }

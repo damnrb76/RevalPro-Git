@@ -20,8 +20,8 @@ import { useToast } from "@/hooks/use-toast";
 
 // Login form validation schema
 const loginSchema = z.object({
-  username: z.string().min(3, {
-    message: "Username must be at least 3 characters.",
+  email: z.string().email({
+    message: "Please enter a valid email address.",
   }),
   password: z.string().min(3, {
     message: "Password must be at least 3 characters.",
@@ -40,7 +40,7 @@ export default function LoginForm() {
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      username: "",
+      email: "",
       password: "",
     },
   });
@@ -70,12 +70,12 @@ export default function LoginForm() {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <FormField
           control={form.control}
-          name="username"
+          name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Username</FormLabel>
+              <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input placeholder="Enter your username" {...field} />
+                <Input type="email" placeholder="Enter your email address" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

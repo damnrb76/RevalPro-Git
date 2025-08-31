@@ -19,8 +19,8 @@ import { useAuth } from "@/hooks/use-auth";
 
 // Registration form validation schema
 const registerSchema = z.object({
-  username: z.string().min(3, {
-    message: "Username must be at least 3 characters.",
+  email: z.string().email({
+    message: "Please enter a valid email address.",
   }),
   password: z
     .string()
@@ -51,7 +51,7 @@ export default function RegisterForm() {
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      username: "",
+      email: "",
       password: "",
       confirmPassword: "",
     },
@@ -72,12 +72,12 @@ export default function RegisterForm() {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <FormField
           control={form.control}
-          name="username"
+          name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Username</FormLabel>
+              <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input placeholder="Choose a username" {...field} />
+                <Input type="email" placeholder="Enter your email address" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

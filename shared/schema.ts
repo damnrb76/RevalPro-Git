@@ -23,9 +23,9 @@ export const insertPasswordResetTokenSchema = createInsertSchema(passwordResetTo
 // User Authentication
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
-  username: text("username").notNull().unique(),
+  username: text("username"),
   password: text("password").notNull(),
-  email: text("email"),
+  email: text("email").notNull().unique(),
   profilePicture: text("profile_picture"),
   created: timestamp("created").notNull().defaultNow(),
   
@@ -43,9 +43,10 @@ export const users = pgTable("users", {
 });
 
 export const insertUserSchema = createInsertSchema(users).pick({
-  username: true,
+  email: true,
   password: true,
 }).extend({
+  email: z.string().email("Please enter a valid email address"),
   password: z.string().min(8, "Password must be at least 8 characters long"),
 });
 

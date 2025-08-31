@@ -133,7 +133,7 @@ export class MemStorage implements IStorage {
     const user: User = { 
       id: this.currentId++, 
       ...insertUser,
-      email: null,
+      username: null,
       profilePicture: null,
       created: new Date(),
       currentPlan: "free", // Production default - users start with free plan
@@ -475,6 +475,32 @@ export class MemStorage implements IStorage {
 
   async getAllCoupons(): Promise<CouponCode[]> {
     return Array.from(this.coupons.values());
+  }
+
+  // Password reset methods (placeholder implementations for MemStorage)
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    for (const user of Array.from(this.users.values())) {
+      if (user.email === email) {
+        return user;
+      }
+    }
+    return undefined;
+  }
+
+  async createPasswordResetToken(token: InsertPasswordResetToken): Promise<PasswordResetToken> {
+    throw new Error("Password reset not supported in MemStorage");
+  }
+
+  async getPasswordResetToken(token: string): Promise<PasswordResetToken | undefined> {
+    throw new Error("Password reset not supported in MemStorage");
+  }
+
+  async markPasswordResetTokenAsUsed(tokenId: number): Promise<void> {
+    throw new Error("Password reset not supported in MemStorage");
+  }
+
+  async updateUserPassword(userId: number, hashedPassword: string): Promise<User> {
+    throw new Error("Password reset not supported in MemStorage");
   }
 }
 
