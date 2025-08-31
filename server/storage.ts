@@ -5,7 +5,8 @@ import {
   revalidationCycles, type RevalidationCycle, type InsertRevalidationCycle,
   revalidationSubmissions, type RevalidationSubmission, type InsertRevalidationSubmission,
   couponCodes, type CouponCode, type InsertCouponCode,
-  couponRedemptions, type CouponRedemption, type InsertCouponRedemption
+  couponRedemptions, type CouponRedemption, type InsertCouponRedemption,
+  passwordResetTokens, type PasswordResetToken, type InsertPasswordResetToken
 } from "@shared/schema";
 import session from "express-session";
 import createMemoryStore from "memorystore";
@@ -71,6 +72,13 @@ export interface IStorage {
   redeemCoupon(couponCode: string, userId: number, ipAddress?: string, userAgent?: string): Promise<{ success: boolean; coupon?: CouponCode; error?: string }>;
   createCoupon(coupon: InsertCouponCode): Promise<CouponCode>;
   getAllCoupons(): Promise<CouponCode[]>;
+  
+  // Password reset methods
+  getUserByEmail(email: string): Promise<User | undefined>;
+  createPasswordResetToken(token: InsertPasswordResetToken): Promise<PasswordResetToken>;
+  getPasswordResetToken(token: string): Promise<PasswordResetToken | undefined>;
+  markPasswordResetTokenAsUsed(tokenId: number): Promise<void>;
+  updateUserPassword(userId: number, hashedPassword: string): Promise<User>;
   
   sessionStore: session.Store;
 }
@@ -849,6 +857,73 @@ export class DatabaseStorage implements IStorage {
 
   async getAllCoupons(): Promise<CouponCode[]> {
     return await db.select().from(couponCodes);
+  }
+
+  // Password reset methods
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    // Check both users.email and userProfiles.email
+    const userByEmail = await db.select().from(users).where(eq(users.email, email));
+    if (userByEmail.length > 0) {
+      return userByEmail[0];
+    }
+    
+    // If not found in users table, check userProfiles table
+    const { userProfiles } = await import("@shared/schema");
+    const profileResults = await db.select({
+      id: users.id,
+      username: users.username,
+      password: users.password,
+      email: users.email,
+      profilePicture: users.profilePicture,
+      created: users.created,
+      currentPlan: users.currentPlan,
+      stripeCustomerId: users.stripeCustomerId,
+      stripeSubscriptionId: users.stripeSubscriptionId,
+      subscriptionStatus: users.subscriptionStatus,
+      subscriptionPeriod: users.subscriptionPeriod,
+      subscriptionEndDate: users.subscriptionEndDate,
+      cancelAtPeriodEnd: users.cancelAtPeriodEnd,
+      isAdmin: users.isAdmin,
+      isSuperAdmin: users.isSuperAdmin,
+      hasCompletedInitialSetup: users.hasCompletedInitialSetup,
+    })
+    .from(users)
+    .innerJoin(userProfiles, eq(users.id, userProfiles.id))
+    .where(eq(userProfiles.email, email));
+    
+    return profileResults[0];
+  }
+
+  async createPasswordResetToken(token: InsertPasswordResetToken): Promise<PasswordResetToken> {
+    const [createdToken] = await db
+      .insert(passwordResetTokens)
+      .values(token)
+      .returning();
+    return createdToken;
+  }
+
+  async getPasswordResetToken(token: string): Promise<PasswordResetToken | undefined> {
+    const results = await db
+      .select()
+      .from(passwordResetTokens)
+      .where(eq(passwordResetTokens.token, token));
+    return results[0];
+  }
+
+  async markPasswordResetTokenAsUsed(tokenId: number): Promise<void> {
+    await db
+      .update(passwordResetTokens)
+      .set({ used: true })
+      .where(eq(passwordResetTokens.id, tokenId));
+  }
+
+  async updateUserPassword(userId: number, hashedPassword: string): Promise<User> {
+    const [updatedUser] = await db
+      .update(users)
+      .set({ password: hashedPassword })
+      .where(eq(users.id, userId))
+      .returning();
+    return updatedUser;
   }
 }
 

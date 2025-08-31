@@ -2,6 +2,24 @@ import { pgTable, text, serial, integer, boolean, date, timestamp } from "drizzl
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
+// Password Reset Tokens
+export const passwordResetTokens = pgTable("password_reset_tokens", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  token: text("token").notNull().unique(),
+  expiresAt: timestamp("expires_at").notNull(),
+  used: boolean("used").default(false),
+  created: timestamp("created").notNull().defaultNow(),
+});
+
+export const insertPasswordResetTokenSchema = createInsertSchema(passwordResetTokens, {
+  expiresAt: z.coerce.date(),
+}).pick({
+  userId: true,
+  token: true,
+  expiresAt: true,
+});
+
 // User Authentication
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
@@ -496,6 +514,9 @@ export type InsertCouponCode = z.infer<typeof insertCouponCodeSchema>;
 
 export type CouponRedemption = typeof couponRedemptions.$inferSelect;
 export type InsertCouponRedemption = z.infer<typeof insertCouponRedemptionSchema>;
+
+export type PasswordResetToken = typeof passwordResetTokens.$inferSelect;
+export type InsertPasswordResetToken = z.infer<typeof insertPasswordResetTokenSchema>;
 
 // Define NHS Revalidation Status types
 export const RevalidationStatusEnum = {

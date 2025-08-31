@@ -12,6 +12,64 @@ import Stripe from "stripe";
 import { calculateNmcImportantDates, getLatestRevalidationRequirements } from "./nmc-api";
 import { getRevalidationAdvice, generateReflectiveTemplate, suggestCpdActivities } from "./ai-service";
 import { insertTrainingRecordSchema } from "@shared/schema";
+import { hashPassword } from "./auth";
+
+// Email service for password reset
+async function sendPasswordResetEmail(email: string, resetUrl: string): Promise<void> {
+  // Check if we have SendGrid configured
+  if (process.env.SENDGRID_API_KEY) {
+    try {
+      const { MailService } = await import('@sendgrid/mail');
+      const mailService = new MailService();
+      mailService.setApiKey(process.env.SENDGRID_API_KEY);
+      
+      await mailService.send({
+        to: email,
+        from: 'noreply@revalpro.co.uk', // This should be a verified sender domain
+        subject: 'Reset Your RevalPro Password',
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <h2 style="color: #2563eb;">Reset Your Password</h2>
+            <p>You've requested to reset your password for your RevalPro account.</p>
+            <p>Click the button below to reset your password:</p>
+            <a href="${resetUrl}" style="display: inline-block; background-color: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; margin: 16px 0;">Reset Password</a>
+            <p>Or copy and paste this link into your browser:</p>
+            <p style="word-break: break-all; color: #6b7280;">${resetUrl}</p>
+            <p><strong>This link will expire in 24 hours.</strong></p>
+            <p>If you didn't request this password reset, you can safely ignore this email.</p>
+            <hr style="margin: 24px 0; border: none; border-top: 1px solid #e5e7eb;">
+            <p style="color: #6b7280; font-size: 14px;">This email was sent by RevalPro - UK Nursing Revalidation Platform</p>
+          </div>
+        `,
+        text: `
+          Reset Your Password
+          
+          You've requested to reset your password for your RevalPro account.
+          
+          Click this link to reset your password: ${resetUrl}
+          
+          This link will expire in 24 hours.
+          
+          If you didn't request this password reset, you can safely ignore this email.
+        `
+      });
+      console.log(`Password reset email sent to: ${email}`);
+    } catch (error) {
+      console.error('Error sending email via SendGrid:', error);
+      throw new Error('Failed to send password reset email');
+    }
+  } else {
+    // Fallback: log to console in development
+    console.log('Password reset email would be sent to:', email);
+    console.log('Reset URL:', resetUrl);
+    console.log('SendGrid not configured - email not actually sent');
+    
+    // In production, this should throw an error
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('Email service not configured');
+    }
+  }
+}
 
 const scryptAsync = promisify(scrypt);
 
@@ -288,6 +346,98 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Health check endpoint
   app.get('/api/health', (req, res) => {
     res.json({ status: 'OK', message: 'RevalPro UK API is running' });
+  });
+
+  // Password reset endpoints
+  app.post('/api/auth/forgot-password', async (req, res) => {
+    try {
+      const { email } = req.body;
+      
+      if (!email) {
+        return res.status(400).json({ error: 'Email is required' });
+      }
+      
+      // Find user by email (checking both users.email and userProfiles.email)
+      const user = await storage.getUserByEmail(email);
+      
+      if (!user) {
+        // Don't reveal if email exists or not for security
+        return res.json({ message: 'If an account with that email exists, a password reset link has been sent.' });
+      }
+      
+      // Generate reset token
+      const crypto = await import('crypto');
+      const resetToken = crypto.randomBytes(32).toString('hex');
+      const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours from now
+      
+      // Store reset token
+      await storage.createPasswordResetToken({
+        userId: user.id,
+        token: resetToken,
+        expiresAt,
+      });
+      
+      // Send reset email
+      const resetUrl = `${req.protocol}://${req.get('host')}/reset-password?token=${resetToken}`;
+      await sendPasswordResetEmail(email, resetUrl);
+      
+      res.json({ message: 'If an account with that email exists, a password reset link has been sent.' });
+    } catch (error) {
+      console.error('Error in forgot password:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+  
+  app.post('/api/auth/reset-password', async (req, res) => {
+    try {
+      const { token, newPassword } = req.body;
+      
+      if (!token || !newPassword) {
+        return res.status(400).json({ error: 'Token and new password are required' });
+      }
+      
+      if (newPassword.length < 8) {
+        return res.status(400).json({ error: 'Password must be at least 8 characters long' });
+      }
+      
+      // Find valid token
+      const resetToken = await storage.getPasswordResetToken(token);
+      
+      if (!resetToken || resetToken.used || new Date() > new Date(resetToken.expiresAt)) {
+        return res.status(400).json({ error: 'Invalid or expired reset token' });
+      }
+      
+      // Hash new password
+      const hashedPassword = await hashPassword(newPassword);
+      
+      // Update user password
+      await storage.updateUserPassword(resetToken.userId, hashedPassword);
+      
+      // Mark token as used
+      await storage.markPasswordResetTokenAsUsed(resetToken.id);
+      
+      res.json({ message: 'Password has been reset successfully' });
+    } catch (error) {
+      console.error('Error in reset password:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+  
+  app.get('/api/auth/verify-reset-token/:token', async (req, res) => {
+    try {
+      const { token } = req.params;
+      
+      const resetToken = await storage.getPasswordResetToken(token);
+      
+      if (!resetToken || resetToken.used || new Date() > new Date(resetToken.expiresAt)) {
+        return res.status(400).json({ error: 'Invalid or expired reset token' });
+      }
+      
+      res.json({ valid: true });
+    } catch (error) {
+      console.error('Error verifying reset token:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
   });
 
   // Demo account endpoints removed for production launch
