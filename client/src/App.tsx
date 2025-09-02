@@ -45,7 +45,6 @@ import RevalidationAuditPage from "@/pages/revalidation-audit";
 import BetaSignupPage from "@/pages/beta-signup";
 import BetaApplicationsPage from "@/pages/beta-applications";
 import SimpleBetaView from "@/pages/simple-beta-view";
-import FirebaseTest from "@/pages/firebase-test";
 import LaunchCountdown from "@/pages/LaunchCountdown";
 import UserGuidePage from "@/pages/user-guide";
 import ProfileSetupPage from "@/pages/profile-setup";
@@ -165,8 +164,6 @@ function AppRouter() {
           {/* Simple Beta Applications View */}
           <Route path="/simple-beta" component={SimpleBetaView} />
           
-          {/* Firebase Test Page */}
-          <Route path="/firebase-test" component={FirebaseTest} />
           
           {/* Launch Countdown Page */}
           <Route path="/launch-countdown" component={LaunchCountdown} />

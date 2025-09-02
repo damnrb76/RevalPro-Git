@@ -10,7 +10,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { cpdRecordsStorage } from "@/lib/storage";
 import CpdForm from "@/components/forms/cpd-form";
-import DocumentManager from "@/components/documents/document-manager";
 import AIHelperCard from "@/components/ai/ai-helper-card";
 import type { CpdRecord } from "@shared/schema";
 
@@ -226,7 +225,7 @@ export default function CPDPage() {
                         {record.hours}
                       </td>
                       <td className="px-4 py-4 whitespace-nowrap">
-                        <Badge variant={record.participatory ? "nhs-light-blue" : "secondary"}>
+                        <Badge variant={record.participatory ? "default" : "secondary"}>
                           {record.participatory ? "Participatory" : "Individual"}
                         </Badge>
                       </td>
@@ -338,24 +337,11 @@ export default function CPDPage() {
         </TabsContent>
       </Tabs>
       
-      {/* Document Manager Section */}
+      {/* AI Helper Section */}
       <section className="mb-8">
-        <div className="flex items-center space-x-2 mb-4">
-          <FileText className="h-5 w-5 text-nhs-blue" />
-          <h2 className="text-xl font-semibold">CPD Evidence Documents</h2>
-        </div>
-        <p className="text-nhs-dark-grey mb-4">
-          Upload and manage supporting documents for your CPD activities. Keep evidence of your 
-          participation in courses, workshops, and other learning activities.
-        </p>
-        
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
           <div className="lg:col-span-2">
-            <DocumentManager 
-              category="cpd"
-              title="CPD Evidence"
-              description="Upload certificates, attendance records, and other evidence of your continuing professional development activities."
-            />
+            {/* Placeholder for future document management */}
           </div>
           
           <div>

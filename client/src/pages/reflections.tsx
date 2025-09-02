@@ -11,7 +11,6 @@ import { Badge } from "@/components/ui/badge";
 import { reflectiveAccountsStorage, reflectiveDiscussionStorage } from "@/lib/storage";
 import ReflectionForm from "@/components/forms/reflection-form";
 import ReflectiveDiscussionForm from "@/components/forms/reflective-discussion-form";
-import DocumentManager from "@/components/documents/document-manager";
 import AIHelperCard from "@/components/ai/ai-helper-card";
 import { CodeSectionsEnum } from "@shared/schema";
 import type { ReflectiveAccount, ReflectiveDiscussion } from "@shared/schema";
@@ -362,7 +361,7 @@ export default function ReflectionsPage() {
                         
                         <div className="text-nhs-dark-grey">Status:</div>
                         <div>
-                          <Badge variant={reflectiveDiscussion.completed ? "completed" : "not-started"}>
+                          <Badge variant={reflectiveDiscussion.completed ? "default" : "secondary"}>
                             {reflectiveDiscussion.completed ? "Completed" : "Not Completed"}
                           </Badge>
                         </div>
@@ -481,24 +480,11 @@ export default function ReflectionsPage() {
         />
       )}
       
-      {/* Document Manager Section */}
+      {/* AI Helper Section */}
       <section className="mb-8">
-        <div className="flex items-center space-x-2 mb-4">
-          <FileText className="h-5 w-5 text-nhs-blue" />
-          <h2 className="text-xl font-semibold">Reflection Documents</h2>
-        </div>
-        <p className="text-nhs-dark-grey mb-4">
-          Upload and manage supporting documents for your reflective practice. Store certificates, 
-          meeting notes, or any documents related to your reflective accounts and discussion.
-        </p>
-        
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
           <div className="lg:col-span-2">
-            <DocumentManager 
-              category="reflections"
-              title="Reflection Evidence"
-              description="Upload documents that support your reflective accounts and discussion, such as meeting notes or signed discussion forms."
-            />
+            {/* Placeholder for future document management */}
           </div>
           
           <div>
