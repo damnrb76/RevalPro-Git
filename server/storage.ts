@@ -45,6 +45,16 @@ export interface IStorage {
     activeSubscriptions: number;
     totalRevenue: number;
   }>;
+  getAnalytics(): Promise<{
+    totalUsers: number;
+    paidUsers: number;
+    freeUsers: number;
+    stripeCustomers: number;
+    planBreakdown: { plan: string; count: number }[];
+    recentRegistrations: { date: string; count: number }[];
+    firstRegistration: string | null;
+    latestRegistration: string | null;
+  }>;
   createBetaApplication(application: Omit<BetaApplication, 'id' | 'submittedAt'>): Promise<BetaApplication>;
   getAllBetaApplications(): Promise<BetaApplication[]>;
   
@@ -530,6 +540,61 @@ export class MemStorage implements IStorage {
   async updateUserPassword(userId: number, hashedPassword: string): Promise<User> {
     throw new Error("Password reset not supported in MemStorage");
   }
+
+  async getAnalytics(): Promise<{
+    totalUsers: number;
+    paidUsers: number;
+    freeUsers: number;
+    stripeCustomers: number;
+    planBreakdown: { plan: string; count: number }[];
+    recentRegistrations: { date: string; count: number }[];
+    firstRegistration: string | null;
+    latestRegistration: string | null;
+  }> {
+    const allUsers = Array.from(this.users.values());
+    
+    const totalUsers = allUsers.length;
+    const freeUsers = allUsers.filter(u => u.currentPlan === 'free').length;
+    const paidUsers = allUsers.filter(u => u.currentPlan !== 'free').length;
+    const stripeCustomers = allUsers.filter(u => u.stripeCustomerId).length;
+    
+    const planCounts = allUsers.reduce((acc, user) => {
+      const plan = user.currentPlan || 'free';
+      acc[plan] = (acc[plan] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+    
+    const planBreakdown = Object.entries(planCounts).map(([plan, count]) => ({
+      plan,
+      count
+    }));
+    
+    const registrationCounts = allUsers.reduce((acc, user) => {
+      const date = user.created.toISOString().split('T')[0];
+      acc[date] = (acc[date] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+    
+    const recentRegistrations = Object.entries(registrationCounts)
+      .map(([date, count]) => ({ date, count }))
+      .sort((a, b) => b.date.localeCompare(a.date))
+      .slice(0, 30);
+    
+    const sortedUsers = allUsers.sort((a, b) => a.created.getTime() - b.created.getTime());
+    const firstRegistration = sortedUsers[0]?.created.toISOString() || null;
+    const latestRegistration = sortedUsers[sortedUsers.length - 1]?.created.toISOString() || null;
+    
+    return {
+      totalUsers,
+      paidUsers,
+      freeUsers,
+      stripeCustomers,
+      planBreakdown,
+      recentRegistrations,
+      firstRegistration,
+      latestRegistration
+    };
+  }
 }
 
 // Database Storage implementation
@@ -986,6 +1051,65 @@ export class DatabaseStorage implements IStorage {
       .where(eq(users.id, userId))
       .returning();
     return updatedUser;
+  }
+
+  async getAnalytics(): Promise<{
+    totalUsers: number;
+    paidUsers: number;
+    freeUsers: number;
+    stripeCustomers: number;
+    planBreakdown: { plan: string; count: number }[];
+    recentRegistrations: { date: string; count: number }[];
+    firstRegistration: string | null;
+    latestRegistration: string | null;
+  }> {
+    // Get basic user counts
+    const allUsers = await db.select().from(users);
+    
+    const totalUsers = allUsers.length;
+    const freeUsers = allUsers.filter(u => u.currentPlan === 'free').length;
+    const paidUsers = allUsers.filter(u => u.currentPlan !== 'free').length;
+    const stripeCustomers = allUsers.filter(u => u.stripeCustomerId).length;
+    
+    // Plan breakdown
+    const planCounts = allUsers.reduce((acc, user) => {
+      const plan = user.currentPlan || 'free';
+      acc[plan] = (acc[plan] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+    
+    const planBreakdown = Object.entries(planCounts).map(([plan, count]) => ({
+      plan,
+      count
+    }));
+    
+    // Recent registrations (last 30 days)
+    const registrationCounts = allUsers.reduce((acc, user) => {
+      const date = user.created.toISOString().split('T')[0]; // YYYY-MM-DD
+      acc[date] = (acc[date] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+    
+    const recentRegistrations = Object.entries(registrationCounts)
+      .map(([date, count]) => ({ date, count }))
+      .sort((a, b) => b.date.localeCompare(a.date))
+      .slice(0, 30);
+    
+    // First and latest registrations
+    const sortedUsers = allUsers.sort((a, b) => a.created.getTime() - b.created.getTime());
+    const firstRegistration = sortedUsers[0]?.created.toISOString() || null;
+    const latestRegistration = sortedUsers[sortedUsers.length - 1]?.created.toISOString() || null;
+    
+    return {
+      totalUsers,
+      paidUsers,
+      freeUsers,
+      stripeCustomers,
+      planBreakdown,
+      recentRegistrations,
+      firstRegistration,
+      latestRegistration
+    };
   }
 }
 

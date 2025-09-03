@@ -35,6 +35,7 @@ import NmcResources from "@/pages/nmc-resources";
 import SummaryInfographic from "@/pages/summary-infographic";
 import AdminPanel from "@/pages/admin-panel";
 import CouponsAdminPage from "@/pages/admin/coupons";
+import AdminAnalyticsPage from "@/pages/admin/analytics";
 import PrivacyPolicyPage from "@/pages/privacy-policy";
 import TermsOfServicePage from "@/pages/terms-of-service";
 import CancellationRefundPolicy from "@/pages/cancellation-refund-policy";
@@ -136,6 +137,7 @@ function AppRouter() {
           <ProtectedRoute path="/admin" component={AdminPanel} />
           <ProtectedRoute path="/admin-panel" component={AdminPanel} />
           <ProtectedRoute path="/admin/coupons" component={CouponsAdminPage} />
+          <ProtectedRoute path="/admin/analytics" component={AdminAnalyticsPage} />
           
           {/* Privacy Policy Route */}
           <Route path="/privacy-policy" component={PrivacyPolicyPage} />

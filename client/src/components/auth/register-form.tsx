@@ -71,19 +71,10 @@ export default function RegisterForm() {
 
   // Handle form submission
   const onSubmit = async (values: RegisterFormValues) => {
-    console.log("🔥 REGISTRATION FORM SUBMITTED:", values);
-    console.log("🔥 FORM ERRORS:", form.formState.errors);
-    
     const { confirmPassword, ...registerData } = values;
-    console.log("🔥 SENDING TO API:", registerData);
-    
     registerMutation.mutate(registerData, {
-      onSuccess: (user) => {
-        console.log("🔥 REGISTRATION SUCCESS:", user);
+      onSuccess: () => {
         setLocation("/dashboard");
-      },
-      onError: (error) => {
-        console.log("🔥 REGISTRATION ERROR:", error);
       },
     });
   };
