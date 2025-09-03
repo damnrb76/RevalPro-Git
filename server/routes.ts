@@ -6,7 +6,7 @@ import { setupAuth, hashPassword } from "./auth";
 import { scrypt, randomBytes } from "crypto";
 import { promisify } from "util";
 import path from "path";
-import { createCustomer, createSubscription, createCheckoutSession, getSubscription, cancelSubscription, reactivateSubscription, changeSubscriptionPlan, handleWebhookEvent } from "./stripe";
+import { createCustomer, createSubscription, createCheckoutSession, getSubscription, cancelSubscription, reactivateSubscription, changeSubscriptionPlan, handleWebhookEvent, setupWebhookEndpoint } from "./stripe";
 import { PLAN_DETAILS } from "../shared/subscription-plans";
 import Stripe from "stripe";
 import { calculateNmcImportantDates, getLatestRevalidationRequirements } from "./nmc-api";
@@ -1853,6 +1853,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   const httpServer = createServer(app);
+
+  // Setup webhook endpoint automatically on app start
+  app.get("/api/setup-webhook", async (req, res) => {
+    try {
+      // Get the current domain from the request
+      const protocol = req.protocol;
+      const host = req.get('host');
+      const baseUrl = `${protocol}://${host}`;
+      const webhookUrl = `${baseUrl}/webhook/stripe`;
+      
+      console.log(`Setting up Stripe webhook endpoint at: ${webhookUrl}`);
+      
+      const result = await setupWebhookEndpoint(webhookUrl);
+      
+      res.json({
+        success: true,
+        webhook_url: webhookUrl,
+        endpoint_id: result.id,
+        message: "Webhook endpoint configured successfully"
+      });
+    } catch (error: any) {
+      console.error("Error setting up webhook:", error);
+      res.status(500).json({
+        error: "Failed to setup webhook",
+        details: error.message
+      });
+    }
+  });
 
   return httpServer;
 }

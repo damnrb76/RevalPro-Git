@@ -142,8 +142,8 @@ export async function createCheckoutSession({
   lookupKey,
   userId,
   customerEmail,
-  successUrl = 'https://test.revalpro.co.uk/success?session_id={CHECKOUT_SESSION_ID}',
-  cancelUrl = 'https://test.revalpro.co.uk/pricing'
+  successUrl = `${process.env.REPL_URL || 'http://localhost:5000'}/subscription-success?session_id={CHECKOUT_SESSION_ID}`,
+  cancelUrl = `${process.env.REPL_URL || 'http://localhost:5000'}/pricing`
 }: CreateCheckoutSessionParams) {
   try {
     // Map lookup keys to actual price IDs (live Stripe prices)
