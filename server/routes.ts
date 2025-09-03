@@ -1852,6 +1852,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Quick downgrade to free for testing
+  app.post("/api/downgrade-to-free", async (req, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ error: "You must be logged in" });
+      }
+
+      const user = req.user;
+      
+      // Cancel any active Stripe subscription
+      if (user.stripeSubscriptionId) {
+        await cancelSubscription(user.stripeSubscriptionId, true); // Cancel immediately
+      }
+      
+      // Update user to free plan
+      const updatedUser = await storage.updateUserPlan(user.id, "free");
+      
+      res.json({ 
+        success: true, 
+        message: "Successfully downgraded to free plan",
+        user: updatedUser 
+      });
+    } catch (error: any) {
+      console.error("Error downgrading to free:", error);
+      res.status(500).json({ error: "Failed to downgrade to free plan" });
+    }
+  });
+
   // Setup webhook endpoint automatically on app start
   app.get("/api/setup-webhook", async (req, res) => {
     try {
