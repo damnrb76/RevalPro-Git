@@ -1852,8 +1852,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  const httpServer = createServer(app);
-
   // Setup webhook endpoint automatically on app start
   app.get("/api/setup-webhook", async (req, res) => {
     try {
@@ -1881,6 +1879,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     }
   });
+
+  const httpServer = createServer(app);
 
   return httpServer;
 }
