@@ -1,0 +1,78 @@
+import { apiRequest } from "./queryClient";
+
+/**
+ * NMC Integration Service
+ * 
+ * This service handles integration with the UK Nursing & Midwifery Council (NMC) website
+ * Note: NMC does not provide a public API, so this uses a server-side proxy
+ * to access their public services and information.
+ */
+
+
+
+
+/**
+ * Interface for NMC important dates
+ */
+export interface NmcDates {
+  applicationDeadline?: string;
+  revalidationDeadline?: string;
+  renewalPeriodStart?: string;
+  renewalPeriodEnd?: string;
+}
+
+
+
+
+/**
+ * Get important NMC dates for the user based on their registration expiry
+ * 
+ * @param expiryDate - Registration expiry date
+ */
+export async function getNmcImportantDates(expiryDate: string): Promise<NmcDates> {
+  try {
+    const response = await apiRequest('POST', '/api/nmc/important-dates', {
+      expiryDate
+    });
+    
+    return await response.json();
+  } catch (error) {
+    console.error('Error getting NMC dates:', error);
+    
+    // Calculate fallback dates based on expiry date
+    const expiry = new Date(expiryDate);
+    const revalidationDeadline = new Date(expiry);
+    revalidationDeadline.setDate(revalidationDeadline.getDate() - 60); // 60 days before expiry
+    
+    const applicationDeadline = new Date(expiry);
+    applicationDeadline.setDate(applicationDeadline.getDate() - 90); // 90 days before expiry
+    
+    const renewalPeriodStart = new Date(expiry);
+    renewalPeriodStart.setDate(renewalPeriodStart.getDate() - 90); // 90 days before expiry
+    
+    const renewalPeriodEnd = new Date(expiry);
+    renewalPeriodEnd.setDate(renewalPeriodEnd.getDate() - 30); // 30 days before expiry
+    
+    return {
+      applicationDeadline: applicationDeadline.toISOString(),
+      revalidationDeadline: revalidationDeadline.toISOString(),
+      renewalPeriodStart: renewalPeriodStart.toISOString(),
+      renewalPeriodEnd: renewalPeriodEnd.toISOString()
+    };
+  }
+}
+
+/**
+ * Get direct links to NMC online services
+ */
+export function getNmcServiceLinks() {
+  return {
+    login: 'https://www.nmc.org.uk/login/',
+    register: 'https://www.nmc.org.uk/registration/joining-the-register/',
+    revalidation: 'https://www.nmc.org.uk/revalidation/',
+    searchRegister: 'https://www.nmc.org.uk/registration/search-the-register/',
+    standards: 'https://www.nmc.org.uk/standards/',
+    theCode: 'https://www.nmc.org.uk/standards/code/',
+    contact: 'https://www.nmc.org.uk/contact-us/'
+  };
+}
