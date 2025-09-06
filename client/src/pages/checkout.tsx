@@ -75,7 +75,16 @@ export default function CheckoutPage({ planId, period }: CheckoutPageProps) {
           throw new Error(errorData.error || 'Failed to create subscription');
         }
 
-        return await response.json();
+        const result = await response.json();
+        
+        // IMMEDIATE FIX: If development mode success, redirect right away
+        if (result.success && result.message && result.message.includes('Development mode')) {
+          setTimeout(() => {
+            setLocation(`/subscription/success?plan=${actualPlanId}&period=${actualPeriod}`);
+          }, 100);
+        }
+        
+        return result;
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to create subscription');
         throw err;
@@ -224,10 +233,18 @@ export default function CheckoutPage({ planId, period }: CheckoutPageProps) {
         setError('Checkout timed out. Please try again.');
         setLocation('/pricing');
       }
-    }, 15000); // 15 second timeout
+    }, 8000); // Reduced to 8 second timeout
 
     return () => clearTimeout(timeout);
   }, [clientSecret, subscriptionData, setLocation]);
+
+  // EMERGENCY FALLBACK: Force redirect if we have success data
+  useEffect(() => {
+    if (subscriptionData?.success) {
+      console.log('Emergency fallback: forcing redirect to success page');
+      setLocation(`/subscription/success?plan=${actualPlanId}&period=${actualPeriod}`);
+    }
+  }, [subscriptionData?.success, actualPlanId, actualPeriod, setLocation]);
 
   if (!clientSecret && !subscriptionData?.success) {
     return (
