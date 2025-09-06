@@ -260,163 +260,368 @@ export default function NavigationTabs({ currentPath, onSidebarToggle }: Navigat
 
 
 
-  // Render collapsible vertical navigation
+  // Render horizontal navigation with colored menu options using images
   return (
-    <nav className={`bg-white shadow-lg h-screen fixed left-0 top-0 overflow-y-auto transition-all duration-300 ease-in-out z-50 ${
-      sidebarExpanded ? 'w-64' : 'w-16'
-    }`}>
-      <div className="p-4">
-        {/* Toggle Button */}
-        <motion.button
-          onClick={() => {
-            const newState = !sidebarExpanded;
-            setSidebarExpanded(newState);
-            onSidebarToggle?.(newState);
-          }}
-          className="w-full mb-4 p-2 rounded-lg bg-revalpro-blue/10 hover:bg-revalpro-blue/20 transition-colors duration-200 flex items-center justify-center"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
+    <nav className="bg-white shadow-lg border-b border-gray-200 sticky top-0 z-40">
+      <div className="container mx-auto px-4">
+        <div className="flex items-center justify-center space-x-2 py-3 overflow-x-auto">
+          {/* Dashboard - Pink */}
           <motion.div
-            animate={{ rotate: sidebarExpanded ? 180 : 0 }}
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
           >
-            <ChevronDown size={20} className="text-revalpro-blue transform rotate-90" />
-          </motion.div>
-        </motion.button>
-        {/* Dashboard Link */}
-        <motion.div 
-          className="mb-2"
-          initial={{ opacity: 0, x: -10 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ 
-            type: "spring", 
-            stiffness: 260, 
-            damping: 20
-          }}
-          whileHover={{ 
-            scale: 1.02,
-            transition: { duration: 0.2 }
-          }}
-          whileTap={{ scale: 0.98 }}
-        >
-          <Link href={dashboardLink.href}>
-            <div 
-              className={cn(
-                "px-4 py-3 rounded-lg font-medium transition-all duration-300 cursor-pointer flex items-center w-full relative overflow-hidden",
-                sidebarExpanded ? "gap-3" : "justify-center",
-                currentPath === dashboardLink.href
-                  ? `${dashboardLink.color} ring-2 ring-offset-1 shadow-sm`
-                  : `${dashboardLink.color} ${dashboardLink.hoverColor}`
-              )}
-            >
-              <motion.span
-                animate={{ 
-                  rotate: currentPath === dashboardLink.href ? [0, 10, -10, 0] : 0,
-                  scale: currentPath === dashboardLink.href ? [1, 1.2, 1] : 1
-                }}
-                transition={{ 
-                  duration: 0.5, 
-                  ease: "easeInOut", 
-                  delay: 0.1 
-                }}
-                className="inline-flex"
+            <Link href={dashboardLink.href}>
+              <div 
+                className={cn(
+                  "flex flex-col items-center justify-center w-16 h-16 rounded-xl transition-all duration-300 cursor-pointer group relative",
+                  currentPath === dashboardLink.href
+                    ? "bg-revalpro-pink/30 text-revalpro-pink shadow-lg ring-2 ring-revalpro-pink/50"
+                    : "bg-revalpro-pink/20 text-revalpro-pink hover:bg-revalpro-pink/30 hover:shadow-md"
+                )}
               >
-                {dashboardLink.icon}
-              </motion.span>
-              {sidebarExpanded && <span className="text-sm">{dashboardLink.label}</span>}
-            </div>
-          </Link>
-        </motion.div>
+                <motion.div
+                  animate={{ 
+                    rotate: currentPath === dashboardLink.href ? [0, 10, -10, 0] : 0,
+                    scale: currentPath === dashboardLink.href ? [1, 1.2, 1] : 1
+                  }}
+                  transition={{ duration: 0.5, ease: "easeInOut" }}
+                  className="text-2xl"
+                >
+                  {dashboardLink.icon}
+                </motion.div>
+              </div>
+            </Link>
+          </motion.div>
 
-        {/* Navigation Groups */}
-        {navigationGroups.map((group, groupIndex) => {
-          const hasActiveItem = group.items.some(item => currentPath === item.href);
-          
-          return (
-            <motion.div 
-              key={group.label}
-              className="mb-2"
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ 
-                type: "spring", 
-                stiffness: 260, 
-                damping: 20, 
-                delay: (groupIndex + 1) * 0.1
-              }}
-              whileHover={{ 
-                scale: 1.02,
-                transition: { duration: 0.2 }
-              }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <div 
-                    className={cn(
-                      "px-4 py-3 rounded-lg font-medium transition-all duration-300 cursor-pointer flex items-center w-full relative overflow-hidden",
-                      sidebarExpanded ? "gap-3 justify-between" : "justify-center",
-                      hasActiveItem
-                        ? `${group.color} ring-2 ring-offset-1 shadow-sm`
-                        : `${group.color} ${group.hoverColor}`
-                    )}
+          {/* Practice Hours - Green */}
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.1 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <Link href="/practice-hours">
+              <div 
+                className={cn(
+                  "flex flex-col items-center justify-center w-16 h-16 rounded-xl transition-all duration-300 cursor-pointer group relative",
+                  currentPath === "/practice-hours"
+                    ? "bg-revalpro-green/30 text-revalpro-green shadow-lg ring-2 ring-revalpro-green/50"
+                    : "bg-revalpro-green/20 text-revalpro-green hover:bg-revalpro-green/30 hover:shadow-md"
+                )}
+              >
+                <motion.div
+                  animate={{ 
+                    rotate: currentPath === "/practice-hours" ? [0, 10, -10, 0] : 0,
+                    scale: currentPath === "/practice-hours" ? [1, 1.2, 1] : 1
+                  }}
+                  transition={{ duration: 0.5, ease: "easeInOut" }}
+                  className="text-2xl"
+                >
+                  <Clock size={24} />
+                </motion.div>
+              </div>
+            </Link>
+          </motion.div>
+
+          {/* CPD Records - Blue */}
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.2 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <Link href="/cpd">
+              <div 
+                className={cn(
+                  "flex flex-col items-center justify-center w-16 h-16 rounded-xl transition-all duration-300 cursor-pointer group relative",
+                  currentPath === "/cpd"
+                    ? "bg-revalpro-blue/30 text-revalpro-blue shadow-lg ring-2 ring-revalpro-blue/50"
+                    : "bg-revalpro-blue/20 text-revalpro-blue hover:bg-revalpro-blue/30 hover:shadow-md"
+                )}
+              >
+                <motion.div
+                  animate={{ 
+                    rotate: currentPath === "/cpd" ? [0, 10, -10, 0] : 0,
+                    scale: currentPath === "/cpd" ? [1, 1.2, 1] : 1
+                  }}
+                  transition={{ duration: 0.5, ease: "easeInOut" }}
+                  className="text-2xl"
+                >
+                  <BookOpen size={24} />
+                </motion.div>
+              </div>
+            </Link>
+          </motion.div>
+
+          {/* Feedback - Purple */}
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.3 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <Link href="/feedback">
+              <div 
+                className={cn(
+                  "flex flex-col items-center justify-center w-16 h-16 rounded-xl transition-all duration-300 cursor-pointer group relative",
+                  currentPath === "/feedback"
+                    ? "bg-revalpro-purple/30 text-revalpro-purple shadow-lg ring-2 ring-revalpro-purple/50"
+                    : "bg-revalpro-purple/20 text-revalpro-purple hover:bg-revalpro-purple/30 hover:shadow-md"
+                )}
+              >
+                <motion.div
+                  animate={{ 
+                    rotate: currentPath === "/feedback" ? [0, 10, -10, 0] : 0,
+                    scale: currentPath === "/feedback" ? [1, 1.2, 1] : 1
+                  }}
+                  transition={{ duration: 0.5, ease: "easeInOut" }}
+                  className="text-2xl"
+                >
+                  <MessageSquare size={24} />
+                </motion.div>
+              </div>
+            </Link>
+          </motion.div>
+
+          {/* Reflections - Orange */}
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.4 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <Link href="/reflections">
+              <div 
+                className={cn(
+                  "flex flex-col items-center justify-center w-16 h-16 rounded-xl transition-all duration-300 cursor-pointer group relative",
+                  currentPath === "/reflections"
+                    ? "bg-revalpro-orange/30 text-revalpro-orange shadow-lg ring-2 ring-revalpro-orange/50"
+                    : "bg-revalpro-orange/20 text-revalpro-orange hover:bg-revalpro-orange/30 hover:shadow-md"
+                )}
+              >
+                <motion.div
+                  animate={{ 
+                    rotate: currentPath === "/reflections" ? [0, 10, -10, 0] : 0,
+                    scale: currentPath === "/reflections" ? [1, 1.2, 1] : 1
+                  }}
+                  transition={{ duration: 0.5, ease: "easeInOut" }}
+                  className="text-2xl"
+                >
+                  <FileText size={24} />
+                </motion.div>
+              </div>
+            </Link>
+          </motion.div>
+
+          {/* Training - Teal */}
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.5 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <Link href="/training">
+              <div 
+                className={cn(
+                  "flex flex-col items-center justify-center w-16 h-16 rounded-xl transition-all duration-300 cursor-pointer group relative",
+                  currentPath === "/training"
+                    ? "bg-revalpro-teal/30 text-revalpro-teal shadow-lg ring-2 ring-revalpro-teal/50"
+                    : "bg-revalpro-teal/20 text-revalpro-teal hover:bg-revalpro-teal/30 hover:shadow-md"
+                )}
+              >
+                <motion.div
+                  animate={{ 
+                    rotate: currentPath === "/training" ? [0, 10, -10, 0] : 0,
+                    scale: currentPath === "/training" ? [1, 1.2, 1] : 1
+                  }}
+                  transition={{ duration: 0.5, ease: "easeInOut" }}
+                  className="text-2xl"
+                >
+                  <GraduationCap size={24} />
+                </motion.div>
+              </div>
+            </Link>
+          </motion.div>
+
+          {/* Declarations - Fuchsia */}
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.6 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <Link href="/declarations">
+              <div 
+                className={cn(
+                  "flex flex-col items-center justify-center w-16 h-16 rounded-xl transition-all duration-300 cursor-pointer group relative",
+                  currentPath === "/declarations"
+                    ? "bg-revalpro-fuchsia/30 text-revalpro-fuchsia shadow-lg ring-2 ring-revalpro-fuchsia/50"
+                    : "bg-revalpro-fuchsia/20 text-revalpro-fuchsia hover:bg-revalpro-fuchsia/30 hover:shadow-md"
+                )}
+              >
+                <motion.div
+                  animate={{ 
+                    rotate: currentPath === "/declarations" ? [0, 10, -10, 0] : 0,
+                    scale: currentPath === "/declarations" ? [1, 1.2, 1] : 1
+                  }}
+                  transition={{ duration: 0.5, ease: "easeInOut" }}
+                  className="text-2xl"
+                >
+                  <ClipboardCheck size={24} />
+                </motion.div>
+              </div>
+            </Link>
+          </motion.div>
+
+          {/* AI Assistant - Gradient Purple/Fuchsia */}
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.7 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <Link href="/ai-assistant">
+              <div 
+                className={cn(
+                  "flex flex-col items-center justify-center w-16 h-16 rounded-xl transition-all duration-300 cursor-pointer group relative bg-gradient-to-br",
+                  currentPath === "/ai-assistant"
+                    ? "from-revalpro-purple/40 to-revalpro-fuchsia/40 text-revalpro-purple shadow-lg ring-2 ring-revalpro-purple/50"
+                    : "from-revalpro-purple/20 to-revalpro-fuchsia/20 text-revalpro-purple hover:from-revalpro-purple/30 hover:to-revalpro-fuchsia/30 hover:shadow-md"
+                )}
+              >
+                <motion.div
+                  animate={{ 
+                    rotate: currentPath === "/ai-assistant" ? [0, 10, -10, 0] : 0,
+                    scale: currentPath === "/ai-assistant" ? [1, 1.2, 1] : 1
+                  }}
+                  transition={{ duration: 0.5, ease: "easeInOut" }}
+                  className="text-2xl"
+                >
+                  <Bot size={24} />
+                </motion.div>
+              </div>
+            </Link>
+          </motion.div>
+
+          {/* Settings Menu - Dropdown for less frequently used items */}
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.8 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <div 
+                  className={cn(
+                    "flex flex-col items-center justify-center w-16 h-16 rounded-xl transition-all duration-300 cursor-pointer group relative",
+                    ["/settings", "/subscription", "/user-guide", "/summary-infographic", "/revalidation-dates", "/nmc-resources", "/revalidation-audit"].includes(currentPath)
+                      ? "bg-gray-300 text-gray-700 shadow-lg ring-2 ring-gray-400/50"
+                      : "bg-gray-200 text-gray-600 hover:bg-gray-300 hover:shadow-md"
+                  )}
+                >
+                  <motion.div
+                    animate={{ 
+                      rotate: ["/settings", "/subscription", "/user-guide", "/summary-infographic", "/revalidation-dates", "/nmc-resources", "/revalidation-audit"].includes(currentPath) ? [0, 10, -10, 0] : 0,
+                      scale: ["/settings", "/subscription", "/user-guide", "/summary-infographic", "/revalidation-dates", "/nmc-resources", "/revalidation-audit"].includes(currentPath) ? [1, 1.2, 1] : 1
+                    }}
+                    transition={{ duration: 0.5, ease: "easeInOut" }}
+                    className="text-2xl"
                   >
-                    <div className={cn("flex items-center", sidebarExpanded ? "gap-3" : "")}>
-                      <motion.span
-                        animate={{ 
-                          rotate: hasActiveItem ? [0, 10, -10, 0] : 0,
-                          scale: hasActiveItem ? [1, 1.2, 1] : 1
-                        }}
-                        transition={{ 
-                          duration: 0.5, 
-                          ease: "easeInOut"
-                        }}
-                        className="inline-flex"
-                      >
-                        {group.icon}
-                      </motion.span>
-                      {sidebarExpanded && <span className="text-sm">{group.label}</span>}
+                    <SettingsIcon size={24} />
+                  </motion.div>
+                </div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel>Settings & More</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link href="/settings">
+                    <div className="flex items-center gap-2">
+                      <SettingsIcon size={16} />
+                      <span>Settings</span>
                     </div>
-                    {sidebarExpanded && <ChevronDown size={12} className="transform rotate-[-90deg]" />}
-                  </div>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent side={sidebarExpanded ? "right" : "right"} align="start" className={cn("w-56", sidebarExpanded ? "ml-2" : "ml-4")}>
-                  <DropdownMenuLabel>{group.label}</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  {group.items.map((item) => {
-                    const isActive = currentPath === item.href;
-                    return (
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/subscription">
+                    <div className="flex items-center gap-2">
+                      <CreditCard size={16} />
+                      <span>Subscription</span>
+                    </div>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/user-guide">
+                    <div className="flex items-center gap-2">
+                      <BookOpen size={16} />
+                      <span>User Guide</span>
+                    </div>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link href="/summary-infographic">
+                    <div className="flex items-center gap-2">
+                      <BarChart3 size={16} />
+                      <span>Export Summary</span>
+                    </div>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/revalidation-dates">
+                    <div className="flex items-center gap-2">
+                      <Calendar size={16} />
+                      <span>Important Dates</span>
+                    </div>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/nmc-resources">
+                    <div className="flex items-center gap-2">
+                      <Link2 size={16} />
+                      <span>Resources</span>
+                    </div>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/revalidation-audit">
+                    <div className="flex items-center gap-2">
+                      <Archive size={16} />
+                      <span>Audit & Archive</span>
+                    </div>
+                  </Link>
+                </DropdownMenuItem>
+                {adminItems.length > 0 && (
+                  <>
+                    <DropdownMenuSeparator />
+                    {adminItems.map((item) => (
                       <DropdownMenuItem key={item.href} asChild>
                         <Link href={item.href}>
-                          <div className={cn(
-                            "flex items-center gap-2 w-full",
-                            isActive ? "font-semibold" : ""
-                          )}>
-                            <motion.span
-                              animate={{ 
-                                rotate: isActive ? [0, 10, -10, 0] : 0,
-                                scale: isActive ? [1, 1.1, 1] : 1
-                              }}
-                              transition={{ 
-                                duration: 0.5, 
-                                ease: "easeInOut"
-                              }}
-                              className="inline-flex"
-                            >
-                              {item.icon}
-                            </motion.span>
+                          <div className="flex items-center gap-2">
+                            {item.icon}
                             <span>{item.label}</span>
                           </div>
                         </Link>
                       </DropdownMenuItem>
-                    );
-                  })}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </motion.div>
-          );
-        })}
+                    ))}
+                  </>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </motion.div>
+        </div>
       </div>
     </nav>
   );
