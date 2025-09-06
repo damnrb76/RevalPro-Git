@@ -75,16 +75,7 @@ export default function CheckoutPage({ planId, period }: CheckoutPageProps) {
           throw new Error(errorData.error || 'Failed to create subscription');
         }
 
-        const result = await response.json();
-        
-        // IMMEDIATE FIX: If development mode success, redirect right away
-        if (result.success && result.message && result.message.includes('Development mode')) {
-          setTimeout(() => {
-            setLocation(`/subscription/success?plan=${actualPlanId}&period=${actualPeriod}`);
-          }, 100);
-        }
-        
-        return result;
+        return await response.json();
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to create subscription');
         throw err;
@@ -98,21 +89,12 @@ export default function CheckoutPage({ planId, period }: CheckoutPageProps) {
 
   // Set client secret when subscription is created
   useEffect(() => {
-    console.log('Subscription data received:', subscriptionData);
-    
     if (subscriptionData?.clientSecret) {
-      console.log('Setting client secret for payment');
       setClientSecret(subscriptionData.clientSecret);
     }
-    
     if (subscriptionData?.success && subscriptionData?.message) {
-      console.log('Development mode success - redirecting to success page');
-      // Development mode success - add small delay to ensure proper redirect
-      const successUrl = `/subscription/success?plan=${actualPlanId}&period=${actualPeriod}`;
-      console.log('Redirecting to:', successUrl);
-      setTimeout(() => {
-        setLocation(successUrl);
-      }, 500); // Small delay to ensure proper redirect
+      // Development mode success
+      setLocation('/subscription/success?plan=' + actualPlanId + '&period=' + actualPeriod);
     }
   }, [subscriptionData, setLocation, actualPlanId, actualPeriod]);
 
@@ -225,28 +207,7 @@ export default function CheckoutPage({ planId, period }: CheckoutPageProps) {
   }
 
   // No client secret means we're not ready for Stripe checkout
-  // Add timeout check for hanging checkout
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      if (!clientSecret && !subscriptionData?.success) {
-        console.error('Checkout timeout - redirecting to pricing page');
-        setError('Checkout timed out. Please try again.');
-        setLocation('/pricing');
-      }
-    }, 8000); // Reduced to 8 second timeout
-
-    return () => clearTimeout(timeout);
-  }, [clientSecret, subscriptionData, setLocation]);
-
-  // EMERGENCY FALLBACK: Force redirect if we have success data
-  useEffect(() => {
-    if (subscriptionData?.success) {
-      console.log('Emergency fallback: forcing redirect to success page');
-      setLocation(`/subscription/success?plan=${actualPlanId}&period=${actualPeriod}`);
-    }
-  }, [subscriptionData?.success, actualPlanId, actualPeriod, setLocation]);
-
-  if (!clientSecret && !subscriptionData?.success) {
+  if (!clientSecret) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <Card className="w-full max-w-md">
@@ -254,17 +215,6 @@ export default function CheckoutPage({ planId, period }: CheckoutPageProps) {
             <Loader2 className="h-8 w-8 animate-spin text-blue-600 mx-auto mb-4" />
             <h3 className="text-lg font-semibold mb-2">Preparing checkout</h3>
             <p className="text-gray-600">Setting up secure payment...</p>
-            {error && (
-              <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-md">
-                <p className="text-red-600 text-sm">{error}</p>
-                <button 
-                  onClick={() => setLocation('/pricing')}
-                  className="mt-2 text-sm bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
-                >
-                  Return to Pricing
-                </button>
-              </div>
-            )}
           </CardContent>
         </Card>
       </div>
@@ -417,7 +367,7 @@ export default function CheckoutPage({ planId, period }: CheckoutPageProps) {
                 <Elements
                   stripe={stripePromise}
                   options={{
-                    clientSecret: clientSecret || undefined,
+                    clientSecret,
                     appearance,
                   }}
                 >
@@ -426,7 +376,7 @@ export default function CheckoutPage({ planId, period }: CheckoutPageProps) {
                     period={actualPeriod}
                     planName={planDetails.name}
                     price={planDetails.price[actualPeriod]}
-                    clientSecret={clientSecret || ''}
+                    clientSecret={clientSecret}
                     onSuccess={handleSuccess}
                     onCancel={handleCancel}
                   />
