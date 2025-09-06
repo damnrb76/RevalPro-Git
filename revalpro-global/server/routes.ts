@@ -1290,47 +1290,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Stripe webhook handler
-  app.post("/api/webhooks/stripe", async (req, res) => {
-    const sig = req.headers['stripe-signature'] as string;
-    
-    if (!process.env.STRIPE_SECRET_KEY) {
-      return res.status(500).send('Stripe configuration error');
-    }
-
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-      apiVersion: '2023-10-16' as any,
-    });
-    
-    // This is where you would validate the webhook signature
-    // if you have a webhook secret configured
-    // For testing purposes, we'll just process the event
-    
-    try {
-      // For testing, just cast the request body to an event
-      const event = req.body as Stripe.Event;
-      
-      // Handle the event based on its type
-      switch (event.type) {
-        case 'customer.subscription.created':
-        case 'customer.subscription.updated':
-        case 'customer.subscription.deleted':
-        case 'invoice.payment_succeeded':
-        case 'invoice.payment_failed':
-          // Process the event
-          console.log(`Processing webhook event: ${event.type}`);
-          // Here, you would call functions to update your database
-          // based on the subscription changes
-          break;
-        default:
-          console.log(`Unhandled event type: ${event.type}`);
-      }
-      
-      res.json({received: true});
-    } catch (err: any) {
-      res.status(400).send(`Webhook Error: ${err.message}`);
-    }
-  });
+  // Remove duplicate/testing webhook endpoint - use only the proper one at /webhook/stripe
 
   // Admin middleware
   const requireAdmin = (req: any, res: any, next: any) => {
@@ -1891,16 +1851,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Setup webhook endpoint automatically on app start
+  // Setup webhook endpoint manually for production only
+  // For development, use Stripe CLI: stripe listen --forward-to localhost:5000/webhook/stripe
   app.get("/api/setup-webhook", async (req, res) => {
     try {
-      // Get the current domain from the request
-      const protocol = req.protocol;
+      // Only block localhost and development domains, allow all production domains
       const host = req.get('host');
-      const baseUrl = `${protocol}://${host}`;
-      const webhookUrl = `${baseUrl}/webhook/stripe`;
+      const isDevelopment = host?.includes('localhost') || host?.includes('127.0.0.1');
       
-      console.log(`Setting up Stripe webhook endpoint at: ${webhookUrl}`);
+      if (isDevelopment) {
+        return res.json({
+          success: false,
+          message: "Webhook setup disabled for localhost development. Use Stripe CLI for local testing: stripe listen --forward-to localhost:5000/webhook/stripe",
+          webhook_endpoint: "/webhook/stripe",
+          note: "This prevents failing webhook notifications in development"
+        });
+      }
+
+      // For production domains, ensure proper webhook URL construction
+      const protocol = req.get('x-forwarded-proto') || (host?.includes('revalpro.co.uk') ? 'https' : req.protocol);
+      const webhookUrl = `${protocol}://${host}/webhook/stripe`;
+      
+      console.log(`Setting up production webhook at: ${webhookUrl}`);
       
       const result = await setupWebhookEndpoint(webhookUrl);
       
