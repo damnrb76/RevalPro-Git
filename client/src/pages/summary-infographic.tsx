@@ -3,16 +3,56 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Download, FileText, Image } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { exportAllData } from "@/lib/storage";
+import { calculateProgress, RevalidationSummaryData } from "@/lib/infographic-generator";
+import type { UserProfile } from "@shared/schema";
 
 export default function SummaryInfographicPage() {
   const [previewImage, setPreviewImage] = useState<string>("");
+  const [userData, setUserData] = useState<RevalidationSummaryData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Generate the infographic preview when component loads
+  // Load data and generate the infographic preview when component loads
   useEffect(() => {
-    generatePreviewImage();
+    loadUserData();
   }, []);
 
-  const generatePreviewImage = () => {
+  const loadUserData = async () => {
+    try {
+      setIsLoading(true);
+      const data = await exportAllData();
+      
+      const summaryData: RevalidationSummaryData = {
+        userProfile: data.userProfile[0] || null,
+        practiceHours: data.practiceHours || [],
+        cpdRecords: data.cpdRecords || [],
+        feedbackRecords: data.feedbackRecords || [],
+        reflectiveAccounts: data.reflectiveAccounts || [],
+        hasHealthDeclaration: data.healthDeclaration && data.healthDeclaration.length > 0,
+        hasConfirmation: data.confirmation && data.confirmation.length > 0,
+        lastUpdated: new Date()
+      };
+      
+      setUserData(summaryData);
+      generatePreviewImage(summaryData);
+    } catch (error) {
+      console.error('Error loading user data:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load your revalidation data",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const generatePreviewImage = (data?: RevalidationSummaryData) => {
+    const summaryData = data || userData;
+    if (!summaryData) {
+      console.log('No data available for preview generation');
+      return;
+    }
     try {
       // Create a canvas element for the preview
       const canvas = document.createElement('canvas');
@@ -41,8 +81,10 @@ export default function SummaryInfographicPage() {
       
       // Add nurse details
       ctx.font = '18px Arial';
-      ctx.fillText('Damon Bruce (Nurse)', canvas.width / 2, 140);
-      ctx.fillText('Registration Status: Active', canvas.width / 2, 170);
+      const userName = summaryData.userProfile?.name || 'Your Name';
+      const regNumber = summaryData.userProfile?.registrationNumber || 'Your PIN';
+      ctx.fillText(`${userName} (Nurse)`, canvas.width / 2, 140);
+      ctx.fillText(`NMC PIN: ${regNumber}`, canvas.width / 2, 170);
       
       // Draw progress bars for canvas
       const drawProgressBar = (y: number, label: string, progress: number, color: string) => {
@@ -67,13 +109,16 @@ export default function SummaryInfographicPage() {
         ctx.fillText(`${progress}%`, 400, y + 20);
       };
       
-      // Progress indicators
-      drawProgressBar(220, 'Practice Hours (450+ required)', 100, '#2962ff');
-      drawProgressBar(280, 'CPD Hours (35+ required)', 100, '#00b894');
-      drawProgressBar(340, 'Feedback Records (5+ required)', 100, '#e84393');
-      drawProgressBar(400, 'Reflective Accounts (5+ required)', 100, '#fd79a8');
-      drawProgressBar(460, 'Health Declaration', 100, '#74b9ff');
-      drawProgressBar(520, 'Confirmation', 100, '#a29bfe');
+      // Calculate actual progress percentages
+      const progress = calculateProgress(summaryData);
+      
+      // Progress indicators with real data
+      drawProgressBar(220, `Practice Hours (${progress.practiceHours.required}+ required)`, progress.practiceHours.percentage, '#2962ff');
+      drawProgressBar(280, `CPD Hours (${progress.cpd.required}+ required)`, progress.cpd.percentage, '#00b894');
+      drawProgressBar(340, `Feedback Records (${progress.feedback.required}+ required)`, progress.feedback.percentage, '#e84393');
+      drawProgressBar(400, `Reflective Accounts (${progress.reflectiveAccounts.required}+ required)`, progress.reflectiveAccounts.percentage, '#fd79a8');
+      drawProgressBar(460, 'Health Declaration', progress.healthDeclaration ? 100 : 0, '#74b9ff');
+      drawProgressBar(520, 'Confirmation', progress.confirmation ? 100 : 0, '#a29bfe');
       
       // Add achievements section
       ctx.fillStyle = '#000000';
@@ -83,16 +128,37 @@ export default function SummaryInfographicPage() {
       
       ctx.font = '16px Arial';
       const achievements = [
-        '✓ All practice hours completed',
-        '✓ CPD requirements fulfilled',
-        '✓ Feedback collection complete',
-        '✓ Reflective practice documented',
-        '✓ Health declaration submitted',
-        '✓ Confirmation process complete'
+        {
+          text: `Practice hours: ${progress.practiceHours.completed}/${progress.practiceHours.required} hours`,
+          completed: progress.practiceHours.percentage >= 100
+        },
+        {
+          text: `CPD hours: ${progress.cpd.completed}/${progress.cpd.required} hours`,
+          completed: progress.cpd.percentage >= 100
+        },
+        {
+          text: `Feedback records: ${progress.feedback.completed}/${progress.feedback.required} records`,
+          completed: progress.feedback.percentage >= 100
+        },
+        {
+          text: `Reflective accounts: ${progress.reflectiveAccounts.completed}/${progress.reflectiveAccounts.required} accounts`,
+          completed: progress.reflectiveAccounts.percentage >= 100
+        },
+        {
+          text: 'Health declaration',
+          completed: progress.healthDeclaration
+        },
+        {
+          text: 'Confirmation process',
+          completed: progress.confirmation
+        }
       ];
       
       achievements.forEach((achievement, index) => {
-        ctx.fillText(achievement, 150, 640 + (index * 30));
+        const symbol = achievement.completed ? '✓' : '○';
+        const color = achievement.completed ? '#00b894' : '#666666';
+        ctx.fillStyle = color;
+        ctx.fillText(`${symbol} ${achievement.text}`, 150, 640 + (index * 30));
       });
       
       // Add footer
@@ -115,60 +181,33 @@ export default function SummaryInfographicPage() {
     }
   };
 
-  // Generate JSON sample data
+  // Generate JSON data using real user data
   const handleJsonDownload = () => {
     try {
-      const sampleData = {
-        userProfile: {
-          id: 1,
-          name: "Damon Bruce",
-          registrationNumber: "98X1234E",
-          expiryDate: "2026-05-15",
-          specialty: "Adult Nursing",
-          jobTitle: "Senior Staff Nurse",
-          email: "dbruce@example.com",
-          created: new Date().toISOString(),
-        },
-        practiceHours: [
-          {
-            id: 1,
-            startDate: "2023-05-15",
-            endDate: "2024-05-15",
-            hours: 450,
-            setting: "Hospital",
-            scope: "Adult Nursing",
-            notes: "Full-time hospital work",
-            created: new Date().toISOString(),
-          }
-        ],
-        cpdRecords: [
-          {
-            id: 1,
-            title: "Infection Control Workshop",
-            date: "2023-08-12",
-            hours: 35,
-            participatory: true,
-            description: "Comprehensive infection control training",
-            created: new Date().toISOString(),
-          }
-        ]
-      };
+      if (!userData) {
+        toast({
+          title: "No Data",
+          description: "Please wait for data to load before exporting",
+          variant: "destructive",
+        });
+        return;
+      }
 
-      const blob = new Blob([JSON.stringify(sampleData, null, 2)], {
+      const blob = new Blob([JSON.stringify(userData, null, 2)], {
         type: "application/json",
       });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = "revalidation-data-sample.json";
+      a.download = "revalidation-data-export.json";
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
 
       toast({
-        title: "Sample JSON Generated",
-        description: "Sample data file has been downloaded",
+        title: "Data Exported",
+        description: "Your revalidation data has been downloaded",
         variant: "default",
       });
     } catch (error) {
@@ -184,8 +223,12 @@ export default function SummaryInfographicPage() {
   // Download as image
   const handleImageDownload = () => {
     try {
-      if (!previewImage) {
-        generatePreviewImage();
+      if (!previewImage || !userData) {
+        if (!userData) {
+          loadUserData();
+        } else {
+          generatePreviewImage();
+        }
         return;
       }
 
@@ -198,7 +241,7 @@ export default function SummaryInfographicPage() {
 
       toast({
         title: "Infographic Downloaded",
-        description: "Visual summary has been saved as PNG image",
+        description: "Your revalidation summary has been saved as PNG image",
         variant: "default",
       });
     } catch (error) {
@@ -249,31 +292,32 @@ export default function SummaryInfographicPage() {
                 <div className="text-center">
                   <FileText className="mx-auto h-12 w-12 text-gray-400 mb-4" />
                   <h3 className="text-lg font-medium text-gray-900 mb-2">
-                    Professional Infographic Summary
+                    {isLoading ? 'Loading Your Data...' : 'Your Revalidation Summary'}
                   </h3>
                   <p className="text-gray-500">
-                    Click the button below to generate and download
+                    {isLoading ? 'Please wait while we load your progress' : 'Your personalized infographic is ready'}
                   </p>
                 </div>
               )}
             </div>
 
             <div className="mt-4 space-y-3">
-              <h4 className="font-medium">The infographic will include:</h4>
+              <h4 className="font-medium">The infographic includes:</h4>
               <ul className="text-sm text-gray-600 space-y-1">
-                <li>• Overall revalidation progress</li>
-                <li>• Registration details and expiry date</li>
-                <li>• Breakdown of all NMC requirements</li>
-                <li>• Visual progress indicators</li>
+                <li>• Your actual revalidation progress</li>
+                <li>• Real completion percentages for each requirement</li>
+                <li>• Practice hours, CPD, feedback, and reflective accounts status</li>
+                <li>• Professional visual summary for portfolios</li>
               </ul>
             </div>
 
             <Button 
               onClick={handleImageDownload}
               className="w-full mt-6 bg-revalpro-blue hover:bg-revalpro-dark-blue text-white"
+              disabled={isLoading || !userData}
             >
               <Download className="mr-2 h-4 w-4" />
-              Download as Image
+              {isLoading ? 'Loading...' : 'Download Your Infographic'}
             </Button>
           </CardContent>
         </Card>
@@ -294,6 +338,7 @@ export default function SummaryInfographicPage() {
                   onClick={handleImageDownload}
                   variant="outline"
                   className="w-full justify-start"
+                  disabled={isLoading || !userData}
                 >
                   <Image className="mr-2 h-4 w-4" />
                   PNG Image (Recommended)
@@ -308,9 +353,10 @@ export default function SummaryInfographicPage() {
                   onClick={handleJsonDownload}
                   variant="outline"
                   className="w-full justify-start"
+                  disabled={!userData}
                 >
                   <FileText className="mr-2 h-4 w-4" />
-                  JSON Data Sample
+                  Export Your Data (JSON)
                 </Button>
               </div>
             </div>
