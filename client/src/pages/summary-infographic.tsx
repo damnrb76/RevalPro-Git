@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Download, FileText, Image } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
-import jsPDF from "jspdf";
 
 export default function SummaryInfographicPage() {
   const [previewImage, setPreviewImage] = useState<string>("");
