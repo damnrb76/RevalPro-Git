@@ -193,3 +193,7 @@ RevalPro is a comprehensive UK-specific nursing revalidation tracker application
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
+
+## Integration Notes
+
+- September 11, 2025: User declined OneDrive integration setup (connector:ccfg_onedrive_01K4E4CFAKZ9ARQZBWZW4HD05Y) when attempting to access newsletter webpage for Auth page integration. Alternative file sharing methods offered instead.
