@@ -10,11 +10,13 @@ import {
 } from "@shared/schema";
 import session from "express-session";
 import createMemoryStore from "memorystore";
+import connectPgSimple from "connect-pg-simple";
 import { db } from "./db";
 import { eq, and } from "drizzle-orm";
 
-// Define the session store type
+// Define the session store types
 const MemoryStore = createMemoryStore(session);
+const PgSession = connectPgSimple(session);
 
 // Extend the interface with any CRUD methods and session store
 export interface SubscriptionInfo {
@@ -600,10 +602,22 @@ export class MemStorage implements IStorage {
 // Database Storage implementation
 export class DatabaseStorage implements IStorage {
   private memStorage: MemStorage;
+  private dbSessionStore: session.Store;
 
   constructor() {
-    // Keep the memory storage for users and other data
+    // Keep the memory storage for non-user data (coupons, etc.)
     this.memStorage = new MemStorage();
+    
+    // Use database session store for persistence
+    this.dbSessionStore = new PgSession({
+      pool: db.$client,                // Use the existing database connection
+      tableName: 'session',           // Table name for sessions
+      createTableIfMissing: true,     // Auto-create table if needed
+    });
+  }
+
+  get sessionStore(): session.Store {
+    return this.dbSessionStore;
   }
 
   // Use database for user methods
@@ -698,9 +712,6 @@ export class DatabaseStorage implements IStorage {
     return this.memStorage.getAdminStats();
   }
 
-  get sessionStore() {
-    return this.memStorage.sessionStore;
-  }
 
   // Beta applications - use persistent database storage
   async createBetaApplication(application: Omit<BetaApplication, 'id' | 'submittedAt'>): Promise<BetaApplication> {

@@ -72,12 +72,27 @@ export default function CheckoutPage({ planId, period }: CheckoutPageProps) {
 
         if (!response.ok) {
           const errorData = await response.json();
+          
+          // Handle authentication errors specifically
+          if (response.status === 401) {
+            setError('Please log in to upgrade your subscription');
+            // Redirect to login page after a short delay
+            setTimeout(() => {
+              setLocation('/auth?redirect=' + encodeURIComponent(window.location.pathname + window.location.search));
+            }, 2000);
+            return null;
+          }
+          
           throw new Error(errorData.error || 'Failed to create subscription');
         }
 
         return await response.json();
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to create subscription');
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError('Failed to create subscription. Please try again.');
+        }
         throw err;
       } finally {
         setIsCreatingSubscription(false);
