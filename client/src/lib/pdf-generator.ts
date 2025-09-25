@@ -821,22 +821,24 @@ export async function downloadRevalidationPack(): Promise<void> {
     let currentPage = 0;
     
     // Helper function to add pages from one PDF to another
-    // Note: Due to jsPDF limitations, we'll create a table of contents instead of merging PDFs
-    const addDocumentSeparator = (title: string) => {
-      combinedPdf.addPage();
-      currentPage++;
+    const addPagesToDocument = (sourcePdf: jsPDF) => {
+      const pageCount = sourcePdf.getNumberOfPages();
       
-      // Add document separator page
-      combinedPdf.setFontSize(20);
-      combinedPdf.setTextColor(NMC_BLUE[0], NMC_BLUE[1], NMC_BLUE[2]);
-      combinedPdf.setFont('helvetica', 'bold');
-      combinedPdf.text(title, 105, 100, { align: 'center' });
-      
-      combinedPdf.setFontSize(12);
-      combinedPdf.setTextColor(0, 0, 0);
-      combinedPdf.setFont('helvetica', 'normal');
-      combinedPdf.text('This document is available as a separate download', 105, 130, { align: 'center' });
-      combinedPdf.text('from the RevalPro export section.', 105, 145, { align: 'center' });
+      for (let i = 1; i <= pageCount; i++) {
+        if (currentPage > 0) {
+          combinedPdf.addPage();
+        }
+        
+        // Get the page content from the source PDF
+        const pageContent = sourcePdf.output('arraybuffer');
+        
+        // Add the page to the combined PDF
+        combinedPdf.addPage();
+        combinedPdf.setPage(currentPage + 1);
+        combinedPdf.addImage(pageContent, 'JPEG', 0, 0, 210, 297, '', 'FAST');
+        
+        currentPage++;
+      }
     };
     
     // Add NMC-styled cover page
@@ -886,16 +888,16 @@ export async function downloadRevalidationPack(): Promise<void> {
     combinedPdf.text(`Generated on: ${formatDateFull(new Date())}`, 105, 240, { align: 'center' });
     combinedPdf.text("RevalPro - Nursing Revalidation Assistance App", 105, 250, { align: 'center' });
     
-    currentPage = 0;
+    currentPage = 1;
     
-    // Add document separators (table of contents style)
-    addDocumentSeparator("Practice Hours Log");
-    addDocumentSeparator("CPD Records");
-    addDocumentSeparator("Feedback Log"); 
-    addDocumentSeparator("Reflective Accounts");
-    addDocumentSeparator("Reflective Discussion Form");
-    addDocumentSeparator("Health and Character Declaration");
-    addDocumentSeparator("Confirmation Form");
+    // Add all documents
+    addPagesToDocument(practiceHoursPdf);
+    addPagesToDocument(cpdPdf);
+    addPagesToDocument(feedbackPdf);
+    addPagesToDocument(reflectiveAccountsPdf);
+    addPagesToDocument(reflectiveDiscussionPdf);
+    addPagesToDocument(healthDeclarationPdf);
+    addPagesToDocument(confirmationPdf);
     
     // Generate and download the combined PDF
     const pdfOutput = combinedPdf.output('blob');
