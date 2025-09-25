@@ -54,7 +54,7 @@ export const PLAN_DETAILS: Record<SubscriptionPlan, PlanDetails> = {
       { title: "Track practice hours", included: true },
       { title: "Basic CPD logging", included: true },
       { title: "Training records management", included: true, highlighted: true },
-      { title: "Up to 3 reflective accounts", included: true, limit: "3" },
+      { title: "Up to 2 reflective accounts", included: true, limit: "2" },
       { title: "Basic PDF export", included: true },
       { title: "NMC revalidation guidance", included: true },
       { title: "Local data storage", included: true },

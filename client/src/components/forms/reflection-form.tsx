@@ -226,18 +226,23 @@ export default function ReflectionForm({ initialData, onClose, onSuccess }: Refl
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Nature of Experience</FormLabel>
-                    <FormControl>
-                      <Input 
-                        list="experience-types"
-                        placeholder="What type of experience is this?" 
-                        {...field} 
-                      />
-                    </FormControl>
-                    <datalist id="experience-types">
-                      {experienceTypes.map((type) => (
-                        <option key={type} value={type} />
-                      ))}
-                    </datalist>
+                    <Select 
+                      onValueChange={field.onChange} 
+                      value={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="What type of experience is this?" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {experienceTypes.map((type) => (
+                          <SelectItem key={type} value={type}>
+                            {type}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -303,7 +308,7 @@ export default function ReflectionForm({ initialData, onClose, onSuccess }: Refl
                   <FormLabel>Relation to The Code</FormLabel>
                   <Select 
                     onValueChange={field.onChange} 
-                    defaultValue={field.value}
+                    value={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>

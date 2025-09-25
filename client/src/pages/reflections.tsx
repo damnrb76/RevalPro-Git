@@ -62,7 +62,7 @@ export default function ReflectionsPage() {
   
   const currentPlan = subscriptionInfo?.currentPlan || 'free';
   const isFreePlan = currentPlan === 'free';
-  const maxFreeReflections = 3;
+  const maxFreeReflections = 2;
   const hasReachedFreeLimit = isFreePlan && reflectionsCount >= maxFreeReflections;
   
   // Delete mutation
