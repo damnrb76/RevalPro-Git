@@ -15,8 +15,12 @@ import { getPlanDetails } from '@shared/subscription-plans';
 import StripeCheckout from '@/components/subscription/stripe-checkout';
 import InlineCouponInput from '@/components/coupons/inline-coupon-input';
 
-// Initialize Stripe
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
+// Initialize Stripe with testing key in development
+const stripePublishableKey = import.meta.env.DEV 
+  ? (import.meta.env.TESTING_VITE_STRIPE_PUBLIC_KEY || import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY)
+  : import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
+
+const stripePromise = loadStripe(stripePublishableKey);
 
 interface CheckoutPageProps {
   planId?: string;
@@ -65,6 +69,8 @@ export default function CheckoutPage({ planId, period }: CheckoutPageProps) {
       setError(null);
 
       try {
+        // In development, only use Stripe if we have test keys available
+        // Otherwise fall back to development simulation
         const response = await apiRequest('POST', '/api/subscription/create', {
           planId: actualPlanId,
           period: actualPeriod,
@@ -92,8 +98,8 @@ export default function CheckoutPage({ planId, period }: CheckoutPageProps) {
     if (subscriptionData?.clientSecret) {
       setClientSecret(subscriptionData.clientSecret);
     }
-    if (subscriptionData?.success && subscriptionData?.message) {
-      // Development mode success
+    // Redirect to success for free plan or successful development mode simulation
+    if (subscriptionData?.success && (subscriptionData?.plan === 'free' || subscriptionData?.message)) {
       setLocation('/subscription/success?plan=' + actualPlanId + '&period=' + actualPeriod);
     }
   }, [subscriptionData, setLocation, actualPlanId, actualPeriod]);

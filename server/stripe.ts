@@ -5,12 +5,27 @@ import { storage } from './storage';
 // Store processed event IDs for idempotency
 const processedEvents = new Set<string>();
 
-if (!process.env.STRIPE_SECRET_KEY) {
-  throw new Error('Missing required environment variable: STRIPE_SECRET_KEY');
+// Use testing keys in development, production keys in production
+const stripeSecretKey = process.env.NODE_ENV === 'development' 
+  ? (process.env.TESTING_STRIPE_SECRET_KEY || process.env.STRIPE_SECRET_KEY)
+  : process.env.STRIPE_SECRET_KEY;
+
+// Log Stripe setup only in development for debugging
+if (process.env.NODE_ENV === 'development') {
+  console.log('🔧 Stripe Setup:', {
+    NODE_ENV: process.env.NODE_ENV,
+    hasTestingKey: !!process.env.TESTING_STRIPE_SECRET_KEY,
+    hasProductionKey: !!process.env.STRIPE_SECRET_KEY,
+    usingTestKey: stripeSecretKey?.startsWith('sk_test_'),
+  });
+}
+
+if (!stripeSecretKey) {
+  throw new Error('Missing required environment variable: STRIPE_SECRET_KEY or TESTING_STRIPE_SECRET_KEY');
 }
 
 // Initialize Stripe with the secret key
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+const stripe = new Stripe(stripeSecretKey, {
   apiVersion: '2023-10-16' as any,
 });
 

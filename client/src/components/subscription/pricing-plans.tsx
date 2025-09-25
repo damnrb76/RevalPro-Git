@@ -16,7 +16,12 @@ import CheckoutForm from "@/components/subscription/checkout-form";
 
 // Make sure to call loadStripe outside of a component's render
 // to avoid recreating the Stripe object on every render
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
+// Initialize Stripe with testing key in development
+const stripePublishableKey = import.meta.env.DEV 
+  ? (import.meta.env.TESTING_VITE_STRIPE_PUBLIC_KEY || import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY)
+  : import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
+
+const stripePromise = loadStripe(stripePublishableKey);
 
 export default function PricingPlans() {
   const { user } = useAuth();

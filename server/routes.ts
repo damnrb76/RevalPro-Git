@@ -1063,7 +1063,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Development mode: Allow testing without real Stripe integration
       // Add ?useStripe=true to test real Stripe checkout flow
-      if (process.env.NODE_ENV === "development" && !req.query.useStripe) {
+      // If we only have live keys in development, simulate the checkout
+      const hasValidTestKey = process.env.TESTING_STRIPE_SECRET_KEY?.startsWith('sk_test_') || 
+                              process.env.STRIPE_SECRET_KEY?.startsWith('sk_test_');
+      
+      if (process.env.NODE_ENV === "development" && (!req.query.useStripe || !hasValidTestKey)) {
         // Simulate successful subscription for testing
         const endDate = new Date();
         endDate.setFullYear(endDate.getFullYear() + (period === "annual" ? 1 : 0));

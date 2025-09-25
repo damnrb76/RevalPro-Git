@@ -17,23 +17,22 @@ export default function ProfileSetupPage() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Redirect if not logged in
-  if (!user) {
-    return <Redirect to="/auth" />;
-  }
-
-  // Redirect if already completed setup
-  if (user.hasCompletedInitialSetup) {
-    return <Redirect to="/dashboard" />;
-  }
-
-  // Check if user profile exists
+  // Check if user profile exists - call all hooks before any conditional logic
   const { data: userProfile } = useQuery({
     queryKey: ['userProfile'],
     queryFn: async () => {
       return userProfileStorage.getCurrent();
     },
   });
+
+  // Handle redirects after all hooks are called
+  if (!user) {
+    return <Redirect to="/auth" />;
+  }
+
+  if (user.hasCompletedInitialSetup) {
+    return <Redirect to="/dashboard" />;
+  }
 
   const handleFormSuccess = async () => {
     setIsFormOpen(false);
