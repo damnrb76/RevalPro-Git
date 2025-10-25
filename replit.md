@@ -153,6 +153,36 @@ RevalPro is a comprehensive UK-specific nursing revalidation tracker application
 - August 3, 2025. Removed vertical menu layout option - application now uses horizontal navigation only
 - August 3, 2025. Cleaned up menu layout system and removed unused layout switching functionality
 - August 3, 2025. Created comprehensive user guide (REVALPRO_USER_GUIDE.md) covering all features and functionality
+- October 25, 2025. **CRITICAL FIX**: Fixed Stripe webhook endpoint hanging issue by moving webhook route registration before express.json() middleware
+- October 25, 2025. Removed duplicate webhook endpoints that were causing conflicts and confusion
+- October 25, 2025. **SECURITY FIX**: Added strict enforcement to prevent live Stripe keys from being used in development mode
+- October 25, 2025. Application now requires TESTING_STRIPE_SECRET_KEY to be a test key (sk_test_...) in development for security
+
+## Stripe Webhook Configuration
+
+### Critical Setup Required
+⚠️ **IMPORTANT**: The application will NOT start in development mode until you configure a valid Stripe test key.
+
+**What you need to do:**
+1. Go to your [Stripe Dashboard](https://dashboard.stripe.com/test/apikeys)
+2. Switch to **TEST mode** (toggle at top of dashboard)
+3. Copy your **test** secret key (starts with `sk_test_...`)
+4. In Replit: Go to Tools → Secrets
+5. Update `TESTING_STRIPE_SECRET_KEY` with your test key
+6. Restart the application
+
+**Why this is required:**
+- Using live Stripe keys in development is a critical security vulnerability
+- The application now enforces test keys only in development mode
+- This prevents accidental charges and protects your production Stripe account
+
+### Webhook Endpoint Setup
+Once you have the correct test key configured, you can set up webhooks:
+1. The webhook endpoint is available at `/webhook/stripe`
+2. Visit `/api/setup-webhook` to automatically register the webhook with Stripe
+3. Or manually add the webhook in your Stripe Dashboard:
+   - URL: `https://your-repl-url.replit.dev/webhook/stripe`
+   - Events to send: All subscription and payment events
 
 ## Stripe Sandbox Configuration
 
