@@ -1,8 +1,52 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import Stripe from "stripe";
+import { handleWebhookEvent } from "./stripe";
 
 const app = express();
+
+// Stripe webhook endpoint MUST be registered BEFORE express.json()
+// because Stripe requires the raw body for signature verification
+app.post("/webhook/stripe", express.raw({ type: 'application/json' }), async (req, res) => {
+  const sig = req.headers['stripe-signature'];
+  const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+  if (!endpointSecret) {
+    console.log('Stripe webhook secret not configured');
+    return res.status(400).send('Webhook secret not configured');
+  }
+
+  let event;
+  try {
+    const stripeSecretKey = process.env.NODE_ENV === 'development' 
+      ? (process.env.TESTING_STRIPE_SECRET_KEY || process.env.STRIPE_SECRET_KEY)
+      : process.env.STRIPE_SECRET_KEY;
+
+    if (!stripeSecretKey) {
+      return res.status(500).send('Stripe not configured');
+    }
+
+    const stripe = new Stripe(stripeSecretKey, {
+      apiVersion: '2023-10-16' as any,
+    });
+
+    event = stripe.webhooks.constructEvent(req.body, sig!, endpointSecret);
+  } catch (err: any) {
+    console.log(`Webhook signature verification failed:`, err.message);
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+
+  try {
+    await handleWebhookEvent(event);
+    res.json({ received: true });
+  } catch (error) {
+    console.error('Error processing webhook:', error);
+    res.status(500).json({ error: 'Failed to process webhook' });
+  }
+});
+
+// NOW apply express.json() for all other routes
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 

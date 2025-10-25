@@ -1198,33 +1198,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Stripe webhook handler
-  app.post("/webhook/stripe", express.raw({ type: 'application/json' }), async (req, res) => {
-    const sig = req.headers['stripe-signature'];
-    const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
-
-    if (!endpointSecret) {
-      console.log('Stripe webhook secret not configured');
-      return res.status(400).send('Webhook secret not configured');
-    }
-
-    let event;
-    try {
-      event = stripe.webhooks.constructEvent(req.body, sig!, endpointSecret);
-    } catch (err: any) {
-      console.log(`Webhook signature verification failed:`, err.message);
-      return res.status(400).send(`Webhook Error: ${err.message}`);
-    }
-
-    try {
-      await handleWebhookEvent(event);
-      res.json({ received: true });
-    } catch (error) {
-      console.error('Error processing webhook:', error);
-      res.status(500).json({ error: 'Failed to process webhook' });
-    }
-  });
-
   // Change subscription plan
   app.post("/api/subscription/change-plan", async (req, res) => {
     if (!req.isAuthenticated()) {
@@ -1291,48 +1264,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error changing subscription plan:", error);
       res.status(500).json({ error: "Failed to change subscription plan" });
-    }
-  });
-
-  // Stripe webhook handler
-  app.post("/api/webhooks/stripe", async (req, res) => {
-    const sig = req.headers['stripe-signature'] as string;
-    
-    if (!process.env.STRIPE_SECRET_KEY) {
-      return res.status(500).send('Stripe configuration error');
-    }
-
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-      apiVersion: '2023-10-16' as any,
-    });
-    
-    // This is where you would validate the webhook signature
-    // if you have a webhook secret configured
-    // For testing purposes, we'll just process the event
-    
-    try {
-      // For testing, just cast the request body to an event
-      const event = req.body as Stripe.Event;
-      
-      // Handle the event based on its type
-      switch (event.type) {
-        case 'customer.subscription.created':
-        case 'customer.subscription.updated':
-        case 'customer.subscription.deleted':
-        case 'invoice.payment_succeeded':
-        case 'invoice.payment_failed':
-          // Process the event
-          console.log(`Processing webhook event: ${event.type}`);
-          // Here, you would call functions to update your database
-          // based on the subscription changes
-          break;
-        default:
-          console.log(`Unhandled event type: ${event.type}`);
-      }
-      
-      res.json({received: true});
-    } catch (err: any) {
-      res.status(400).send(`Webhook Error: ${err.message}`);
     }
   });
 

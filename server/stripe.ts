@@ -5,23 +5,65 @@ import { storage } from './storage';
 // Store processed event IDs for idempotency
 const processedEvents = new Set<string>();
 
-// Use testing keys in development, production keys in production
-const stripeSecretKey = process.env.NODE_ENV === 'development' 
-  ? (process.env.TESTING_STRIPE_SECRET_KEY || process.env.STRIPE_SECRET_KEY)
-  : process.env.STRIPE_SECRET_KEY;
+// Determine which Stripe key to use based on environment
+let stripeSecretKey: string;
 
-// Log Stripe setup only in development for debugging
 if (process.env.NODE_ENV === 'development') {
-  console.log('🔧 Stripe Setup:', {
-    NODE_ENV: process.env.NODE_ENV,
-    hasTestingKey: !!process.env.TESTING_STRIPE_SECRET_KEY,
-    hasProductionKey: !!process.env.STRIPE_SECRET_KEY,
-    usingTestKey: stripeSecretKey?.startsWith('sk_test_'),
+  // In development, ONLY use test keys for safety
+  const testKey = process.env.TESTING_STRIPE_SECRET_KEY;
+  
+  if (!testKey) {
+    throw new Error('Missing TESTING_STRIPE_SECRET_KEY in development environment');
+  }
+  
+  // Enforce test key in development - HARD FAIL for security
+  if (!testKey.startsWith('sk_test_')) {
+    console.error('');
+    console.error('═══════════════════════════════════════════════════════════════');
+    console.error('  ⛔ SECURITY ERROR: Cannot start application');
+    console.error('═══════════════════════════════════════════════════════════════');
+    console.error('');
+    console.error('  You are using a LIVE Stripe key in development mode.');
+    console.error('  This is a critical security vulnerability.');
+    console.error('');
+    console.error('  TESTING_STRIPE_SECRET_KEY should start with: sk_test_...');
+    console.error('  Your current key starts with: ' + testKey.substring(0, 8) + '...');
+    console.error('');
+    console.error('  📋 To fix this:');
+    console.error('  1. Go to https://dashboard.stripe.com/test/apikeys');
+    console.error('  2. Make sure you are in TEST mode (toggle at top)');
+    console.error('  3. Copy your test secret key (starts with sk_test_...)');
+    console.error('  4. In Replit: Tools → Secrets');
+    console.error('  5. Update TESTING_STRIPE_SECRET_KEY with your test key');
+    console.error('  6. Restart the application');
+    console.error('');
+    console.error('═══════════════════════════════════════════════════════════════');
+    console.error('');
+    
+    throw new Error('TESTING_STRIPE_SECRET_KEY must be a test key (sk_test_...) in development mode. Using live keys in development is prohibited for security.');
+  }
+  
+  stripeSecretKey = testKey;
+  
+  console.log('🔧 Stripe Setup (Development):', {
+    NODE_ENV: 'development',
+    usingTestKey: true,
+    keyPrefix: stripeSecretKey.substring(0, 12) + '...'
   });
-}
-
-if (!stripeSecretKey) {
-  throw new Error('Missing required environment variable: STRIPE_SECRET_KEY or TESTING_STRIPE_SECRET_KEY');
+} else {
+  // In production, use the production key
+  const prodKey = process.env.STRIPE_SECRET_KEY;
+  
+  if (!prodKey) {
+    throw new Error('Missing STRIPE_SECRET_KEY in production environment');
+  }
+  
+  stripeSecretKey = prodKey;
+  
+  console.log('🔧 Stripe Setup (Production):', {
+    NODE_ENV: 'production',
+    keyType: prodKey.startsWith('sk_test_') ? 'TEST' : 'LIVE'
+  });
 }
 
 // Initialize Stripe with the secret key
