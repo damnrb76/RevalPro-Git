@@ -1843,7 +1843,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         success: true,
         webhook_url: webhookUrl,
         endpoint_id: result.id,
-        message: "Webhook endpoint configured successfully"
+        webhook_secret: result.secret,
+        message: "Webhook endpoint configured successfully. Copy the webhook_secret to your STRIPE_WEBHOOK_SECRET environment variable."
       });
     } catch (error: any) {
       console.error("Error setting up webhook:", error);
