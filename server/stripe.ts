@@ -16,31 +16,59 @@ if (process.env.NODE_ENV === 'development') {
     throw new Error('Missing TESTING_STRIPE_SECRET_KEY in development environment');
   }
   
-  // Enforce test key in development - HARD FAIL for security
+  // Enforce test key in development - HARD FAIL for security (unless explicitly bypassed)
+  const allowLiveKey = process.env.ALLOW_LIVE_STRIPE_KEY_IN_DEV === 'true';
+  
   if (!testKey.startsWith('sk_test_')) {
-    console.error('');
-    console.error('═══════════════════════════════════════════════════════════════');
-    console.error('  ⛔ SECURITY ERROR: Cannot start application');
-    console.error('═══════════════════════════════════════════════════════════════');
-    console.error('');
-    console.error('  You are using a LIVE Stripe key in development mode.');
-    console.error('  This is a critical security vulnerability.');
-    console.error('');
-    console.error('  TESTING_STRIPE_SECRET_KEY should start with: sk_test_...');
-    console.error('  Your current key starts with: ' + testKey.substring(0, 8) + '...');
-    console.error('');
-    console.error('  📋 To fix this:');
-    console.error('  1. Go to https://dashboard.stripe.com/test/apikeys');
-    console.error('  2. Make sure you are in TEST mode (toggle at top)');
-    console.error('  3. Copy your test secret key (starts with sk_test_...)');
-    console.error('  4. In Replit: Tools → Secrets');
-    console.error('  5. Update TESTING_STRIPE_SECRET_KEY with your test key');
-    console.error('  6. Restart the application');
-    console.error('');
-    console.error('═══════════════════════════════════════════════════════════════');
-    console.error('');
-    
-    throw new Error('TESTING_STRIPE_SECRET_KEY must be a test key (sk_test_...) in development mode. Using live keys in development is prohibited for security.');
+    if (allowLiveKey) {
+      // User has explicitly allowed live key in development
+      console.warn('');
+      console.warn('⚠️  ═══════════════════════════════════════════════════════════════');
+      console.warn('⚠️   WARNING: Using LIVE Stripe key in development mode!');
+      console.warn('⚠️  ═══════════════════════════════════════════════════════════════');
+      console.warn('');
+      console.warn('  You are using a LIVE Stripe key in development.');
+      console.warn('  Be extremely careful - real charges will occur!');
+      console.warn('  Key prefix: ' + testKey.substring(0, 8) + '...');
+      console.warn('');
+      console.warn('  To use a test key instead:');
+      console.warn('  1. Go to https://dashboard.stripe.com/test/apikeys');
+      console.warn('  2. Copy your test secret key (starts with sk_test_...)');
+      console.warn('  3. Update TESTING_STRIPE_SECRET_KEY in Replit Secrets');
+      console.warn('  4. Remove ALLOW_LIVE_STRIPE_KEY_IN_DEV');
+      console.warn('');
+      console.warn('⚠️  ═══════════════════════════════════════════════════════════════');
+      console.warn('');
+    } else {
+      // Security check - block live keys by default
+      console.error('');
+      console.error('═══════════════════════════════════════════════════════════════');
+      console.error('  ⛔ SECURITY ERROR: Cannot start application');
+      console.error('═══════════════════════════════════════════════════════════════');
+      console.error('');
+      console.error('  You are using a LIVE Stripe key in development mode.');
+      console.error('  This is a critical security vulnerability.');
+      console.error('');
+      console.error('  TESTING_STRIPE_SECRET_KEY should start with: sk_test_...');
+      console.error('  Your current key starts with: ' + testKey.substring(0, 8) + '...');
+      console.error('');
+      console.error('  📋 Option 1 - Use a test key (RECOMMENDED):');
+      console.error('  1. Go to https://dashboard.stripe.com/test/apikeys');
+      console.error('  2. Make sure you are in TEST mode (toggle at top)');
+      console.error('  3. Copy your test secret key (starts with sk_test_...)');
+      console.error('  4. In Replit: Tools → Secrets');
+      console.error('  5. Update TESTING_STRIPE_SECRET_KEY with your test key');
+      console.error('');
+      console.error('  📋 Option 2 - Allow live key (NOT RECOMMENDED):');
+      console.error('  1. In Replit: Tools → Secrets');
+      console.error('  2. Add new secret: ALLOW_LIVE_STRIPE_KEY_IN_DEV = true');
+      console.error('  3. Restart - BE CAREFUL: Real charges will occur!');
+      console.error('');
+      console.error('═══════════════════════════════════════════════════════════════');
+      console.error('');
+      
+      throw new Error('TESTING_STRIPE_SECRET_KEY must be a test key (sk_test_...) in development mode. Using live keys in development is prohibited for security.');
+    }
   }
   
   stripeSecretKey = testKey;
