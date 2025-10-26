@@ -412,11 +412,15 @@ export async function handleWebhookEvent(event: Stripe.Event) {
       }
       case 'customer.subscription.created':
       case 'customer.subscription.updated': {
+        console.log('📝 Webhook: Starting subscription created/updated handler');
         const subscription = data.object as Stripe.Subscription;
         const customerId = subscription.customer as string;
+        console.log(`📝 Webhook: Customer ID: ${customerId}`);
         
         // Get the user with this Stripe customer ID
+        console.log('📝 Webhook: Looking up user by Stripe customer ID...');
         const user = await storage.getUserByStripeCustomerId(customerId);
+        console.log(`📝 Webhook: User lookup complete: ${user ? `found user ${user.id}` : 'NOT FOUND'}`);
         
         if (!user) {
           console.error(`No user found with Stripe customer ID: ${customerId}`);
@@ -425,6 +429,7 @@ export async function handleWebhookEvent(event: Stripe.Event) {
 
         // Determine the plan based on the Price ID in the subscription
         const priceId = subscription.items.data[0].price.id;
+        console.log(`📝 Webhook: Price ID: ${priceId}`);
         let planId = 'free';
 
         // Find the matching plan based on Stripe price ID
@@ -436,12 +441,15 @@ export async function handleWebhookEvent(event: Stripe.Event) {
             planId = id;
           }
         });
+        console.log(`📝 Webhook: Matched plan: ${planId}`);
 
         // Determine if it's a monthly or annual subscription
         const period = subscription.items.data[0]?.price.recurring?.interval === 'year' ? 'annual' : 'monthly';
+        console.log(`📝 Webhook: Period: ${period}`);
 
         // Update the user's subscription details
         const currentPeriodEnd = (subscription as any).current_period_end;
+        console.log(`📝 Webhook: Updating user ${user.id} subscription info...`);
         await storage.updateUserStripeInfo(user.id, {
           subscriptionStatus: subscription.status,
           currentPlan: planId,
@@ -449,6 +457,7 @@ export async function handleWebhookEvent(event: Stripe.Event) {
           subscriptionEndDate: currentPeriodEnd ? new Date(currentPeriodEnd * 1000) : null,
           cancelAtPeriodEnd: subscription.cancel_at_period_end ?? false,
         });
+        console.log(`✅ Webhook: User ${user.id} subscription updated successfully`);
         
         break;
       }
