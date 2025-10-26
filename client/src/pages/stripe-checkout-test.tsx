@@ -20,6 +20,11 @@ function CheckoutForm({ subscriptionData, onSuccess }: { subscriptionData: any, 
     event.preventDefault();
 
     if (!stripe || !elements) {
+      toast({
+        title: "Not Ready",
+        description: "Payment form is still loading, please wait...",
+        variant: "destructive",
+      });
       return;
     }
 
@@ -48,7 +53,7 @@ function CheckoutForm({ subscriptionData, onSuccess }: { subscriptionData: any, 
       console.error('Payment error:', err);
       toast({
         title: "Payment Error",
-        description: "An unexpected error occurred",
+        description: err instanceof Error ? err.message : "An unexpected error occurred",
         variant: "destructive",
       });
     } finally {
@@ -58,14 +63,23 @@ function CheckoutForm({ subscriptionData, onSuccess }: { subscriptionData: any, 
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="p-4 border rounded-lg">
-        <PaymentElement />
-      </div>
+      {!stripe || !elements ? (
+        <div className="p-8 text-center">
+          <p className="text-muted-foreground">Loading payment form...</p>
+        </div>
+      ) : (
+        <div className="p-4 border rounded-lg">
+          <PaymentElement />
+        </div>
+      )}
       
-      <div className="flex justify-end items-center">
+      <div className="flex justify-end items-center gap-2">
+        {!stripe && (
+          <p className="text-sm text-muted-foreground">Initializing Stripe...</p>
+        )}
         <Button 
           type="submit" 
-          disabled={!stripe || isProcessing}
+          disabled={!stripe || !elements || isProcessing}
           className="min-w-32"
         >
           {isProcessing ? "Processing..." : "Complete Payment"}
