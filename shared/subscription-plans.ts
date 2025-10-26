@@ -85,9 +85,9 @@ export const PLAN_DETAILS: Record<SubscriptionPlan, PlanDetails> = {
       annual: 49.99, // Save almost £10 - equivalent to ~2 months free
     },
     stripePriceId: {
-      // TEST MODE - Replace with LIVE price IDs for production
-      monthly: "price_1RjnEzApgglLl36MNDNsVpIo",
-      annual: "price_1RjnBeApgglLl36MFKY5oFAq",
+      // LIVE MODE - Production price IDs
+      monthly: "price_1RXVwJApgglLl36M6hRdROQU",
+      annual: "price_1RXVwIApgglLl36MPaB1kOZE",
     },
     lookupKeys: {
       monthly: "standard_monthly_gbp",
@@ -121,9 +121,9 @@ export const PLAN_DETAILS: Record<SubscriptionPlan, PlanDetails> = {
       annual: 89.99, // Save nearly £30 - equivalent to ~3 months free
     },
     stripePriceId: {
-      // TEST MODE - Replace with LIVE price IDs for production
-      monthly: "price_1RjnPAApgglLl36MBzM1EdZ7",
-      annual: "price_1RjnKyApgglLl36MueJyRm68",
+      // LIVE MODE - Production price IDs
+      monthly: "price_1RXVwIApgglLl36Mmk8XXEAO",
+      annual: "price_1RXVwHApgglLl36MhyO98tb4",
     },
     lookupKeys: {
       monthly: "premium_monthly_gbp",
