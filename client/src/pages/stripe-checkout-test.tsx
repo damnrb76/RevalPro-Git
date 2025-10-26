@@ -26,11 +26,9 @@ function CheckoutForm({ subscriptionData, onSuccess }: { subscriptionData: any, 
     setIsProcessing(true);
 
     try {
-      const { error } = await stripe.confirmPayment({
+      const { error, paymentIntent } = await stripe.confirmPayment({
         elements,
-        confirmParams: {
-          return_url: `${window.location.origin}/subscription-success`,
-        },
+        redirect: 'if_required',
       });
 
       if (error) {
@@ -39,10 +37,15 @@ function CheckoutForm({ subscriptionData, onSuccess }: { subscriptionData: any, 
           description: error.message || "Something went wrong",
           variant: "destructive",
         });
-      } else {
+      } else if (paymentIntent && paymentIntent.status === 'succeeded') {
+        toast({
+          title: "Payment Successful!",
+          description: "Your subscription is now active",
+        });
         onSuccess();
       }
     } catch (err) {
+      console.error('Payment error:', err);
       toast({
         title: "Payment Error",
         description: "An unexpected error occurred",
