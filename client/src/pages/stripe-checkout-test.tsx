@@ -15,6 +15,13 @@ function CheckoutForm({ subscriptionData, onSuccess }: { subscriptionData: any, 
   const elements = useElements();
   const { toast } = useToast();
   const [isProcessing, setIsProcessing] = useState(false);
+  
+  // Debug: Log when Stripe/Elements are ready
+  console.log('CheckoutForm render:', { 
+    hasStripe: !!stripe, 
+    hasElements: !!elements,
+    clientSecret: subscriptionData?.clientSecret?.substring(0, 20) + '...'
+  });
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -109,7 +116,10 @@ export default function StripeCheckoutTest() {
       
       const data = await response.json();
       
+      console.log('Subscription created response:', data);
+      
       if (data.subscriptionId && data.clientSecret) {
+        console.log('Setting subscription data with clientSecret:', data.clientSecret.substring(0, 30) + '...');
         setSubscriptionData(data);
         toast({
           title: "Subscription Created",
