@@ -360,6 +360,7 @@ export async function handleWebhookEvent(event: Stripe.Event) {
 
   try {
     console.log(`Processing webhook event: ${type} (${id})`);
+    console.log(`🔍 DEBUG: About to enter switch statement for event type: ${type}`);
     
     switch (type) {
       case 'checkout.session.completed': {

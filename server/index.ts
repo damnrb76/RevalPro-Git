@@ -46,10 +46,23 @@ app.post("/webhook/stripe", express.raw({ type: 'application/json' }), async (re
   }
 
   try {
-    await handleWebhookEvent(event);
+    console.log('🔧 DEBUG: About to call handleWebhookEvent...');
+    
+    // Add a timeout to prevent hanging forever
+    const timeout = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Webhook handler timeout after 30 seconds')), 30000)
+    );
+    
+    await Promise.race([
+      handleWebhookEvent(event),
+      timeout
+    ]);
+    
+    console.log('✅ DEBUG: handleWebhookEvent completed successfully');
     res.json({ received: true });
   } catch (error) {
-    console.error('Error processing webhook:', error);
+    console.error('❌ Error processing webhook:', error);
+    console.error('Error stack:', error instanceof Error ? error.stack : 'No stack trace');
     res.status(500).json({ error: 'Failed to process webhook' });
   }
 });
