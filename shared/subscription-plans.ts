@@ -1,5 +1,17 @@
 // Subscription plans definition for RevalPro
 
+/**
+ * STRIPE PRICE IDs CONFIGURATION
+ * 
+ * The price IDs below are for TEST mode (development).
+ * For PRODUCTION deployment, you MUST:
+ * 1. Create live products/prices in Stripe Dashboard (LIVE mode)
+ * 2. Replace the test price IDs below with your live price IDs
+ * 3. Live price IDs start with "price_" just like test IDs
+ * 
+ * The application automatically uses the correct Stripe keys based on NODE_ENV
+ */
+
 export const SUBSCRIPTION_PLANS = {
   FREE: "free",
   STANDARD: "standard",
@@ -73,8 +85,9 @@ export const PLAN_DETAILS: Record<SubscriptionPlan, PlanDetails> = {
       annual: 49.99, // Save almost £10 - equivalent to ~2 months free
     },
     stripePriceId: {
-      monthly: "price_1RjnEzApgglLl36MNDNsVpIo", // Standard Monthly (test)
-      annual: "price_1RjnBeApgglLl36MFKY5oFAq", // Standard Annual (test)
+      // TEST MODE - Replace with LIVE price IDs for production
+      monthly: "price_1RjnEzApgglLl36MNDNsVpIo",
+      annual: "price_1RjnBeApgglLl36MFKY5oFAq",
     },
     lookupKeys: {
       monthly: "standard_monthly_gbp",
@@ -108,8 +121,9 @@ export const PLAN_DETAILS: Record<SubscriptionPlan, PlanDetails> = {
       annual: 89.99, // Save nearly £30 - equivalent to ~3 months free
     },
     stripePriceId: {
-      monthly: "price_1RjnPAApgglLl36MBzM1EdZ7", // Premium Monthly (test)
-      annual: "price_1RjnKyApgglLl36MueJyRm68", // Premium Annual (test)
+      // TEST MODE - Replace with LIVE price IDs for production
+      monthly: "price_1RjnPAApgglLl36MBzM1EdZ7",
+      annual: "price_1RjnKyApgglLl36MueJyRm68",
     },
     lookupKeys: {
       monthly: "premium_monthly_gbp",

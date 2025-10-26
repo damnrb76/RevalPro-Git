@@ -16,14 +16,6 @@ function CheckoutForm({ subscriptionData, onSuccess }: { subscriptionData: any, 
   const { toast } = useToast();
   const [isProcessing, setIsProcessing] = useState(false);
   const [isReady, setIsReady] = useState(false);
-  
-  // Debug: Log when Stripe/Elements are ready
-  console.log('CheckoutForm render:', { 
-    hasStripe: !!stripe, 
-    hasElements: !!elements,
-    isReady,
-    clientSecret: subscriptionData?.clientSecret?.substring(0, 20) + '...'
-  });
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -79,12 +71,8 @@ function CheckoutForm({ subscriptionData, onSuccess }: { subscriptionData: any, 
       ) : (
         <div className="p-4 border rounded-lg">
           <PaymentElement 
-            onReady={() => {
-              console.log('PaymentElement is ready!');
-              setIsReady(true);
-            }}
+            onReady={() => setIsReady(true)}
             onLoadError={(error) => {
-              console.error('PaymentElement load error:', error);
               toast({
                 title: "Form Load Error",
                 description: "Failed to load payment form. Please refresh the page.",
@@ -131,10 +119,7 @@ export default function StripeCheckoutTest() {
       
       const data = await response.json();
       
-      console.log('Subscription created response:', data);
-      
       if (data.subscriptionId && data.clientSecret) {
-        console.log('Setting subscription data with clientSecret:', data.clientSecret.substring(0, 30) + '...');
         setSubscriptionData(data);
         toast({
           title: "Subscription Created",
