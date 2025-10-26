@@ -396,13 +396,14 @@ export async function handleWebhookEvent(event: Stripe.Event) {
         });
         
         // Update user with subscription details
+        const currentPeriodEnd = (subscription as any).current_period_end;
         await storage.updateUserStripeInfo(userId, {
           stripeCustomerId: customerId,
           stripeSubscriptionId: subscriptionId,
           subscriptionStatus: subscription.status,
           currentPlan: planId,
           subscriptionPeriod: period,
-          subscriptionEndDate: new Date((subscription as any).current_period_end * 1000),
+          subscriptionEndDate: currentPeriodEnd ? new Date(currentPeriodEnd * 1000) : null,
           cancelAtPeriodEnd: subscription.cancel_at_period_end ?? false,
         });
         
@@ -440,11 +441,12 @@ export async function handleWebhookEvent(event: Stripe.Event) {
         const period = subscription.items.data[0]?.price.recurring?.interval === 'year' ? 'annual' : 'monthly';
 
         // Update the user's subscription details
+        const currentPeriodEnd = (subscription as any).current_period_end;
         await storage.updateUserStripeInfo(user.id, {
           subscriptionStatus: subscription.status,
           currentPlan: planId,
           subscriptionPeriod: period,
-          subscriptionEndDate: new Date((subscription as any).current_period_end * 1000),
+          subscriptionEndDate: currentPeriodEnd ? new Date(currentPeriodEnd * 1000) : null,
           cancelAtPeriodEnd: subscription.cancel_at_period_end ?? false,
         });
         
