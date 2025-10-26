@@ -1003,12 +1003,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "lookupKey is required" });
       }
 
-      // Map lookup key to actual price ID (live Stripe prices)
+      // Map lookup key to actual price ID (test/live Stripe prices)
       const lookupToPriceId: Record<string, string> = {
-        'standard_monthly_gbp': 'price_1RXVwJApgglLl36M6hRdROQU',
-        'standard_annual_gbp': 'price_1S0oveApgglLl36M6U2t0byU',
-        'premium_monthly_gbp': 'price_1RXVwIApgglLl36Mmk8XXEAO',
-        'premium_annual_gbp': 'price_1S0ozAApgglLl36MNHXL1VJn'
+        'standard_monthly_gbp': 'price_1RjnEzApgglLl36MNDNsVpIo',
+        'standard_annual_gbp': 'price_1RjnBeApgglLl36MFKY5oFAq',
+        'premium_monthly_gbp': 'price_1RjnPAApgglLl36MBzM1EdZ7',
+        'premium_annual_gbp': 'price_1RjnKyApgglLl36MueJyRm68'
       };
       
       const priceId = lookupToPriceId[lookupKey];
