@@ -1,0 +1,243 @@
+element.style {
+}
+<style>
+* {
+    scrollbar-color: var(--background-highest) var(--background-default);
+}
+.replEnvironmentDesktop_surface__18l0g {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+.Surface_surfaceDefault__TcNI5 {
+    background-color: var(--background-default);
+    --surface-background: var(--background-default);
+    --interactive-background: var(--background-higher);
+    --interactive-background--active: var(--background-highest);
+    --interactive-border: var(--outline-dimmer);
+    --interactive-border--hover: var(--outline-stronger);
+}
+.useView_view__C2mnv {
+    display: flex
+;
+    flex: var(--useView--grow) var(--useView--shrink) auto;
+    flex-flow: column var(--useView--wrap);
+    justify-content: var(--useView--justify);
+    align-items: var(--useView--align);
+    gap: var(--useView--gap);
+    box-sizing: border-box;
+    outline: none;
+    border-width: 0;
+    border-style: solid;
+    padding: var(--useView--pt) var(--useView--pr) var(--useView--pb) var(--useView--pl);
+    min-width: 0;
+    min-height: 0;
+    --useView--gap: 0;
+    --useView--justify: start;
+    --useView--align: stretch;
+    --useView--pt: 0;
+    --useView--pr: 0;
+    --useView--pb: 0;
+    --useView--pl: 0;
+    --useView--grow: 0;
+    --useView--shrink: 0;
+    --useView--wrap: nowrap;
+}
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+user agent stylesheet
+div {
+    display: block;
+    unicode-bidi: isolate;
+}
+style attribute {
+    --AppLayout--header-height: 0px;
+    --AppLayout--sidebar-width: 0px;
+    --AppLayout--sidebar-width-open: 240px;
+}
+.AppLayout_root__fUqNn {
+    --AppLayout--header-height: auto;
+    --AppLayout--sidebar-width: 0;
+    --AppLayout--sidebar-width-open: 0;
+    transition-duration: .2s;
+    transition-property: padding-left;
+    transition-timing-function: 
+ease-in-out;
+    width: 100%;
+    min-height: 100vh;
+}
+.Surface_surfaceDefault__TcNI5 {
+    background-color: var(--background-default);
+    --surface-background: var(--background-default);
+    --interactive-background: var(--background-higher);
+    --interactive-background--active: var(--background-highest);
+    --interactive-border: var(--outline-dimmer);
+    --interactive-border--hover: var(--outline-stronger);
+}
+.useView_view__C2mnv {
+    display: flex
+;
+    flex: var(--useView--grow) var(--useView--shrink) auto;
+    flex-flow: column var(--useView--wrap);
+    justify-content: var(--useView--justify);
+    align-items: var(--useView--align);
+    gap: var(--useView--gap);
+    box-sizing: border-box;
+    outline: none;
+    border-width: 0;
+    border-style: solid;
+    padding: var(--useView--pt) var(--useView--pr) var(--useView--pb) var(--useView--pl);
+    min-width: 0;
+    min-height: 0;
+    --useView--gap: 0;
+    --useView--justify: start;
+    --useView--align: stretch;
+    --useView--pt: 0;
+    --useView--pr: 0;
+    --useView--pb: 0;
+    --useView--pl: 0;
+    --useView--grow: 0;
+    --useView--shrink: 0;
+    --useView--wrap: nowrap;
+}
+body {
+    background-color: var(--background-root);
+    color: var(--foreground-default);
+    font-size: var(--font-size-default);
+    font-family: var(--font-family-default);
+    --interactive-background: var(--background-default);
+    --interactive-background--active: var(--background-higher);
+    --interactive-border: var(--outline-dimmer);
+    --interactive-border--hover: var(--outline-default);
+}
+style attribute {
+    app-region: unset;
+    --cf-show: 1;
+}
+.replit-ui-theme-root {
+    --background-root: #020203;
+    --background-default: #292C33;
+    --background-higher: #383B42;
+    --background-highest: #474A52;
+    --background-overlay: #F0F1F2A0;
+    --foreground-default: #F5F9FC;
+    --foreground-dimmer: #C2C8CC;
+    --foreground-dimmest: #9DA2A6;
+    --outline-dimmest: #4E5569;
+    --outline-dimmer: #5F677A;
+    --outline-default: #70788C;
+    --outline-stronger: #828899;
+    --outline-strongest: #9195A1;
+    --accent-primary-dimmest: #753B00;
+    --accent-primary-dimmer: #9C4E00;
+    --accent-primary-default: #D96D00;
+    --accent-primary-stronger: #FFC285;
+    --accent-primary-strongest: #FFD9B2;
+    --accent-positive-dimmest: #753B00;
+    --accent-positive-dimmer: #9C4E00;
+    --accent-positive-default: #D96D00;
+    --accent-positive-stronger: #FFC285;
+    --accent-positive-strongest: #FFD9B2;
+    --accent-negative-dimmest: #573A3A;
+    --accent-negative-dimmer: #8F2828;
+    --accent-negative-default: #F23F3F;
+    --accent-negative-stronger: #FF8585;
+    --accent-negative-strongest: #FFBFBF;
+    --brand-accent-dimmest: #7E2A01;
+    --brand-accent-dimmer: #BB3E02;
+    --brand-accent-default: #EC4E02;
+    --brand-accent-stronger: #FE9C6C;
+    --brand-accent-strongest: #FECCB3;
+    --accent-red-dimmest: #6E0000;
+    --accent-red-dimmer: #A60000;
+    --accent-red-default: #E50000;
+    --accent-red-stronger: #FF8585;
+    --accent-red-strongest: #FFC7C7;
+    --accent-orange-dimmest: #753B00;
+    --accent-orange-dimmer: #9C4E00;
+    --accent-orange-default: #D96D00;
+    --accent-orange-stronger: #FFC285;
+    --accent-orange-strongest: #FFD9B2;
+    --accent-yellow-dimmest: #756200;
+    --accent-yellow-dimmer: #A68A00;
+    --accent-yellow-default: #CCAD14;
+    --accent-yellow-stronger: #FFEA7F;
+    --accent-yellow-strongest: #FFF2B2;
+    --accent-lime-dimmest: #314A00;
+    --accent-lime-dimmer: #3D5C00;
+Show all properties (52 more)
+}
+:root {
+    --border-radius-1: 1px;
+    --border-radius-2: 2px;
+    --border-radius-4: 4px;
+    --border-radius-6: 6px;
+    --border-radius-8: 8px;
+    --border-radius-12: 12px;
+    --border-radius-16: 16px;
+    --border-radius-default: var(--border-radius-4);
+    --border-radius-container: var(--border-radius-6);
+    --border-radius-round: 1028px;
+    --space-1: 1px;
+    --space-2: 2px;
+    --space-4: 4px;
+    --space-6: 6px;
+    --space-8: 8px;
+    --space-12: 12px;
+    --space-16: 16px;
+    --space-24: 24px;
+    --space-32: 32px;
+    --space-40: 40px;
+    --space-48: 48px;
+    --space-56: 56px;
+    --space-64: 64px;
+    --space-80: 80px;
+    --space-96: 96px;
+    --space-128: 128px;
+    --space-256: 256px;
+    --space-default: var(--space-8);
+    --shadow-1: 0px 4px 8px 0px rgba(2, 2, 3, 0.16);
+    --shadow-2: 0px 8px 16px 0px rgba(2, 2, 3, 0.32);
+    --shadow-3: 0px 16px 32px 0px rgba(2, 2, 3, 0.48);
+    --shadow-default: var(--shadow-1);
+    --font-family-default: "IBM Plex Sans", sans-serif;
+    --font-family-code: "ReplitHack", monospace;
+    --font-size-small: 12px;
+    --font-size-default: 14px;
+    --font-size-subhead-default: 16px;
+    --font-size-subhead-big: 20px;
+    --font-size-header-default: 24px;
+    --font-size-header-big: 32px;
+    --font-weight-regular: 400;
+    --font-weight-medium: 500;
+    --font-weight-bold: 600;
+    --line-height-small: 1.5;
+    --line-height-default: 1.6;
+    --line-height-subhead-default: 1.375;
+    --line-height-subhead-big: 1.4;
+    --line-height-header-default: 1.333;
+    --line-height-header-big: 1.25;
+    --transition-duration-snappy: 120ms;
+Show all properties (35 more)
+}
+:root {
+    --column-number: 12;
+}
+<style>
+::-webkit-scrollbar {
+    background-color: var(--background-default);
+    width: 12px;
+}
+<style>
+::-webkit-scrollbar-thumb {
+    background-color: var(--background-highest);
+}
+<style>
+::-webkit-scrollbar-track {
+    background-color: var(--background-default);
+}

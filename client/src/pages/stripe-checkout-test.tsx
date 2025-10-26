@@ -15,11 +15,13 @@ function CheckoutForm({ subscriptionData, onSuccess }: { subscriptionData: any, 
   const elements = useElements();
   const { toast } = useToast();
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isReady, setIsReady] = useState(false);
   
   // Debug: Log when Stripe/Elements are ready
   console.log('CheckoutForm render:', { 
     hasStripe: !!stripe, 
     hasElements: !!elements,
+    isReady,
     clientSecret: subscriptionData?.clientSecret?.substring(0, 20) + '...'
   });
 
@@ -76,20 +78,33 @@ function CheckoutForm({ subscriptionData, onSuccess }: { subscriptionData: any, 
         </div>
       ) : (
         <div className="p-4 border rounded-lg">
-          <PaymentElement />
+          <PaymentElement 
+            onReady={() => {
+              console.log('PaymentElement is ready!');
+              setIsReady(true);
+            }}
+            onLoadError={(error) => {
+              console.error('PaymentElement load error:', error);
+              toast({
+                title: "Form Load Error",
+                description: "Failed to load payment form. Please refresh the page.",
+                variant: "destructive",
+              });
+            }}
+          />
         </div>
       )}
       
       <div className="flex justify-end items-center gap-2">
-        {!stripe && (
-          <p className="text-sm text-muted-foreground">Initializing Stripe...</p>
+        {!isReady && stripe && elements && (
+          <p className="text-sm text-muted-foreground">Loading card input fields...</p>
         )}
         <Button 
           type="submit" 
-          disabled={!stripe || !elements || isProcessing}
+          disabled={!stripe || !elements || !isReady || isProcessing}
           className="min-w-32"
         >
-          {isProcessing ? "Processing..." : "Complete Payment"}
+          {isProcessing ? "Processing..." : isReady ? "Complete Payment" : "Loading..."}
         </Button>
       </div>
     </form>
