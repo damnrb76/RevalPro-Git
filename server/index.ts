@@ -12,6 +12,14 @@ app.post("/webhook/stripe", express.raw({ type: 'application/json' }), async (re
   const sig = req.headers['stripe-signature'];
   const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
+  console.log('🔔 Webhook received:', {
+    hasSignature: !!sig,
+    signaturePreview: sig ? String(sig).substring(0, 20) + '...' : 'MISSING',
+    hasSecret: !!endpointSecret,
+    secretPreview: endpointSecret ? endpointSecret.substring(0, 10) + '...' : 'MISSING',
+    bodyLength: req.body ? req.body.length : 0,
+  });
+
   if (!endpointSecret) {
     console.log('Stripe webhook secret not configured');
     return res.status(400).send('Webhook secret not configured');
