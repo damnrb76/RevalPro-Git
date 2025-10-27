@@ -23,7 +23,11 @@ Preferred communication style: Simple, everyday language.
 ### Feature Specifications
 - **Data Models**: User Profiles, Practice Hours, CPD Records, Feedback Records, Reflective Accounts, Health Declarations, Confirmation Records.
 - **Core Functionality**: Data entry, AI assistance, progress tracking, revalidation document generation.
-- **Subscription Management**: Integrated with Stripe for billing and subscription management, including secure webhook handling.
+- **Subscription Management**: 
+  - Integrated with Stripe for billing and subscription management
+  - Secure webhook handling for subscription lifecycle events
+  - Smart upgrade detection: Automatically modifies existing subscriptions instead of creating duplicates
+  - Supports both new subscriptions and plan upgrades/changes seamlessly
 
 ### System Design Choices
 - **Client-First Architecture**: Prioritizes local data storage (IndexedDB) for privacy and offline capability.

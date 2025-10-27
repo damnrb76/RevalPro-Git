@@ -1095,6 +1095,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "Invalid price ID for selected plan and period" });
       }
 
+      // Check if user already has an active or valid subscription (including trialing, past_due)
+      const validSubscriptionStatuses = ['active', 'trialing', 'past_due'];
+      const hasActiveSubscription = user.stripeSubscriptionId && 
+                                    validSubscriptionStatuses.includes(user.subscriptionStatus || '') &&
+                                    !user.stripeSubscriptionId.startsWith('demo_') &&
+                                    !user.stripeSubscriptionId.startsWith('dev_sub_');
+
+      if (hasActiveSubscription) {
+        // User is upgrading/changing their existing subscription
+        console.log(`User ${user.id} upgrading from ${user.currentPlan} to ${planId}`);
+        
+        try {
+          // Modify the existing subscription instead of creating a new one
+          await changeSubscriptionPlan(user.stripeSubscriptionId!, priceId);
+          
+          // The webhook will update the user's plan, but we return success immediately
+          // No clientSecret needed for plan changes - they happen immediately
+          return res.json({
+            success: true,
+            message: "Subscription upgraded successfully",
+            upgraded: true,
+          });
+        } catch (error) {
+          console.error("Error upgrading subscription:", error);
+          throw new Error("Failed to upgrade subscription. Please try again.");
+        }
+      }
+
+      // User is creating their first subscription
       // Create or get customer
       let customerId = user.stripeCustomerId;
       if (!customerId) {

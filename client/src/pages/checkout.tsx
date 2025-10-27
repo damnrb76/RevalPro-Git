@@ -98,8 +98,8 @@ export default function CheckoutPage({ planId, period }: CheckoutPageProps) {
     if (subscriptionData?.clientSecret) {
       setClientSecret(subscriptionData.clientSecret);
     }
-    // Redirect to success for free plan or successful development mode simulation
-    if (subscriptionData?.success && (subscriptionData?.plan === 'free' || subscriptionData?.message)) {
+    // Redirect to success for free plan, successful development mode simulation, or subscription upgrades
+    if (subscriptionData?.success && (subscriptionData?.plan === 'free' || subscriptionData?.message || subscriptionData?.upgraded)) {
       setLocation('/subscription/success?plan=' + actualPlanId + '&period=' + actualPeriod);
     }
   }, [subscriptionData, setLocation, actualPlanId, actualPeriod]);
