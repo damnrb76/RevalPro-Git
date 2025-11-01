@@ -134,7 +134,7 @@ export default function LandingPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link href="/auth">
-                <Button size="lg" className="bg-gradient-to-r from-revalpro-blue to-revalpro-teal hover:from-blue-700 hover:to-teal-600 text-white shadow-xl hover:shadow-2xl transition-all duration-300 w-full sm:w-auto text-lg px-8 py-6">
+                <Button size="lg" className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-xl hover:shadow-2xl transition-all duration-300 w-full sm:w-auto text-lg px-8 py-6">
                   Get Started Free <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
@@ -413,7 +413,7 @@ export default function LandingPage() {
                       size="lg"
                       className={`w-full transition-all duration-300 ${
                         plan.recommended 
-                          ? "bg-gradient-to-r from-revalpro-blue to-revalpro-teal hover:from-blue-700 hover:to-teal-600 text-white shadow-lg hover:shadow-xl" 
+                          ? "bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-lg hover:shadow-xl" 
                           : "bg-white text-gray-800 border-2 border-gray-300 hover:bg-gray-50 hover:border-gray-400"
                       }`}
                     >

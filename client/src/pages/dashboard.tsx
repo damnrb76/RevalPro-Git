@@ -460,22 +460,21 @@ export default function DashboardPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1, duration: 0.5 }}
           >
-            <Card className="relative overflow-hidden bg-gradient-to-br from-revalpro-blue/10 via-revalpro-blue/5 to-transparent border-0 shadow-xl rounded-2xl">
-              <div className="absolute inset-0 bg-gradient-to-br from-revalpro-blue/20 to-revalpro-teal/10"></div>
+            <Card className="relative overflow-hidden bg-gradient-to-br from-blue-50 to-white border border-gray-200 shadow-xl rounded-2xl">
               <CardContent className="relative p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-sm font-medium text-gray-600">Overall Progress</h3>
+                  <h3 className="text-sm font-bold text-gray-700">Overall Progress</h3>
                   <div className="flex items-center gap-1">
-                    <div className="w-2 h-2 rounded-full bg-revalpro-blue animate-pulse"></div>
-                    <span className="text-xs text-gray-500">Active</span>
+                    <div className="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></div>
+                    <span className="text-xs font-medium text-gray-600">Active</span>
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <div className="text-3xl font-bold text-revalpro-blue">{overallProgress}%</div>
-                  <div className="text-sm text-gray-500">Complete</div>
+                  <div className="text-3xl font-bold text-blue-600">{overallProgress}%</div>
+                  <div className="text-sm font-medium text-gray-600">Complete</div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
                     <div 
-                      className="bg-gradient-to-r from-revalpro-blue to-revalpro-teal h-2 rounded-full transition-all duration-1000"
+                      className="bg-gradient-to-r from-blue-600 to-blue-700 h-2 rounded-full transition-all duration-1000"
                       style={{ width: `${overallProgress}%` }}
                     ></div>
                   </div>
@@ -507,26 +506,23 @@ export default function DashboardPage() {
                 transition={{ delay: 0.2 + index * 0.1, duration: 0.5 }}
               >
                 <Link href={element.link}>
-                  <Card className="relative overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer group rounded-2xl hover:-translate-y-1">
-                    <div className="absolute inset-0 bg-gradient-to-br" style={{
-                      background: `linear-gradient(135deg, ${colors.primary}15, ${colors.secondary}10, transparent)`
-                    }}></div>
+                  <Card className="relative overflow-hidden border border-gray-200 shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer group rounded-2xl hover:-translate-y-1 bg-white">
                     <CardContent className="relative p-6">
                       <div className="flex items-center justify-between mb-4">
                         <div style={{ color: colors.primary }} className="text-lg">
                           {element.icon}
                         </div>
-                        <div className="text-xs text-gray-400">
+                        <div className="text-xs font-medium text-gray-600">
                           {element.data.current}/{element.data.required}
                         </div>
                       </div>
                       <div className="space-y-2">
-                        <h3 className="text-sm font-medium text-gray-700">{element.title}</h3>
+                        <h3 className="text-sm font-bold text-gray-800">{element.title}</h3>
                         <div className="flex items-baseline gap-2">
                           <span className="text-2xl font-bold" style={{ color: colors.primary }}>
                             {element.data.percentage}%
                           </span>
-                          <span className="text-xs text-gray-500">complete</span>
+                          <span className="text-xs font-medium text-gray-600">complete</span>
                         </div>
                         <div className="w-full bg-gray-200 rounded-full h-1.5">
                           <div 
@@ -570,10 +566,7 @@ export default function DashboardPage() {
                 transition={{ delay: 0.4 + index * 0.1, duration: 0.5 }}
               >
                 <Link href={element.link}>
-                  <Card className="relative overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer group h-full rounded-2xl hover:-translate-y-1">
-                    <div className="absolute inset-0 bg-gradient-to-br" style={{
-                      background: `linear-gradient(135deg, ${colors.primary}15, ${colors.secondary}10, transparent)`
-                    }}></div>
+                  <Card className="relative overflow-hidden border border-gray-200 shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer group h-full rounded-2xl hover:-translate-y-1 bg-white">
                     <CardContent className="relative p-6">
                       <div className="flex items-center justify-between mb-4">
                         <div style={{ color: colors.primary }} className="text-lg">
