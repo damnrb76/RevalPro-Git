@@ -95,7 +95,7 @@ export default function AdminPanel() {
 
   // Filter users based on search term
   const filteredUsers = users?.filter(u => 
-    u.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    u.username?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     u.email?.toLowerCase().includes(searchTerm.toLowerCase())
   ) || [];
 
