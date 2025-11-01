@@ -48,7 +48,7 @@ function DynamicScreenshotCarousel() {
   }, []);
   
   return (
-    <div className="relative rounded-2xl shadow-2xl overflow-hidden border-4 border-white h-[350px] md:h-[450px]">
+    <div className="relative rounded-3xl shadow-2xl overflow-hidden border border-gray-200 h-[350px] md:h-[450px] ring-1 ring-gray-900/5">
       {screenshots.map((screenshot, index) => (
         <motion.div
           key={index}
@@ -90,10 +90,10 @@ export default function LandingPage() {
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
       {/* Hero Section */}
       <header className="container mx-auto px-4 py-8 md:py-16">
-        <nav className="flex justify-between items-center mb-12">
+        <nav className="flex justify-between items-center mb-16">
           <div className="flex items-center">
             <img 
               src={logo} 
@@ -126,22 +126,23 @@ export default function LandingPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <h2 className="text-4xl md:text-5xl font-bold leading-tight mb-4">
-              Simplify Your <span className="bg-gradient-to-r from-revalpro-blue to-revalpro-teal bg-clip-text text-transparent">NMC Revalidation</span> Journey
+            <h2 className="text-4xl md:text-6xl font-extrabold leading-tight mb-6 tracking-tight">
+              Simplify Your <span className="bg-gradient-to-r from-revalpro-blue via-blue-600 to-revalpro-teal bg-clip-text text-transparent">NMC Revalidation</span> Journey
             </h2>
-            <p className="text-xl text-gray-600 mb-8">
+            <p className="text-xl md:text-2xl text-gray-600 mb-10 leading-relaxed">
               Secure, easy to use and designed specifically for UK nurses. Track all your nursing revalidation requirements in one place.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link href="/auth">
-                <Button className="bg-gradient-to-r from-revalpro-blue to-revalpro-teal hover:from-revalpro-blue/90 hover:to-revalpro-teal/90 text-white shadow-lg w-full sm:w-auto">
-                  Get Started Free <ArrowRight className="ml-2 h-4 w-4" />
+                <Button size="lg" className="bg-gradient-to-r from-revalpro-blue to-revalpro-teal hover:from-blue-700 hover:to-teal-600 text-white shadow-xl hover:shadow-2xl transition-all duration-300 w-full sm:w-auto text-lg px-8 py-6">
+                  Get Started Free <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
               <Link href="/sneak-peek">
                 <Button 
+                  size="lg"
                   variant="outline" 
-                  className="border-gray-300 text-gray-700 hover:bg-gray-100 w-full sm:w-auto"
+                  className="border-2 border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 w-full sm:w-auto text-lg px-8 py-6 transition-all duration-300"
                 >
                   Take a Sneak Peek
                 </Button>
@@ -161,11 +162,11 @@ export default function LandingPage() {
       </header>
       
       {/* Features Section */}
-      <section id="features" className="py-20 bg-white">
+      <section id="features" className="py-24 bg-gradient-to-b from-white via-gray-50 to-white">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
+          <div className="text-center mb-20">
             <motion.h2 
-              className="text-3xl md:text-4xl font-bold mb-4"
+              className="text-3xl md:text-5xl font-extrabold mb-6 tracking-tight"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -174,7 +175,7 @@ export default function LandingPage() {
               Everything You Need for Revalidation
             </motion.h2>
             <motion.p 
-              className="text-xl text-gray-600 max-w-3xl mx-auto"
+              className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -219,15 +220,15 @@ export default function LandingPage() {
             ].map((feature, index) => (
               <motion.div 
                 key={index}
-                className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-shadow"
+                className="bg-white rounded-2xl shadow-md p-8 border border-gray-100 hover:shadow-xl hover:border-gray-200 transition-all duration-300 hover:-translate-y-1"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.3, delay: 0.1 * index }}
               >
-                <div className="mb-4">{feature.icon}</div>
-                <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-                <p className="text-gray-600">{feature.description}</p>
+                <div className="mb-6 p-3 bg-gradient-to-br from-gray-50 to-white rounded-xl inline-block">{feature.icon}</div>
+                <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
+                <p className="text-gray-600 leading-relaxed">{feature.description}</p>
               </motion.div>
             ))}
           </div>
@@ -235,11 +236,11 @@ export default function LandingPage() {
       </section>
       
       {/* Testimonials */}
-      <section id="testimonials" className="py-20 bg-gray-50">
+      <section id="testimonials" className="py-24 bg-gradient-to-b from-gray-50 to-white">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
+          <div className="text-center mb-20">
             <motion.h2 
-              className="text-3xl md:text-4xl font-bold mb-4"
+              className="text-3xl md:text-5xl font-extrabold mb-6 tracking-tight"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -278,20 +279,20 @@ export default function LandingPage() {
             ].map((testimonial, index) => (
               <motion.div 
                 key={index}
-                className="bg-white rounded-xl shadow-md p-6"
+                className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100 hover:shadow-xl transition-shadow duration-300"
                 initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.3, delay: 0.1 * index }}
               >
-                <div className="mb-4 text-gray-600 italic">"{testimonial.quote}"</div>
+                <div className="mb-6 text-gray-700 italic text-lg leading-relaxed">"{testimonial.quote}"</div>
                 <div className="flex items-center">
-                  <div className="h-10 w-10 rounded-full bg-gradient-to-r from-revalpro-blue to-revalpro-teal flex items-center justify-center text-white font-bold">
+                  <div className="h-12 w-12 rounded-full bg-gradient-to-r from-revalpro-blue to-revalpro-teal flex items-center justify-center text-white font-bold shadow-md">
                     {testimonial.name.charAt(0)}
                   </div>
-                  <div className="ml-3">
-                    <h4 className="font-semibold">{testimonial.name}</h4>
-                    <p className="text-sm text-gray-500">{testimonial.title}</p>
+                  <div className="ml-4">
+                    <h4 className="font-bold text-gray-900">{testimonial.name}</h4>
+                    <p className="text-sm text-gray-600">{testimonial.title}</p>
                   </div>
                 </div>
               </motion.div>
@@ -301,11 +302,11 @@ export default function LandingPage() {
       </section>
       
       {/* Pricing Section */}
-      <section id="pricing" className="py-20 bg-white">
+      <section id="pricing" className="py-24 bg-gradient-to-b from-white to-gray-50">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
+          <div className="text-center mb-20">
             <motion.h2 
-              className="text-3xl md:text-4xl font-bold mb-4"
+              className="text-3xl md:text-5xl font-extrabold mb-6 tracking-tight"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -314,7 +315,7 @@ export default function LandingPage() {
               Simple, Transparent Pricing
             </motion.h2>
             <motion.p 
-              className="text-xl text-gray-600 max-w-3xl mx-auto"
+              className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -376,10 +377,10 @@ export default function LandingPage() {
             ].map((plan, index) => (
               <motion.div 
                 key={index}
-                className={`rounded-xl overflow-hidden border ${
+                className={`rounded-2xl overflow-hidden border ${
                   plan.recommended 
-                    ? "border-revalpro-teal shadow-xl scale-105" 
-                    : "border-gray-200 shadow-md"
+                    ? "border-revalpro-teal shadow-2xl scale-105 ring-2 ring-revalpro-teal/20" 
+                    : "border-gray-200 shadow-lg hover:shadow-xl transition-shadow duration-300"
                 }`}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -387,32 +388,33 @@ export default function LandingPage() {
                 transition={{ duration: 0.3, delay: 0.1 * index }}
               >
                 {plan.recommended && (
-                  <div className="bg-gradient-to-r from-revalpro-blue to-revalpro-teal text-white text-center py-2 font-medium">
+                  <div className="bg-gradient-to-r from-revalpro-blue to-revalpro-teal text-white text-center py-3 font-bold text-sm tracking-wide uppercase">
                     Most Popular
                   </div>
                 )}
-                <div className="p-6">
-                  <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
-                  <div className="mb-4">
-                    <span className="text-4xl font-bold">{plan.price}</span>
-                    <span className="text-gray-500">/{plan.period}</span>
+                <div className="p-8">
+                  <h3 className="text-2xl font-extrabold mb-3">{plan.name}</h3>
+                  <div className="mb-6">
+                    <span className="text-5xl font-extrabold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">{plan.price}</span>
+                    <span className="text-gray-500 text-lg">/{plan.period}</span>
                   </div>
-                  <p className="text-gray-600 mb-6">{plan.description}</p>
-                  <hr className="my-6" />
-                  <ul className="mb-8 space-y-3">
+                  <p className="text-gray-600 mb-8 leading-relaxed">{plan.description}</p>
+                  <hr className="my-8 border-gray-200" />
+                  <ul className="mb-10 space-y-4">
                     {plan.features.map((feature, fIndex) => (
                       <li key={fIndex} className="flex items-start">
-                        <Check className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                        <span>{feature}</span>
+                        <Check className="h-6 w-6 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
+                        <span className="text-gray-700 leading-relaxed">{feature}</span>
                       </li>
                     ))}
                   </ul>
                   <Link href="/auth">
                     <Button 
-                      className={`w-full ${
+                      size="lg"
+                      className={`w-full transition-all duration-300 ${
                         plan.recommended 
-                          ? "bg-gradient-to-r from-revalpro-blue to-revalpro-teal hover:from-revalpro-blue/90 hover:to-revalpro-teal/90 text-white" 
-                          : "bg-white text-gray-800 border border-gray-300 hover:bg-gray-50"
+                          ? "bg-gradient-to-r from-revalpro-blue to-revalpro-teal hover:from-blue-700 hover:to-teal-600 text-white shadow-lg hover:shadow-xl" 
+                          : "bg-white text-gray-800 border-2 border-gray-300 hover:bg-gray-50 hover:border-gray-400"
                       }`}
                     >
                       {plan.ctaText}
