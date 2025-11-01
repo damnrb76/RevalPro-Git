@@ -313,14 +313,14 @@ export default function DashboardPage() {
   
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="text-center mb-6">
+      <div className="text-center mb-8">
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-center justify-center gap-4 mb-4"
+          className="flex items-center justify-center gap-4 mb-6"
         >
-          <h1 className="text-3xl font-bold">
-            Welcome to <span className="bg-gradient-to-r from-revalpro-blue to-revalpro-teal bg-clip-text text-transparent">RevalPro</span>
+          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight">
+            Welcome to <span className="bg-gradient-to-r from-revalpro-blue via-blue-600 to-revalpro-teal bg-clip-text text-transparent">RevalPro</span>
           </h1>
           {subscriptionInfo && (
             <PlanIndicator 
@@ -333,7 +333,7 @@ export default function DashboardPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className="text-gray-600 mt-2"
+          className="text-gray-600 text-lg mt-3"
         >
           Your nursing revalidation management dashboard
           {subscriptionInfo?.currentPlan === 'premium' && (
@@ -356,14 +356,14 @@ export default function DashboardPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="mb-8"
+        className="mb-10"
       >
-        <Card className={`border-2 ${
+        <Card className={`border-2 rounded-2xl ${
           subscriptionInfo?.currentPlan === 'premium' 
-            ? 'bg-white border-purple-300 shadow-lg shadow-purple-200/50' 
+            ? 'bg-gradient-to-br from-purple-50/50 via-white to-purple-50/30 border-purple-300 shadow-xl shadow-purple-200/50' 
             : subscriptionInfo?.currentPlan === 'standard'
-            ? 'bg-white border-blue-300 shadow-md shadow-blue-100/50'
-            : 'bg-white border-gray-200'
+            ? 'bg-gradient-to-br from-blue-50/50 via-white to-blue-50/30 border-blue-300 shadow-lg shadow-blue-100/50'
+            : 'bg-white border-gray-300 shadow-lg'
         }`}>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -377,10 +377,10 @@ export default function DashboardPage() {
           <CardContent>
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <span className="text-lg font-semibold">Overall Completion</span>
-                <span className="text-2xl font-bold text-revalpro-blue">{overallProgress}%</span>
+                <span className="text-lg font-bold text-gray-700">Overall Completion</span>
+                <span className="text-3xl font-extrabold bg-gradient-to-r from-revalpro-blue to-revalpro-teal bg-clip-text text-transparent">{overallProgress}%</span>
               </div>
-              <Progress value={overallProgress} max={100} className="h-3" />
+              <Progress value={overallProgress} max={100} className="h-4 shadow-inner" />
               
               {userProfile && (
                 <div className="flex flex-col md:flex-row items-center justify-between pt-4 border-t">
@@ -445,9 +445,9 @@ export default function DashboardPage() {
       </motion.div>
 
       {/* Modern Analytics Dashboard */}
-      <div className="mb-8">
-        <h2 className="text-2xl font-bold mb-8">
-          <span className="bg-gradient-to-r from-revalpro-blue to-revalpro-teal bg-clip-text text-transparent">
+      <div className="mb-10">
+        <h2 className="text-3xl font-extrabold mb-10 tracking-tight">
+          <span className="bg-gradient-to-r from-revalpro-blue via-blue-600 to-revalpro-teal bg-clip-text text-transparent">
             Revalidation Progress
           </span>
         </h2>
@@ -460,7 +460,7 @@ export default function DashboardPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1, duration: 0.5 }}
           >
-            <Card className="relative overflow-hidden bg-gradient-to-br from-revalpro-blue/10 via-revalpro-blue/5 to-transparent border-0 shadow-lg">
+            <Card className="relative overflow-hidden bg-gradient-to-br from-revalpro-blue/10 via-revalpro-blue/5 to-transparent border-0 shadow-xl rounded-2xl">
               <div className="absolute inset-0 bg-gradient-to-br from-revalpro-blue/20 to-revalpro-teal/10"></div>
               <CardContent className="relative p-6">
                 <div className="flex items-center justify-between mb-4">
@@ -507,7 +507,7 @@ export default function DashboardPage() {
                 transition={{ delay: 0.2 + index * 0.1, duration: 0.5 }}
               >
                 <Link href={element.link}>
-                  <Card className="relative overflow-hidden border-0 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group">
+                  <Card className="relative overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer group rounded-2xl hover:-translate-y-1">
                     <div className="absolute inset-0 bg-gradient-to-br" style={{
                       background: `linear-gradient(135deg, ${colors.primary}15, ${colors.secondary}10, transparent)`
                     }}></div>
@@ -570,7 +570,7 @@ export default function DashboardPage() {
                 transition={{ delay: 0.4 + index * 0.1, duration: 0.5 }}
               >
                 <Link href={element.link}>
-                  <Card className="relative overflow-hidden border-0 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group h-full">
+                  <Card className="relative overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer group h-full rounded-2xl hover:-translate-y-1">
                     <div className="absolute inset-0 bg-gradient-to-br" style={{
                       background: `linear-gradient(135deg, ${colors.primary}15, ${colors.secondary}10, transparent)`
                     }}></div>

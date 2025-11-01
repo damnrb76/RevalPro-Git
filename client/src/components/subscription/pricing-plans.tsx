@@ -215,36 +215,36 @@ export default function PricingPlans() {
   }
 
   return (
-    <div className="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+    <div className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       <div className="text-center">
-        <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl lg:text-5xl bg-gradient-to-r from-blue-600 to-indigo-600 text-transparent bg-clip-text">
+        <h2 className="text-4xl font-extrabold text-gray-900 sm:text-5xl lg:text-6xl bg-gradient-to-r from-blue-600 via-blue-600 to-indigo-600 text-transparent bg-clip-text tracking-tight">
           RevalPro Subscription Plans
         </h2>
-        <p className="mt-4 max-w-2xl text-xl text-gray-500 mx-auto">
+        <p className="mt-6 max-w-2xl text-xl md:text-2xl text-gray-600 mx-auto leading-relaxed">
           Choose the right plan for your revalidation journey
         </p>
         
 
       </div>
 
-      <div className="mt-6 flex justify-center">
-        <div className="relative flex items-center space-x-3 rounded-lg bg-gray-100 p-2">
-          <span className={`${period === "monthly" ? "text-blue-600 font-bold" : "text-gray-600"}`}>Monthly</span>
+      <div className="mt-8 flex justify-center">
+        <div className="relative flex items-center space-x-4 rounded-xl bg-gradient-to-r from-gray-100 to-gray-50 p-3 shadow-md border border-gray-200">
+          <span className={`text-base ${period === "monthly" ? "text-blue-600 font-bold" : "text-gray-600 font-medium"}`}>Monthly</span>
           <Switch
             checked={period === "annual"}
             onCheckedChange={(checked) => setPeriod(checked ? "annual" : "monthly")}
             id="billing-period"
           />
-          <Label htmlFor="billing-period" className={`${period === "annual" ? "text-blue-600 font-bold" : "text-gray-600"}`}>
-            Annual <span className="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">Save up to £30</span>
+          <Label htmlFor="billing-period" className={`text-base ${period === "annual" ? "text-blue-600 font-bold" : "text-gray-600 font-medium"}`}>
+            Annual <span className="px-3 py-1.5 text-xs font-bold bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-800 rounded-full ml-1">Save up to £30</span>
           </Label>
         </div>
       </div>
 
       {/* Current subscription status */}
       {subscription && (
-        <div className="mt-8 bg-white p-6 rounded-lg shadow-sm border border-gray-200 max-w-2xl mx-auto">
-          <h3 className="text-lg font-medium text-gray-900">Your Current Subscription</h3>
+        <div className="mt-10 bg-gradient-to-br from-white to-gray-50 p-8 rounded-2xl shadow-lg border border-gray-200 max-w-2xl mx-auto">
+          <h3 className="text-xl font-bold text-gray-900 mb-4">Your Current Subscription</h3>
           <div className="mt-2 grid grid-cols-2 gap-4 text-sm">
             <div>
               <span className="font-medium">Plan:</span>{" "}
@@ -313,7 +313,7 @@ export default function PricingPlans() {
         </div>
       )}
 
-      <div className="mt-12 space-y-12 lg:grid lg:grid-cols-3 lg:gap-x-8 lg:gap-y-8 lg:space-y-0">
+      <div className="mt-16 space-y-12 lg:grid lg:grid-cols-3 lg:gap-x-8 lg:gap-y-8 lg:space-y-0">
         {/* Free plan */}
         <PlanCard
           plan={PLAN_DETAILS.free}
@@ -398,51 +398,51 @@ function PlanCard({ plan, period, isCurrentPlan, onSelect, disabled }: PlanCardP
 
   return (
     <Card className={`
-      flex flex-col h-full
-      ${plan.recommended ? 'ring-2 ring-blue-500 shadow-lg' : 'shadow'}
-      ${plan.mostPopular ? 'ring-2 ring-indigo-500 shadow-lg' : ''}
+      flex flex-col h-full rounded-2xl transition-all duration-300
+      ${plan.recommended ? 'ring-2 ring-blue-500 shadow-2xl scale-105 hover:shadow-3xl' : 'shadow-lg hover:shadow-xl'}
+      ${plan.mostPopular ? 'ring-2 ring-indigo-500 shadow-2xl scale-105' : ''}
     `}>
-      <CardHeader className="pb-4">
+      <CardHeader className="pb-6">
         {plan.mostPopular && (
-          <div className="absolute top-0 right-0 -mt-2 -mr-2 bg-indigo-500 text-white text-xs px-3 py-1 rounded-full">
+          <div className="absolute top-0 right-0 -mt-3 -mr-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-xs font-bold px-4 py-2 rounded-full shadow-lg">
             Most Popular
           </div>
         )}
         {plan.recommended && (
-          <div className="absolute top-0 right-0 -mt-2 -mr-2 bg-blue-500 text-white text-xs px-3 py-1 rounded-full">
+          <div className="absolute top-0 right-0 -mt-3 -mr-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-xs font-bold px-4 py-2 rounded-full shadow-lg">
             Recommended
           </div>
         )}
-        <CardTitle className="text-xl bg-gradient-to-r from-blue-700 to-indigo-700 text-transparent bg-clip-text">
+        <CardTitle className="text-2xl font-extrabold bg-gradient-to-r from-blue-700 to-indigo-700 text-transparent bg-clip-text">
           {plan.name}
         </CardTitle>
-        <CardDescription className="text-gray-500">{plan.description}</CardDescription>
+        <CardDescription className="text-gray-600 text-base mt-2 leading-relaxed">{plan.description}</CardDescription>
       </CardHeader>
       <CardContent className="flex-grow">
-        <div className="mb-6">
-          <span className="text-4xl font-extrabold">{priceText}</span>
+        <div className="mb-8">
+          <span className="text-5xl font-extrabold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">{priceText}</span>
           {savingsInfo && (
-            <div className="mt-2 space-y-1">
-              <div className="text-sm text-green-600 font-medium">
+            <div className="mt-3 space-y-1.5">
+              <div className="text-sm text-green-600 font-bold">
                 Save £{savingsInfo.savings} per year
               </div>
-              <div className="text-xs text-gray-500">
+              <div className="text-xs text-gray-600 font-medium">
                 Approximately {savingsInfo.monthsSaved} free {savingsInfo.monthsSaved === 1 ? 'month' : 'months'}
               </div>
             </div>
           )}
         </div>
-        <ul className="space-y-3">
+        <ul className="space-y-4">
           {plan.features.map((feature, index) => (
             <li key={index} className="flex items-start">
               <span className="flex-shrink-0 mt-0.5">
                 {feature.included ? (
-                  <CheckIcon className={`h-5 w-5 ${feature.highlighted ? 'text-blue-500' : 'text-green-500'}`} />
+                  <CheckIcon className={`h-6 w-6 ${feature.highlighted ? 'text-blue-500' : 'text-green-500'}`} />
                 ) : (
                   <XIcon className="h-5 w-5 text-gray-400" />
                 )}
               </span>
-              <span className={`ml-2 text-sm ${feature.highlighted ? 'font-medium text-blue-700' : 'text-gray-700'}`}>
+              <span className={`ml-3 text-sm leading-relaxed ${feature.highlighted ? 'font-bold text-blue-700' : 'text-gray-700 font-medium'}`}>
                 {feature.title}
                 {feature.limit && <span className="text-gray-500 ml-1">({feature.limit})</span>}
               </span>
@@ -450,9 +450,10 @@ function PlanCard({ plan, period, isCurrentPlan, onSelect, disabled }: PlanCardP
           ))}
         </ul>
       </CardContent>
-      <CardFooter className="pt-4 space-y-3">
+      <CardFooter className="pt-6 space-y-3">
         <Button
-          className={`w-full ${plan.recommended ? 'bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800' : ''}`}
+          size="lg"
+          className={`w-full transition-all duration-300 ${plan.recommended ? 'bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 shadow-lg hover:shadow-xl' : 'hover:shadow-lg'}`}
           onClick={() => onSelect(plan.id)}
           disabled={disabled || isCurrentPlan}
           variant={isCurrentPlan ? "outline" : "default"}
