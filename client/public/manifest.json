@@ -1,0 +1,25 @@
+{
+  "name": "RevalPro - Nursing Revalidation Tracker",
+  "short_name": "RevalPro",
+  "description": "UK-specific nursing revalidation tracker for NHS nurses. Track NMC revalidation requirements securely.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#339fe0",
+  "orientation": "portrait-primary",
+  "categories": ["healthcare", "productivity", "medical"],
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
