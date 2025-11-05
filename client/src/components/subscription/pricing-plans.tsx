@@ -204,7 +204,7 @@ export default function PricingPlans() {
   if (clientSecret) {
     return (
       <div className="max-w-3xl mx-auto p-6">
-        <h2 className="text-3xl font-bold mb-6 text-center bg-gradient-to-r from-blue-600 to-indigo-600 text-transparent bg-clip-text">
+        <h2 className="text-3xl font-bold mb-6 text-center bg-gradient-to-r from-purple-600 to-violet-600 text-transparent bg-clip-text">
           Complete Your Subscription
         </h2>
         <Elements stripe={stripePromise} options={{ clientSecret }}>
@@ -217,10 +217,10 @@ export default function PricingPlans() {
   return (
     <div className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       <div className="text-center">
-        <h2 className="text-4xl font-extrabold text-gray-900 sm:text-5xl lg:text-6xl bg-gradient-to-r from-blue-600 via-blue-600 to-indigo-600 text-transparent bg-clip-text tracking-tight">
+        <h2 className="text-4xl font-extrabold text-gray-900 sm:text-5xl lg:text-6xl bg-gradient-to-r from-purple-600 via-violet-600 to-fuchsia-600 text-transparent bg-clip-text tracking-tight">
           RevalPro Subscription Plans
         </h2>
-        <p className="mt-6 max-w-2xl text-xl md:text-2xl text-gray-600 mx-auto leading-relaxed">
+        <p className="mt-6 max-w-2xl text-xl md:text-2xl text-gray-600 mx-auto leading-relaxed font-medium">
           Choose the right plan for your revalidation journey
         </p>
         
@@ -229,14 +229,14 @@ export default function PricingPlans() {
 
       <div className="mt-8 flex justify-center">
         <div className="relative flex items-center space-x-4 rounded-xl bg-gradient-to-r from-gray-100 to-gray-50 p-3 shadow-md border border-gray-200">
-          <span className={`text-base ${period === "monthly" ? "text-blue-600 font-bold" : "text-gray-600 font-medium"}`}>Monthly</span>
+          <span className={`text-base ${period === "monthly" ? "text-purple-600 font-bold" : "text-gray-600 font-medium"}`}>Monthly</span>
           <Switch
             checked={period === "annual"}
             onCheckedChange={(checked) => setPeriod(checked ? "annual" : "monthly")}
             id="billing-period"
           />
-          <Label htmlFor="billing-period" className={`text-base ${period === "annual" ? "text-blue-600 font-bold" : "text-gray-600 font-medium"}`}>
-            Annual <span className="px-3 py-1.5 text-xs font-bold bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-800 rounded-full ml-1">Save up to £30</span>
+          <Label htmlFor="billing-period" className={`text-base ${period === "annual" ? "text-purple-600 font-bold" : "text-gray-600 font-medium"}`}>
+            Annual <span className="px-3 py-1.5 text-xs font-bold bg-gradient-to-r from-purple-100 to-violet-100 text-purple-800 rounded-full ml-1">Save up to £30</span>
           </Label>
         </div>
       </div>
@@ -248,7 +248,7 @@ export default function PricingPlans() {
           <div className="mt-2 grid grid-cols-2 gap-4 text-sm">
             <div>
               <span className="font-medium">Plan:</span>{" "}
-              <span className="text-blue-600 font-semibold">
+              <span className="text-purple-600 font-semibold">
                 {subscription.planDetails?.name || "Free"}
               </span>
             </div>
@@ -399,21 +399,21 @@ function PlanCard({ plan, period, isCurrentPlan, onSelect, disabled }: PlanCardP
   return (
     <Card className={`
       flex flex-col h-full rounded-2xl transition-all duration-300
-      ${plan.recommended ? 'ring-2 ring-blue-500 shadow-2xl scale-105 hover:shadow-3xl' : 'shadow-lg hover:shadow-xl'}
-      ${plan.mostPopular ? 'ring-2 ring-indigo-500 shadow-2xl scale-105' : ''}
+      ${plan.recommended ? 'ring-2 ring-purple-500 shadow-2xl scale-105 hover:shadow-3xl' : 'shadow-lg hover:shadow-xl'}
+      ${plan.mostPopular ? 'ring-2 ring-violet-500 shadow-2xl scale-105' : ''}
     `}>
       <CardHeader className="pb-6">
         {plan.mostPopular && (
-          <div className="absolute top-0 right-0 -mt-3 -mr-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-xs font-bold px-4 py-2 rounded-full shadow-lg">
+          <div className="absolute top-0 right-0 -mt-3 -mr-3 bg-gradient-to-r from-violet-600 to-purple-600 text-white text-xs font-bold px-4 py-2 rounded-full shadow-lg">
             Most Popular
           </div>
         )}
         {plan.recommended && (
-          <div className="absolute top-0 right-0 -mt-3 -mr-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-xs font-bold px-4 py-2 rounded-full shadow-lg">
+          <div className="absolute top-0 right-0 -mt-3 -mr-3 bg-gradient-to-r from-purple-600 to-violet-600 text-white text-xs font-bold px-4 py-2 rounded-full shadow-lg">
             Recommended
           </div>
         )}
-        <CardTitle className="text-2xl font-extrabold bg-gradient-to-r from-blue-700 to-indigo-700 text-transparent bg-clip-text">
+        <CardTitle className="text-2xl font-extrabold bg-gradient-to-r from-purple-700 to-violet-700 text-transparent bg-clip-text">
           {plan.name}
         </CardTitle>
         <CardDescription className="text-gray-600 text-base mt-2 leading-relaxed">{plan.description}</CardDescription>
@@ -437,12 +437,12 @@ function PlanCard({ plan, period, isCurrentPlan, onSelect, disabled }: PlanCardP
             <li key={index} className="flex items-start">
               <span className="flex-shrink-0 mt-0.5">
                 {feature.included ? (
-                  <CheckIcon className={`h-6 w-6 ${feature.highlighted ? 'text-blue-500' : 'text-green-500'}`} />
+                  <CheckIcon className={`h-6 w-6 ${feature.highlighted ? 'text-purple-500' : 'text-green-500'}`} />
                 ) : (
                   <XIcon className="h-5 w-5 text-gray-400" />
                 )}
               </span>
-              <span className={`ml-3 text-sm leading-relaxed ${feature.highlighted ? 'font-bold text-blue-700' : 'text-gray-700 font-medium'}`}>
+              <span className={`ml-3 text-sm leading-relaxed ${feature.highlighted ? 'font-bold text-purple-700' : 'text-gray-700 font-medium'}`}>
                 {feature.title}
                 {feature.limit && <span className="text-gray-500 ml-1">({feature.limit})</span>}
               </span>
@@ -453,7 +453,7 @@ function PlanCard({ plan, period, isCurrentPlan, onSelect, disabled }: PlanCardP
       <CardFooter className="pt-6 space-y-3">
         <Button
           size="lg"
-          className={`w-full transition-all duration-300 ${plan.recommended ? 'bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 shadow-lg hover:shadow-xl' : 'hover:shadow-lg'}`}
+          className={`w-full transition-all duration-300 ${plan.recommended ? 'bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 shadow-lg hover:shadow-xl' : 'hover:shadow-lg'}`}
           onClick={() => onSelect(plan.id)}
           disabled={disabled || isCurrentPlan}
           variant={isCurrentPlan ? "outline" : "default"}
