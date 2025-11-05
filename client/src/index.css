@@ -174,46 +174,71 @@
 }
 
 /* Glassmorphism Design System */
-@layer utilities {
-  .glass {
-    @apply bg-white/70 backdrop-blur-xl border border-white/20 shadow-2xl;
-  }
-  
-  .glass-card {
-    @apply bg-white/60 backdrop-blur-lg border border-white/30 shadow-xl rounded-3xl;
-  }
-  
-  .glass-dark {
-    @apply bg-gray-900/40 backdrop-blur-xl border border-white/10 shadow-2xl;
-  }
-  
-  .glass-hover {
-    @apply transition-all duration-300 hover:bg-white/80 hover:shadow-3xl hover:scale-[1.02];
-  }
-  
-  .gradient-text {
-    @apply bg-gradient-to-r from-blue-600 via-cyan-600 to-blue-600 bg-clip-text text-transparent;
-  }
-  
-  .gradient-border {
-    @apply relative overflow-hidden;
-  }
-  
-  .gradient-border::before {
-    content: '';
-    @apply absolute inset-0 rounded-3xl p-[2px] bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-400;
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: exclude;
-    mask-composite: exclude;
-  }
-  
-  .shadow-glow {
-    box-shadow: 0 0 40px rgba(51, 159, 224, 0.3), 0 20px 40px rgba(0, 0, 0, 0.1);
-  }
-  
-  .shadow-3xl {
-    box-shadow: 0 35px 60px -15px rgba(0, 0, 0, 0.3);
-  }
+.glass {
+  background-color: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.glass-card {
+  background-color: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  border-radius: 24px;
+}
+
+.glass-dark {
+  background-color: rgba(17, 24, 39, 0.4);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.glass-hover {
+  transition: all 0.3s ease-in-out;
+}
+
+.glass-hover:hover {
+  background-color: rgba(255, 255, 255, 0.8);
+  transform: scale(1.02);
+  box-shadow: 0 35px 60px -15px rgba(0, 0, 0, 0.3);
+}
+
+.gradient-text {
+  background: linear-gradient(90deg, rgb(37, 99, 235), rgb(8, 145, 178), rgb(37, 99, 235));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.gradient-border {
+  position: relative;
+  overflow: hidden;
+}
+
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  padding: 2px;
+  background: linear-gradient(90deg, rgb(96, 165, 250), rgb(34, 211, 238), rgb(96, 165, 250));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: exclude;
+  mask-composite: exclude;
+}
+
+.shadow-glow {
+  box-shadow: 0 0 40px rgba(51, 159, 224, 0.3), 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.shadow-3xl {
+  box-shadow: 0 35px 60px -15px rgba(0, 0, 0, 0.3);
 }
 
   .progress-bar {
