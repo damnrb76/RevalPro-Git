@@ -446,10 +446,8 @@ export default function DashboardPage() {
 
       {/* Modern Analytics Dashboard */}
       <div className="mb-10">
-        <h2 className="text-3xl font-extrabold mb-10 tracking-tight">
-          <span className="bg-gradient-to-r from-revalpro-blue via-blue-600 to-revalpro-teal bg-clip-text text-transparent">
-            Revalidation Progress
-          </span>
+        <h2 className="text-4xl md:text-5xl font-black mb-12 tracking-tight gradient-text">
+          Revalidation Progress
         </h2>
         
         {/* Main metrics grid */}
@@ -460,21 +458,21 @@ export default function DashboardPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1, duration: 0.5 }}
           >
-            <Card className="relative overflow-hidden bg-gradient-to-br from-blue-50 to-white border border-gray-200 shadow-xl rounded-2xl">
-              <CardContent className="relative p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-sm font-bold text-gray-700">Overall Progress</h3>
-                  <div className="flex items-center gap-1">
-                    <div className="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></div>
-                    <span className="text-xs font-medium text-gray-600">Active</span>
+            <Card className="glass-card glass-hover shadow-glow">
+              <CardContent className="relative p-8">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-base font-black text-gray-800">Overall Progress</h3>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 animate-pulse shadow-lg"></div>
+                    <span className="text-sm font-bold text-gray-700">Active</span>
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <div className="text-3xl font-bold text-blue-600">{overallProgress}%</div>
-                  <div className="text-sm font-medium text-gray-600">Complete</div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
+                <div className="space-y-3">
+                  <div className="text-5xl font-black gradient-text">{overallProgress}%</div>
+                  <div className="text-base font-bold text-gray-600">Complete</div>
+                  <div className="w-full bg-gradient-to-r from-gray-200 to-gray-300 rounded-full h-3 shadow-inner">
                     <div 
-                      className="bg-gradient-to-r from-blue-600 to-blue-700 h-2 rounded-full transition-all duration-1000"
+                      className="bg-gradient-to-r from-blue-600 via-cyan-600 to-blue-600 h-3 rounded-full transition-all duration-1000 shadow-glow"
                       style={{ width: `${overallProgress}%` }}
                     ></div>
                   </div>
@@ -506,27 +504,27 @@ export default function DashboardPage() {
                 transition={{ delay: 0.2 + index * 0.1, duration: 0.5 }}
               >
                 <Link href={element.link}>
-                  <Card className="relative overflow-hidden border border-gray-200 shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer group rounded-2xl hover:-translate-y-1 bg-white">
-                    <CardContent className="relative p-6">
-                      <div className="flex items-center justify-between mb-4">
-                        <div style={{ color: colors.primary }} className="text-lg">
+                  <Card className="glass-card glass-hover shadow-lg cursor-pointer group">
+                    <CardContent className="relative p-8">
+                      <div className="flex items-center justify-between mb-6">
+                        <div style={{ color: colors.primary }} className="text-2xl bg-white/60 p-3 rounded-2xl shadow-md">
                           {element.icon}
                         </div>
-                        <div className="text-xs font-medium text-gray-600">
+                        <div className="text-sm font-bold text-gray-700 bg-white/60 px-3 py-1 rounded-full shadow-sm">
                           {element.data.current}/{element.data.required}
                         </div>
                       </div>
-                      <div className="space-y-2">
-                        <h3 className="text-sm font-bold text-gray-800">{element.title}</h3>
+                      <div className="space-y-3">
+                        <h3 className="text-base font-black text-gray-800">{element.title}</h3>
                         <div className="flex items-baseline gap-2">
-                          <span className="text-2xl font-bold" style={{ color: colors.primary }}>
+                          <span className="text-3xl font-black" style={{ color: colors.primary }}>
                             {element.data.percentage}%
                           </span>
-                          <span className="text-xs font-medium text-gray-600">complete</span>
+                          <span className="text-sm font-bold text-gray-600">complete</span>
                         </div>
-                        <div className="w-full bg-gray-200 rounded-full h-1.5">
+                        <div className="w-full bg-gradient-to-r from-gray-200 to-gray-300 rounded-full h-2 shadow-inner">
                           <div 
-                            className="h-1.5 rounded-full transition-all duration-1000"
+                            className="h-2 rounded-full transition-all duration-1000 shadow-lg"
                             style={{ 
                               width: `${element.data.percentage}%`,
                               background: `linear-gradient(90deg, ${colors.primary}, ${colors.secondary})`

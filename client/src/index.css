@@ -152,10 +152,9 @@
   }
   
   body {
-    @apply bg-gradient-to-br from-revalpro-blue/10 via-white to-revalpro-teal/10 text-foreground font-sans;
+    @apply bg-gradient-to-br from-blue-50 via-white to-cyan-50 text-foreground font-sans;
     font-feature-settings: "rlig" 1, "calt" 1;
-    background-size: 200% 200%;
-    animation: gradientShift 10s ease infinite;
+    min-height: 100vh;
   }
   
   h1, h2, h3, h4, h5, h6 {
@@ -172,6 +171,50 @@
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
   }
+}
+
+/* Glassmorphism Design System */
+@layer utilities {
+  .glass {
+    @apply bg-white/70 backdrop-blur-xl border border-white/20 shadow-2xl;
+  }
+  
+  .glass-card {
+    @apply bg-white/60 backdrop-blur-lg border border-white/30 shadow-xl rounded-3xl;
+  }
+  
+  .glass-dark {
+    @apply bg-gray-900/40 backdrop-blur-xl border border-white/10 shadow-2xl;
+  }
+  
+  .glass-hover {
+    @apply transition-all duration-300 hover:bg-white/80 hover:shadow-3xl hover:scale-[1.02];
+  }
+  
+  .gradient-text {
+    @apply bg-gradient-to-r from-blue-600 via-cyan-600 to-blue-600 bg-clip-text text-transparent;
+  }
+  
+  .gradient-border {
+    @apply relative overflow-hidden;
+  }
+  
+  .gradient-border::before {
+    content: '';
+    @apply absolute inset-0 rounded-3xl p-[2px] bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-400;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: exclude;
+    mask-composite: exclude;
+  }
+  
+  .shadow-glow {
+    box-shadow: 0 0 40px rgba(51, 159, 224, 0.3), 0 20px 40px rgba(0, 0, 0, 0.1);
+  }
+  
+  .shadow-3xl {
+    box-shadow: 0 35px 60px -15px rgba(0, 0, 0, 0.3);
+  }
+}
 
   .progress-bar {
     @apply h-[10px] rounded-[5px] bg-revalpro-grey overflow-hidden;
@@ -280,4 +323,3 @@
   .ai-assistant-card {
     @apply bg-gradient-to-br from-revalpro-blue/20 via-revalpro-purple/15 to-revalpro-teal/10 border-2 border-revalpro-blue/30;
   }
-}
