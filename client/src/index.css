@@ -62,17 +62,17 @@
   --revalpro-indigo: 243 75% 59%;
   --revalpro-orange: 30 100% 55%;
   --revalpro-green: 142 71% 45%;
-  --revalpro-teal: 173 58% 39%;
-  --revalpro-fuchsia: 320 86% 65%;
-  --revalpro-pink: 340 75% 60%;
   --revalpro-black: 0 0% 15%;
   --revalpro-white: 0 0% 100%;
   --revalpro-light-grey: 260 15% 97%;
   --revalpro-grey: 260 10% 93%;
   
-  /* Legacy blue kept for logo compatibility */
-  --revalpro-blue: 199 80% 60%;
-  --revalpro-dark-blue: 205 80% 40%;
+  /* Updated legacy colors to purple theme */
+  --revalpro-blue: 262 83% 58%;
+  --revalpro-dark-blue: 262 70% 45%;
+  --revalpro-teal: 275 85% 65%;
+  --revalpro-fuchsia: 295 80% 65%;
+  --revalpro-pink: 320 75% 65%;
   
   /* NHS Colors (legacy) */
   --nhs-blue: var(--revalpro-dark-purple);

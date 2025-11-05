@@ -502,7 +502,7 @@ export default function LandingPage() {
       {/* Features Gallery Modal */}
       <Dialog open={isGalleryOpen} onOpenChange={setIsGalleryOpen}>
         <DialogContent className="sm:max-w-4xl max-h-[90vh] overflow-hidden p-0 gap-0">
-          <div className="flex justify-between items-center p-4 bg-gradient-to-r from-revalpro-blue to-revalpro-teal">
+          <div className="flex justify-between items-center p-4 bg-gradient-to-r from-purple-600 to-violet-600">
             <div>
               <DialogTitle className="text-white">RevalPro Features Gallery</DialogTitle>
               <DialogDescription className="text-white/80 mt-1">
@@ -527,8 +527,8 @@ export default function LandingPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Dashboard */}
               <div className="bg-white rounded-lg shadow-md overflow-hidden">
-                <div className="aspect-video bg-gradient-to-br from-revalpro-blue/10 to-revalpro-teal/10 flex items-center justify-center p-8">
-                  <div className="text-6xl text-revalpro-blue/30">
+                <div className="aspect-video bg-gradient-to-br from-purple-50 to-violet-50 flex items-center justify-center p-8">
+                  <div className="text-6xl text-purple-300">
                     <svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" /><path d="M9 9h.01" /><path d="M9 12h.01" /><path d="M9 15h.01" /><path d="M12 9h3" /><path d="M12 12h3" /><path d="M12 15h3" /></svg>
                   </div>
                 </div>
@@ -540,8 +540,8 @@ export default function LandingPage() {
               
               {/* Practice Hours */}
               <div className="bg-white rounded-lg shadow-md overflow-hidden">
-                <div className="aspect-video bg-gradient-to-br from-revalpro-green/10 to-revalpro-blue/10 flex items-center justify-center p-8">
-                  <div className="text-6xl text-revalpro-green/30">
+                <div className="aspect-video bg-gradient-to-br from-green-50 to-emerald-50 flex items-center justify-center p-8">
+                  <div className="text-6xl text-green-300">
                     <svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                   </div>
                 </div>
@@ -553,8 +553,8 @@ export default function LandingPage() {
               
               {/* CPD Records */}
               <div className="bg-white rounded-lg shadow-md overflow-hidden">
-                <div className="aspect-video bg-gradient-to-br from-revalpro-teal/10 to-revalpro-purple/10 flex items-center justify-center p-8">
-                  <div className="text-6xl text-revalpro-teal/30">
+                <div className="aspect-video bg-gradient-to-br from-violet-50 to-purple-50 flex items-center justify-center p-8">
+                  <div className="text-6xl text-violet-300">
                     <svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
                   </div>
                 </div>
@@ -592,8 +592,8 @@ export default function LandingPage() {
               
               {/* NMC Verification */}
               <div className="bg-white rounded-lg shadow-md overflow-hidden">
-                <div className="aspect-video bg-gradient-to-br from-revalpro-blue/10 to-revalpro-teal/10 flex items-center justify-center p-8">
-                  <div className="text-6xl text-revalpro-blue/30">
+                <div className="aspect-video bg-gradient-to-br from-purple-50 to-violet-50 flex items-center justify-center p-8">
+                  <div className="text-6xl text-purple-300">
                     <svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>
                   </div>
                 </div>
@@ -608,7 +608,7 @@ export default function LandingPage() {
             <div className="mt-8 text-center">
               <p className="text-gray-500 mb-4">Ready to experience these features yourself?</p>
               <Link href="/auth">
-                <Button className="bg-gradient-to-r from-revalpro-blue to-revalpro-teal hover:from-revalpro-blue/90 hover:to-revalpro-teal/90 text-white">
+                <Button className="bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white">
                   Get Started Free
                 </Button>
               </Link>
