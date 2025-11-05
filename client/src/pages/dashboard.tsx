@@ -289,8 +289,8 @@ export default function DashboardPage() {
     description: "Track your additional training and development",
     subtitle: "(Optional - not required for revalidation)",
     icon: <GraduationCap className="h-8 w-8" />,
-    color: "from-revalpro-purple/20 to-revalpro-purple/10",
-    borderColor: "border-revalpro-purple/30",
+    color: "from-revalpro-blue/20 to-revalpro-blue/10",
+    borderColor: "border-revalpro-blue/30",
     link: "/training",
     data: progressData.training
   };
@@ -320,7 +320,7 @@ export default function DashboardPage() {
           className="flex items-center justify-center gap-4 mb-6"
         >
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight">
-            Welcome to <span className="bg-gradient-to-r from-purple-600 via-violet-600 to-fuchsia-600 bg-clip-text text-transparent">RevalPro</span>
+            Welcome to <span className="bg-gradient-to-r from-revalpro-blue via-blue-600 to-revalpro-teal bg-clip-text text-transparent">RevalPro</span>
           </h1>
           {subscriptionInfo && (
             <PlanIndicator 
@@ -343,7 +343,7 @@ export default function DashboardPage() {
             </span>
           )}
           {subscriptionInfo?.currentPlan === 'standard' && (
-            <span className="block text-sm text-purple-600 font-medium mt-1">
+            <span className="block text-sm text-blue-600 font-medium mt-1">
               <Star className="inline h-4 w-4 mr-1" />
               Standard Plan Active
             </span>
@@ -362,12 +362,12 @@ export default function DashboardPage() {
           subscriptionInfo?.currentPlan === 'premium' 
             ? 'bg-gradient-to-br from-purple-50/50 via-white to-purple-50/30 border-purple-300 shadow-xl shadow-purple-200/50' 
             : subscriptionInfo?.currentPlan === 'standard'
-            ? 'bg-gradient-to-br from-purple-50/30 via-white to-violet-50/30 border-purple-300 shadow-lg shadow-purple-100/50'
+            ? 'bg-gradient-to-br from-blue-50/50 via-white to-blue-50/30 border-blue-300 shadow-lg shadow-blue-100/50'
             : 'bg-white border-gray-300 shadow-lg'
         }`}>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <ListChecks className="h-6 w-6 text-purple-600" />
+              <ListChecks className="h-6 w-6 text-revalpro-blue" />
               Revalidation Progress Overview
             </CardTitle>
             <CardDescription>
@@ -378,7 +378,7 @@ export default function DashboardPage() {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-lg font-bold text-gray-700">Overall Completion</span>
-                <span className="text-3xl font-extrabold bg-gradient-to-r from-purple-600 to-violet-600 bg-clip-text text-transparent">{overallProgress}%</span>
+                <span className="text-3xl font-extrabold bg-gradient-to-r from-revalpro-blue to-revalpro-teal bg-clip-text text-transparent">{overallProgress}%</span>
               </div>
               <Progress value={overallProgress} max={100} className="h-4 shadow-inner" />
               
@@ -386,7 +386,7 @@ export default function DashboardPage() {
                 <div className="flex flex-col md:flex-row items-center justify-between pt-4 border-t">
                   <div className="flex items-center gap-4 mb-4 md:mb-0">
                     {userProfile.profileImage ? (
-                      <div className="rounded-full w-12 h-12 overflow-hidden border-2 border-purple-600 shadow-sm">
+                      <div className="rounded-full w-12 h-12 overflow-hidden border-2 border-revalpro-blue shadow-sm">
                         <img 
                           src={userProfile.profileImage} 
                           alt="Profile" 
@@ -395,7 +395,7 @@ export default function DashboardPage() {
                       </div>
                     ) : (
                       <div className="bg-white p-3 rounded-full shadow-sm">
-                        <LayoutDashboard className="h-6 w-6 text-purple-600" />
+                        <LayoutDashboard className="h-6 w-6 text-revalpro-blue" />
                       </div>
                     )}
                     <div>
@@ -411,7 +411,7 @@ export default function DashboardPage() {
                     <Badge variant="outline" className="bg-green-100 text-green-800">
                       Active Registration
                     </Badge>
-                    <Badge className="bg-purple-500">
+                    <Badge className="bg-blue-500">
                       {daysUntilExpiry !== null 
                         ? `${daysUntilExpiry} days until renewal` 
                         : "Renewal date not set"}
@@ -447,7 +447,7 @@ export default function DashboardPage() {
       {/* Modern Analytics Dashboard */}
       <div className="mb-10">
         <h2 className="text-3xl font-extrabold mb-10 tracking-tight">
-          <span className="bg-gradient-to-r from-purple-600 via-violet-600 to-fuchsia-600 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-revalpro-blue via-blue-600 to-revalpro-teal bg-clip-text text-transparent">
             Revalidation Progress
           </span>
         </h2>
@@ -460,21 +460,21 @@ export default function DashboardPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1, duration: 0.5 }}
           >
-            <Card className="relative overflow-hidden bg-gradient-to-br from-purple-50 to-white border border-purple-200 shadow-xl rounded-2xl">
+            <Card className="relative overflow-hidden bg-gradient-to-br from-blue-50 to-white border border-gray-200 shadow-xl rounded-2xl">
               <CardContent className="relative p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-sm font-bold text-gray-700">Overall Progress</h3>
                   <div className="flex items-center gap-1">
-                    <div className="w-2 h-2 rounded-full bg-purple-600 animate-pulse"></div>
+                    <div className="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></div>
                     <span className="text-xs font-medium text-gray-600">Active</span>
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <div className="text-3xl font-bold text-purple-600">{overallProgress}%</div>
+                  <div className="text-3xl font-bold text-blue-600">{overallProgress}%</div>
                   <div className="text-sm font-medium text-gray-600">Complete</div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
                     <div 
-                      className="bg-gradient-to-r from-purple-600 to-violet-600 h-2 rounded-full transition-all duration-1000"
+                      className="bg-gradient-to-r from-blue-600 to-blue-700 h-2 rounded-full transition-all duration-1000"
                       style={{ width: `${overallProgress}%` }}
                     ></div>
                   </div>
@@ -669,9 +669,9 @@ export default function DashboardPage() {
         >
           <motion.div variants={item}>
             <Link href="/ai-assistant">
-              <Card className="cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-md bg-gradient-to-br from-purple-500/20 to-violet-500/10 border-purple-200">
+              <Card className="cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-md bg-gradient-to-br from-blue-500/20 to-purple-500/10 border-blue-200">
                 <CardContent className="p-4 text-center">
-                  <Bot className="h-8 w-8 text-purple-600 mx-auto mb-2" />
+                  <Bot className="h-8 w-8 text-blue-600 mx-auto mb-2" />
                   <h4 className="font-semibold">AI Assistant</h4>
                   <p className="text-xs text-gray-600 mt-1">Get revalidation guidance</p>
                 </CardContent>

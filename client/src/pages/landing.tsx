@@ -90,7 +90,7 @@ export default function LandingPage() {
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-violet-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
       {/* Hero Section */}
       <header className="container mx-auto px-4 py-8 md:py-16">
         <nav className="flex justify-between items-center mb-16">
@@ -102,11 +102,11 @@ export default function LandingPage() {
             />
           </div>
           <div className="hidden md:flex items-center space-x-6">
-            <a href="#features" className="text-gray-600 hover:text-purple-600 transition-colors font-medium">Features</a>
-            <a href="#testimonials" className="text-gray-600 hover:text-purple-600 transition-colors font-medium">Testimonials</a>
-            <a href="#pricing" className="text-gray-600 hover:text-purple-600 transition-colors font-medium">Pricing</a>
+            <a href="#features" className="text-gray-600 hover:text-revalpro-blue transition-colors">Features</a>
+            <a href="#testimonials" className="text-gray-600 hover:text-revalpro-blue transition-colors">Testimonials</a>
+            <a href="#pricing" className="text-gray-600 hover:text-revalpro-blue transition-colors">Pricing</a>
             <Link href="/auth">
-              <Button variant="outline" className="border-2 border-purple-600 text-purple-600 hover:bg-purple-50 font-semibold">
+              <Button variant="outline" className="border-revalpro-blue text-revalpro-blue hover:bg-revalpro-blue/10">
                 Log In
               </Button>
             </Link>
@@ -126,23 +126,23 @@ export default function LandingPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <h2 className="text-5xl md:text-7xl font-black leading-tight mb-6 tracking-tight">
-              Simplify Your <span className="bg-gradient-to-r from-purple-600 via-violet-600 to-fuchsia-600 bg-clip-text text-transparent">NMC Revalidation</span> Journey
+            <h2 className="text-4xl md:text-6xl font-extrabold leading-tight mb-6 tracking-tight">
+              Simplify Your <span className="bg-gradient-to-r from-revalpro-blue via-blue-600 to-revalpro-teal bg-clip-text text-transparent">NMC Revalidation</span> Journey
             </h2>
-            <p className="text-xl md:text-2xl text-gray-700 mb-10 leading-relaxed font-medium">
-              The new & improved RevalPro: Secure, beautifully designed, and built specifically for UK nurses.
+            <p className="text-xl md:text-2xl text-gray-600 mb-10 leading-relaxed">
+              Secure, easy to use and designed specifically for UK nurses. Track all your nursing revalidation requirements in one place.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link href="/auth">
-                <Button size="lg" className="bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 w-full sm:w-auto text-lg px-10 py-7 font-bold rounded-2xl">
-                  Get Started Free <ArrowRight className="ml-2 h-6 w-6" />
+                <Button size="lg" className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-xl hover:shadow-2xl transition-all duration-300 w-full sm:w-auto text-lg px-8 py-6">
+                  Get Started Free <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
               <Link href="/sneak-peek">
                 <Button 
                   size="lg"
                   variant="outline" 
-                  className="border-2 border-purple-300 text-purple-700 hover:bg-purple-50 hover:border-purple-400 w-full sm:w-auto text-lg px-10 py-7 transition-all duration-300 font-bold rounded-2xl"
+                  className="border-2 border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 w-full sm:w-auto text-lg px-8 py-6 transition-all duration-300"
                 >
                   Take a Sneak Peek
                 </Button>
@@ -162,11 +162,11 @@ export default function LandingPage() {
       </header>
       
       {/* Features Section */}
-      <section id="features" className="py-24 bg-gradient-to-b from-white via-purple-50/30 to-white">
+      <section id="features" className="py-24 bg-gradient-to-b from-white via-gray-50 to-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-20">
             <motion.h2 
-              className="text-4xl md:text-6xl font-black mb-6 tracking-tight bg-gradient-to-r from-purple-600 to-violet-600 bg-clip-text text-transparent"
+              className="text-3xl md:text-5xl font-extrabold mb-6 tracking-tight"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -175,58 +175,52 @@ export default function LandingPage() {
               Everything You Need for Revalidation
             </motion.h2>
             <motion.p 
-              className="text-xl md:text-2xl text-gray-700 max-w-3xl mx-auto leading-relaxed font-medium"
+              className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.1 }}
             >
-              The new RevalPro streamlines your NMC revalidation process, ensuring you stay compliant with all requirements.
+              RevalPro streamlines your NMC revalidation process, ensuring you stay compliant with all requirements.
             </motion.p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
               {
-                icon: <Clock className="h-14 w-14 text-purple-600" />,
+                icon: <Clock className="h-12 w-12 text-revalpro-green" />,
                 title: "Practice Hours Tracker",
-                description: "Easily log and monitor your practice hours to meet the 450-hour requirement.",
-                color: "purple"
+                description: "Easily log and monitor your practice hours to meet the 450-hour requirement."
               },
               {
-                icon: <BookOpen className="h-14 w-14 text-violet-600" />,
+                icon: <BookOpen className="h-12 w-12 text-revalpro-teal" />,
                 title: "CPD Management",
-                description: "Record and categorize your 35 hours of CPD activities, including participatory learning.",
-                color: "violet"
+                description: "Record and categorize your 35 hours of CPD activities, including participatory learning."
               },
               {
-                icon: <MessageSquare className="h-14 w-14 text-fuchsia-600" />,
+                icon: <MessageSquare className="h-12 w-12 text-revalpro-purple" />,
                 title: "Feedback Collection",
-                description: "Gather and organise practice-related feedback from patients, colleagues, and managers.",
-                color: "fuchsia"
+                description: "Gather and organise practice-related feedback from patients, colleagues, and managers."
               },
               {
-                icon: <Shield className="h-14 w-14 text-purple-500" />,
+                icon: <Shield className="h-12 w-12 text-revalpro-red" />,
                 title: "Reflective Accounts",
-                description: "Write and store your five reflective accounts with AI-assisted templates.",
-                color: "purple"
+                description: "Write and store your five reflective accounts with AI-assisted templates."
               },
               {
-                icon: <Users className="h-14 w-14 text-violet-500" />,
+                icon: <Users className="h-12 w-12 text-revalpro-orange" />,
                 title: "Reflective Discussion",
-                description: "Document your reflective discussion with another NMC registrant.",
-                color: "violet"
+                description: "Document your reflective discussion with another NMC registrant."
               },
               {
-                icon: <Award className="h-14 w-14 text-indigo-600" />,
+                icon: <Award className="h-12 w-12 text-revalpro-blue" />,
                 title: "NMC Verification",
-                description: "Check your NMC registration status and important revalidation dates.",
-                color: "indigo"
+                description: "Check your NMC registration status and important revalidation dates."
               }
             ].map((feature, index) => (
               <motion.div 
                 key={index}
-                className={`bg-gradient-to-br from-white to-${feature.color}-50/30 rounded-3xl shadow-lg p-10 border-2 border-${feature.color}-100 hover:shadow-2xl hover:border-${feature.color}-200 transition-all duration-300 hover:-translate-y-2`}
+                className="bg-white rounded-2xl shadow-md p-8 border border-gray-100 hover:shadow-xl hover:border-gray-200 transition-all duration-300 hover:-translate-y-1"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -291,9 +285,9 @@ export default function LandingPage() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.3, delay: 0.1 * index }}
               >
-                <div className="mb-6 text-gray-700 italic text-lg leading-relaxed font-medium">"{testimonial.quote}"</div>
+                <div className="mb-6 text-gray-700 italic text-lg leading-relaxed">"{testimonial.quote}"</div>
                 <div className="flex items-center">
-                  <div className="h-12 w-12 rounded-full bg-gradient-to-r from-purple-600 to-violet-600 flex items-center justify-center text-white font-bold shadow-lg">
+                  <div className="h-12 w-12 rounded-full bg-gradient-to-r from-revalpro-blue to-revalpro-teal flex items-center justify-center text-white font-bold shadow-md">
                     {testimonial.name.charAt(0)}
                   </div>
                   <div className="ml-4">
@@ -308,11 +302,11 @@ export default function LandingPage() {
       </section>
       
       {/* Pricing Section */}
-      <section id="pricing" className="py-24 bg-gradient-to-b from-white via-purple-50/20 to-white">
+      <section id="pricing" className="py-24 bg-gradient-to-b from-white to-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-20">
             <motion.h2 
-              className="text-4xl md:text-6xl font-black mb-6 tracking-tight bg-gradient-to-r from-purple-600 to-violet-600 bg-clip-text text-transparent"
+              className="text-3xl md:text-5xl font-extrabold mb-6 tracking-tight"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -321,7 +315,7 @@ export default function LandingPage() {
               Simple, Transparent Pricing
             </motion.h2>
             <motion.p 
-              className="text-xl md:text-2xl text-gray-700 max-w-3xl mx-auto leading-relaxed font-medium"
+              className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -383,9 +377,9 @@ export default function LandingPage() {
             ].map((plan, index) => (
               <motion.div 
                 key={index}
-                className={`rounded-3xl overflow-hidden border-2 ${
+                className={`rounded-2xl overflow-hidden border ${
                   plan.recommended 
-                    ? "border-purple-400 shadow-2xl shadow-purple-500/20 scale-105 ring-2 ring-purple-300/50" 
+                    ? "border-revalpro-teal shadow-2xl scale-105 ring-2 ring-revalpro-teal/20" 
                     : "border-gray-200 shadow-lg hover:shadow-xl transition-shadow duration-300"
                 }`}
                 initial={{ opacity: 0, y: 20 }}
@@ -394,33 +388,33 @@ export default function LandingPage() {
                 transition={{ duration: 0.3, delay: 0.1 * index }}
               >
                 {plan.recommended && (
-                  <div className="bg-gradient-to-r from-purple-600 to-violet-600 text-white text-center py-3 font-bold text-sm tracking-wide uppercase">
+                  <div className="bg-gradient-to-r from-revalpro-blue to-revalpro-teal text-white text-center py-3 font-bold text-sm tracking-wide uppercase">
                     Most Popular
                   </div>
                 )}
                 <div className="p-8">
                   <h3 className="text-2xl font-extrabold mb-3">{plan.name}</h3>
                   <div className="mb-6">
-                    <span className="text-5xl font-extrabold bg-gradient-to-r from-purple-600 to-violet-600 bg-clip-text text-transparent">{plan.price}</span>
-                    <span className="text-gray-500 text-lg font-medium">/{plan.period}</span>
+                    <span className="text-5xl font-extrabold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">{plan.price}</span>
+                    <span className="text-gray-500 text-lg">/{plan.period}</span>
                   </div>
-                  <p className="text-gray-600 mb-8 leading-relaxed font-medium">{plan.description}</p>
+                  <p className="text-gray-600 mb-8 leading-relaxed">{plan.description}</p>
                   <hr className="my-8 border-gray-200" />
                   <ul className="mb-10 space-y-4">
                     {plan.features.map((feature, fIndex) => (
                       <li key={fIndex} className="flex items-start">
-                        <Check className="h-6 w-6 text-purple-500 mr-3 mt-0.5 flex-shrink-0" />
-                        <span className="text-gray-700 leading-relaxed font-medium">{feature}</span>
+                        <Check className="h-6 w-6 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
+                        <span className="text-gray-700 leading-relaxed">{feature}</span>
                       </li>
                     ))}
                   </ul>
                   <Link href="/auth">
                     <Button 
                       size="lg"
-                      className={`w-full transition-all duration-300 font-bold rounded-xl ${
+                      className={`w-full transition-all duration-300 ${
                         plan.recommended 
-                          ? "bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white shadow-lg hover:shadow-xl" 
-                          : "bg-white text-gray-800 border-2 border-gray-300 hover:bg-gray-50 hover:border-purple-300"
+                          ? "bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-lg hover:shadow-xl" 
+                          : "bg-white text-gray-800 border-2 border-gray-300 hover:bg-gray-50 hover:border-gray-400"
                       }`}
                     >
                       {plan.ctaText}
@@ -502,7 +496,7 @@ export default function LandingPage() {
       {/* Features Gallery Modal */}
       <Dialog open={isGalleryOpen} onOpenChange={setIsGalleryOpen}>
         <DialogContent className="sm:max-w-4xl max-h-[90vh] overflow-hidden p-0 gap-0">
-          <div className="flex justify-between items-center p-4 bg-gradient-to-r from-purple-600 to-violet-600">
+          <div className="flex justify-between items-center p-4 bg-gradient-to-r from-revalpro-blue to-revalpro-teal">
             <div>
               <DialogTitle className="text-white">RevalPro Features Gallery</DialogTitle>
               <DialogDescription className="text-white/80 mt-1">
@@ -527,8 +521,8 @@ export default function LandingPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Dashboard */}
               <div className="bg-white rounded-lg shadow-md overflow-hidden">
-                <div className="aspect-video bg-gradient-to-br from-purple-50 to-violet-50 flex items-center justify-center p-8">
-                  <div className="text-6xl text-purple-300">
+                <div className="aspect-video bg-gradient-to-br from-revalpro-blue/10 to-revalpro-teal/10 flex items-center justify-center p-8">
+                  <div className="text-6xl text-revalpro-blue/30">
                     <svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" /><path d="M9 9h.01" /><path d="M9 12h.01" /><path d="M9 15h.01" /><path d="M12 9h3" /><path d="M12 12h3" /><path d="M12 15h3" /></svg>
                   </div>
                 </div>
@@ -540,8 +534,8 @@ export default function LandingPage() {
               
               {/* Practice Hours */}
               <div className="bg-white rounded-lg shadow-md overflow-hidden">
-                <div className="aspect-video bg-gradient-to-br from-green-50 to-emerald-50 flex items-center justify-center p-8">
-                  <div className="text-6xl text-green-300">
+                <div className="aspect-video bg-gradient-to-br from-revalpro-green/10 to-revalpro-blue/10 flex items-center justify-center p-8">
+                  <div className="text-6xl text-revalpro-green/30">
                     <svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                   </div>
                 </div>
@@ -553,8 +547,8 @@ export default function LandingPage() {
               
               {/* CPD Records */}
               <div className="bg-white rounded-lg shadow-md overflow-hidden">
-                <div className="aspect-video bg-gradient-to-br from-violet-50 to-purple-50 flex items-center justify-center p-8">
-                  <div className="text-6xl text-violet-300">
+                <div className="aspect-video bg-gradient-to-br from-revalpro-teal/10 to-revalpro-purple/10 flex items-center justify-center p-8">
+                  <div className="text-6xl text-revalpro-teal/30">
                     <svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
                   </div>
                 </div>
@@ -592,8 +586,8 @@ export default function LandingPage() {
               
               {/* NMC Verification */}
               <div className="bg-white rounded-lg shadow-md overflow-hidden">
-                <div className="aspect-video bg-gradient-to-br from-purple-50 to-violet-50 flex items-center justify-center p-8">
-                  <div className="text-6xl text-purple-300">
+                <div className="aspect-video bg-gradient-to-br from-revalpro-blue/10 to-revalpro-teal/10 flex items-center justify-center p-8">
+                  <div className="text-6xl text-revalpro-blue/30">
                     <svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>
                   </div>
                 </div>
@@ -608,7 +602,7 @@ export default function LandingPage() {
             <div className="mt-8 text-center">
               <p className="text-gray-500 mb-4">Ready to experience these features yourself?</p>
               <Link href="/auth">
-                <Button className="bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white">
+                <Button className="bg-gradient-to-r from-revalpro-blue to-revalpro-teal hover:from-revalpro-blue/90 hover:to-revalpro-teal/90 text-white">
                   Get Started Free
                 </Button>
               </Link>
