@@ -3,15 +3,49 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Download, FileText, Image } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
-import jsPDF from "jspdf";
+import { useQuery } from "@tanstack/react-query";
+import type { UserProfile, PracticeHours, CpdRecord, FeedbackRecord, ReflectiveAccount, HealthDeclaration } from "@shared/schema";
+import { confirmationStorage } from "@/lib/db";
 
 export default function SummaryInfographicPage() {
   const [previewImage, setPreviewImage] = useState<string>("");
 
-  // Generate the infographic preview when component loads
+  // Fetch all necessary data
+  const { data: userProfile } = useQuery<UserProfile>({ queryKey: ['/api/user-profile'] });
+  const { data: practiceHours = [] } = useQuery<PracticeHours[]>({ queryKey: ['/api/practice-hours'] });
+  const { data: cpdRecords = [] } = useQuery<CpdRecord[]>({ queryKey: ['/api/cpd-records'] });
+  const { data: feedbackRecords = [] } = useQuery<FeedbackRecord[]>({ queryKey: ['/api/feedback-records'] });
+  const { data: reflectiveAccounts = [] } = useQuery<ReflectiveAccount[]>({ queryKey: ['/api/reflective-accounts'] });
+  const { data: healthDeclarations = [] } = useQuery<HealthDeclaration[]>({ queryKey: ['/api/health-declarations'] });
+  
+  // Fetch confirmation data from IndexedDB
+  const { data: confirmationCompleted = false } = useQuery({
+    queryKey: ['confirmationCompleted'],
+    queryFn: async () => {
+      const confirmations = await confirmationStorage.getAll();
+      return confirmations.length > 0;
+    },
+  });
+
+  // Calculate progress percentages
+  const calculateProgress = () => {
+    const totalPracticeHours = practiceHours.reduce((sum, record) => sum + record.hours, 0);
+    const totalCpdHours = cpdRecords.reduce((sum, record) => sum + record.hours, 0);
+    
+    return {
+      practiceHours: Math.min(100, Math.round((totalPracticeHours / 450) * 100)),
+      cpdHours: Math.min(100, Math.round((totalCpdHours / 35) * 100)),
+      feedback: Math.min(100, Math.round((feedbackRecords.length / 5) * 100)),
+      reflections: Math.min(100, Math.round((reflectiveAccounts.length / 5) * 100)),
+      healthDeclaration: healthDeclarations.length > 0 ? 100 : 0,
+      confirmation: confirmationCompleted ? 100 : 0
+    };
+  };
+
+  // Generate the infographic preview when data loads (removed userProfile guard)
   useEffect(() => {
     generatePreviewImage();
-  }, []);
+  }, [practiceHours, cpdRecords, feedbackRecords, reflectiveAccounts, healthDeclarations, confirmationCompleted]);
 
   const generatePreviewImage = () => {
     try {
@@ -40,20 +74,27 @@ export default function SummaryInfographicPage() {
       ctx.font = '24px Arial';
       ctx.fillText('Revalidation Progress Summary', canvas.width / 2, 100);
       
-      // Add nurse details
+      // Add nurse details with fallback
       ctx.font = '18px Arial';
-      ctx.fillText('Damon Bruce (Nurse)', canvas.width / 2, 140);
-      ctx.fillText('Registration Status: Active', canvas.width / 2, 170);
+      const profileName = userProfile?.name || 'Your Progress';
+      ctx.fillText(profileName, canvas.width / 2, 140);
+      const registrationStatus = userProfile?.registrationNumber 
+        ? `Registration: ${userProfile.registrationNumber}`
+        : 'Registration Status: Active';
+      ctx.fillText(registrationStatus, canvas.width / 2, 170);
+      
+      // Get actual progress values
+      const progress = calculateProgress();
       
       // Draw progress bars for canvas
-      const drawProgressBar = (y: number, label: string, progress: number, color: string) => {
+      const drawProgressBar = (y: number, label: string, progressValue: number, color: string) => {
         // Background bar
         ctx.fillStyle = '#e0e0e0';
         ctx.fillRect(150, y, 500, 30);
         
         // Progress bar
         ctx.fillStyle = color;
-        ctx.fillRect(150, y, (progress / 100) * 500, 30);
+        ctx.fillRect(150, y, (progressValue / 100) * 500, 30);
         
         // Label
         ctx.fillStyle = '#000000';
@@ -65,31 +106,34 @@ export default function SummaryInfographicPage() {
         ctx.textAlign = 'center';
         ctx.fillStyle = '#ffffff';
         ctx.font = 'bold 16px Arial';
-        ctx.fillText(`${progress}%`, 400, y + 20);
+        ctx.fillText(`${progressValue}%`, 400, y + 20);
       };
       
-      // Progress indicators
-      drawProgressBar(220, 'Practice Hours (450+ required)', 100, '#2962ff');
-      drawProgressBar(280, 'CPD Hours (35+ required)', 100, '#00b894');
-      drawProgressBar(340, 'Feedback Records (5+ required)', 100, '#e84393');
-      drawProgressBar(400, 'Reflective Accounts (5+ required)', 100, '#fd79a8');
-      drawProgressBar(460, 'Health Declaration', 100, '#74b9ff');
-      drawProgressBar(520, 'Confirmation', 100, '#a29bfe');
+      // Progress indicators with actual data
+      drawProgressBar(220, 'Practice Hours (450+ required)', progress.practiceHours, '#2962ff');
+      drawProgressBar(280, 'CPD Hours (35+ required)', progress.cpdHours, '#00b894');
+      drawProgressBar(340, 'Feedback Records (5+ required)', progress.feedback, '#e84393');
+      drawProgressBar(400, 'Reflective Accounts (5+ required)', progress.reflections, '#fd79a8');
+      drawProgressBar(460, 'Health Declaration', progress.healthDeclaration, '#74b9ff');
+      drawProgressBar(520, 'Confirmation', progress.confirmation, '#a29bfe');
       
       // Add achievements section
       ctx.fillStyle = '#000000';
       ctx.font = 'bold 20px Arial';
       ctx.textAlign = 'left';
-      ctx.fillText('Key Achievements:', 150, 600);
+      ctx.fillText('Current Progress:', 150, 600);
       
       ctx.font = '16px Arial';
+      const totalPracticeHours = practiceHours.reduce((sum, record) => sum + record.hours, 0);
+      const totalCpdHours = cpdRecords.reduce((sum, record) => sum + record.hours, 0);
+      
       const achievements = [
-        '✓ All practice hours completed',
-        '✓ CPD requirements fulfilled',
-        '✓ Feedback collection complete',
-        '✓ Reflective practice documented',
-        '✓ Health declaration submitted',
-        '✓ Confirmation process complete'
+        `${progress.practiceHours >= 100 ? '✓' : '○'} Practice Hours: ${totalPracticeHours}/450 hours`,
+        `${progress.cpdHours >= 100 ? '✓' : '○'} CPD Hours: ${totalCpdHours}/35 hours`,
+        `${progress.feedback >= 100 ? '✓' : '○'} Feedback Records: ${feedbackRecords.length}/5`,
+        `${progress.reflections >= 100 ? '✓' : '○'} Reflective Accounts: ${reflectiveAccounts.length}/5`,
+        `${progress.healthDeclaration >= 100 ? '✓' : '○'} Health Declaration`,
+        `${progress.confirmation >= 100 ? '✓' : '○'} Confirmation`
       ];
       
       achievements.forEach((achievement, index) => {
