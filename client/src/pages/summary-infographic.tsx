@@ -5,7 +5,7 @@ import { Download, FileText, Image } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import type { UserProfile, PracticeHours, CpdRecord, FeedbackRecord, ReflectiveAccount, HealthDeclaration } from "@shared/schema";
-import { confirmationStorage } from "@/lib/db";
+import { confirmationStorage } from "@/lib/storage";
 
 export default function SummaryInfographicPage() {
   const [previewImage, setPreviewImage] = useState<string>("");
