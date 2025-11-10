@@ -1062,32 +1062,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Development mode: Allow testing without real Stripe integration
-      // Add ?useStripe=true to test real Stripe checkout flow
-      // If we only have live keys in development, simulate the checkout
+      // DISABLED: Always use real Stripe to ensure clientSecret is returned
+      // The frontend requires clientSecret to display the payment form
       const hasValidTestKey = process.env.TESTING_STRIPE_SECRET_KEY?.startsWith('sk_test_') || 
                               process.env.STRIPE_SECRET_KEY?.startsWith('sk_test_');
       
-      if (process.env.NODE_ENV === "development" && (!req.query.useStripe || !hasValidTestKey)) {
-        // Simulate successful subscription for testing
-        const endDate = new Date();
-        endDate.setFullYear(endDate.getFullYear() + (period === "annual" ? 1 : 0));
-        endDate.setMonth(endDate.getMonth() + (period === "monthly" ? 1 : 0));
-
-        await storage.updateUserStripeInfo(user.id, {
-          currentPlan: planId,
-          subscriptionStatus: "active",
-          stripeSubscriptionId: `dev_sub_${Date.now()}`,
-          subscriptionPeriod: period,
-          subscriptionEndDate: endDate,
-          cancelAtPeriodEnd: false,
-        });
-        
-        return res.json({ 
-          success: true, 
-          plan: planId,
-          message: "Development mode: Subscription activated for testing" 
-        });
-      }
+      console.log(`💳 Creating subscription for user ${user.id}: ${planId} ${period}`);
+      console.log(`  - NODE_ENV: ${process.env.NODE_ENV}`);
+      console.log(`  - Has test key: ${hasValidTestKey}`);
+      console.log(`  - Will use real Stripe integration`);
 
       // Production mode: Use actual Stripe integration
       const priceId = planDetails.stripePriceId[period as keyof typeof planDetails.stripePriceId];
