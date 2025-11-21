@@ -27,8 +27,19 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { queryClient } from "@/lib/queryClient";
 import type { BlogPost, BlogCategory } from "@shared/schema";
-import { BlogCategoryEnum } from "@shared/schema";
 import { formatDistanceToNow } from "date-fns";
+
+// Define categories locally to avoid import issues
+const BlogCategories = [
+  "Revalidation Tips",
+  "NMC Updates",
+  "CPD Ideas",
+  "Nursing Practice",
+  "Reflective Practice",
+  "Professional Development",
+  "News & Updates",
+  "How-to Guides",
+] as const;
 
 export default function BlogManagement() {
   const { toast } = useToast();
@@ -281,7 +292,7 @@ export default function BlogManagement() {
                       <SelectValue placeholder="Select category" />
                     </SelectTrigger>
                     <SelectContent>
-                      {Object.values(BlogCategoryEnum).map((cat) => (
+                      {BlogCategories.map((cat) => (
                         <SelectItem key={cat} value={cat}>
                           {cat}
                         </SelectItem>

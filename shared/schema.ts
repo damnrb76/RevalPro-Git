@@ -588,6 +588,20 @@ export const TrainingStatusEnum = {
 
 export type TrainingStatus = typeof TrainingStatusEnum[keyof typeof TrainingStatusEnum];
 
+// Blog Categories
+export const BlogCategoryEnum = {
+  REVALIDATION_TIPS: "Revalidation Tips",
+  NMC_UPDATES: "NMC Updates",
+  CPD_IDEAS: "CPD Ideas",
+  NURSING_PRACTICE: "Nursing Practice",
+  REFLECTIVE_PRACTICE: "Reflective Practice",
+  PROFESSIONAL_DEVELOPMENT: "Professional Development",
+  NEWS: "News & Updates",
+  GUIDES: "How-to Guides",
+} as const;
+
+export type BlogCategory = typeof BlogCategoryEnum[keyof typeof BlogCategoryEnum];
+
 // Blog Posts
 export const blogPosts = pgTable("blog_posts", {
   id: serial("id").primaryKey(),
@@ -632,17 +646,3 @@ export const insertBlogPostSchema = createInsertSchema(blogPosts, {
 
 export type BlogPost = typeof blogPosts.$inferSelect;
 export type InsertBlogPost = z.infer<typeof insertBlogPostSchema>;
-
-// Blog Categories
-export const BlogCategoryEnum = {
-  REVALIDATION_TIPS: "Revalidation Tips",
-  NMC_UPDATES: "NMC Updates",
-  CPD_IDEAS: "CPD Ideas",
-  NURSING_PRACTICE: "Nursing Practice",
-  REFLECTIVE_PRACTICE: "Reflective Practice",
-  PROFESSIONAL_DEVELOPMENT: "Professional Development",
-  NEWS: "News & Updates",
-  GUIDES: "How-to Guides",
-} as const;
-
-export type BlogCategory = typeof BlogCategoryEnum[keyof typeof BlogCategoryEnum];
