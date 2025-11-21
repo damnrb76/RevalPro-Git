@@ -98,6 +98,13 @@ export default function NavigationTabs({ currentPath, onSidebarToggle }: Navigat
           color: "bg-revalpro-green/20 text-revalpro-green",
           hoverColor: "hover:bg-revalpro-green/30"
         },
+        { 
+          href: "/blog", 
+          label: "Blog", 
+          icon: <BookOpen size={16} />,
+          color: "bg-revalpro-fuchsia/20 text-revalpro-fuchsia",
+          hoverColor: "hover:bg-revalpro-fuchsia/30"
+        },
       ]
     },
     {

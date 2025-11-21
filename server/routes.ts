@@ -11,7 +11,7 @@ import { PLAN_DETAILS } from "../shared/subscription-plans";
 import Stripe from "stripe";
 import { calculateNmcImportantDates, getLatestRevalidationRequirements } from "./nmc-api";
 import { getRevalidationAdvice, generateReflectiveTemplate, suggestCpdActivities } from "./ai-service";
-import { insertTrainingRecordSchema } from "@shared/schema";
+import { insertTrainingRecordSchema, insertBlogPostSchema } from "@shared/schema";
 
 // Email service for password reset
 async function sendPasswordResetEmail(email: string, resetUrl: string): Promise<void> {
@@ -1864,6 +1864,129 @@ export async function registerRoutes(app: Express): Promise<Server> {
         error: "Failed to setup webhook",
         details: error.message
       });
+    }
+  });
+
+  // ============================================================================
+  // Blog Routes
+  // ============================================================================
+
+  // Get all blog posts (public route - published posts only for non-admins)
+  app.get("/api/blog", async (req, res) => {
+    try {
+      const user = req.user;
+      const isAdmin = user?.isAdmin || user?.isSuperAdmin;
+      
+      // Only show published posts to non-admins/non-authenticated users
+      const posts = await storage.getAllBlogPosts(!isAdmin);
+      res.json(posts);
+    } catch (error) {
+      console.error("Error fetching blog posts:", error);
+      res.status(500).json({ error: "Failed to fetch blog posts" });
+    }
+  });
+
+  // Get blog posts by category (public route)
+  app.get("/api/blog/category/:category", async (req, res) => {
+    try {
+      const { category } = req.params;
+      const user = req.user;
+      const isAdmin = user?.isAdmin || user?.isSuperAdmin;
+      
+      const posts = await storage.getBlogPostsByCategory(category, !isAdmin);
+      res.json(posts);
+    } catch (error) {
+      console.error("Error fetching blog posts by category:", error);
+      res.status(500).json({ error: "Failed to fetch blog posts" });
+    }
+  });
+
+  // Get single blog post by slug (public route)
+  app.get("/api/blog/:slug", async (req, res) => {
+    try {
+      const { slug } = req.params;
+      const post = await storage.getBlogPostBySlug(slug);
+      
+      if (!post) {
+        return res.status(404).json({ error: "Blog post not found" });
+      }
+
+      // Only allow viewing unpublished posts if user is admin
+      if (!post.published) {
+        const user = req.user;
+        const isAdmin = user?.isAdmin || user?.isSuperAdmin;
+        if (!isAdmin) {
+          return res.status(404).json({ error: "Blog post not found" });
+        }
+      }
+
+      res.json(post);
+    } catch (error) {
+      console.error("Error fetching blog post:", error);
+      res.status(500).json({ error: "Failed to fetch blog post" });
+    }
+  });
+
+  // Admin: Create blog post
+  app.post("/api/admin/blog", requireAdmin, async (req, res) => {
+    try {
+      // Validate the request body (strict mode - reject unknown keys)
+      const validatedData = insertBlogPostSchema.strict().parse(req.body);
+      
+      const post = await storage.createBlogPost(validatedData);
+      res.json(post);
+    } catch (error: any) {
+      console.error("Error creating blog post:", error);
+      if (error.name === 'ZodError') {
+        return res.status(400).json({ 
+          error: "Invalid blog post data", 
+          details: error.errors 
+        });
+      }
+      res.status(500).json({ error: "Failed to create blog post" });
+    }
+  });
+
+  // Admin: Update blog post
+  app.patch("/api/admin/blog/:id", requireAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      
+      // Validate the request body (allow partial updates, strict mode)
+      const validatedData = insertBlogPostSchema.partial().strict().parse(req.body);
+      
+      // Only include fields that are actually present (not undefined)
+      // This prevents wiping out existing data when fields are omitted
+      const postData: any = {};
+      for (const [key, value] of Object.entries(validatedData)) {
+        if (value !== undefined) {
+          postData[key] = value;
+        }
+      }
+      
+      const post = await storage.updateBlogPost(id, postData);
+      res.json(post);
+    } catch (error: any) {
+      console.error("Error updating blog post:", error);
+      if (error.name === 'ZodError') {
+        return res.status(400).json({ 
+          error: "Invalid blog post data", 
+          details: error.errors 
+        });
+      }
+      res.status(500).json({ error: "Failed to update blog post" });
+    }
+  });
+
+  // Admin: Delete blog post
+  app.delete("/api/admin/blog/:id", requireAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteBlogPost(id);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting blog post:", error);
+      res.status(500).json({ error: "Failed to delete blog post" });
     }
   });
 

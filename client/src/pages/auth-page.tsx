@@ -8,6 +8,8 @@ import { useAuth } from "@/hooks/use-auth";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { BookOpen, ArrowRight } from "lucide-react";
+import { Link } from "wouter";
 
 // Demo account removed for production launch
 
@@ -84,6 +86,29 @@ export default function AuthPage() {
                 <div className="h-6 w-6 rounded-full bg-revalpro-purple/20 flex items-center justify-center text-revalpro-purple shrink-0">✓</div>
                 <p>Export data and summaries for your submission</p>
               </div>
+            </div>
+            
+            <Separator className="my-6" />
+            
+            <div className="space-y-3">
+              <div className="flex items-center gap-2 text-revalpro-blue">
+                <BookOpen className="h-5 w-5" />
+                <h3 className="font-semibold">Need help with revalidation?</h3>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Check out our blog for tips, guides, and insights to support your nursing revalidation journey
+              </p>
+              <Link href="/blog">
+                <Button 
+                  variant="outline" 
+                  className="w-full gap-2 border-revalpro-blue/30 hover:bg-revalpro-blue/10 hover:border-revalpro-blue"
+                  data-testid="button-view-blog"
+                >
+                  <BookOpen className="h-4 w-4" />
+                  View Our Blog
+                  <ArrowRight className="h-4 w-4 ml-auto" />
+                </Button>
+              </Link>
             </div>
           </div>
         </div>

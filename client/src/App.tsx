@@ -49,6 +49,9 @@ import SimpleBetaView from "@/pages/simple-beta-view";
 import LaunchCountdown from "@/pages/LaunchCountdown";
 import UserGuidePage from "@/pages/user-guide";
 import ProfileSetupPage from "@/pages/profile-setup";
+import BlogListing from "@/pages/blog-listing";
+import BlogPostPage from "@/pages/blog-post";
+import BlogManagement from "@/pages/admin/blog-management";
 
 import Footer from "@/components/layout/footer";
 import NavigationTabs from "@/components/layout/navigation-tabs";
@@ -138,6 +141,7 @@ function AppRouter() {
           <ProtectedRoute path="/admin-panel" component={AdminPanel} />
           <ProtectedRoute path="/admin/coupons" component={CouponsAdminPage} />
           <ProtectedRoute path="/admin/analytics" component={AdminAnalyticsPage} />
+          <ProtectedRoute path="/admin/blog" component={BlogManagement} />
           
           {/* Privacy Policy Route */}
           <Route path="/privacy-policy" component={PrivacyPolicyPage} />
@@ -169,6 +173,10 @@ function AppRouter() {
           
           {/* Launch Countdown Page */}
           <Route path="/launch-countdown" component={LaunchCountdown} />
+          
+          {/* Blog Routes - Public access */}
+          <Route path="/blog" component={BlogListing} />
+          <Route path="/blog/:slug" component={BlogPostPage} />
           
           <Route component={NotFound} />
         </Switch>

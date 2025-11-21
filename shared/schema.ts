@@ -587,3 +587,62 @@ export const TrainingStatusEnum = {
 } as const;
 
 export type TrainingStatus = typeof TrainingStatusEnum[keyof typeof TrainingStatusEnum];
+
+// Blog Posts
+export const blogPosts = pgTable("blog_posts", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  slug: text("slug").notNull().unique(),
+  excerpt: text("excerpt").notNull(),
+  content: text("content").notNull(),
+  author: text("author").notNull(),
+  authorRole: text("author_role"),
+  featuredImage: text("featured_image"),
+  category: text("category").notNull(),
+  tags: text("tags").array(),
+  published: boolean("published").default(false),
+  publishedAt: timestamp("published_at"),
+  created: timestamp("created").notNull().defaultNow(),
+  updated: timestamp("updated").notNull().defaultNow(),
+});
+
+export const insertBlogPostSchema = createInsertSchema(blogPosts, {
+  publishedAt: z.coerce.date().optional(),
+}).pick({
+  title: true,
+  slug: true,
+  excerpt: true,
+  content: true,
+  author: true,
+  authorRole: true,
+  featuredImage: true,
+  category: true,
+  tags: true,
+  published: true,
+  publishedAt: true,
+}).extend({
+  title: z.string().min(1, "Title is required"),
+  slug: z.string().min(1, "Slug is required").regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Slug must be lowercase letters, numbers, and hyphens only"),
+  excerpt: z.string().min(1, "Excerpt is required"),
+  content: z.string().min(1, "Content is required"),
+  author: z.string().min(1, "Author is required"),
+  category: z.string().min(1, "Category is required"),
+  tags: z.array(z.string()).optional(),
+});
+
+export type BlogPost = typeof blogPosts.$inferSelect;
+export type InsertBlogPost = z.infer<typeof insertBlogPostSchema>;
+
+// Blog Categories
+export const BlogCategoryEnum = {
+  REVALIDATION_TIPS: "Revalidation Tips",
+  NMC_UPDATES: "NMC Updates",
+  CPD_IDEAS: "CPD Ideas",
+  NURSING_PRACTICE: "Nursing Practice",
+  REFLECTIVE_PRACTICE: "Reflective Practice",
+  PROFESSIONAL_DEVELOPMENT: "Professional Development",
+  NEWS: "News & Updates",
+  GUIDES: "How-to Guides",
+} as const;
+
+export type BlogCategory = typeof BlogCategoryEnum[keyof typeof BlogCategoryEnum];

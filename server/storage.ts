@@ -6,7 +6,8 @@ import {
   revalidationSubmissions, type RevalidationSubmission, type InsertRevalidationSubmission,
   couponCodes, type CouponCode, type InsertCouponCode,
   couponRedemptions, type CouponRedemption, type InsertCouponRedemption,
-  passwordResetTokens, type PasswordResetToken, type InsertPasswordResetToken
+  passwordResetTokens, type PasswordResetToken, type InsertPasswordResetToken,
+  blogPosts, type BlogPost, type InsertBlogPost
 } from "@shared/schema";
 import session from "express-session";
 import createMemoryStore from "memorystore";
@@ -89,6 +90,15 @@ export interface IStorage {
   getPasswordResetToken(token: string): Promise<PasswordResetToken | undefined>;
   markPasswordResetTokenAsUsed(tokenId: number): Promise<void>;
   updateUserPassword(userId: number, hashedPassword: string): Promise<User>;
+  
+  // Blog methods
+  getAllBlogPosts(publishedOnly?: boolean): Promise<BlogPost[]>;
+  getBlogPostBySlug(slug: string): Promise<BlogPost | null>;
+  getBlogPost(id: number): Promise<BlogPost | null>;
+  createBlogPost(post: InsertBlogPost): Promise<BlogPost>;
+  updateBlogPost(id: number, post: Partial<InsertBlogPost>): Promise<BlogPost>;
+  deleteBlogPost(id: number): Promise<boolean>;
+  getBlogPostsByCategory(category: string, publishedOnly?: boolean): Promise<BlogPost[]>;
   
   sessionStore: session.Store;
 }
@@ -594,6 +604,34 @@ export class MemStorage implements IStorage {
       firstRegistration,
       latestRegistration
     };
+  }
+
+  async getAllBlogPosts(_publishedOnly: boolean = false): Promise<BlogPost[]> {
+    throw new Error("Blog posts not supported in MemStorage");
+  }
+
+  async getBlogPostBySlug(_slug: string): Promise<BlogPost | null> {
+    throw new Error("Blog posts not supported in MemStorage");
+  }
+
+  async getBlogPost(_id: number): Promise<BlogPost | null> {
+    throw new Error("Blog posts not supported in MemStorage");
+  }
+
+  async createBlogPost(_post: InsertBlogPost): Promise<BlogPost> {
+    throw new Error("Blog posts not supported in MemStorage");
+  }
+
+  async updateBlogPost(_id: number, _post: Partial<InsertBlogPost>): Promise<BlogPost> {
+    throw new Error("Blog posts not supported in MemStorage");
+  }
+
+  async deleteBlogPost(_id: number): Promise<boolean> {
+    throw new Error("Blog posts not supported in MemStorage");
+  }
+
+  async getBlogPostsByCategory(_category: string, _publishedOnly: boolean = false): Promise<BlogPost[]> {
+    throw new Error("Blog posts not supported in MemStorage");
   }
 }
 
@@ -1110,6 +1148,50 @@ export class DatabaseStorage implements IStorage {
       firstRegistration,
       latestRegistration
     };
+  }
+
+  async getAllBlogPosts(publishedOnly: boolean = false): Promise<BlogPost[]> {
+    if (publishedOnly) {
+      return await db.select().from(blogPosts).where(eq(blogPosts.published, true)).orderBy(blogPosts.publishedAt);
+    }
+    return await db.select().from(blogPosts).orderBy(blogPosts.created);
+  }
+
+  async getBlogPostBySlug(slug: string): Promise<BlogPost | null> {
+    const results = await db.select().from(blogPosts).where(eq(blogPosts.slug, slug)).limit(1);
+    return results[0] || null;
+  }
+
+  async getBlogPost(id: number): Promise<BlogPost | null> {
+    const results = await db.select().from(blogPosts).where(eq(blogPosts.id, id)).limit(1);
+    return results[0] || null;
+  }
+
+  async createBlogPost(post: InsertBlogPost): Promise<BlogPost> {
+    const result = await db.insert(blogPosts).values(post).returning();
+    return result[0];
+  }
+
+  async updateBlogPost(id: number, post: Partial<InsertBlogPost>): Promise<BlogPost> {
+    const result = await db.update(blogPosts)
+      .set({ ...post, updated: new Date() })
+      .where(eq(blogPosts.id, id))
+      .returning();
+    return result[0];
+  }
+
+  async deleteBlogPost(id: number): Promise<boolean> {
+    await db.delete(blogPosts).where(eq(blogPosts.id, id));
+    return true;
+  }
+
+  async getBlogPostsByCategory(category: string, publishedOnly: boolean = false): Promise<BlogPost[]> {
+    if (publishedOnly) {
+      return await db.select().from(blogPosts)
+        .where(and(eq(blogPosts.category, category), eq(blogPosts.published, true)))
+        .orderBy(blogPosts.publishedAt);
+    }
+    return await db.select().from(blogPosts).where(eq(blogPosts.category, category)).orderBy(blogPosts.created);
   }
 }
 
