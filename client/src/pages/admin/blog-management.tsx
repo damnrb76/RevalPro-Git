@@ -53,7 +53,7 @@ export default function BlogManagement() {
     author: "",
     authorRole: "Nurse Educator",
     featuredImage: "",
-    category: "",
+    category: "Revalidation Tips", // Default to first category
     tags: "",
     published: false,
   });
@@ -87,7 +87,7 @@ export default function BlogManagement() {
         author: "",
         authorRole: "Nurse Educator",
         featuredImage: "",
-        category: "",
+        category: "Revalidation Tips", // Default to first category
         tags: "",
         published: false,
       });
@@ -125,8 +125,9 @@ export default function BlogManagement() {
         });
       }
 
-      queryClient.invalidateQueries({ queryKey: ["/api/blog"] });
       setIsDialogOpen(false);
+      // Invalidate after closing dialog to prevent blocking
+      queryClient.invalidateQueries({ queryKey: ["/api/blog"] });
     } catch (error) {
       toast({
         title: "Error",

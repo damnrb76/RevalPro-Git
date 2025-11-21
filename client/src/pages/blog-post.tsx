@@ -13,7 +13,7 @@ export default function BlogPostPage() {
   const slug = params.slug;
 
   const { data: post, isLoading, error } = useQuery<BlogPost>({
-    queryKey: ["/api/blog", slug],
+    queryKey: [`/api/blog/${slug}`],
     enabled: !!slug,
   });
 
@@ -23,7 +23,8 @@ export default function BlogPostPage() {
     return format(dateObj, "MMMM d, yyyy");
   };
 
-  const getReadingTime = (content: string) => {
+  const getReadingTime = (content: string | null | undefined) => {
+    if (!content) return "1 min read";
     const wordsPerMinute = 200;
     const wordCount = content.split(/\s+/).length;
     const minutes = Math.ceil(wordCount / wordsPerMinute);
