@@ -1936,14 +1936,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const post = await storage.createBlogPost(validatedData);
       res.json(post);
     } catch (error: any) {
-      console.error("Error creating blog post:", error);
+      console.error("Error creating blog post:", error?.message || error);
       if (error.name === 'ZodError') {
+        console.error("Zod validation errors:", error.errors);
         return res.status(400).json({ 
           error: "Invalid blog post data", 
           details: error.errors 
         });
       }
-      res.status(500).json({ error: "Failed to create blog post" });
+      res.status(500).json({ error: error?.message || "Failed to create blog post" });
     }
   });
 
@@ -1967,14 +1968,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const post = await storage.updateBlogPost(id, postData);
       res.json(post);
     } catch (error: any) {
-      console.error("Error updating blog post:", error);
+      console.error("Error updating blog post:", error?.message || error);
       if (error.name === 'ZodError') {
+        console.error("Zod validation errors:", error.errors);
         return res.status(400).json({ 
           error: "Invalid blog post data", 
           details: error.errors 
         });
       }
-      res.status(500).json({ error: "Failed to update blog post" });
+      res.status(500).json({ error: error?.message || "Failed to update blog post" });
     }
   });
 

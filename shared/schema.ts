@@ -620,21 +620,7 @@ export const blogPosts = pgTable("blog_posts", {
   updated: timestamp("updated").notNull().defaultNow(),
 });
 
-export const insertBlogPostSchema = createInsertSchema(blogPosts, {
-  publishedAt: z.coerce.date().optional(),
-}).pick({
-  title: true,
-  slug: true,
-  excerpt: true,
-  content: true,
-  author: true,
-  authorRole: true,
-  featuredImage: true,
-  category: true,
-  tags: true,
-  published: true,
-  publishedAt: true,
-}).extend({
+export const insertBlogPostSchema = z.object({
   title: z.string().min(1, "Title is required"),
   slug: z.string().min(1, "Slug is required").regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Slug must be lowercase letters, numbers, and hyphens only"),
   excerpt: z.string().min(1, "Excerpt is required"),
@@ -643,8 +629,9 @@ export const insertBlogPostSchema = createInsertSchema(blogPosts, {
   authorRole: z.string().optional().nullable(),
   featuredImage: z.string().optional().nullable(),
   category: z.string().min(1, "Category is required"),
-  tags: z.array(z.string()).optional(),
-  publishedAt: z.any().optional().nullable(),
+  tags: z.array(z.string()).default([]).nullable(),
+  published: z.boolean().default(false),
+  publishedAt: z.string().nullable().optional(),
 });
 
 export type BlogPost = typeof blogPosts.$inferSelect;

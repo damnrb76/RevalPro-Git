@@ -139,10 +139,14 @@ export default function BlogManagement() {
       setIsDialogOpen(false);
       // Invalidate after closing dialog to prevent blocking
       queryClient.invalidateQueries({ queryKey: ["/api/blog"] });
-    } catch (error) {
+    } catch (error: any) {
+      console.error("Blog save error:", error);
+      const errorMsg = error?.response?.data?.details?.[0]?.message || 
+                       error?.response?.data?.error ||
+                       "Failed to save blog post";
       toast({
         title: "Error",
-        description: "Failed to save blog post",
+        description: errorMsg,
         variant: "destructive",
       });
     }
