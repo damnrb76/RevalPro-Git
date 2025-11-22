@@ -26,7 +26,7 @@ import { Plus, Edit, Trash2, Eye, Calendar, User } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { queryClient } from "@/lib/queryClient";
-import type { BlogPost, BlogCategory } from "@shared/schema";
+import type { BlogPost } from "@shared/schema";
 import { formatDistanceToNow } from "date-fns";
 
 // Define categories locally to avoid import issues
