@@ -640,8 +640,11 @@ export const insertBlogPostSchema = createInsertSchema(blogPosts, {
   excerpt: z.string().min(1, "Excerpt is required"),
   content: z.string().min(1, "Content is required"),
   author: z.string().min(1, "Author is required"),
+  authorRole: z.string().optional().nullable(),
+  featuredImage: z.string().optional().nullable(),
   category: z.string().min(1, "Category is required"),
   tags: z.array(z.string()).optional(),
+  publishedAt: z.any().optional().nullable(),
 });
 
 export type BlogPost = typeof blogPosts.$inferSelect;

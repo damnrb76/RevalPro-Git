@@ -1930,8 +1930,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Admin: Create blog post
   app.post("/api/admin/blog", requireAdmin, async (req, res) => {
     try {
-      // Validate the request body (strict mode - reject unknown keys)
-      const validatedData = insertBlogPostSchema.strict().parse(req.body);
+      // Validate the request body
+      const validatedData = insertBlogPostSchema.parse(req.body);
       
       const post = await storage.createBlogPost(validatedData);
       res.json(post);
@@ -1952,8 +1952,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const id = parseInt(req.params.id);
       
-      // Validate the request body (allow partial updates, strict mode)
-      const validatedData = insertBlogPostSchema.partial().strict().parse(req.body);
+      // Validate the request body (allow partial updates)
+      const validatedData = insertBlogPostSchema.partial().parse(req.body);
       
       // Only include fields that are actually present (not undefined)
       // This prevents wiping out existing data when fields are omitted
