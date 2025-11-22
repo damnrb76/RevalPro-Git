@@ -12,11 +12,12 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/use-auth";
 import { 
   Shield, Users, BarChart3, Settings, Crown, 
-  Search, Eye, Edit, Trash2, Plus, AlertTriangle, Ticket
+  Search, Eye, Edit, Trash2, Plus, AlertTriangle, Ticket, BookOpen
 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { formatDateFull } from "@/lib/date-utils";
 import CouponsAdminPage from "@/pages/admin/coupons";
+import BlogManagement from "@/pages/admin/blog-management";
 
 interface AdminUser {
   id: number;
@@ -208,6 +209,10 @@ export default function AdminPanel() {
           <TabsTrigger value="coupons" className="flex items-center gap-2 flex-shrink-0">
             <Ticket className="h-4 w-4" />
             Coupons
+          </TabsTrigger>
+          <TabsTrigger value="blog" className="flex items-center gap-2 flex-shrink-0">
+            <BookOpen className="h-4 w-4" />
+            Blog
           </TabsTrigger>
           <TabsTrigger value="settings" className="flex items-center gap-2 flex-shrink-0">
             <Settings className="h-4 w-4" />
@@ -451,6 +456,10 @@ export default function AdminPanel() {
 
         <TabsContent value="coupons" className="space-y-6">
           <CouponsAdminPage />
+        </TabsContent>
+
+        <TabsContent value="blog" className="space-y-6">
+          <BlogManagement />
         </TabsContent>
 
         <TabsContent value="settings" className="space-y-6">
