@@ -588,6 +588,18 @@ export const TrainingStatusEnum = {
 
 export type TrainingStatus = typeof TrainingStatusEnum[keyof typeof TrainingStatusEnum];
 
+// Define blog categories
+export const BlogCategoryEnum = {
+  REVALIDATION_GUIDANCE: "Revalidation Guidance",
+  PROFESSIONAL_DEVELOPMENT: "Professional Development",
+  CLINICAL_PRACTICE: "Clinical Practice",
+  REFLECTIVE_PRACTICE: "Reflective Practice",
+  WELLBEING: "Wellbeing",
+  NEWS_UPDATES: "News & Updates",
+} as const;
+
+export type BlogCategory = typeof BlogCategoryEnum[keyof typeof BlogCategoryEnum];
+
 // Blog Posts
 export const blogPosts = pgTable("blog_posts", {
   id: serial("id").primaryKey(),
