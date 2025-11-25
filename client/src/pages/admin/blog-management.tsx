@@ -110,9 +110,11 @@ export default function BlogManagement() {
       const payload = {
         ...formData,
         slug: formData.slug || generateSlug(formData.title),
-        tags: formData.tags.split(",").map((t) => t.trim()).filter(Boolean),
+        tags: formData.tags.split(",").map((t) => t.trim()).filter(Boolean) || [],
         publishedAt: formData.published ? new Date().toISOString() : null,
       };
+
+      console.log("Sending blog payload:", payload);
 
       if (editingPost) {
         await apiRequest("PATCH", `/api/admin/blog/${editingPost.id}`, payload);
@@ -133,8 +135,10 @@ export default function BlogManagement() {
       queryClient.invalidateQueries({ queryKey: ["/api/blog"] });
     } catch (error: any) {
       console.error("Blog save error:", error);
+      console.error("Error response:", error?.response?.data);
       const errorMsg = error?.response?.data?.details?.[0]?.message || 
                        error?.response?.data?.error ||
+                       error?.message ||
                        "Failed to save blog post";
       toast({
         title: "Error",
