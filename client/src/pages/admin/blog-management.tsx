@@ -53,10 +53,10 @@ export default function BlogManagement() {
     slug: "",
     excerpt: "",
     content: "",
-    author: "",
+    author: "RevalPro Team",
     authorRole: "Nurse Educator",
     featuredImage: "",
-    category: "Revalidation Tips", // Default to first category
+    category: BlogCategoryEnum.REVALIDATION_GUIDANCE, // Default to first category
     tags: "",
     published: false,
   });
@@ -87,7 +87,7 @@ export default function BlogManagement() {
         slug: "",
         excerpt: "",
         content: "",
-        author: "",
+        author: "RevalPro Team",
         authorRole: "Nurse Educator",
         featuredImage: "",
         category: BlogCategoryEnum.REVALIDATION_GUIDANCE, // Default to first category
