@@ -31,7 +31,7 @@ import { BlogCategoryEnum } from "@shared/schema";
 import { formatDistanceToNow } from "date-fns";
 
 // Use the correct categories from schema
-const BlogCategories = Object.values(BlogCategoryEnum) as const;
+const BlogCategories = Object.values(BlogCategoryEnum);
 
 export default function BlogManagement() {
   const { toast } = useToast();
