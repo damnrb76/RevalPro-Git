@@ -27,19 +27,11 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { queryClient } from "@/lib/queryClient";
 import type { BlogPost } from "@shared/schema";
+import { BlogCategoryEnum } from "@shared/schema";
 import { formatDistanceToNow } from "date-fns";
 
-// Define categories locally to avoid import issues
-const BlogCategories = [
-  "Revalidation Tips",
-  "NMC Updates",
-  "CPD Ideas",
-  "Nursing Practice",
-  "Reflective Practice",
-  "Professional Development",
-  "News & Updates",
-  "How-to Guides",
-] as const;
+// Use the correct categories from schema
+const BlogCategories = Object.values(BlogCategoryEnum) as const;
 
 export default function BlogManagement() {
   const { toast } = useToast();
@@ -98,7 +90,7 @@ export default function BlogManagement() {
         author: "",
         authorRole: "Nurse Educator",
         featuredImage: "",
-        category: "Revalidation Tips", // Default to first category
+        category: BlogCategoryEnum.REVALIDATION_GUIDANCE, // Default to first category
         tags: "",
         published: false,
       });
