@@ -105,6 +105,7 @@ export default function LandingPage() {
             <a href="#features" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">Features</a>
             <a href="#testimonials" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">Testimonials</a>
             <a href="#pricing" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">Pricing</a>
+            <Link href="/blog" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">Blog</Link>
             <Link href="/auth">
               <Button className="glass bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white border-0 shadow-glow">
                 Log In
