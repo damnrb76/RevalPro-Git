@@ -244,6 +244,13 @@ export default function NavigationTabs({ currentPath, onSidebarToggle }: Navigat
       color: "bg-red-200 text-red-700",
       hoverColor: "hover:bg-red-300"
     });
+    adminItems.push({
+      href: "/admin/blog",
+      label: "Manage Blog",
+      icon: <BookOpen size={16} />,
+      color: "bg-red-200 text-red-700",
+      hoverColor: "hover:bg-red-300"
+    });
   }
 
   if (adminItems.length > 0) {
