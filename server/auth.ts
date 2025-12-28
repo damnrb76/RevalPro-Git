@@ -1,4 +1,4 @@
-import passport from "passport";
+0import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import { Express } from "express";
 import session from "express-session";
@@ -56,6 +56,7 @@ export function setupAuth(app: Express) {
       secure: process.env.NODE_ENV === "production", // Use secure cookies in production
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
+sameSite: 'lax', // Allow cookies to work across page navigations
     }
   };
 
