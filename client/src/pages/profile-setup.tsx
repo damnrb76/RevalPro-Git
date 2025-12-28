@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Redirect, useLocation } from "wouter";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -63,6 +64,7 @@ export default function ProfileSetupPage() {
       });
 
       // Brief delay to show success message, then redirect
+      setTimeout(() => {
         setLocation("/dashboard");
       }, 1500);
       
@@ -197,4 +199,4 @@ export default function ProfileSetupPage() {
       </Dialog>
     </div>
   );
-}
+      }
