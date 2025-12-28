@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Redirect, useLocation } from "wouter";
-import { Redirect } from "wouter";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
@@ -11,10 +10,10 @@ import { userProfileStorage } from "@/lib/storage";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { CheckCircle, UserPlus, FileText } from "lucide-react";
-
 export default function ProfileSetupPage() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const { user } = useAuth();
+  const [, setLocation] = useLocation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -65,7 +64,7 @@ export default function ProfileSetupPage() {
 
       // Brief delay to show success message, then redirect
       window.location.replace("/dashboard");
-        window.location.href = "/dashboard";
+        setLocation("/dashboard");
       }, 1500);
       
     } catch (error) {
