@@ -86,7 +86,7 @@ function AppRouter() {
       <div className={`flex-grow ${!isAuthPage && !isLandingPage ? 'pt-4' : ''} transition-all duration-300 ${showTabs ? (sidebarExpanded ? 'ml-64' : 'ml-16') : ''}`}>
         <Switch>
           {/* Main route */}
-          <Route path="/" component={AuthPage} />
+          <Route path="/" component={LandingPage} />
           
           {/* Development access route for testing app features */}
           <Route path="/app" component={LandingPage} />
