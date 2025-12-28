@@ -123,6 +123,7 @@ function AppRouter() {
           
           {/* Subscription Routes */}
           <ProtectedRoute path="/subscription" component={SubscriptionPage} />
+          <ProtectedRoute path="/plans" component={SubscriptionPage} />
           <ProtectedRoute path="/checkout" component={() => <CheckoutPage />} />
           <ProtectedRoute path="/subscription/success" component={SubscriptionSuccess} />
           <ProtectedRoute path="/subscription-success" component={SubscriptionSuccess} />
