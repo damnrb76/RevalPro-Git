@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Redirect, useLocation } from "wouter";
 import { Redirect } from "wouter";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -63,7 +64,7 @@ export default function ProfileSetupPage() {
       });
 
       // Brief delay to show success message, then redirect
-      setTimeout(() => {
+      window.location.replace("/dashboard");
         window.location.href = "/dashboard";
       }, 1500);
       
