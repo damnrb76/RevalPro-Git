@@ -63,7 +63,6 @@ export default function ProfileSetupPage() {
       });
 
       // Brief delay to show success message, then redirect
-      window.location.replace("/dashboard");
         setLocation("/dashboard");
       }, 1500);
       
