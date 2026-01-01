@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { userProfileStorage } from "@/lib/storage";
-import logoPath from "@a
+const logoPath = "/revalpro-logo-full.png";
 import logo from "/revalpro-logo-full.png";
 const ProminentHeader: React.FC = () => {
   const { user, logoutMutation } = useAuth();
