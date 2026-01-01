@@ -3,7 +3,7 @@ import { Clock, CheckCircle, Star, Crown, Shield, ArrowRight, Sparkles, Phone, G
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import logoPath from '@assets/logo_1753051561555.png';
+const logoPath = '/revalpro-logo-full.png';
 import appScreen1 from '@assets/Screenshot_20250705_215518_Replit_1751748943729.jpg';
 import appScreen2 from '@assets/Screenshot_20250712_095525_Edge_1752310537081.jpg';
 import appScreen3 from '@assets/Screenshot_20250711_213746_Replit_1752266285311.jpg';
