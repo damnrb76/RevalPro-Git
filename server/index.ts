@@ -131,7 +131,8 @@ app.use((req, res, next) => {
     }
   });
 
-  // Emergency admin account creation endpoint - MUST be before Vite middleware
+
+      // Emergency admin account creation endpoint - MUST be before Vite middleware
   app.get("/create-admin-emergency-access", async (req, res) => {
     try {
       const { storage } = await import("./storage");
