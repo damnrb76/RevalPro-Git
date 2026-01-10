@@ -237,7 +237,7 @@ export default function LaunchCountdown() {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
-            <Button size="lg" className="bg-white text-hsl(var(--revalpro-dark-blue)) hover:bg-blue-50 font-semibold px-8 py-4 text-lg">
+            <Button size="lg" className="bg-white text-hsl(var(--revalpro-dark-blue)) hover:bg-revalpro-blue/10 font-semibold px-8 py-4 text-lg">
               <Bell className="w-5 h-5 mr-2" />
               Get Notified at Launch
             </Button>
@@ -262,7 +262,7 @@ export default function LaunchCountdown() {
           
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             <div className="text-center">
-              <div className="bg-gradient-to-br from-blue-500 to-purple-600 p-2 rounded-2xl mb-4 transform rotate-1 hover:rotate-0 transition-transform">
+              <div className="bg-gradient-to-br from-revalpro-blue to-revalpro-purple p-2 rounded-2xl mb-4 transform rotate-1 hover:rotate-0 transition-transform">
                 <img 
                   src={appScreen1} 
                   alt="Practice Hours Tracking Interface"
@@ -498,7 +498,7 @@ export default function LaunchCountdown() {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
-              <Button size="lg" className="bg-white text-hsl(var(--revalpro-dark-blue)) hover:bg-blue-50 font-semibold px-8 py-4 text-lg">
+              <Button size="lg" className="bg-white text-hsl(var(--revalpro-dark-blue)) hover:bg-revalpro-blue/10 font-semibold px-8 py-4 text-lg">
                 <Globe className="w-5 h-5 mr-2" />
                 Visit www.revalpro.co.uk
               </Button>

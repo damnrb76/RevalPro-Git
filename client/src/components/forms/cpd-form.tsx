@@ -381,7 +381,7 @@ export default function CpdForm({ initialData, onClose, onSuccess }: CpdFormProp
                   <Button 
                     type="submit"
                     disabled={mutation.isPending}
-                    className="bg-gradient-to-r from-revalpro-blue to-revalpro-teal text-white hover:from-revalpro-blue/90 hover:to-revalpro-teal/90"
+                    className="bg-gradient-to-r from-revalpro-blue to-revalpro-teal text-white hover:from-revalpro-dark-blue hover:to-revalpro-blue"
                   >
                     {mutation.isPending ? "Saving..." : initialData ? "Update" : "Save"}
                   </Button>

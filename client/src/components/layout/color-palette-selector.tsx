@@ -13,9 +13,9 @@ import { useLocalStorage } from '@/hooks/use-local-storage';
 const colorPalettes = [
   { 
     id: 'default', 
-    name: 'RevalPro Blue', 
-    description: 'The classic RevalPro blue and teal palette',
-    colors: ['#4196FF', '#00B894', '#0057A6', '#FFFFFF']
+    name: 'RevalPro Vibrant', 
+    description: 'The new vibrant RevalPro heart and arrow palette',
+    colors: ['#1FB6E1', '#17918F', '#095D7D', '#FFFFFF']
   },
   { 
     id: 'purple', 

@@ -103,7 +103,7 @@ export default function RequirementsCard({
       
       <Link href={linkHref}>
         <Button 
-          className="mt-auto w-full bg-revalpro-blue hover:bg-revalpro-dark-blue" 
+          className="mt-auto w-full bg-gradient-to-r from-revalpro-blue to-revalpro-teal hover:from-revalpro-dark-blue hover:to-revalpro-blue" 
           size="sm"
         >
           {linkText}

@@ -78,7 +78,7 @@ const ProminentHeader: React.FC = () => {
             <DropdownMenu>
               <DropdownMenuTrigger className={`flex items-center gap-2 px-3 py-1.5 rounded-lg font-medium ${
                 scrolled 
-                  ? 'bg-revalpro-blue/10 text-revalpro-blue hover:bg-revalpro-blue/20' 
+                  ? 'bg-revalpro-blue/10 text-revalpro-dark-blue hover:bg-revalpro-blue/20' 
                   : 'bg-white/20 text-white hover:bg-white/30'
               }`}>
                 <Avatar className="h-10 w-10 border-2 border-white/50">
@@ -86,7 +86,7 @@ const ProminentHeader: React.FC = () => {
                     src={userProfile?.profileImage || user.profilePicture || ""} 
                     alt={userProfile?.name || user.username} 
                   />
-                  <AvatarFallback className="bg-revalpro-blue text-white">
+                  <AvatarFallback className="bg-revalpro-dark-blue text-white">
                     {userProfile?.name 
                       ? userProfile.name.split(' ').map(n => n[0]).join('').toUpperCase() 
                       : user.username 

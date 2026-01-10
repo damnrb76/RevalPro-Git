@@ -24,13 +24,13 @@ type DashboardVisualizationsProps = {
 };
 
 const COLORS = [
-  "#4c75bf", // revalpro-blue
+  "#1FB6E1", // revalpro-blue
+  "#17918F", // revalpro-teal
+  "#095D7D", // revalpro-dark-blue
+  "#F39C12", // revalpro-orange
+  "#9C64A6", // revalpro-purple
+  "#F06292", // revalpro-pink
   "#36b37e", // revalpro-green
-  "#00b8d4", // revalpro-teal
-  "#ff8f00", // revalpro-orange
-  "#9c64a6", // revalpro-purple
-  "#3b5cb9", // revalpro-indigo
-  "#ec407a", // revalpro-pink
   "#ef5350", // revalpro-red
 ];
 
@@ -276,14 +276,14 @@ export default function DashboardVisualizations({
                       <Legend />
                       <defs>
                         <linearGradient id="colorHours" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#4c75bf" stopOpacity={0.8} />
-                          <stop offset="95%" stopColor="#4c75bf" stopOpacity={0.2} />
+                          <stop offset="5%" stopColor="#1FB6E1" stopOpacity={0.8} />
+                          <stop offset="95%" stopColor="#1FB6E1" stopOpacity={0.2} />
                         </linearGradient>
                       </defs>
                       <Area 
                         type="monotone" 
                         dataKey="hours" 
-                        stroke="#4c75bf" 
+                        stroke="#1FB6E1" 
                         fillOpacity={1} 
                         fill="url(#colorHours)" 
                         name="Practice Hours"
@@ -291,7 +291,7 @@ export default function DashboardVisualizations({
                       <Line 
                         type="monotone" 
                         dataKey="hours" 
-                        stroke="#4c75bf" 
+                        stroke="#1FB6E1" 
                         strokeWidth={3} 
                         dot={{ r: 5 }} 
                         activeDot={{ r: 8 }}

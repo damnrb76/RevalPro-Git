@@ -56,14 +56,14 @@
 
 :root {
   /* RevalPro Colors from Logo */
-  --revalpro-blue: 199 80% 60%;
-  --revalpro-dark-blue: 205 80% 40%;
-  --revalpro-teal: 180 70% 45%;
-  --revalpro-orange: 30 100% 55%;
-  --revalpro-green: 100 60% 45%;
-  --revalpro-purple: 260 50% 65%;
-  --revalpro-fuchsia: 320 80% 55%;
-  --revalpro-pink: 340 75% 60%;
+  --revalpro-blue: 194 76% 50%; /* #1FB6E1 */
+  --revalpro-dark-blue: 197 86% 26%; /* #095D7D */
+  --revalpro-teal: 179 73% 33%; /* #17918F */
+  --revalpro-orange: 25 95% 60%; /* Orange from heart right */
+  --revalpro-green: 85 65% 55%; /* Green from heart bottom-right */
+  --revalpro-purple: 280 70% 55%; /* Purple from heart middle */
+  --revalpro-fuchsia: 310 85% 50%; /* Fuchsia from heart middle-left */
+  --revalpro-pink: 345 85% 55%; /* Pink from heart top-right */
   --revalpro-black: 0 0% 15%;
   --revalpro-white: 0 0% 100%;
   --revalpro-light-grey: 210 10% 95%;
@@ -210,7 +210,7 @@
 }
 
 .gradient-text {
-  background: linear-gradient(90deg, rgb(37, 99, 235), rgb(8, 145, 178), rgb(37, 99, 235));
+  background: linear-gradient(90deg, hsl(var(--revalpro-blue)), hsl(var(--revalpro-teal)), hsl(var(--revalpro-orange)));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -234,7 +234,7 @@
 }
 
 .shadow-glow {
-  box-shadow: 0 0 40px rgba(51, 159, 224, 0.3), 0 20px 40px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 40px hsla(var(--revalpro-blue), 0.3), 0 20px 40px rgba(0, 0, 0, 0.1);
 }
 
 .shadow-3xl {
@@ -341,7 +341,7 @@
   }
   
   .logo-text {
-    @apply font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-revalpro-blue via-revalpro-teal to-revalpro-green;
+    @apply font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-revalpro-blue via-revalpro-teal to-revalpro-orange;
   }
   
   /* Special components styling */

@@ -21,7 +21,7 @@ export default function NmcResources() {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-5xl">
-      <h1 className="text-3xl font-bold mb-6 text-revalpro-blue">NMC Resources</h1>
+      <h1 className="text-3xl font-bold mb-6 text-revalpro-dark-blue">NMC Resources</h1>
       <p className="text-muted-foreground mb-8">
         Quick access to important NMC services and resources for nurses and midwives
       </p>

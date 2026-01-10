@@ -130,7 +130,7 @@ export default function ProfileImageUploader({
             {previewUrl ? (
               <AvatarImage src={previewUrl} alt="Profile" className="object-cover" />
             ) : (
-              <AvatarFallback className="text-4xl bg-revalpro-purple text-white">
+              <AvatarFallback className="text-4xl bg-revalpro-dark-blue text-white">
                 {initials}
               </AvatarFallback>
             )}

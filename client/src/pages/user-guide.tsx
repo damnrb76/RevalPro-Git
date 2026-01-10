@@ -202,7 +202,7 @@ export default function UserGuidePage() {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-4">
-            📚 RevalPro User Guides
+            📚 <span className="gradient-text">RevalPro</span> User Guides
           </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Everything you need to master RevalPro and achieve successful NMC revalidation

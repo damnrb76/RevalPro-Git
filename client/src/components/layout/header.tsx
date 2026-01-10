@@ -57,7 +57,7 @@ export default function Header({ logo }: HeaderProps) {
   }, [userProfile]);
   
   return (
-    <header className="bg-gradient-to-r from-revalpro-dark-blue to-revalpro-blue shadow-md">
+    <header className="bg-gradient-to-r from-revalpro-dark-blue via-revalpro-blue to-revalpro-teal shadow-md">
       <div className="container mx-auto px-4 py-2 flex justify-between items-center">
         <Link href="/">
           <div className="flex items-center cursor-pointer">
@@ -98,7 +98,7 @@ export default function Header({ logo }: HeaderProps) {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="px-3 py-1.5 rounded-lg bg-white/20 text-white hover:bg-white/30 flex items-center gap-2">
-                <Avatar className="h-10 w-10 bg-revalpro-purple text-white border-2 border-white/50">
+                <Avatar className="h-10 w-10 bg-revalpro-dark-blue text-white border-2 border-white/50">
                   {userProfile?.profileImage ? (
                     <AvatarImage src={userProfile.profileImage} alt="Profile" className="object-cover" />
                   ) : (

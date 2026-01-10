@@ -37,7 +37,7 @@ export default function AuthPage() {
             </p>
           </div>
 
-          <Card className="p-6 border-2 border-revalpro-blue/20 shadow-md">
+          <Card className="p-6 border-2 border-revalpro-blue/30 shadow-md">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
               <TabsList className="grid w-full grid-cols-2 mb-6">
                 <TabsTrigger value="login">Sign In</TabsTrigger>
@@ -55,9 +55,9 @@ export default function AuthPage() {
       </div>
 
       {/* Right side - Hero Section */}
-      <div className="flex-1 rounded-lg p-8 bg-gradient-to-br from-revalpro-fuchsia/10 via-revalpro-blue/20 to-revalpro-teal/10 flex flex-col justify-center">
+      <div className="flex-1 rounded-lg p-8 bg-gradient-to-br from-revalpro-blue/10 via-revalpro-teal/10 to-revalpro-orange/10 flex flex-col justify-center">
         <div className="max-w-md mx-auto md:mx-0 space-y-6">
-          <h2 className="text-3xl font-bold bg-gradient-to-br from-revalpro-fuchsia to-revalpro-blue bg-clip-text text-transparent">
+          <h2 className="text-3xl font-bold bg-gradient-to-br from-revalpro-blue via-revalpro-teal to-revalpro-orange bg-clip-text text-transparent">
             Simplify Your Revalidation Journey
           </h2>
           
@@ -73,7 +73,7 @@ export default function AuthPage() {
               </div>
               
               <div className="flex items-start gap-2">
-                <div className="h-6 w-6 rounded-full bg-revalpro-fuchsia/20 flex items-center justify-center text-revalpro-fuchsia shrink-0">✓</div>
+                <div className="h-6 w-6 rounded-full bg-revalpro-teal/20 flex items-center justify-center text-revalpro-teal shrink-0">✓</div>
                 <p>Track practice hours, CPD, reflections and more</p>
               </div>
               
@@ -83,7 +83,7 @@ export default function AuthPage() {
               </div>
               
               <div className="flex items-start gap-2">
-                <div className="h-6 w-6 rounded-full bg-revalpro-purple/20 flex items-center justify-center text-revalpro-purple shrink-0">✓</div>
+                <div className="h-6 w-6 rounded-full bg-revalpro-orange/20 flex items-center justify-center text-revalpro-orange shrink-0">✓</div>
                 <p>Export data and summaries for your submission</p>
               </div>
             </div>

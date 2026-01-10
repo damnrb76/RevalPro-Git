@@ -33,7 +33,7 @@ import { PlanIndicator } from "@/components/ui/plan-indicator";
 import { PremiumFeatureShowcase } from "@/components/premium/feature-showcase";
 import RevalidationSummary from "@/components/dashboard/revalidation-summary";
 // Import the logo
-import logo from "@assets/Leonardo_Phoenix_10_design_a_vibrant_and_professional_logo_for_3.jpg";
+const logo = "/revalpro-logo-full.png";
 
 export default function DashboardPage() {
   const [_, setLocation] = useLocation();
@@ -275,8 +275,8 @@ export default function DashboardPage() {
       title: "Declarations",
       description: "Complete your health and character declaration",
       icon: <Heart className="h-8 w-8" />,
-      color: "from-revalpro-pink/20 to-revalpro-pink/10",
-      borderColor: "border-revalpro-pink/30",
+      color: "from-revalpro-orange/20 to-revalpro-orange/10",
+      borderColor: "border-revalpro-orange/30",
       link: "/declarations",
       data: progressData.declarations
     }

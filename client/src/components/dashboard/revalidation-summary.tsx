@@ -331,7 +331,7 @@ export default function RevalidationSummary({
               
               <div className="mt-auto flex flex-col space-y-2">
                 <Button 
-                  className="bg-revalpro-blue hover:bg-revalpro-dark-blue"
+                  className="bg-gradient-to-r from-revalpro-blue to-revalpro-teal hover:from-revalpro-dark-blue hover:to-revalpro-blue"
                   onClick={handleDownloadSummaryReport}
                   disabled={isGenerating || isFreePlan}
                 >
@@ -355,7 +355,7 @@ export default function RevalidationSummary({
                   <Link href="/summary-infographic">
                     <Button 
                       variant="outline" 
-                      className="w-full text-revalpro-purple border-revalpro-purple hover:bg-revalpro-grey"
+                      className="w-full text-revalpro-orange border-revalpro-orange hover:bg-revalpro-orange/10"
                     >
                       <Download className="mr-2 h-4 w-4" />
                       Infographic

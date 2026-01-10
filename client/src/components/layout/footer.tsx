@@ -114,7 +114,7 @@ export default function Footer({ logo, className }: FooterProps) {
         </div>
         
         <div className="mt-8 pt-6 border-t border-revalpro-blue/30 text-center text-sm text-revalpro-white/80">
-          <p>© {new Date().getFullYear()} RevalPro. This app is not affiliated with the Nursing & Midwifery Council.</p>
+          <p>© {new Date().getFullYear()} RevalPro. Your Nursing Revalidation Assistant.</p>
         </div>
       </div>
     </footer>

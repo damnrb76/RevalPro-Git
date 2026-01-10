@@ -216,7 +216,7 @@ export default function SettingsPage() {
   return (
     <main className="container mx-auto px-4 py-6">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-nhs-black">Settings</h1>
+        <h1 className="text-2xl font-bold text-revalpro-black">Settings</h1>
         <p className="text-nhs-dark-grey">Manage your profile and application settings</p>
       </div>
       
@@ -233,7 +233,7 @@ export default function SettingsPage() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <User className="h-5 w-5 text-nhs-blue" />
+                <User className="h-5 w-5 text-revalpro-blue" />
                 User Profile
               </CardTitle>
               <CardDescription>

@@ -59,7 +59,7 @@ import ProminentHeader from "@/components/layout/prominent-header";
 
 
 // Import the logo
-import logo from "@assets/revalpro-logo-full.png";
+import logo from "/revalpro-logo-full.png";
 
 function AppRouter() {
   const [location] = useLocation();

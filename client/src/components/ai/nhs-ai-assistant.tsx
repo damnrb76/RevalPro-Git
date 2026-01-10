@@ -63,7 +63,7 @@ export default function NhsAiAssistant({
       setMessages([
         {
           role: "assistant",
-          content: "Hello! I'm your RevalPro AI assistant. I'm fully activated and ready to help with all your NMC revalidation questions. You can ask me about revalidation requirements, practice hours, CPD activities, reflective accounts, or any other part of the process. How can I help you today?",
+          content: "Hello! I'm your RevalPro AI assistant. I'm here to help you simplify your NMC revalidation journey. You can ask me about requirements, practice hours, CPD, reflections, or any other part of the process. How can I help you today?",
           timestamp: new Date()
         }
       ]);
@@ -186,7 +186,7 @@ export default function NhsAiAssistant({
       case 'reflection':
         return 'bg-gradient-to-br from-green-50/80 to-green-100/60';
       case 'cpd':
-        return 'bg-gradient-to-br from-purple-50/80 to-purple-100/60';
+        return 'bg-gradient-to-br from-orange-50/80 to-orange-100/60';
       default:
         return 'bg-gradient-to-br from-blue-50/80 to-blue-100/60';
     }
@@ -199,7 +199,7 @@ export default function NhsAiAssistant({
       case 'reflection':
         return 'bg-gradient-to-r from-green-600/90 via-green-500/70 to-green-700/90 pb-2';
       case 'cpd':
-        return 'bg-gradient-to-r from-purple-600/90 via-purple-500/70 to-purple-700/90 pb-2';
+        return 'bg-gradient-to-r from-orange-600/90 via-orange-500/70 to-orange-700/90 pb-2';
       default:
         return 'bg-gradient-to-r from-revalpro-blue/30 via-revalpro-teal/20 to-revalpro-purple/20 pb-2';
     }
@@ -251,7 +251,7 @@ export default function NhsAiAssistant({
                   {message.role === 'assistant' && (
                     <Avatar className="h-8 w-8 mt-1">
                       <AvatarImage src="/static/nhs-logo.svg" alt="NHS" />
-                      <AvatarFallback className="bg-revalpro-blue text-white">NHS</AvatarFallback>
+                      <AvatarFallback className="bg-revalpro-dark-blue text-white">NHS</AvatarFallback>
                     </Avatar>
                   )}
                   
@@ -281,7 +281,7 @@ export default function NhsAiAssistant({
                 <div className="flex gap-2 mb-3 items-start">
                   <Avatar className="h-8 w-8 mt-1">
                     <AvatarImage src="/static/nhs-logo.svg" alt="NHS" />
-                    <AvatarFallback className="bg-revalpro-blue text-white">NHS</AvatarFallback>
+                    <AvatarFallback className="bg-revalpro-dark-blue text-white">NHS</AvatarFallback>
                   </Avatar>
                   
                   <div className="rounded-lg p-3 bg-gray-100 text-gray-800 flex items-center">

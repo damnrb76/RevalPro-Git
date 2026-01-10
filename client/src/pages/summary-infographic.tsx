@@ -64,7 +64,7 @@ export default function SummaryInfographicPage() {
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
       // Add RevalPro header
-      ctx.fillStyle = '#2962ff'; // RevalPro blue
+      ctx.fillStyle = '#1FB6E1'; // RevalPro vibrant blue
       ctx.font = 'bold 32px Arial';
       ctx.textAlign = 'center';
       ctx.fillText('RevalPro', canvas.width / 2, 60);
@@ -110,7 +110,7 @@ export default function SummaryInfographicPage() {
       };
       
       // Progress indicators with actual data
-      drawProgressBar(220, 'Practice Hours (450+ required)', progress.practiceHours, '#2962ff');
+      drawProgressBar(220, 'Practice Hours (450+ required)', progress.practiceHours, '#1FB6E1');
       drawProgressBar(280, 'CPD Hours (35+ required)', progress.cpdHours, '#00b894');
       drawProgressBar(340, 'Feedback Records (5+ required)', progress.feedback, '#e84393');
       drawProgressBar(400, 'Reflective Accounts (5+ required)', progress.reflections, '#fd79a8');
@@ -261,7 +261,7 @@ export default function SummaryInfographicPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-revalpro-dark-blue">
-            Summary Infographic
+            <span className="gradient-text">Summary Infographic</span>
           </h1>
           <p className="text-gray-600 mt-2">
             Generate a visual summary of your revalidation progress

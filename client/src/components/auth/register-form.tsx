@@ -175,7 +175,7 @@ export default function RegisterForm() {
 
         <Button 
           type="submit" 
-          className="w-full bg-gradient-to-br from-revalpro-fuchsia to-revalpro-purple hover:from-revalpro-fuchsia/90 hover:to-revalpro-purple/90"
+          className="w-full bg-gradient-to-br from-revalpro-blue to-revalpro-teal hover:from-revalpro-dark-blue hover:to-revalpro-blue"
           disabled={registerMutation.isPending}
         >
           {registerMutation.isPending ? (

@@ -139,7 +139,7 @@ export default function AssistantDialog({ open, onOpenChange }: AssistantDialogP
         <DialogHeader>
           <DialogTitle className="flex items-center">
             <SparkleIcon className="h-5 w-5 mr-2 text-revalpro-orange" />
-            <span className="text-xl font-bold bg-gradient-to-r from-revalpro-blue to-revalpro-teal bg-clip-text text-transparent">
+            <span className="text-xl font-bold bg-gradient-to-r from-revalpro-blue via-revalpro-teal to-revalpro-orange bg-clip-text text-transparent">
               RevalPro AI Assistant
             </span>
           </DialogTitle>

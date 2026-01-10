@@ -102,8 +102,8 @@ export default function NavigationTabs({ currentPath, onSidebarToggle }: Navigat
           href: "/blog", 
           label: "Blog", 
           icon: <BookOpen size={16} />,
-          color: "bg-revalpro-fuchsia/20 text-revalpro-fuchsia",
-          hoverColor: "hover:bg-revalpro-fuchsia/30"
+          color: "bg-revalpro-orange/20 text-revalpro-orange",
+          hoverColor: "hover:bg-revalpro-orange/30"
         },
       ]
     },
@@ -117,8 +117,8 @@ export default function NavigationTabs({ currentPath, onSidebarToggle }: Navigat
           href: "/subscription", 
           label: "Subscription", 
           icon: <CreditCard size={16} />,
-          color: "bg-revalpro-fuchsia/20 text-revalpro-fuchsia",
-          hoverColor: "hover:bg-revalpro-fuchsia/30"
+          color: "bg-revalpro-orange/20 text-revalpro-orange",
+          hoverColor: "hover:bg-revalpro-orange/30"
         },
         { 
           href: "/settings", 
@@ -174,8 +174,8 @@ export default function NavigationTabs({ currentPath, onSidebarToggle }: Navigat
           href: "/declarations", 
           label: "Declarations", 
           icon: <ClipboardCheck size={16} />,
-          color: "bg-revalpro-fuchsia/20 text-revalpro-fuchsia",
-          hoverColor: "hover:bg-revalpro-fuchsia/30"
+          color: "bg-revalpro-orange/20 text-revalpro-orange",
+          hoverColor: "hover:bg-revalpro-orange/30"
         },
       ]
     },
@@ -219,15 +219,15 @@ export default function NavigationTabs({ currentPath, onSidebarToggle }: Navigat
     {
       label: "AI Assistant",
       icon: <Bot size={16} />,
-      color: "bg-gradient-to-r from-revalpro-purple/30 to-revalpro-fuchsia/30 text-revalpro-purple",
-      hoverColor: "hover:from-revalpro-purple/40 hover:to-revalpro-fuchsia/40",
+      color: "bg-gradient-to-r from-revalpro-blue/30 to-revalpro-teal/30 text-revalpro-blue",
+      hoverColor: "hover:from-revalpro-blue/40 hover:to-revalpro-teal/40",
       items: [
         { 
           href: "/ai-assistant", 
           label: "AI Helper", 
           icon: <HelpCircle size={16} />,
-          color: "bg-gradient-to-r from-revalpro-purple/30 to-revalpro-fuchsia/30 text-revalpro-purple font-semibold",
-          hoverColor: "hover:from-revalpro-purple/40 hover:to-revalpro-fuchsia/40"
+          color: "bg-gradient-to-r from-revalpro-blue/30 to-revalpro-teal/30 text-revalpro-blue font-semibold",
+          hoverColor: "hover:from-revalpro-blue/40 hover:to-revalpro-teal/40"
         },
       ]
     },
@@ -268,8 +268,8 @@ export default function NavigationTabs({ currentPath, onSidebarToggle }: Navigat
     href: "/dashboard", 
     label: "Dashboard", 
     icon: <LayoutDashboard size={16} />,
-    color: "bg-revalpro-pink/20 text-revalpro-pink",
-    hoverColor: "hover:bg-revalpro-pink/30" 
+    color: "bg-revalpro-blue/20 text-revalpro-blue",
+    hoverColor: "hover:bg-revalpro-blue/30" 
   };
 
 

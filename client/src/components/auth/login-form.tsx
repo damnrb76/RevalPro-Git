@@ -125,7 +125,7 @@ export default function LoginForm() {
 
         <Button 
           type="submit" 
-          className="w-full bg-gradient-to-br from-revalpro-blue to-revalpro-teal hover:from-revalpro-blue/90 hover:to-revalpro-teal/90"
+          className="w-full bg-gradient-to-br from-revalpro-blue to-revalpro-teal hover:from-revalpro-dark-blue hover:to-revalpro-blue"
           disabled={loginMutation.isPending}
         >
           {loginMutation.isPending ? (

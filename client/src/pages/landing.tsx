@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, Check, Shield, Clock, Award, BookOpen, Users, MessageSquare, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import logo from "@assets/Leonardo_Phoenix_10_design_a_vibrant_and_professional_logo_for_3.jpg";
+const logo = "/revalpro-logo-full.png";
 
 // Import app screenshots for the carousel
 import practiceHoursImg from "@assets/Screenshot_20250512_165421_Replit.jpg";
@@ -107,7 +107,7 @@ export default function LandingPage() {
             <a href="#pricing" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">Pricing</a>
             <Link href="/blog" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">Blog</Link>
             <Link href="/auth">
-              <Button className="glass bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white border-0 shadow-glow">
+              <Button className="glass bg-gradient-to-r from-revalpro-blue to-revalpro-teal hover:from-revalpro-dark-blue hover:to-revalpro-blue text-white border-0 shadow-glow">
                 Log In
               </Button>
             </Link>
@@ -128,7 +128,7 @@ export default function LandingPage() {
             transition={{ duration: 0.7, type: "spring" }}
           >
             <div className="glass-card p-10 glass-hover">
-              <div className="inline-block px-4 py-2 bg-gradient-to-r from-blue-100 to-cyan-100 rounded-full mb-6">
+              <div className="inline-block px-4 py-2 bg-gradient-to-r from-revalpro-blue/20 to-revalpro-teal/20 rounded-full mb-6">
                 <span className="text-blue-700 font-bold text-sm">🎯 Trusted by 1000+ UK Nurses</span>
               </div>
               <h2 className="text-5xl md:text-7xl font-black leading-[1.1] mb-8 tracking-tight">
@@ -139,7 +139,7 @@ export default function LandingPage() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link href="/auth">
-                  <Button size="lg" className="glass bg-gradient-to-r from-blue-600 via-cyan-600 to-blue-600 hover:from-blue-700 hover:via-cyan-700 hover:to-blue-700 text-white shadow-glow hover:shadow-3xl transition-all duration-500 w-full sm:w-auto text-lg px-10 py-7 rounded-2xl font-bold">
+                  <Button size="lg" className="glass bg-gradient-to-r from-revalpro-blue via-revalpro-teal to-revalpro-blue hover:from-revalpro-dark-blue hover:via-revalpro-blue hover:to-revalpro-dark-blue text-white shadow-glow hover:shadow-3xl transition-all duration-500 w-full sm:w-auto text-lg px-10 py-7 rounded-2xl font-bold">
                     Get Started Free <ArrowRight className="ml-3 h-6 w-6" />
                   </Button>
                 </Link>
@@ -170,7 +170,7 @@ export default function LandingPage() {
       
       {/* Features Section */}
       <section id="features" className="py-32 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-100/50 via-transparent to-cyan-100/50"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-revalpro-blue/10 via-transparent to-revalpro-teal/10"></div>
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-24">
             <motion.h2 
