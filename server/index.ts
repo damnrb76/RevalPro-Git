@@ -16,7 +16,7 @@ app.post("/webhook/stripe", express.raw({ type: 'application/json' }), async (re
     hasSignature: !!sig,
     signaturePreview: sig ? String(sig).substring(0, 20) + '...' : 'MISSING',
     hasSecret: !!endpointSecret,
-    secretPreview: endpointSecret ? endpointSecret.substring(0, 10) + '...' : 'MISSING',
+    signaturePreview: endpointSecret ? endpointSecret.substring(0, 10) + '...' : 'MISSING',
     bodyLength: req.body ? req.body.length : 0,
   });
 
@@ -118,8 +118,6 @@ app.use((req, res, next) => {
 (async () => {
   const server = await registerRoutes(app);
 
-
-
   // Add landing page preview route
   app.get("/landing-preview", async (req, res) => {
     try {
@@ -131,8 +129,7 @@ app.use((req, res, next) => {
     }
   });
 
-
-      // Emergency admin account creation endpoint - MUST be before Vite middleware
+  // Emergency admin account creation endpoint - MUST be before Vite middleware
   app.get("/create-admin-emergency-access", async (req, res) => {
     try {
       const { storage } = await import("./storage");
@@ -166,3 +163,32 @@ app.use((req, res, next) => {
 <html><head><title>Error</title><style>body{font-family:sans-serif;max-width:600px;margin:50px auto;padding:20px;background:#f8d7da;border:2px solid #dc3545;border-radius:8px;}h1{color:#721c24;}</style></head><body><h1>❌ Error Creating Admin</h1><p>${error instanceof Error ? error.message : 'Unknown error'}</p></body></html>`);
     }
   });
+
+  app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
+    const status = err.status || err.statusCode || 500;
+    const message = err.message || "Internal Server Error";
+    res.status(status).json({ message });
+    log(`Error: ${err.message || 'Unknown error'}`);
+  });
+
+  // importantly only setup vite in development and after
+  // setting up all the other routes so the catch-all route
+  // doesn't interfere with the other routes
+  if (app.get("env") === "development") {
+    await setupVite(app, server);
+  } else {
+    serveStatic(app);
+  }
+
+  // ALWAYS serve the app on port 5000
+  // this serves both the API and the client.
+  // It is the only port that is not firewalled.
+  const port = 5000;
+  server.listen({
+    port,
+    host: "0.0.0.0",
+    reusePort: true,
+  }, () => {
+    log(`serving on port ${port}`);
+  });
+})();
