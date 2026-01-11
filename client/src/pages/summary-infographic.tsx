@@ -6,6 +6,7 @@ import { toast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import type { UserProfile, PracticeHours, CpdRecord, FeedbackRecord, ReflectiveAccount, HealthDeclaration } from "@shared/schema";
 import { confirmationStorage } from "@/lib/storage";
+import { downloadRevalidationInfographic, generateInfographicCanvas, calculateProgress as calculateInfographicProgress } from "@/lib/infographic-generator";
 
 export default function SummaryInfographicPage() {
   const [previewImage, setPreviewImage] = useState<string>("");
@@ -47,104 +48,21 @@ export default function SummaryInfographicPage() {
     generatePreviewImage();
   }, [practiceHours, cpdRecords, feedbackRecords, reflectiveAccounts, healthDeclarations, confirmationCompleted]);
 
-  const generatePreviewImage = () => {
+  const generatePreviewImage = async () => {
     try {
-      // Create a canvas element for the preview
-      const canvas = document.createElement('canvas');
-      canvas.width = 800;
-      canvas.height = 1000;
-      const ctx = canvas.getContext('2d');
-      
-      if (!ctx) {
-        throw new Error('Canvas context not available');
-      }
-      
-      // Set white background
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      
-      // Add RevalPro header
-      ctx.fillStyle = '#1FB6E1'; // RevalPro vibrant blue
-      ctx.font = 'bold 32px Arial';
-      ctx.textAlign = 'center';
-      ctx.fillText('RevalPro', canvas.width / 2, 60);
-      
-      // Add subtitle
-      ctx.fillStyle = '#000000';
-      ctx.font = '24px Arial';
-      ctx.fillText('Revalidation Progress Summary', canvas.width / 2, 100);
-      
-      // Add nurse details with fallback
-      ctx.font = '18px Arial';
-      const profileName = userProfile?.name || 'Your Progress';
-      ctx.fillText(profileName, canvas.width / 2, 140);
-      const registrationStatus = userProfile?.registrationNumber 
-        ? `Registration: ${userProfile.registrationNumber}`
-        : 'Registration Status: Active';
-      ctx.fillText(registrationStatus, canvas.width / 2, 170);
-      
-      // Get actual progress values
-      const progress = calculateProgress();
-      
-      // Draw progress bars for canvas
-      const drawProgressBar = (y: number, label: string, progressValue: number, color: string) => {
-        // Background bar
-        ctx.fillStyle = '#e0e0e0';
-        ctx.fillRect(150, y, 500, 30);
-        
-        // Progress bar
-        ctx.fillStyle = color;
-        ctx.fillRect(150, y, (progressValue / 100) * 500, 30);
-        
-        // Label
-        ctx.fillStyle = '#000000';
-        ctx.font = '16px Arial';
-        ctx.textAlign = 'left';
-        ctx.fillText(label, 150, y - 10);
-        
-        // Percentage
-        ctx.textAlign = 'center';
-        ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 16px Arial';
-        ctx.fillText(`${progressValue}%`, 400, y + 20);
+      const summaryData = {
+        userProfile: userProfile || null,
+        practiceHours,
+        cpdRecords,
+        feedbackRecords,
+        reflectiveAccounts,
+        hasHealthDeclaration: healthDeclarations.length > 0,
+        hasConfirmation: confirmationCompleted,
+        lastUpdated: new Date()
       };
-      
-      // Progress indicators with actual data
-      drawProgressBar(220, 'Practice Hours (450+ required)', progress.practiceHours, '#1FB6E1');
-      drawProgressBar(280, 'CPD Hours (35+ required)', progress.cpdHours, '#00b894');
-      drawProgressBar(340, 'Feedback Records (5+ required)', progress.feedback, '#e84393');
-      drawProgressBar(400, 'Reflective Accounts (5+ required)', progress.reflections, '#fd79a8');
-      drawProgressBar(460, 'Health Declaration', progress.healthDeclaration, '#74b9ff');
-      drawProgressBar(520, 'Confirmation', progress.confirmation, '#a29bfe');
-      
-      // Add achievements section
-      ctx.fillStyle = '#000000';
-      ctx.font = 'bold 20px Arial';
-      ctx.textAlign = 'left';
-      ctx.fillText('Current Progress:', 150, 600);
-      
-      ctx.font = '16px Arial';
-      const totalPracticeHours = practiceHours.reduce((sum, record) => sum + record.hours, 0);
-      const totalCpdHours = cpdRecords.reduce((sum, record) => sum + record.hours, 0);
-      
-      const achievements = [
-        `${progress.practiceHours >= 100 ? '✓' : '○'} Practice Hours: ${totalPracticeHours}/450 hours`,
-        `${progress.cpdHours >= 100 ? '✓' : '○'} CPD Hours: ${totalCpdHours}/35 hours`,
-        `${progress.feedback >= 100 ? '✓' : '○'} Feedback Records: ${feedbackRecords.length}/5`,
-        `${progress.reflections >= 100 ? '✓' : '○'} Reflective Accounts: ${reflectiveAccounts.length}/5`,
-        `${progress.healthDeclaration >= 100 ? '✓' : '○'} Health Declaration`,
-        `${progress.confirmation >= 100 ? '✓' : '○'} Confirmation`
-      ];
-      
-      achievements.forEach((achievement, index) => {
-        ctx.fillText(achievement, 150, 640 + (index * 30));
-      });
-      
-      // Add footer
-      ctx.font = 'italic 14px Arial';
-      ctx.fillStyle = '#888888';
-      ctx.textAlign = 'center';
-      ctx.fillText('Generated by RevalPro - Your Nursing Revalidation Assistant', canvas.width / 2, 950);
+
+      const progress = calculateInfographicProgress(summaryData);
+      const canvas = await generateInfographicCanvas(summaryData, progress);
       
       // Convert canvas to image and set preview
       const imageDataUrl = canvas.toDataURL('image/png');
@@ -227,19 +145,20 @@ export default function SummaryInfographicPage() {
   };
 
   // Download as image
-  const handleImageDownload = () => {
+  const handleImageDownload = async () => {
     try {
-      if (!previewImage) {
-        generatePreviewImage();
-        return;
-      }
+      const summaryData = {
+        userProfile: userProfile || null,
+        practiceHours,
+        cpdRecords,
+        feedbackRecords,
+        reflectiveAccounts,
+        hasHealthDeclaration: healthDeclarations.length > 0,
+        hasConfirmation: confirmationCompleted,
+        lastUpdated: new Date()
+      };
 
-      const a = document.createElement("a");
-      a.href = previewImage;
-      a.download = "revalidation-infographic.png";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+      await downloadRevalidationInfographic(summaryData);
 
       toast({
         title: "Infographic Downloaded",
