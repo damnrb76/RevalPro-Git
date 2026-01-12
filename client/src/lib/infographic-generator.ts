@@ -154,8 +154,8 @@ export function generateInfographicCanvas(
     // Background and styling constants
     const COLORS = {
       background: '#ffffff',
-      primary: '#0072CE', // NHS Blue
-      secondary: '#41B6E6', // NHS Light Blue
+      primary: '#0ea5e9', // RevalPro Blue (Sky 500)
+      secondary: '#38bdf8', // RevalPro Light Blue (Sky 400)
       accent: '#AE2573', // NHS Purple
       green: '#007F3B', // NHS Green
       yellow: '#FFB81C', // NHS Yellow

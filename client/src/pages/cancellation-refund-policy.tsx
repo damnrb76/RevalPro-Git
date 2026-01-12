@@ -18,7 +18,7 @@ export default function CancellationRefundPolicy() {
         
         <div className="bg-white rounded-lg shadow-sm p-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-6">Cancellation and Refund Policy</h1>
-          <p className="text-sm text-gray-600 mb-8">Last updated: January 28, 2025</p>
+          <p className="text-sm text-gray-600 mb-8">Last updated: January 12, 2026</p>
 
           <div className="prose max-w-none">
             <h2 className="text-2xl font-semibold text-gray-800 mt-8 mb-4">1. Overview</h2>
@@ -33,7 +33,7 @@ export default function CancellationRefundPolicy() {
             <p className="mb-4">You can cancel your RevalPro subscription at any time through:</p>
             <ul className="list-disc pl-6 mb-4">
               <li>Your account settings within the RevalPro application</li>
-              <li>Contacting our support team at revalpro2025@gmail.com</li>
+              <li>Contacting our support team at support@revalpro.co.uk</li>
               <li>Following the cancellation link in your billing emails</li>
             </ul>
 
@@ -128,7 +128,7 @@ export default function CancellationRefundPolicy() {
             <h2 className="text-2xl font-semibold text-gray-800 mt-8 mb-4">6. Refund Process</h2>
             <h3 className="text-xl font-semibold text-gray-700 mt-6 mb-3">6.1 How to Request a Refund</h3>
             <ol className="list-decimal pl-6 mb-4">
-              <li>Contact our support team at revalpro2025@gmail.com</li>
+              <li>Contact our support team at support@revalpro.co.uk</li>
               <li>Include your account details and reason for refund request</li>
               <li>Provide any supporting documentation if applicable</li>
               <li>Allow up to 5 business days for initial review</li>
@@ -179,7 +179,7 @@ export default function CancellationRefundPolicy() {
 
             <h2 className="text-2xl font-semibold text-gray-800 mt-8 mb-4">9. Contact Information</h2>
             <p className="mb-4">For cancellation or refund requests:</p>
-            <p className="mb-2"><strong>Email:</strong> revalpro2025@gmail.com</p>
+            <p className="mb-2"><strong>Email:</strong> support@revalpro.co.uk</p>
             <p className="mb-2"><strong>Subject Line:</strong> "Cancellation Request" or "Refund Request"</p>
             <p className="mb-2"><strong>Response Time:</strong> Within 2 business days</p>
             <p className="mb-2"><strong>Website:</strong> revalpro.co.uk</p>

@@ -21,7 +21,7 @@ export default function VATInvoicingPolicy() {
             <Receipt className="h-8 w-8 mr-3 text-blue-600" />
             VAT and Invoicing Policy
           </h1>
-          <p className="text-sm text-gray-600 mb-8">Last updated: January 28, 2025</p>
+          <p className="text-sm text-gray-600 mb-8">Last updated: January 12, 2026</p>
 
           <div className="prose max-w-none">
             <h2 className="text-2xl font-semibold text-gray-800 mt-8 mb-4 flex items-center">
@@ -114,7 +114,7 @@ export default function VATInvoicingPolicy() {
               Please ensure your email settings allow emails from:
             </p>
             <ul className="list-disc pl-6 mb-4">
-              <li><strong>RevalPro:</strong> revalpro2025@gmail.com</li>
+              <li><strong>RevalPro:</strong> support@revalpro.co.uk</li>
               <li><strong>Stripe Billing:</strong> receipts@stripe.com</li>
               <li><strong>No-reply addresses:</strong> Various automated billing emails</li>
             </ul>
@@ -133,7 +133,7 @@ export default function VATInvoicingPolicy() {
             <ol className="list-decimal pl-6 mb-4">
               <li>Check your email spam/junk folder</li>
               <li>Verify your email address in account settings</li>
-              <li>Contact support at revalpro2025@gmail.com</li>
+              <li>Contact support at support@revalpro.co.uk</li>
               <li>Provide your subscription reference number</li>
             </ol>
 
@@ -220,7 +220,7 @@ export default function VATInvoicingPolicy() {
             <h3 className="text-xl font-semibold text-gray-700 mt-6 mb-3">6.1 Invoice Errors</h3>
             <p className="mb-4">If you notice an error on your invoice:</p>
             <ol className="list-decimal pl-6 mb-4">
-              <li>Contact support immediately at revalpro2025@gmail.com</li>
+              <li>Contact support immediately at support@revalpro.co.uk</li>
               <li>Include your invoice number and description of the error</li>
               <li>We will investigate and issue corrected invoices within 3 business days</li>
               <li>Refunds will be processed if overcharging occurred</li>
@@ -229,7 +229,7 @@ export default function VATInvoicingPolicy() {
             <h3 className="text-xl font-semibold text-gray-700 mt-6 mb-3">6.2 Billing Disputes</h3>
             <p className="mb-4">For billing disputes:</p>
             <ul className="list-disc pl-6 mb-4">
-              <li><strong>Direct Contact:</strong> Email revalpro2025@gmail.com with dispute details</li>
+              <li><strong>Direct Contact:</strong> Email support@revalpro.co.uk with dispute details</li>
               <li><strong>Documentation:</strong> Provide any supporting evidence or transaction references</li>
               <li><strong>Resolution Timeline:</strong> Most disputes resolved within 5 business days</li>
               <li><strong>Escalation:</strong> Contact your bank/card provider if internal resolution fails</li>
@@ -280,7 +280,7 @@ export default function VATInvoicingPolicy() {
             
             <div className="bg-gray-50 p-6 rounded-lg mb-6">
               <h3 className="font-semibold text-gray-700 mb-4">Invoice and VAT Inquiries</h3>
-              <p className="mb-2"><strong>Email:</strong> revalpro2025@gmail.com</p>
+              <p className="mb-2"><strong>Email:</strong> support@revalpro.co.uk</p>
               <p className="mb-2"><strong>Subject Line:</strong> "Invoice Inquiry" or "VAT Question"</p>
               <p className="mb-2"><strong>Response Time:</strong> Within 24 hours for invoice issues</p>
               <p className="mb-2"><strong>Phone:</strong> No phone support currently available</p>

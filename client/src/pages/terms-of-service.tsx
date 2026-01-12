@@ -12,7 +12,7 @@ export default function TermsOfService() {
         
         <div className="bg-white rounded-lg shadow-sm p-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-6">Terms of Service</h1>
-          <p className="text-sm text-gray-600 mb-8">Last updated: January 26, 2025</p>
+          <p className="text-sm text-gray-600 mb-8">Last updated: January 12, 2026</p>
 
           <div className="prose max-w-none">
             <h2 className="text-2xl font-semibold text-gray-800 mt-8 mb-4">1. Introduction and Acceptance</h2>
@@ -189,7 +189,7 @@ export default function TermsOfService() {
             <p className="mb-4">
               For questions about these Terms of Service, please contact us:
             </p>
-            <p className="mb-2"><strong>Email:</strong> revalpro2025@gmail.com</p>
+            <p className="mb-2"><strong>Email:</strong> support@revalpro.co.uk</p>
             <p className="mb-2"><strong>Website:</strong> revalpro.co.uk</p>
 
             <h2 className="text-2xl font-semibold text-gray-800 mt-8 mb-4">15. Severability</h2>

@@ -10,7 +10,7 @@ export default function PrivacyPolicyPage() {
       
       <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-6">Privacy Policy</h1>
-        <p className="text-sm text-gray-600 mb-8"><strong>Last updated: January 26, 2025</strong></p>
+        <p className="text-sm text-gray-600 mb-8"><strong>Last updated: January 12, 2026</strong></p>
 
         <div className="prose max-w-none">
           <h2 className="text-2xl font-semibold text-gray-800 mt-8 mb-4">1. Introduction</h2>
@@ -35,7 +35,7 @@ export default function PrivacyPolicyPage() {
           <h2 className="text-2xl font-semibold text-gray-800 mt-8 mb-4">2. Contact Information</h2>
           <p className="mb-4">
             <strong>Data Controller:</strong> RevalPro<br/>
-            <strong>Email:</strong> revalpro2025@gmail.com<br/>
+            <strong>Email:</strong> support@revalpro.co.uk<br/>
             <strong>Website:</strong> revalpro.co.uk
           </p>
           <p className="mb-4">
@@ -134,7 +134,7 @@ export default function PrivacyPolicyPage() {
             <li><strong>Right to Withdraw Consent:</strong> Withdraw consent for consent-based processing</li>
           </ul>
           <p className="mb-4">
-            To exercise any of these rights, contact us at revalpro2025@gmail.com.
+            To exercise any of these rights, contact us at support@revalpro.co.uk.
           </p>
 
           <h2 className="text-2xl font-semibold text-gray-800 mt-8 mb-4">8. Data Retention</h2>
@@ -159,7 +159,7 @@ export default function PrivacyPolicyPage() {
             If you have concerns about how we handle your data:
           </p>
           <p className="mb-4">
-            <strong>First:</strong> Contact us directly at revalpro2025@gmail.com<br/>
+            <strong>First:</strong> Contact us directly at support@revalpro.co.uk<br/>
             <strong>If unsatisfied:</strong> Contact the Information Commissioner's Office (ICO)
           </p>
           <p className="mb-4">
@@ -172,13 +172,13 @@ export default function PrivacyPolicyPage() {
           <hr className="my-8 border-gray-300" />
           
           <p className="text-sm text-gray-600 text-center">
-            This Privacy Policy is effective from January 26, 2025, and governs all data processing activities by RevalPro.
+            This Privacy Policy is effective from January 12, 2026, and governs all data processing activities by RevalPro.
           </p>
           <p className="text-sm text-gray-600 text-center mt-2">
             For the most current version of this policy, please visit: revalpro.co.uk/privacy
           </p>
           <p className="text-sm text-gray-600 text-center mt-2">
-            <strong>Contact us:</strong> revalpro2025@gmail.com for any questions about this Privacy Policy or our data practices.
+            <strong>Contact us:</strong> support@revalpro.co.uk for any questions about this Privacy Policy or our data practices.
           </p>
         </div>
       </div>
