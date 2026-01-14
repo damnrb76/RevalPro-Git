@@ -150,11 +150,11 @@ export default function LandingPage() {
       <header className="container mx-auto px-4 py-6 md:py-12">
         <nav className="glass-card px-6 py-4 flex justify-between items-center mb-16 glass-hover">
           <div className="flex items-center">
-            <img 
-              src={logo} 
-              alt="RevalPro Logo" 
-              className="h-14 w-auto" 
-            />
+              <img 
+                src={logo} 
+                alt="RevalPro Logo" 
+                className="h-20 w-auto" 
+              />
           </div>
           <div className="hidden md:flex items-center space-x-8">
             <a href="#features" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">Features</a>
