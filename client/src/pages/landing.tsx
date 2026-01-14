@@ -4,6 +4,8 @@ import { motion } from "framer-motion";
 import { ArrowRight, Check, Shield, Clock, Award, BookOpen, Users, MessageSquare, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 const logo = "/revalpro-logo-full.png";
 
 // Import app screenshots for the carousel
@@ -88,7 +90,60 @@ function DynamicScreenshotCarousel() {
 
 export default function LandingPage() {
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
+  const [isAnnual, setIsAnnual] = useState(false);
   
+  const plans = [
+    {
+      name: "Free",
+      price: "£0",
+      period: "forever",
+      description: "Basic features for individual nurses",
+      features: [
+        "Practice Hours Log",
+        "CPD Tracking (Limited)",
+        "NMC PIN Verification",
+        "Basic PDF Reports",
+        "Local Data Storage"
+      ],
+      ctaText: "Get Started",
+      recommended: false
+    },
+    {
+      name: "Standard",
+      price: isAnnual ? "£49.99" : "£4.99",
+      period: isAnnual ? "per year" : "per month",
+      description: "Everything you need for revalidation",
+      features: [
+        "All Free Features",
+        "Unlimited CPD Records",
+        "Reflective Accounts Templates",
+        "AI-Assisted Documentation",
+        "Priority Support",
+        "Enhanced PDF Reports"
+      ],
+      ctaText: "Subscribe Now",
+      recommended: true,
+      savings: isAnnual ? "Save £9.89/year" : null
+    },
+    {
+      name: "Premium",
+      price: isAnnual ? "£89.99" : "£9.99",
+      period: isAnnual ? "per year" : "per month",
+      description: "Advanced features for professional nurses",
+      features: [
+        "All Standard Features",
+        "Team Collaboration Tools",
+        "Portfolio Management",
+        "Advanced Analytics",
+        "Personalized Revalidation Coaching",
+        "Local-Only Evidence Storage"
+      ],
+      ctaText: "Go Premium",
+      recommended: false,
+      savings: isAnnual ? "Save £29.89/year" : null
+    }
+  ];
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
       {/* Hero Section */}
@@ -135,7 +190,7 @@ export default function LandingPage() {
                 Simplify Your <span className="gradient-text">NMC Revalidation</span> Journey
               </h2>
               <p className="text-xl md:text-2xl text-gray-700 mb-10 leading-relaxed font-medium">
-                Secure, easy to use and designed specifically for UK nurses. Track all your nursing revalidation requirements in one place.
+                100% Private, Local-Only Data. Designed specifically for UK nurses. Track all your nursing revalidation requirements in one place.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link href="/auth">
@@ -189,7 +244,7 @@ export default function LandingPage() {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
-              RevalPro streamlines your NMC revalidation process, ensuring you stay compliant with all requirements.
+              RevalPro streamlines your NMC revalidation process, ensuring you stay compliant with all requirements while keeping your data 100% private.
             </motion.p>
           </div>
           
@@ -228,91 +283,25 @@ export default function LandingPage() {
             ].map((feature, index) => (
               <motion.div 
                 key={index}
-                className="glass-card p-8 glass-hover group"
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
+                className="glass-card p-10 glass-hover"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: 0.1 * index, type: "spring" }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
               >
-                <div className="mb-6 p-4 bg-gradient-to-br from-blue-100 to-cyan-100 rounded-2xl inline-block shadow-lg group-hover:scale-110 transition-transform duration-300">{feature.icon}</div>
-                <h3 className="text-xl font-black mb-3 text-gray-800">{feature.title}</h3>
+                <div className="mb-6 p-4 bg-gray-50 rounded-2xl inline-block">{feature.icon}</div>
+                <h3 className="text-2xl font-bold mb-4 text-gray-900">{feature.title}</h3>
                 <p className="text-gray-600 leading-relaxed font-medium">{feature.description}</p>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
-      
-      {/* Testimonials */}
-      <section id="testimonials" className="py-24 bg-gradient-to-b from-gray-50 to-white">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-20">
-            <motion.h2 
-              className="text-3xl md:text-5xl font-extrabold mb-6 tracking-tight"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-            >
-              Trusted by UK Nurses
-            </motion.h2>
-            <motion.p 
-              className="text-xl text-gray-600 max-w-3xl mx-auto"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-            >
-              See what healthcare professionals are saying about RevalPro.
-            </motion.p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                quote: "RevalPro has completely transformed how I manage my revalidation. No more spreadsheets or paper forms!",
-                name: "Sarah Johnson",
-                title: "Registered Nurse, NHS"
-              },
-              {
-                quote: "The CPD tracking feature saves me so much time. I can easily categorize my learning and export it for submission.",
-                name: "Michael Chen",
-                title: "Nurse Practitioner"
-              },
-              {
-                quote: "I love the reflective account templates. They help me structure my thoughts in a way that meets NMC requirements.",
-                name: "Emma Williams",
-                title: "Midwife, Private Practice"
-              }
-            ].map((testimonial, index) => (
-              <motion.div 
-                key={index}
-                className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100 hover:shadow-xl transition-shadow duration-300"
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.3, delay: 0.1 * index }}
-              >
-                <div className="mb-6 text-gray-700 italic text-lg leading-relaxed">"{testimonial.quote}"</div>
-                <div className="flex items-center">
-                  <div className="h-12 w-12 rounded-full bg-gradient-to-r from-revalpro-blue to-revalpro-teal flex items-center justify-center text-white font-bold shadow-md">
-                    {testimonial.name.charAt(0)}
-                  </div>
-                  <div className="ml-4">
-                    <h4 className="font-bold text-gray-900">{testimonial.name}</h4>
-                    <p className="text-sm text-gray-600">{testimonial.title}</p>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-      
+
       {/* Pricing Section */}
       <section id="pricing" className="py-24 bg-gradient-to-b from-white to-gray-50">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-20">
+          <div className="text-center mb-12">
             <motion.h2 
               className="text-3xl md:text-5xl font-extrabold mb-6 tracking-tight"
               initial={{ opacity: 0, y: 20 }}
@@ -323,69 +312,35 @@ export default function LandingPage() {
               Simple, Transparent Pricing
             </motion.h2>
             <motion.p 
-              className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed"
+              className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed mb-8"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.1 }}
             >
-              Choose the plan that works for you. All plans include secure data storage.
+              Choose the plan that works for you. All plans feature 100% Local-Only Data Privacy.
             </motion.p>
+
+            {/* Billing Toggle */}
+            <div className="flex items-center justify-center space-x-4 mb-12">
+              <Label htmlFor="billing-toggle" className={`text-lg font-bold ${!isAnnual ? 'text-blue-600' : 'text-gray-500'}`}>Monthly</Label>
+              <Switch 
+                id="billing-toggle" 
+                checked={isAnnual} 
+                onCheckedChange={setIsAnnual}
+                className="data-[state=checked]:bg-revalpro-blue"
+              />
+              <Label htmlFor="billing-toggle" className={`text-lg font-bold ${isAnnual ? 'text-blue-600' : 'text-gray-500'}`}>
+                Annual <span className="ml-2 inline-block px-3 py-1 bg-green-100 text-green-700 text-xs rounded-full">Save up to £30</span>
+              </Label>
+            </div>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            {[
-              {
-                name: "Free",
-                price: "£0",
-                period: "forever",
-                description: "Basic features for individual nurses",
-                features: [
-                  "Practice Hours Log",
-                  "CPD Tracking (Limited)",
-                  "NMC PIN Verification",
-                  "Basic PDF Reports",
-                  "Local Data Storage"
-                ],
-                ctaText: "Get Started",
-                recommended: false
-              },
-              {
-                name: "Standard",
-                price: "£4.99",
-                period: "per month",
-                description: "Everything you need for revalidation",
-                features: [
-                  "All Free Features",
-                  "Unlimited CPD Records",
-                  "Reflective Accounts Templates",
-                  "AI-Assisted Documentation",
-                  "Priority Support",
-                  "Enhanced PDF Reports"
-                ],
-                ctaText: "Subscribe Now",
-                recommended: true
-              },
-              {
-                name: "Premium",
-                price: "£9.99",
-                period: "per month",
-                description: "Advanced features for professional nurses",
-                features: [
-                  "All Standard Features",
-                  "Team Collaboration Tools",
-                  "Portfolio Management",
-                  "Advanced Analytics",
-                  "Personalized Revalidation Coaching",
-                  "Unlimited Document Storage"
-                ],
-                ctaText: "Go Premium",
-                recommended: false
-              }
-            ].map((plan, index) => (
+            {plans.map((plan, index) => (
               <motion.div 
                 key={index}
-                className={`rounded-2xl overflow-hidden border ${
+                className={`rounded-2xl overflow-hidden border relative ${
                   plan.recommended 
                     ? "border-revalpro-teal shadow-2xl scale-105 ring-2 ring-revalpro-teal/20" 
                     : "border-gray-200 shadow-lg hover:shadow-xl transition-shadow duration-300"
@@ -402,10 +357,13 @@ export default function LandingPage() {
                 )}
                 <div className="p-8">
                   <h3 className="text-2xl font-extrabold mb-3">{plan.name}</h3>
-                  <div className="mb-6">
+                  <div className="mb-2">
                     <span className="text-5xl font-extrabold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">{plan.price}</span>
                     <span className="text-gray-500 text-lg">/{plan.period}</span>
                   </div>
+                  {plan.savings && (
+                    <div className="text-green-600 font-bold text-sm mb-4">{plan.savings}</div>
+                  )}
                   <p className="text-gray-600 mb-8 leading-relaxed">{plan.description}</p>
                   <hr className="my-8 border-gray-200" />
                   <ul className="mb-10 space-y-4">
@@ -448,7 +406,7 @@ export default function LandingPage() {
                 />
               </div>
               <p className="text-gray-400 mb-6">
-                The UK's leading NMC revalidation platform designed by nurses, for nurses.
+                The UK's leading NMC revalidation platform designed by nurses, for nurses. 100% Local-Only Data Privacy.
               </p>
             </div>
             <div>
@@ -463,17 +421,16 @@ export default function LandingPage() {
             <div>
               <h4 className="text-lg font-semibold mb-4">Resources</h4>
               <ul className="space-y-2">
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Blog</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Guides</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Support</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Terms of Service</a></li>
+                <li><Link href="/blog" className="text-gray-400 hover:text-white transition-colors">Blog</Link></li>
+                <li><Link href="/user-guide" className="text-gray-400 hover:text-white transition-colors">Guides</Link></li>
+                <li><a href="mailto:support@revalpro.co.uk" className="text-gray-400 hover:text-white transition-colors">Support</a></li>
+                <li><Link href="/terms" className="text-gray-400 hover:text-white transition-colors">Terms of Service</Link></li>
               </ul>
             </div>
             <div>
               <h4 className="text-lg font-semibold mb-4">Contact</h4>
               <ul className="space-y-2">
-                <li className="text-gray-400">support@revalpro.com</li>
-                <li className="text-gray-400">+44 20 1234 5678</li>
+                <li className="text-gray-400">support@revalpro.co.uk</li>
                 <li className="text-gray-400">London, United Kingdom</li>
               </ul>
               <div className="flex space-x-4 mt-4">
@@ -578,42 +535,6 @@ export default function LandingPage() {
                   <p className="text-gray-600 text-sm">Create structured reflective accounts using various nursing models. AI tools help you craft meaningful reflections based on your experiences.</p>
                 </div>
               </div>
-              
-              {/* Feedback Collection */}
-              <div className="bg-white rounded-lg shadow-md overflow-hidden">
-                <div className="aspect-video bg-gradient-to-br from-revalpro-purple/10 to-revalpro-blue/10 flex items-center justify-center p-8">
-                  <div className="text-6xl text-revalpro-purple/30">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4c0-1.1.9-2 2-2h8a2 2 0 0 1 2 2v5Z"/><path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"/></svg>
-                  </div>
-                </div>
-                <div className="p-4">
-                  <h4 className="font-bold text-lg mb-1">Feedback Collection</h4>
-                  <p className="text-gray-600 text-sm">Gather and organise practice-related feedback from patients, colleagues, and managers. Export collected feedback for your revalidation portfolio.</p>
-                </div>
-              </div>
-              
-              {/* NMC Verification */}
-              <div className="bg-white rounded-lg shadow-md overflow-hidden">
-                <div className="aspect-video bg-gradient-to-br from-revalpro-blue/10 to-revalpro-teal/10 flex items-center justify-center p-8">
-                  <div className="text-6xl text-revalpro-blue/30">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>
-                  </div>
-                </div>
-                <div className="p-4">
-                  <h4 className="font-bold text-lg mb-1">NMC Verification</h4>
-                  <p className="text-gray-600 text-sm">Check your NMC registration status and important revalidation dates. Receive timely notifications as your submission deadline approaches.</p>
-                </div>
-              </div>
-            </div>
-            
-            {/* Call to Action */}
-            <div className="mt-8 text-center">
-              <p className="text-gray-500 mb-4">Ready to experience these features yourself?</p>
-              <Link href="/auth">
-                <Button className="bg-gradient-to-r from-revalpro-blue to-revalpro-teal hover:from-revalpro-blue/90 hover:to-revalpro-teal/90 text-white">
-                  Get Started Free
-                </Button>
-              </Link>
             </div>
           </div>
         </DialogContent>
