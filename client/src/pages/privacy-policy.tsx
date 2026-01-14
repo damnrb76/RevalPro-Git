@@ -112,14 +112,18 @@ export default function PrivacyPolicyPage() {
             <li>Improve our services and user experience</li>
           </ul>
 
-          <h2 className="text-2xl font-semibold text-gray-800 mt-8 mb-4">6. Data Storage and Security</h2>
-          <p className="mb-4">We implement industry-standard security measures including:</p>
+          <h2 className="text-2xl font-semibold text-gray-800 mt-8 mb-4">6. Data Storage and Security (Local-First Privacy)</h2>
+          <p className="mb-4">
+            RevalPro is built with a <strong>Local-First Privacy</strong> model. This means that your professional revalidation data (reflective accounts, CPD records, practice hours, and evidence) is stored <strong>exclusively on your device</strong> using your browser's secure local storage (IndexedDB).
+          </p>
+          <p className="mb-4">
+            Key security features of our local-only model:
+          </p>
           <ul className="list-disc pl-6 mb-4">
-            <li>End-to-end encryption for all data transmission</li>
-            <li>Secure authentication and access controls</li>
-            <li>Regular security assessments and updates</li>
-            <li>Automated backup and recovery systems</li>
-            <li>Staff training on data protection requirements</li>
+            <li><strong>No Server-Side Storage:</strong> Your revalidation evidence is never uploaded to, or stored on, our servers.</li>
+            <li><strong>Full User Control:</strong> You have complete control over your data. If you clear your browser data or delete your account, your local records are removed.</li>
+            <li><strong>Secure Local Encryption:</strong> Data is stored securely within your browser's isolated environment.</li>
+            <li><strong>Manual Backups:</strong> Since we do not store your data, we provide tools for you to export and backup your own data to your preferred secure location.</li>
           </ul>
 
           <h2 className="text-2xl font-semibold text-gray-800 mt-8 mb-4">7. Your Rights Under UK GDPR</h2>

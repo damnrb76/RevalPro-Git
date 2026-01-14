@@ -82,7 +82,7 @@ export default function LaunchCountdown() {
     {
       icon: Shield,
       title: "Privacy & Security",
-      description: "Your data stays on your device. Generate NMC-compliant documentation when you're ready."
+      description: "100% Local-Only Privacy. Your data never leaves your device. Generate NMC-compliant documentation when you're ready."
     },
     {
       icon: Download,
@@ -472,7 +472,7 @@ export default function LaunchCountdown() {
 
           <div className="text-center mt-12">
             <p className="text-gray-300 mb-4">
-              All plans include secure local data storage and NMC-compliant document generation
+              All plans feature 100% Local-Only Data Privacy. Your data never leaves your device.
             </p>
             <p className="text-sm text-gray-400">
               Prices shown in GBP. Cancel anytime. No hidden fees.
@@ -569,7 +569,7 @@ export default function LaunchCountdown() {
           <div className="border-t border-gray-800 pt-8 mt-8 text-center">
             <p className="text-gray-400 text-sm">
               © 2025 RevalPro. All rights reserved. Not affiliated with the Nursing and Midwifery Council.
-              All information stored complies with UK GDPR regulations.
+              All data is stored locally on your device in compliance with UK GDPR regulations.
             </p>
           </div>
         </div>

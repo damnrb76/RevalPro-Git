@@ -344,7 +344,7 @@ export default function PricingPlans() {
 
       <div className="mt-16 text-center text-gray-500 text-sm">
         <p>
-          All plans include secure data storage and compliance with NHS data protection standards.
+          All plans feature <strong>Local-Only Data Privacy</strong>. Your revalidation data stays on your device and is never uploaded to our servers.
         </p>
         <p className="mt-2">
           Have questions? Contact us at <a href="mailto:support@revalpro.uk" className="text-blue-600 hover:underline">support@revalpro.uk</a>

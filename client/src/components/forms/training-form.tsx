@@ -328,7 +328,7 @@ export default function TrainingForm({ record, onSuccess }: TrainingFormProps) {
             />
           </div>
           <p className="text-xs text-gray-500">
-            Photos are stored securely on your device only and never uploaded to servers.
+            Photos and data are stored <strong>locally on your device only</strong> and are never uploaded to our servers.
           </p>
         </div>
 
