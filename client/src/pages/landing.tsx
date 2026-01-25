@@ -329,15 +329,15 @@ export default function LandingPage() {
             viewport={{ once: true }}
             transition={{ duration: 0.7 }}
           >
-            <div className="relative rounded-2xl overflow-hidden shadow-2xl">
-              <video 
-                controls 
-                className="w-full"
-                poster="/infographic-horizontal.png"
-              >
-                <source src="/revalpro-video.mp4" type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
+            <div className="relative rounded-2xl overflow-hidden shadow-2xl" style={{ paddingBottom: '56.25%', height: 0 }}>
+              <iframe
+                className="absolute top-0 left-0 w-full h-full"
+                src="https://www.youtube.com/embed/glsP-g2J__A"
+                title="RevalPro NMC Revalidation"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
             </div>
           </motion.div>
         </div>
