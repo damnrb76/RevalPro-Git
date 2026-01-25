@@ -297,8 +297,109 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
-
-      {/* Pricing Section */}
+      
+      {/* Video Section */}
+      <section className="py-24 bg-gradient-to-b from-gray-50 to-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <motion.h2 
+              className="text-4xl md:text-6xl font-black mb-8 tracking-tight gradient-text"
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, type: "spring" }}
+            >
+              See RevalPro in Action
+            </motion.h2>
+            <motion.p 
+              className="text-xl md:text-2xl text-gray-700 max-w-3xl mx-auto leading-relaxed font-medium mb-12"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              Watch our comprehensive guide to discover how RevalPro simplifies your NMC revalidation journey.
+            </motion.p>
+          </div>
+          
+          <motion.div 
+            className="max-w-5xl mx-auto glass-card p-4 shadow-glow"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+          >
+            <div className="relative rounded-2xl overflow-hidden shadow-2xl">
+              <video 
+                controls 
+                className="w-full"
+                poster="/infographic-horizontal.png"
+              >
+                <source src="/revalpro-video.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+      
+      {/* Infographics Section */}
+      <section className="py-24 bg-gradient-to-b from-white to-gray-50">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <motion.h2 
+              className="text-4xl md:text-6xl font-black mb-8 tracking-tight gradient-text"
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, type: "spring" }}
+            >
+              The RevalPro Difference
+            </motion.h2>
+            <motion.p 
+              className="text-xl md:text-2xl text-gray-700 max-w-3xl mx-auto leading-relaxed font-medium"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              From complex requirements to simple solutions - see how RevalPro transforms your revalidation experience.
+            </motion.p>
+          </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-7xl mx-auto">
+            <motion.div 
+              className="glass-card p-6 shadow-glow"
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7 }}
+            >
+              <img 
+                src="/infographic-vertical.png" 
+                alt="RevalPro - Your Stress-Free Path to NMC Revalidation" 
+                className="w-full rounded-xl shadow-lg"
+              />
+            </motion.div>
+            
+            <motion.div 
+              className="glass-card p-6 shadow-glow"
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7 }}
+            >
+              <img 
+                src="/infographic-horizontal.png" 
+                alt="RevalPro - Challenge vs Solution" 
+                className="w-full rounded-xl shadow-lg"
+              />
+            </motion.div>
+          </div>
+        </div>
+      </section>
+      
+      {/* Pricing Section */
       <section id="pricing" className="py-24 bg-gradient-to-b from-white to-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
