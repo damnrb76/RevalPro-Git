@@ -399,7 +399,7 @@ export default function LandingPage() {
         </div>
       </section>
       
-      {/* Pricing Section */
+      {/* Pricing Section */}
       <section id="pricing" className="py-24 bg-gradient-to-b from-white to-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">

@@ -8,7 +8,6 @@ import { formatDateFull } from "@/lib/date-utils";
 import { 
   downloadRevalidationPack, 
   downloadSpecificForm, 
-  downloadSummaryReport,
   downloadRawData 
 } from "@/lib/pdf-generator";
 import type { UserProfile } from "@shared/schema";
@@ -125,10 +124,10 @@ export default function RevalidationSummary({
     
     try {
       setIsGenerating(true);
-      await downloadSummaryReport();
+      await downloadRevalidationPack();
       toast({
         title: "Success",
-        description: "Summary report has been generated and downloaded.",
+        description: "Summary report (Complete Pack) has been generated and downloaded.",
       });
     } catch (error) {
       console.error("Failed to generate summary report:", error);

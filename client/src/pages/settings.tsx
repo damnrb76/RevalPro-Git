@@ -23,7 +23,7 @@ import {
   getSetting,
   setSetting
 } from "@/lib/storage";
-import { downloadRawData, downloadSummaryReport } from "@/lib/pdf-generator";
+import { downloadRawData, downloadRevalidationPack } from "@/lib/pdf-generator";
 import UserProfileForm from "@/components/forms/user-profile-form";
 import ProfileImageUploader from "@/components/profile/profile-image-uploader";
 import ColorPaletteSelector from "@/components/layout/color-palette-selector";
@@ -118,7 +118,7 @@ export default function SettingsPage() {
     }
     
     try {
-      await downloadSummaryReport();
+      await downloadRevalidationPack();
       toast({
         title: "Summary exported",
         description: "Your revalidation summary has been exported successfully.",

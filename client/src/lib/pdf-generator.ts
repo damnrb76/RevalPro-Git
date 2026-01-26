@@ -868,3 +868,29 @@ export async function downloadSpecificForm(formType: string): Promise<void> {
     throw error;
   }
 }
+
+/**
+ * Generate and download raw data as JSON
+ */
+export async function downloadRawData(): Promise<void> {
+  try {
+    const blob = await generateJsonExport();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    
+    a.href = url;
+    a.download = `revalpro-data-export-${formatDateShort(new Date()).replace(/\//g, '-')}.json`;
+    a.style.display = 'none';
+    
+    document.body.appendChild(a);
+    a.click();
+    
+    setTimeout(() => {
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }, 100);
+  } catch (error) {
+    console.error("Error downloading raw data:", error);
+    throw error;
+  }
+}
