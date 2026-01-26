@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { healthDeclarationStorage, confirmationStorage } from "@/lib/storage";
 import HealthCharacterForm from "@/components/forms/health-character-form";
+import ConfirmationForm from "@/components/forms/confirmation-form";
 import { formatDateShort } from "@/lib/date-utils";
 import type { HealthDeclaration, Confirmation } from "@shared/schema";
 
@@ -304,8 +305,14 @@ export default function DeclarationsPage() {
         />
       )}
       
-      {/* Confirmation Form Dialog 
-      Would normally be implemented but not included in this submission per task constraints */}
+      {/* Confirmation Form Dialog */}
+      {isConfirmationFormOpen && (
+        <ConfirmationForm 
+          initialData={confirmation as Confirmation}
+          onClose={handleConfirmationFormClose}
+          onSuccess={handleConfirmationFormSuccess}
+        />
+      )}
     </main>
   );
 }

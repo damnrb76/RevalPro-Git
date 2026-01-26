@@ -5,19 +5,50 @@ import { Download, FileText, Image } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import type { UserProfile, PracticeHours, CpdRecord, FeedbackRecord, ReflectiveAccount, HealthDeclaration } from "@shared/schema";
-import { confirmationStorage } from "@/lib/storage";
+import { 
+  userProfileStorage, 
+  practiceHoursStorage, 
+  cpdRecordsStorage, 
+  feedbackRecordsStorage, 
+  reflectiveAccountsStorage, 
+  healthDeclarationStorage,
+  confirmationStorage 
+} from "@/lib/storage";
 import { downloadRevalidationInfographic, generateInfographicCanvas, calculateProgress as calculateInfographicProgress } from "@/lib/infographic-generator";
 
 export default function SummaryInfographicPage() {
   const [previewImage, setPreviewImage] = useState<string>("");
 
-  // Fetch all necessary data
-  const { data: userProfile } = useQuery<UserProfile>({ queryKey: ['/api/user-profile'] });
-  const { data: practiceHours = [] } = useQuery<PracticeHours[]>({ queryKey: ['/api/practice-hours'] });
-  const { data: cpdRecords = [] } = useQuery<CpdRecord[]>({ queryKey: ['/api/cpd-records'] });
-  const { data: feedbackRecords = [] } = useQuery<FeedbackRecord[]>({ queryKey: ['/api/feedback-records'] });
-  const { data: reflectiveAccounts = [] } = useQuery<ReflectiveAccount[]>({ queryKey: ['/api/reflective-accounts'] });
-  const { data: healthDeclarations = [] } = useQuery<HealthDeclaration[]>({ queryKey: ['/api/health-declarations'] });
+  // Fetch all necessary data from local storage
+  const { data: userProfile } = useQuery({ 
+    queryKey: ['userProfile'],
+    queryFn: () => userProfileStorage.getCurrent()
+  });
+
+  const { data: practiceHours = [] } = useQuery({ 
+    queryKey: ['practiceHours'],
+    queryFn: () => practiceHoursStorage.getAll()
+  });
+
+  const { data: cpdRecords = [] } = useQuery({ 
+    queryKey: ['cpdRecords'],
+    queryFn: () => cpdRecordsStorage.getAll()
+  });
+
+  const { data: feedbackRecords = [] } = useQuery({ 
+    queryKey: ['feedbackRecords'],
+    queryFn: () => feedbackRecordsStorage.getAll()
+  });
+
+  const { data: reflectiveAccounts = [] } = useQuery({ 
+    queryKey: ['reflectiveAccounts'],
+    queryFn: () => reflectiveAccountsStorage.getAll()
+  });
+
+  const { data: healthDeclarations = [] } = useQuery({ 
+    queryKey: ['healthDeclarations'],
+    queryFn: () => healthDeclarationStorage.getAll()
+  });
   
   // Fetch confirmation data from IndexedDB
   const { data: confirmationCompleted = false } = useQuery({
