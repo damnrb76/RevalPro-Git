@@ -73,7 +73,7 @@ const scryptAsync = promisify(scrypt);
 
 // Initialize Stripe for webhook handling
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-08-27.basil',
+  apiVersion: '2023-10-16' as any,
 });
 
 // Secure password hashing function for regular user accounts
@@ -1003,21 +1003,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "lookupKey is required" });
       }
 
-      // Map lookup key to actual price ID (test/live Stripe prices)
-      const lookupToPriceId: Record<string, string> = {
-        'standard_monthly_gbp': 'price_1RjnEzApgglLl36MNDNsVpIo',
-        'standard_annual_gbp': 'price_1RjnBeApgglLl36MFKY5oFAq',
-        'premium_monthly_gbp': 'price_1RjnPAApgglLl36MBzM1EdZ7',
-        'premium_annual_gbp': 'price_1RjnKyApgglLl36MueJyRm68'
+      // Use the centralized PLAN_DETAILS to get the correct price ID
+      const lookupKeyToPriceId: Record<string, string> = {
+        'standard_monthly_gbp': PLAN_DETAILS.standard.stripePriceId.monthly || '',
+        'standard_annual_gbp': PLAN_DETAILS.standard.stripePriceId.annual || '',
+        'premium_monthly_gbp': PLAN_DETAILS.premium.stripePriceId.monthly || '',
+        'premium_annual_gbp': PLAN_DETAILS.premium.stripePriceId.annual || ''
       };
-      
-      const priceId = lookupToPriceId[lookupKey];
-      if (!priceId) {
-        return res.status(400).json({ error: "Invalid lookup key" });
-      }
 
+      const priceId = lookupKeyToPriceId[lookupKey] || lookupKey;
+      
       const session = await createCheckoutSession({
-        lookupKey: priceId, // Use actual price ID instead of lookup key
+        lookupKey: priceId,
         userId: user.id,
         customerEmail: user.email || `user${user.id}@revalpro.co.uk`,
       });
