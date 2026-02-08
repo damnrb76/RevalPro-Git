@@ -98,9 +98,14 @@ export default function CheckoutPage({ planId, period }: CheckoutPageProps) {
     if (subscriptionData?.clientSecret) {
       setClientSecret(subscriptionData.clientSecret);
     }
-    // Redirect to success for free plan, successful development mode simulation, or subscription upgrades
-    if (subscriptionData?.success && (subscriptionData?.plan === 'free' || subscriptionData?.message || subscriptionData?.upgraded)) {
+    // Redirect to success for free plan, successful development mode simulation, subscription upgrades, or immediate activation (trials)
+    if (subscriptionData?.success || (subscriptionData?.status === 'active' || subscriptionData?.status === 'trialing')) {
       setLocation('/subscription/success?plan=' + actualPlanId + '&period=' + actualPeriod);
+    }
+    
+    // If we have a subscription but no client secret and it's not active/trialing, something is wrong
+    if (subscriptionData && !subscriptionData.clientSecret && subscriptionData.status === 'incomplete') {
+      setError("Unable to initialize payment. Please try again or contact support.");
     }
   }, [subscriptionData, setLocation, actualPlanId, actualPeriod]);
 

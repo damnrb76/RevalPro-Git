@@ -86,8 +86,8 @@ export const PLAN_DETAILS: Record<SubscriptionPlan, PlanDetails> = {
     },
     stripePriceId: {
       // LIVE MODE - Production price IDs
-      monthly: "price_1RjnEzApgglLl36MNDNsVpIo",
-      annual: "price_1RjnBeApgglLl36MFKY5oFAq",
+      monthly: "price_1RXVwJApgglLl36M6hRdROQU",
+      annual: "price_1S0oveApgglLl36M6U2t0byU",
     },
     lookupKeys: {
       monthly: "standard_monthly_gbp",

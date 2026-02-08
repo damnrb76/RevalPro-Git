@@ -164,6 +164,16 @@ export async function createSubscription({ customerId, priceId, userId }: Create
     const invoice = subscription.latest_invoice as Stripe.Invoice;
     let paymentIntent: Stripe.PaymentIntent | null = null;
     
+    // If subscription is active or trialing immediately (no payment needed), return success
+    if (subscription.status === 'active' || subscription.status === 'trialing') {
+      return {
+        subscriptionId: subscription.id,
+        clientSecret: null,
+        status: subscription.status,
+        success: true // Explicitly mark as success to skip payment flow
+      };
+    }
+
     if (invoice && 'payment_intent' in invoice && invoice.payment_intent) {
       if (typeof invoice.payment_intent === 'string') {
         paymentIntent = await stripe.paymentIntents.retrieve(invoice.payment_intent);
@@ -175,6 +185,7 @@ export async function createSubscription({ customerId, priceId, userId }: Create
     return {
       subscriptionId: subscription.id,
       clientSecret: paymentIntent?.client_secret || null,
+      status: subscription.status,
     };
   } catch (error) {
     console.error('Error creating Stripe subscription:', error);
