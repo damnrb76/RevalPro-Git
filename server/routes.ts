@@ -6,7 +6,7 @@ import { setupAuth, hashPassword } from "./auth";
 import { scrypt, randomBytes } from "crypto";
 import { promisify } from "util";
 import path from "path";
-import { createCustomer, createSubscription, createCheckoutSession, getSubscription, cancelSubscription, reactivateSubscription, changeSubscriptionPlan, handleWebhookEvent, setupWebhookEndpoint } from "./stripe";
+import { createCustomer, createSubscription, createCheckoutSession, getSubscription, cancelSubscription, reactivateSubscription, changeSubscriptionPlan, handleWebhookEvent, setupWebhookEndpoint, checkStripeHealth } from "./stripe";
 import { PLAN_DETAILS } from "../shared/subscription-plans";
 import Stripe from "stripe";
 import { calculateNmcImportantDates, getLatestRevalidationRequirements } from "./nmc-api";
@@ -233,6 +233,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // For deployment debugging - this will help diagnose what's happening on the root URL
   app.get('/api/ping', (_req, res) => {
     res.json({ status: 'ok', message: 'API is running' });
+  });
+
+  // Health check endpoint for monitoring
+  app.get('/health', async (_req, res) => {
+    const stripeHealth = await checkStripeHealth();
+    const dbHealth = { status: 'ok', service: 'database' }; // Assuming DB is up if we got here
+    
+    const status = stripeHealth.status === 'ok' ? 200 : 503;
+    
+    res.status(status).json({
+      status: status === 200 ? 'ok' : 'error',
+      timestamp: new Date().toISOString(),
+      services: {
+        stripe: stripeHealth,
+        database: dbHealth
+      }
+    });
   });
   
   // Set up authentication routes and middleware

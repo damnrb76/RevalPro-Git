@@ -51,6 +51,7 @@ import UserGuidePage from "@/pages/user-guide";
 import ProfileSetupPage from "@/pages/profile-setup";
 import BlogListing from "@/pages/blog-listing";
 import BlogPostPage from "@/pages/blog-post";
+import Quiz from "@/pages/Quiz";
 import BlogManagement from "@/pages/admin/blog-management";
 
 import Footer from "@/components/layout/footer";
@@ -173,6 +174,9 @@ function AppRouter() {
           
           {/* Launch Countdown Page */}
           <Route path="/launch-countdown" component={LaunchCountdown} />
+          
+          {/* Quiz Route - Public access */}
+          <Route path="/quiz" component={Quiz} />
           
           {/* Blog Routes - Public access */}
           <Route path="/blog" component={BlogListing} />

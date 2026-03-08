@@ -614,3 +614,18 @@ export async function handleWebhookEvent(event: Stripe.Event) {
     throw error;
   }
 }
+// Health check for Stripe connection
+export async function checkStripeHealth() {
+  try {
+    // Simple call to list 1 customer to verify API key and connection
+    await stripe.customers.list({ limit: 1 });
+    return { status: 'ok', service: 'stripe' };
+  } catch (error: any) {
+    console.error('Stripe health check failed:', error);
+    return { 
+      status: 'error', 
+      service: 'stripe', 
+      message: error.message 
+    };
+  }
+}
