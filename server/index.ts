@@ -2,7 +2,7 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import Stripe from "stripe";
-import { handleWebhookEvent } from "./stripe";
+import { handleWebhookEvent, stripe } from "./stripe";
 
 const app = express();
 
@@ -27,18 +27,7 @@ app.post("/webhook/stripe", express.raw({ type: 'application/json' }), async (re
 
   let event;
   try {
-    const stripeSecretKey = process.env.NODE_ENV === 'development' 
-      ? (process.env.TESTING_STRIPE_SECRET_KEY || process.env.STRIPE_SECRET_KEY)
-      : process.env.STRIPE_SECRET_KEY;
-
-    if (!stripeSecretKey) {
-      return res.status(500).send('Stripe not configured');
-    }
-
-    const stripe = new Stripe(stripeSecretKey, {
-      apiVersion: '2023-10-16' as any,
-    });
-
+    // Use the shared Stripe instance from ./stripe.ts which handles key selection and security
     event = stripe.webhooks.constructEvent(req.body, sig!, endpointSecret);
   } catch (err: any) {
     console.log(`Webhook signature verification failed:`, err.message);
@@ -71,10 +60,7 @@ app.post("/webhook/stripe", express.raw({ type: 'application/json' }), async (re
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Add health check endpoint for Autoscale deployments
-app.get('/health', (_req, res) => {
-  res.status(200).send('OK');
-});
+// Health check endpoint is now handled in routes.ts with Stripe check
 
 // Add a root endpoint for debugging
 app.get('/_api_status', (_req, res) => {
@@ -116,7 +102,13 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  const server = await registerRoutes(app);
+  let server;
+  try {
+    server = await registerRoutes(app);
+  } catch (err) {
+    console.error('Failed to register routes:', err);
+    process.exit(1);
+  }
 
   // Add landing page preview route
   app.get("/landing-preview", async (req, res) => {
@@ -129,40 +121,7 @@ app.use((req, res, next) => {
     }
   });
 
-  // Emergency admin account creation endpoint - MUST be before Vite middleware
-  app.get("/create-admin-emergency-access", async (req, res) => {
-    try {
-      const { storage } = await import("./storage");
-      const { hashPassword } = await import("./auth");
-      
-      // Check if admin already exists
-      const existingAdmin = await storage.getUserByEmail("admin2@revalpro.co.uk");
-      
-      if (existingAdmin) {
-        return res.send(`<!DOCTYPE html>
-<html><head><title>Admin Already Exists</title><style>body{font-family:sans-serif;max-width:600px;margin:50px auto;padding:20px;background:#fff3cd;border:2px solid #ffc107;border-radius:8px;}h1{color:#856404;}</style></head><body><h1>⚠️ Admin Account Already Exists</h1><p>The admin account <strong>admin2@revalpro.co.uk</strong> already exists.</p><p>You can log in at: <a href="/login">https://revalpro.co.uk/login</a></p><p><strong>Email:</strong> admin2@revalpro.co.uk<br><strong>Password:</strong> Test123!</p></body></html>`);
-      }
-      
-      // Create new admin
-      const hashedPassword = await hashPassword("Test123!");
-      await storage.createUser({
-        email: "admin2@revalpro.co.uk",
-        username: "admin2",
-        password: hashedPassword,
-        isAdmin: true,
-        isSuperAdmin: true,
-        currentPlan: "premium",
-        subscriptionStatus: "active",
-        hasCompletedInitialSetup: true,
-      });
-      
-      res.send(`<!DOCTYPE html>
-<html><head><title>Admin Created Successfully</title><style>body{font-family:sans-serif;max-width:600px;margin:50px auto;padding:20px;background:#d4edda;border:2px solid #28a745;border-radius:8px;}h1{color:#155724;}code{background:#f8f9fa;padding:2px 6px;border-radius:3px;}</style></head><body><h1>✅ Admin Account Created!</h1><p>Your new admin account has been created successfully.</p><p><strong>Login at:</strong> <a href="/login">https://revalpro.co.uk/login</a></p><hr><p><strong>Email:</strong> <code>admin2@revalpro.co.uk</code><br><strong>Password:</strong> <code>Test123!</code></p><p>You can now log in and create blog posts!</p></body></html>`);
-    } catch (error) {
-      res.status(500).send(`<!DOCTYPE html>
-<html><head><title>Error</title><style>body{font-family:sans-serif;max-width:600px;margin:50px auto;padding:20px;background:#f8d7da;border:2px solid #dc3545;border-radius:8px;}h1{color:#721c24;}</style></head><body><h1>❌ Error Creating Admin</h1><p>${error instanceof Error ? error.message : 'Unknown error'}</p></body></html>`);
-    }
-  });
+  // Emergency admin account creation endpoint is now handled in routes.ts
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;

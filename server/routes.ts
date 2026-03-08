@@ -6,7 +6,7 @@ import { setupAuth, hashPassword } from "./auth";
 import { scrypt, randomBytes } from "crypto";
 import { promisify } from "util";
 import path from "path";
-import { createCustomer, createSubscription, createCheckoutSession, getSubscription, cancelSubscription, reactivateSubscription, changeSubscriptionPlan, handleWebhookEvent, setupWebhookEndpoint, checkStripeHealth } from "./stripe";
+import { createCustomer, createSubscription, createCheckoutSession, getSubscription, cancelSubscription, reactivateSubscription, changeSubscriptionPlan, handleWebhookEvent, setupWebhookEndpoint, checkStripeHealth, stripe } from "./stripe";
 import { PLAN_DETAILS } from "../shared/subscription-plans";
 import Stripe from "stripe";
 import { calculateNmcImportantDates, getLatestRevalidationRequirements } from "./nmc-api";
@@ -71,10 +71,7 @@ async function sendPasswordResetEmail(email: string, resetUrl: string): Promise<
 
 const scryptAsync = promisify(scrypt);
 
-// Initialize Stripe for webhook handling
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2023-10-16' as any,
-});
+// Stripe is initialized in ./stripe.ts and imported above
 
 // Secure password hashing function for regular user accounts
 async function hashPasswordSecure(password: string) {
