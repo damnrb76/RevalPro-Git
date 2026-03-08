@@ -92,12 +92,12 @@ export interface IStorage {
   updateUserPassword(userId: number, hashedPassword: string): Promise<User>;
   
   // Blog methods
-  getAllBlogPosts(publishedOnly?: boolean): Promise<BlogPost[]>;
-  getBlogPostBySlug(slug: string): Promise<BlogPost | null>;
+  getAllBlogPosts(publishedOnly?: boolean): Promise<BlogPost[]>;  getBlogPostBySlug(slug: string): Promise<BlogPost | null>;
   getBlogPost(id: number): Promise<BlogPost | null>;
   createBlogPost(post: InsertBlogPost): Promise<BlogPost>;
   updateBlogPost(id: number, post: Partial<InsertBlogPost>): Promise<BlogPost>;
   deleteBlogPost(id: number): Promise<boolean>;
+  checkHealth(): Promise<boolean>;
   getBlogPostsByCategory(category: string, publishedOnly?: boolean): Promise<BlogPost[]>;
   
   sessionStore: session.Store;
@@ -632,6 +632,10 @@ export class MemStorage implements IStorage {
 
   async getBlogPostsByCategory(_category: string, _publishedOnly: boolean = false): Promise<BlogPost[]> {
     throw new Error("Blog posts not supported in MemStorage");
+  }
+
+  async checkHealth(): Promise<boolean> {
+    return true;
   }
 }
 
@@ -1183,6 +1187,17 @@ export class DatabaseStorage implements IStorage {
   async deleteBlogPost(id: number): Promise<boolean> {
     await db.delete(blogPosts).where(eq(blogPosts.id, id));
     return true;
+  }
+
+  async checkHealth(): Promise<boolean> {
+    try {
+      // Simple query to check connection
+      await db.select({ id: users.id }).from(users).limit(1);
+      return true;
+    } catch (error) {
+      console.error("Database health check failed:", error);
+      return false;
+    }
   }
 
   async getBlogPostsByCategory(category: string, publishedOnly: boolean = false): Promise<BlogPost[]> {

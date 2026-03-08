@@ -235,20 +235,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Health check endpoint for monitoring
   app.get('/health', async (_req, res) => {
     const stripeHealth = await checkStripeHealth();
-    const dbHealth = { status: 'ok', service: 'database' }; // Assuming DB is up if we got here
     
-    const status = stripeHealth.status === 'ok' ? 200 : 503;
+    let dbStatus = 'unknown';
+    try {
+      const isDbHealthy = await storage.checkHealth();
+      dbStatus = isDbHealthy ? 'ok' : 'error';
+    } catch (err) {
+      dbStatus = 'error';
+    }
+    
+    const dbHealth = { status: dbStatus, service: 'database' };
+    
+    // Only fail health check if DB is down (critical)
+    // Stripe being down is bad but site can still function for non-payment features
+    const status = dbStatus === 'ok' ? 200 : 503;
     
     res.status(status).json({
       status: status === 200 ? 'ok' : 'error',
       timestamp: new Date().toISOString(),
+      
       services: {
         stripe: stripeHealth,
         database: dbHealth
       }
     });
   });
-  
+
   // Set up authentication routes and middleware
   setupAuth(app);
 
