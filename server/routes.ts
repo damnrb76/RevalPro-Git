@@ -69,6 +69,66 @@ async function sendPasswordResetEmail(email: string, resetUrl: string): Promise<
   }
 }
 
+// Email service for quiz results
+async function sendQuizResultEmail(email: string, score: number, resultTitle: string, actionPlan: string): Promise<void> {
+  // Check if we have SendGrid configured
+  if (process.env.SENDGRID_API_KEY) {
+    try {
+      const sgMail = await import('@sendgrid/mail');
+      sgMail.default.setApiKey(process.env.SENDGRID_API_KEY);
+      
+      await sgMail.default.send({
+        to: email,
+        from: 'noreply@revalpro.co.uk', // This should be a verified sender domain
+        subject: 'Your Revalidation Readiness Score',
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <h2 style="color: #2563eb;">Your Revalidation Score: ${score}/50</h2>
+            <h3 style="color: #1e40af;">Status: ${resultTitle}</h3>
+            <p>Thank you for taking the Revalidation Readiness Quiz.</p>
+            
+            <div style="background-color: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
+              <h4 style="margin-top: 0;">Your Action Plan:</h4>
+              <p>${actionPlan}</p>
+            </div>
+            
+            <p>To help you get ready, we're offering you a <strong>10% discount</strong> on RevalPro Premium.</p>
+            <p>Use code: <strong>READY10</strong> at checkout.</p>
+            
+            <a href="https://revalpro.co.uk/pricing" style="display: inline-block; background-color: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; margin: 16px 0;">Get Started Now</a>
+            
+            <hr style="margin: 24px 0; border: none; border-top: 1px solid #e5e7eb;">
+            <p style="color: #6b7280; font-size: 14px;">This email was sent by RevalPro - UK Nursing Revalidation Platform</p>
+          </div>
+        `,
+        text: `
+          Your Revalidation Score: ${score}/50
+          Status: ${resultTitle}
+          
+          Thank you for taking the Revalidation Readiness Quiz.
+          
+          Your Action Plan:
+          ${actionPlan}
+          
+          To help you get ready, we're offering you a 10% discount on RevalPro Premium.
+          Use code: READY10 at checkout.
+          
+          Get Started Now: https://revalpro.co.uk/pricing
+        `
+      });
+      console.log(`Quiz result email sent to: ${email}`);
+    } catch (error) {
+      console.error('Error sending email via SendGrid:', error);
+      // Don't throw, just log error so user flow isn't broken
+    }
+  } else {
+    // Fallback: log to console
+    console.log('Quiz result email would be sent to:', email);
+    console.log('Score:', score);
+    console.log('SendGrid not configured - email not actually sent');
+  }
+}
+
 const scryptAsync = promisify(scrypt);
 
 // Stripe is initialized in ./stripe.ts and imported above
@@ -230,6 +290,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // For deployment debugging - this will help diagnose what's happening on the root URL
   app.get('/api/ping', (_req, res) => {
     res.json({ status: 'ok', message: 'API is running' });
+  });
+
+  // Quiz submission endpoint
+  app.post('/api/quiz-submission', async (req, res) => {
+    try {
+      const { email, score, resultTitle, actionPlan } = req.body;
+      
+      if (!email) {
+        return res.status(400).json({ error: "Email is required" });
+      }
+      
+      // Send email (fire and forget to not block response)
+      sendQuizResultEmail(email, score, resultTitle, actionPlan).catch(err => 
+        console.error("Failed to send quiz email:", err)
+      );
+      
+      // Here you could also save the lead to the database if you had a leads table
+      // For now, we'll just log it
+      console.log(`Lead captured: ${email}, Score: ${score}`);
+      
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error processing quiz submission:", error);
+      res.status(500).json({ error: "Failed to process submission" });
+    }
   });
 
   // Health check endpoint for monitoring

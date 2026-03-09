@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { useLocation } from 'wouter';
+import { useMutation } from '@tanstack/react-query';
+import { apiRequest } from '@/lib/queryClient';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { CheckCircle2, AlertTriangle, XCircle, ArrowRight, ArrowLeft } from 'lucide-react';
+import { CheckCircle2, AlertTriangle, XCircle, ArrowRight, ArrowLeft, Loader2 } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 const questions = [
   {
@@ -64,6 +67,7 @@ export default function Quiz() {
   const [showResults, setShowResults] = useState(false);
   const [email, setEmail] = useState('');
   const [, setLocation] = useLocation();
+  const { toast } = useToast();
 
   const handleAnswer = (score: number) => {
     const newAnswers = [...answers, score];
@@ -110,12 +114,54 @@ export default function Quiz() {
 
   const result = showResults ? getResult() : null;
 
+  const submitQuizMutation = useMutation({
+    mutationFn: async (data: { email: string; score: number; resultTitle: string; actionPlan: string }) => {
+      await apiRequest('POST', '/api/quiz-submission', data);
+    },
+    onSuccess: () => {
+      toast({
+        title: "Success!",
+        description: "Your results have been emailed to you.",
+      });
+      // Redirect to signup page with email pre-filled
+      setLocation('/auth?signup=true&email=' + encodeURIComponent(email));
+    },
+    onError: (error) => {
+      console.error("Quiz submission error:", error);
+      toast({
+        title: "Error",
+        description: "Failed to send results. Please try again.",
+        variant: "destructive",
+      });
+      // Still redirect on error so user isn't stuck
+      setTimeout(() => {
+        setLocation('/auth?signup=true&email=' + encodeURIComponent(email));
+      }, 2000);
+    }
+  });
+
   const handleEmailSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would typically send the email to your backend/Mailchimp
-    console.log("Lead captured:", email, "Score:", calculateTotalScore());
-    // Redirect to a thank you page or dashboard
-    setLocation('/auth?signup=true&email=' + encodeURIComponent(email));
+    if (!result) return;
+
+    const score = calculateTotalScore();
+    
+    // Generate a detailed action plan based on the result
+    let actionPlan = "";
+    if (score >= 45) {
+      actionPlan = "1. Verify your confirmation date.\n2. Upload your final reflections.\n3. Submit your application on NMC Online.";
+    } else if (score >= 30) {
+      actionPlan = "1. Check your practice hours log.\n2. Draft your remaining reflections.\n3. Schedule your confirmation meeting immediately.";
+    } else {
+      actionPlan = "1. Contact your manager immediately about your revalidation date.\n2. Start logging practice hours today.\n3. Use RevalPro templates to quickly generate reflections.";
+    }
+
+    submitQuizMutation.mutate({
+      email,
+      score,
+      resultTitle: result.title,
+      actionPlan: result.description + "\n\nRecommended Steps:\n" + actionPlan
+    });
   };
 
   return (
@@ -193,8 +239,12 @@ export default function Quiz() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                   />
-                  <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white">
-                    Send My Plan <ArrowRight className="w-4 h-4 ml-2" />
+                  <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white" disabled={submitQuizMutation.isPending}>
+                    {submitQuizMutation.isPending ? (
+                      <>Sending... <Loader2 className="w-4 h-4 ml-2 animate-spin" /></>
+                    ) : (
+                      <>Send My Plan <ArrowRight className="w-4 h-4 ml-2" /></>
+                    )}
                   </Button>
                 </form>
                 <p className="text-xs text-blue-400 mt-3">
