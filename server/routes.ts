@@ -292,6 +292,54 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json({ status: 'ok', message: 'API is running' });
   });
 
+  // Test email endpoint
+  app.post('/api/test-email', async (req, res) => {
+    try {
+      const { email } = req.body;
+      
+      if (!email) {
+        return res.status(400).json({ error: "Email is required" });
+      }
+      
+      if (!process.env.SENDGRID_API_KEY) {
+        return res.status(500).json({ 
+          error: "SENDGRID_API_KEY is missing in environment variables",
+          env: {
+            NODE_ENV: process.env.NODE_ENV,
+            HAS_SENDGRID_KEY: false
+          }
+        });
+      }
+      
+      try {
+        const sgMail = await import('@sendgrid/mail');
+        sgMail.default.setApiKey(process.env.SENDGRID_API_KEY);
+        
+        await sgMail.default.send({
+          to: email,
+          from: 'noreply@revalpro.co.uk', // This must be verified in SendGrid
+          subject: 'RevalPro Test Email',
+          text: 'This is a test email from RevalPro to verify SendGrid configuration.',
+          html: '<strong>This is a test email from RevalPro to verify SendGrid configuration.</strong>'
+        });
+        
+        res.json({ success: true, message: "Email sent successfully via SendGrid" });
+      } catch (sendGridError: any) {
+        console.error("SendGrid Error:", sendGridError);
+        // Return detailed error from SendGrid
+        res.status(500).json({ 
+          error: "Failed to send email via SendGrid",
+          details: sendGridError.response?.body || sendGridError.message,
+          code: sendGridError.code,
+          statusCode: sendGridError.code
+        });
+      }
+    } catch (error: any) {
+      console.error("Test email error:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   // Quiz submission endpoint
   app.post('/api/quiz-submission', async (req, res) => {
     try {

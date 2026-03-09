@@ -52,6 +52,7 @@ import ProfileSetupPage from "@/pages/profile-setup";
 import BlogListing from "@/pages/blog-listing";
 import BlogPostPage from "@/pages/blog-post";
 import Quiz from "@/pages/Quiz";
+import EmailTestPage from "@/pages/email-test";
 import BlogManagement from "@/pages/admin/blog-management";
 
 import Footer from "@/components/layout/footer";
@@ -177,6 +178,9 @@ function AppRouter() {
           
           {/* Quiz Route - Public access */}
           <Route path="/quiz" component={Quiz} />
+          
+          {/* Email Test Route - Public access for debugging */}
+          <Route path="/email-test" component={EmailTestPage} />
           
           {/* Blog Routes - Public access */}
           <Route path="/blog" component={BlogListing} />
