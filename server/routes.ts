@@ -15,52 +15,51 @@ import { insertTrainingRecordSchema, insertBlogPostSchema } from "@shared/schema
 
 // Email service for password reset
 async function sendPasswordResetEmail(email: string, resetUrl: string): Promise<void> {
-  // Check if we have SendGrid configured
-  if (process.env.SENDGRID_API_KEY) {
+  // Check if we have Resend configured
+  if (process.env.RESEND_API_KEY) {
     try {
-      const sgMail = await import('@sendgrid/mail');
-      sgMail.default.setApiKey(process.env.SENDGRID_API_KEY);
-      
-      await sgMail.default.send({
-        to: email,
-        from: 'noreply@revalpro.co.uk', // This should be a verified sender domain
-        subject: 'Reset Your RevalPro Password',
-        html: `
-          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-            <h2 style="color: #2563eb;">Reset Your Password</h2>
-            <p>You've requested to reset your password for your RevalPro account.</p>
-            <p>Click the button below to reset your password:</p>
-            <a href="${resetUrl}" style="display: inline-block; background-color: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; margin: 16px 0;">Reset Password</a>
-            <p>Or copy and paste this link into your browser:</p>
-            <p style="word-break: break-all; color: #6b7280;">${resetUrl}</p>
-            <p><strong>This link will expire in 24 hours.</strong></p>
-            <p>If you didn't request this password reset, you can safely ignore this email.</p>
-            <hr style="margin: 24px 0; border: none; border-top: 1px solid #e5e7eb;">
-            <p style="color: #6b7280; font-size: 14px;">This email was sent by RevalPro - UK Nursing Revalidation Platform</p>
-          </div>
-        `,
-        text: `
-          Reset Your Password
-          
-          You've requested to reset your password for your RevalPro account.
-          
-          Click this link to reset your password: ${resetUrl}
-          
-          This link will expire in 24 hours.
-          
-          If you didn't request this password reset, you can safely ignore this email.
-        `
+      const response = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          from: 'noreply@revalpro.co.uk',
+          to: email,
+          subject: 'Reset Your RevalPro Password',
+          html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+              <h2 style="color: #2563eb;">Reset Your Password</h2>
+              <p>You've requested to reset your password for your RevalPro account.</p>
+              <p>Click the button below to reset your password:</p>
+              <a href="${resetUrl}" style="display: inline-block; background-color: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; margin: 16px 0;">Reset Password</a>
+              <p>Or copy and paste this link into your browser:</p>
+              <p style="word-break: break-all; color: #6b7280;">${resetUrl}</p>
+              <p><strong>This link will expire in 24 hours.</strong></p>
+              <p>If you didn't request this password reset, you can safely ignore this email.</p>
+              <hr style="margin: 24px 0; border: none; border-top: 1px solid #e5e7eb;">
+              <p style="color: #6b7280; font-size: 14px;">This email was sent by RevalPro - UK Nursing Revalidation Platform</p>
+            </div>
+          `,
+        }),
       });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(`Resend API error: ${JSON.stringify(error)}`);
+      }
+
       console.log(`Password reset email sent to: ${email}`);
     } catch (error) {
-      console.error('Error sending email via SendGrid:', error);
+      console.error('Error sending email via Resend:', error);
       throw new Error('Failed to send password reset email');
     }
   } else {
     // Fallback: log to console in development
     console.log('Password reset email would be sent to:', email);
     console.log('Reset URL:', resetUrl);
-    console.log('SendGrid not configured - email not actually sent');
+    console.log('Resend not configured - email not actually sent');
     
     // In production, this should throw an error
     if (process.env.NODE_ENV === 'production') {
@@ -71,61 +70,57 @@ async function sendPasswordResetEmail(email: string, resetUrl: string): Promise<
 
 // Email service for quiz results
 async function sendQuizResultEmail(email: string, score: number, resultTitle: string, actionPlan: string): Promise<void> {
-  // Check if we have SendGrid configured
-  if (process.env.SENDGRID_API_KEY) {
+  // Check if we have Resend configured
+  if (process.env.RESEND_API_KEY) {
     try {
-      const sgMail = await import('@sendgrid/mail');
-      sgMail.default.setApiKey(process.env.SENDGRID_API_KEY);
-      
-      await sgMail.default.send({
-        to: email,
-        from: 'noreply@revalpro.co.uk', // This should be a verified sender domain
-        subject: 'Your Revalidation Readiness Score',
-        html: `
-          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-            <h2 style="color: #2563eb;">Your Revalidation Score: ${score}/50</h2>
-            <h3 style="color: #1e40af;">Status: ${resultTitle}</h3>
-            <p>Thank you for taking the Revalidation Readiness Quiz.</p>
-            
-            <div style="background-color: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
-              <h4 style="margin-top: 0;">Your Action Plan:</h4>
-              <p>${actionPlan}</p>
+      const response = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          from: 'noreply@revalpro.co.uk',
+          to: email,
+          subject: 'Your Revalidation Readiness Score',
+          html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+              <h2 style="color: #2563eb;">Your Revalidation Score: ${score}/50</h2>
+              <h3 style="color: #1e40af;">Status: ${resultTitle}</h3>
+              <p>Thank you for taking the Revalidation Readiness Quiz.</p>
+              
+              <div style="background-color: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                <h4 style="margin-top: 0;">Your Action Plan:</h4>
+                <p>${actionPlan}</p>
+              </div>
+              
+              <p>To help you get ready, we're offering you a <strong>10% discount</strong> on RevalPro Premium.</p>
+              <p>Use code: <strong>READY10</strong> at checkout.</p>
+              
+              <a href="https://revalpro.co.uk/pricing" style="display: inline-block; background-color: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; margin: 16px 0;">Get Started Now</a>
+              
+              <hr style="margin: 24px 0; border: none; border-top: 1px solid #e5e7eb;">
+              <p style="color: #6b7280; font-size: 14px;">This email was sent by RevalPro - UK Nursing Revalidation Platform</p>
             </div>
-            
-            <p>To help you get ready, we're offering you a <strong>10% discount</strong> on RevalPro Premium.</p>
-            <p>Use code: <strong>READY10</strong> at checkout.</p>
-            
-            <a href="https://revalpro.co.uk/pricing" style="display: inline-block; background-color: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; margin: 16px 0;">Get Started Now</a>
-            
-            <hr style="margin: 24px 0; border: none; border-top: 1px solid #e5e7eb;">
-            <p style="color: #6b7280; font-size: 14px;">This email was sent by RevalPro - UK Nursing Revalidation Platform</p>
-          </div>
-        `,
-        text: `
-          Your Revalidation Score: ${score}/50
-          Status: ${resultTitle}
-          
-          Thank you for taking the Revalidation Readiness Quiz.
-          
-          Your Action Plan:
-          ${actionPlan}
-          
-          To help you get ready, we're offering you a 10% discount on RevalPro Premium.
-          Use code: READY10 at checkout.
-          
-          Get Started Now: https://revalpro.co.uk/pricing
-        `
+          `,
+        }),
       });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(`Resend API error: ${JSON.stringify(error)}`);
+      }
+
       console.log(`Quiz result email sent to: ${email}`);
     } catch (error) {
-      console.error('Error sending email via SendGrid:', error);
+      console.error('Error sending email via Resend:', error);
       // Don't throw, just log error so user flow isn't broken
     }
   } else {
     // Fallback: log to console
     console.log('Quiz result email would be sent to:', email);
     console.log('Score:', score);
-    console.log('SendGrid not configured - email not actually sent');
+    console.log('Resend not configured - email not actually sent');
   }
 }
 
