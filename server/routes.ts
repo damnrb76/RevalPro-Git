@@ -296,37 +296,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "Email is required" });
       }
       
-      if (!process.env.SENDGRID_API_KEY) {
+      if (!process.env.RESEND_API_KEY) {
         return res.status(500).json({ 
-          error: "SENDGRID_API_KEY is missing in environment variables",
+          error: "RESEND_API_KEY is missing in environment variables",
           env: {
             NODE_ENV: process.env.NODE_ENV,
-            HAS_SENDGRID_KEY: false
+            HAS_RESEND_KEY: false
           }
         });
       }
       
       try {
-        const sgMail = await import('@sendgrid/mail');
-        sgMail.default.setApiKey(process.env.SENDGRID_API_KEY);
-        
-        await sgMail.default.send({
-          to: email,
-          from: 'noreply@revalpro.co.uk', // This must be verified in SendGrid
-          subject: 'RevalPro Test Email',
-          text: 'This is a test email from RevalPro to verify SendGrid configuration.',
-          html: '<strong>This is a test email from RevalPro to verify SendGrid configuration.</strong>'
+        const response = await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            from: 'noreply@revalpro.co.uk',
+            to: email,
+            subject: 'RevalPro Test Email',
+            text: 'This is a test email from RevalPro to verify Resend configuration.',
+            html: '<strong>This is a test email from RevalPro to verify Resend configuration.</strong>'
+          }),
         });
         
-        res.json({ success: true, message: "Email sent successfully via SendGrid" });
-      } catch (sendGridError: any) {
-        console.error("SendGrid Error:", sendGridError);
-        // Return detailed error from SendGrid
+        if (!response.ok) {
+          const error = await response.json();
+          return res.status(response.status).json({ 
+            error: "Failed to send email via Resend",
+            details: error,
+            statusCode: response.status
+          });
+        }
+        
+        res.json({ success: true, message: "Email sent successfully via Resend" });
+      } catch (resendError: any) {
+        console.error("Resend Error:", resendError);
         res.status(500).json({ 
-          error: "Failed to send email via SendGrid",
-          details: sendGridError.response?.body || sendGridError.message,
-          code: sendGridError.code,
-          statusCode: sendGridError.code
+          error: "Failed to send email via Resend",
+          details: resendError.message
         });
       }
     } catch (error: any) {
