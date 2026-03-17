@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { CheckCircle2, Clock, Target, Users, Award, Shield } from "lucide-react";
@@ -5,6 +6,7 @@ import { useLocation } from "wouter";
 
 export default function QuizLanding() {
   const [, setLocation] = useLocation();
+  const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
 
   const handleStartQuiz = () => {
     setLocation("/quiz");
@@ -101,9 +103,6 @@ export default function QuizLanding() {
       answer: "Absolutely! We encourage sharing. Each person gets their own personalized results and discount code.",
     },
   ];
-
-  const [expandedFaq, setExpandedFaq] = React.useState<number | null>(null);
-  const React = require("react");
 
   return (
     <div className="min-h-screen bg-white">
