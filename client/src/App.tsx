@@ -53,6 +53,7 @@ import BlogListing from "@/pages/blog-listing";
 import BlogPostPage from "@/pages/blog-post";
 import Quiz from "@/pages/Quiz";
 import QuizLanding from "@/pages/QuizLanding";
+import SneakPeekPage from "@/pages/sneak-peek";
 import EmailTestPage from "@/pages/email-test";
 import BlogManagement from "@/pages/admin/blog-management";
 
@@ -126,6 +127,7 @@ function AppRouter() {
           {/* Quiz Routes */}
           <Route path="/quiz-landing" component={QuizLanding} />
           <Route path="/quiz" component={Quiz} />
+          <Route path="/sneak-peek" component={SneakPeekPage} />
           <Route path="/email-test" component={EmailTestPage} />
           
           {/* Subscription Routes */}

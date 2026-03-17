@@ -8,13 +8,14 @@ import { useAuth } from "@/hooks/use-auth";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { BookOpen, ArrowRight } from "lucide-react";
+import { BookOpen, ArrowRight, X, Eye } from "lucide-react";
 import { Link } from "wouter";
 
 // Demo account removed for production launch
 
 export default function AuthPage() {
   const [activeTab, setActiveTab] = useState<string>("login");
+  const [showPreview, setShowPreview] = useState(false);
   const { user } = useAuth();
 
   // If user is already logged in, redirect based on setup completion
