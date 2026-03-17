@@ -97,7 +97,7 @@ async function sendQuizResultEmail(email: string, score: number, resultTitle: st
               <p>To help you get ready, we're offering you a <strong>10% discount</strong> on RevalPro Premium.</p>
               <p>Use code: <strong>READY10</strong> at checkout.</p>
               
-              <a href="https://revalpro.co.uk/auth" style="display: inline-block; background-color: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; margin: 16px 0;">Get Started Now</a>
+              <a href="https://revalpro.co.uk/quiz-landing" style="display: inline-block; background-color: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; margin: 16px 0;">View Your Action Plan & Upgrade</a>
               
               <hr style="margin: 24px 0; border: none; border-top: 1px solid #e5e7eb;">
               <p style="color: #6b7280; font-size: 14px;">This email was sent by RevalPro - UK Nursing Revalidation Platform</p>
