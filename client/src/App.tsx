@@ -52,6 +52,7 @@ import ProfileSetupPage from "@/pages/profile-setup";
 import BlogListing from "@/pages/blog-listing";
 import BlogPostPage from "@/pages/blog-post";
 import Quiz from "@/pages/Quiz";
+import QuizLanding from "@/pages/QuizLanding";
 import EmailTestPage from "@/pages/email-test";
 import BlogManagement from "@/pages/admin/blog-management";
 
@@ -121,6 +122,11 @@ function AppRouter() {
           
           {/* Infographic Routes - Changed to regular Route for preview */}
           <Route path="/summary-infographic" component={SummaryInfographic} />
+          
+          {/* Quiz Routes */}
+          <Route path="/quiz-landing" component={QuizLanding} />
+          <Route path="/quiz" component={Quiz} />
+          <Route path="/email-test" component={EmailTestPage} />
           
           {/* Subscription Routes */}
           <ProtectedRoute path="/subscription" component={SubscriptionPage} />
