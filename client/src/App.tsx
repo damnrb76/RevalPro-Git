@@ -51,6 +51,9 @@ import UserGuidePage from "@/pages/user-guide";
 import ProfileSetupPage from "@/pages/profile-setup";
 import BlogListing from "@/pages/blog-listing";
 import BlogPostPage from "@/pages/blog-post";
+import Blog from "@/pages/Blog";
+import BlogPost1 from "@/pages/BlogPost1";
+import BlogPost2 from "@/pages/BlogPost2";
 import Quiz from "@/pages/Quiz";
 import QuizLanding from "@/pages/QuizLanding";
 import SneakPeekPage from "@/pages/sneak-peek";
@@ -129,6 +132,11 @@ function AppRouter() {
           <Route path="/quiz" component={Quiz} />
           <Route path="/sneak-peek" component={SneakPeekPage} />
           <Route path="/email-test" component={EmailTestPage} />
+          
+          {/* Blog Routes */}
+          <Route path="/blog" component={Blog} />
+          <Route path="/blog/quiz-scores" component={BlogPost1} />
+          <Route path="/blog/nmc-deadlines" component={BlogPost2} />
           
           {/* Subscription Routes */}
           <ProtectedRoute path="/subscription" component={SubscriptionPage} />
