@@ -54,6 +54,9 @@ import BlogPostPage from "@/pages/blog-post";
 import Blog from "@/pages/Blog";
 import BlogPost1 from "@/pages/BlogPost1";
 import BlogPost2 from "@/pages/BlogPost2";
+import BlogPost3 from "@/pages/BlogPost3";
+import BlogPost4 from "@/pages/BlogPost4";
+import BlogPost5 from "@/pages/BlogPost5";
 import Quiz from "@/pages/Quiz";
 import QuizLanding from "@/pages/QuizLanding";
 import SneakPeekPage from "@/pages/sneak-peek";
@@ -137,6 +140,9 @@ function AppRouter() {
           <Route path="/blog" component={Blog} />
           <Route path="/blog/quiz-scores" component={BlogPost1} />
           <Route path="/blog/nmc-deadlines" component={BlogPost2} />
+          <Route path="/blog/reflective-accounts" component={BlogPost3} />
+          <Route path="/blog/cpd-activities" component={BlogPost4} />
+          <Route path="/blog/organizing-evidence" component={BlogPost5} />
           
           {/* Subscription Routes */}
           <ProtectedRoute path="/subscription" component={SubscriptionPage} />

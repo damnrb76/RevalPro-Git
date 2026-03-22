@@ -20,6 +20,33 @@ export default function Blog() {
       readTime: '8 min read',
       category: 'Revalidation Requirements',
       image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&h=400&fit=crop'
+    },
+    {
+      id: 'reflective-accounts',
+      title: 'How to Write Effective Reflective Accounts: Step-by-Step Guide',
+      excerpt: 'Master the art of reflective practice with our comprehensive guide using Gibbs and other recognized models.',
+      date: 'March 21, 2026',
+      readTime: '10 min read',
+      category: 'Reflective Practice',
+      image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=400&fit=crop'
+    },
+    {
+      id: 'cpd-activities',
+      title: 'CPD Activities That Count: A Nurses Guide to Professional Development',
+      excerpt: 'Discover what counts as CPD and how to build a comprehensive professional development portfolio.',
+      date: 'March 21, 2026',
+      readTime: '7 min read',
+      category: 'Professional Development',
+      image: 'https://images.unsplash.com/photo-1516321318423-f06f70504c8a?w=600&h=400&fit=crop'
+    },
+    {
+      id: 'organizing-evidence',
+      title: 'Organizing Your Revalidation Evidence: Best Practices and Tools',
+      excerpt: 'Learn how to organize and manage all your revalidation evidence efficiently using proven systems and tools.',
+      date: 'March 21, 2026',
+      readTime: '9 min read',
+      category: 'Organization',
+      image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&h=400&fit=crop'
     }
   ];
 
