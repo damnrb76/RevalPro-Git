@@ -86,8 +86,8 @@ export const PLAN_DETAILS: Record<SubscriptionPlan, PlanDetails> = {
     },
     stripePriceId: {
       // LIVE MODE - Production price IDs
-      monthly: "price_1RXVwJApgglLl36M6hRdROQU",
-      annual: "price_1S0oveApgglLl36M6U2t0byU",
+      monthly: "price_1RXVwJApggIL136M6hRdROQU",
+      annual: "price_150oveApggIL136M6U2t0byU",
     },
     lookupKeys: {
       monthly: "standard_monthly_gbp",
@@ -122,8 +122,8 @@ export const PLAN_DETAILS: Record<SubscriptionPlan, PlanDetails> = {
     },
     stripePriceId: {
       // LIVE MODE - Production price IDs
-      monthly: "price_1RjnPAApgglLl36MBzM1EdZ7",
-      annual: "price_1RjnKyApgglLl36MueJyRm68",
+      monthly: "price_1RXVwIApggIL136Mmk8XXEAO",
+      annual: "price_150ozAApggIL136MNHXL1VJn",
     },
     lookupKeys: {
       monthly: "premium_monthly_gbp",
