@@ -426,6 +426,13 @@ export async function handleWebhookEvent(event: Stripe.Event) {
           cancelAtPeriodEnd: subscription.cancel_at_period_end ?? false,
         });
         
+        // Track subscription purchase for email automation
+        try {
+          await storage.trackUserEvent(userId, 'subscription_purchased', { plan: planId, period: period });
+        } catch (err) {
+          console.error('Error tracking subscription purchase:', err);
+        }
+        
         console.log(`Checkout completed for user ${userId}, plan: ${planId}`);
         break;
       }
@@ -501,6 +508,13 @@ export async function handleWebhookEvent(event: Stripe.Event) {
           subscriptionEndDate: null,
           cancelAtPeriodEnd: false,
         });
+        
+        // Track subscription cancellation for email automation
+        try {
+          await storage.trackUserEvent(user.id, 'subscription_cancelled', {});
+        } catch (err) {
+          console.error('Error tracking subscription cancellation:', err);
+        }
         
         break;
       }

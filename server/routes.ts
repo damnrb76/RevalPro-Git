@@ -359,6 +359,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.error("Failed to send quiz email:", err)
       );
       
+      // Track quiz completion event for email automation
+      try {
+        const user = await storage.getUserByEmail(email);
+        if (user) {
+          await storage.trackUserEvent(user.id, 'quiz_completed', { score, resultTitle });
+        }
+      } catch (err) {
+        console.error("Error tracking quiz event:", err);
+      }
+      
       // Here you could also save the lead to the database if you had a leads table
       // For now, we'll just log it
       console.log(`Lead captured: ${email}, Score: ${score}`);
