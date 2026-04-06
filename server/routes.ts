@@ -1531,6 +1531,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Email automation analytics endpoint
+  app.get("/api/admin/email-analytics", requireAdmin, async (req, res) => {
+    try {
+      const { getEmailAnalytics } = await import('./email-analytics');
+      const daysBack = req.query.daysBack ? parseInt(req.query.daysBack as string) : 30;
+      const analytics = await getEmailAnalytics(daysBack);
+      res.json(analytics);
+    } catch (error) {
+      console.error("Error fetching email analytics:", error);
+      res.status(500).json({ error: "Failed to fetch email analytics" });
+    }
+  });
+
+  // Campaign details endpoint
+  app.get("/api/admin/email-analytics/:campaignType", requireAdmin, async (req, res) => {
+    try {
+      const { getCampaignDetails } = await import('./email-analytics');
+      const daysBack = req.query.daysBack ? parseInt(req.query.daysBack as string) : 30;
+      const details = await getCampaignDetails(req.params.campaignType, daysBack);
+      if (!details) {
+        return res.status(404).json({ error: "Campaign not found" });
+      }
+      res.json(details);
+    } catch (error) {
+      console.error("Error fetching campaign details:", error);
+      res.status(500).json({ error: "Failed to fetch campaign details" });
+    }
+  });
+
   app.patch("/api/admin/users/:userId/plan", requireAdmin, async (req, res) => {
     try {
       const userId = parseInt(req.params.userId);
@@ -1626,6 +1655,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching beta applications:", error);
       res.status(500).json({ error: "Failed to fetch beta applications" });
+    }
+  });
+
+  // Admin email analytics dashboard
+  app.get("/admin/email-analytics", requireAdmin, async (req, res) => {
+    try {
+      const fs = await import('fs/promises');
+      const path = await import('path');
+      const filePath = path.join(process.cwd(), 'server', 'admin-email-analytics-page.html');
+      const html = await fs.readFile(filePath, 'utf-8');
+      res.send(html);
+    } catch (error: any) {
+      console.error("Error loading email analytics page:", error);
+      res.status(500).send(`<h1>Error</h1><p>Failed to load email analytics: ${error.message}</p>`);
     }
   });
 
