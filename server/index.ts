@@ -3,6 +3,7 @@ import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import Stripe from "stripe";
 import { handleWebhookEvent, stripe } from "./stripe";
+import { runAllEmailCampaigns } from "./email-automation";
 
 const app = express();
 
@@ -142,4 +143,23 @@ app.use((req, res, next) => {
     log(`📡 Listening on port ${PORT}`);
     log(`🌍 Environment: ${app.get("env")}`);
   });
+
+  // Start email automation - runs every hour
+  if (process.env.NODE_ENV === 'production') {
+    log('📧 Starting email automation campaigns...');
+    
+    // Run immediately on startup
+    await runAllEmailCampaigns();
+    
+    // Then run every hour
+    setInterval(async () => {
+      try {
+        await runAllEmailCampaigns();
+      } catch (error) {
+        console.error('Error running email campaigns:', error);
+      }
+    }, 60 * 60 * 1000); // 1 hour
+  } else {
+    log('📧 Email automation disabled in development mode');
+  }
 })();

@@ -100,6 +100,10 @@ export interface IStorage {
   checkHealth(): Promise<boolean>;
   getBlogPostsByCategory(category: string, publishedOnly?: boolean): Promise<BlogPost[]>;
   
+  // Email automation methods
+  trackUserEvent(userId: number, eventType: string, eventData?: any): Promise<void>;
+  recordEmailCampaign(userId: number, campaignType: string, emailAddress: string): Promise<void>;
+  
   sessionStore: session.Store;
 }
 
@@ -1207,6 +1211,32 @@ export class DatabaseStorage implements IStorage {
         .orderBy(blogPosts.publishedAt);
     }
     return await db.select().from(blogPosts).where(eq(blogPosts.category, category)).orderBy(blogPosts.created);
+  }
+
+  async trackUserEvent(userId: number, eventType: string, eventData?: any): Promise<void> {
+    const { userEvents } = await import("@shared/schema");
+    try {
+      await db.insert(userEvents).values({
+        userId,
+        eventType,
+        eventData: eventData ? JSON.stringify(eventData) : null,
+      });
+    } catch (error) {
+      console.error("Error tracking user event:", error);
+    }
+  }
+
+  async recordEmailCampaign(userId: number, campaignType: string, emailAddress: string): Promise<void> {
+    const { emailCampaigns } = await import("@shared/schema");
+    try {
+      await db.insert(emailCampaigns).values({
+        userId,
+        campaignType,
+        emailAddress,
+      });
+    } catch (error) {
+      console.error("Error recording email campaign:", error);
+    }
   }
 }
 

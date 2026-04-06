@@ -634,3 +634,44 @@ export const insertBlogPostSchema = z.object({
 
 export type BlogPost = typeof blogPosts.$inferSelect;
 export type InsertBlogPost = z.infer<typeof insertBlogPostSchema>;
+
+
+// User Events - Track user behavior for email automation
+export const userEvents = pgTable("user_events", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  eventType: text("event_type").notNull(), // 'quiz_completed', 'app_opened', 'blog_visited', 'subscription_purchased', 'subscription_cancelled'
+  eventData: text("event_data"), // JSON string with additional data
+  created: timestamp("created").notNull().defaultNow(),
+});
+
+export const insertUserEventSchema = z.object({
+  userId: z.number(),
+  eventType: z.enum(['quiz_completed', 'app_opened', 'blog_visited', 'subscription_purchased', 'subscription_cancelled', 'account_created', 'first_task_completed']),
+  eventData: z.string().optional().nullable(),
+});
+
+export type UserEvent = typeof userEvents.$inferSelect;
+export type InsertUserEvent = z.infer<typeof insertUserEventSchema>;
+
+// Email Campaigns - Track which emails have been sent to prevent duplicates
+export const emailCampaigns = pgTable("email_campaigns", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  campaignType: text("campaign_type").notNull(), // 'quiz_no_login', 'quiz_no_subscribe', 'blog_no_app', 'app_no_first_task', 'free_user_14d', 'subscription_cancelled'
+  emailAddress: text("email_address").notNull(),
+  sentAt: timestamp("sent_at").notNull().defaultNow(),
+  opened: boolean("opened").default(false),
+  clicked: boolean("clicked").default(false),
+  bounced: boolean("bounced").default(false),
+  created: timestamp("created").notNull().defaultNow(),
+});
+
+export const insertEmailCampaignSchema = z.object({
+  userId: z.number(),
+  campaignType: z.string(),
+  emailAddress: z.string().email(),
+});
+
+export type EmailCampaign = typeof emailCampaigns.$inferSelect;
+export type InsertEmailCampaign = z.infer<typeof insertEmailCampaignSchema>;
