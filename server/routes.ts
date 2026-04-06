@@ -496,6 +496,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         password: hashedPassword,
       });
 
+      // Track account creation event for email automation
+      try {
+        await storage.trackUserEvent(user.id, 'account_created', { email: user.email, provider: 'google' });
+      } catch (err) {
+        console.error('Error tracking account creation:', err);
+      }
+
       // Add profile information if we have it
       if (displayName) {
         try {
@@ -2225,6 +2232,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
           hasCompletedInitialSetup: true,
           created: new Date()
         });
+        
+        // Track account creation event for email automation
+        try {
+          await storage.trackUserEvent(newUser.id, 'account_created', { email: newUser.email, provider: 'admin_creation' });
+        } catch (err) {
+          console.error('Error tracking account creation:', err);
+        }
         
         res.send(`
           <!DOCTYPE html>
