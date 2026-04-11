@@ -6,6 +6,8 @@ import { setupAuth, hashPassword } from "./auth";
 import { scrypt, randomBytes } from "crypto";
 import { promisify } from "util";
 import path from "path";
+import { db } from "./db";
+import { users, eq } from "@shared/schema";
 import { createCustomer, createSubscription, createCheckoutSession, getSubscription, cancelSubscription, reactivateSubscription, changeSubscriptionPlan, handleWebhookEvent, setupWebhookEndpoint, checkStripeHealth, stripe } from "./stripe";
 import { PLAN_DETAILS } from "../shared/subscription-plans";
 import Stripe from "stripe";
@@ -1467,6 +1469,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
     next();
   };
+
+  // Create super admin account endpoint
+  app.post("/api/admin/create-super-admin", async (req, res) => {
+    try {
+      const { email, password } = req.body;
+      
+      if (!email || !password) {
+        return res.status(400).json({ error: "Email and password required" });
+      }
+
+      // Hash the password
+      const hashedPassword = await new Promise<string>((resolve, reject) => {
+        scrypt(password, randomBytes(16), 64, (err, derivedKey) => {
+          if (err) reject(err);
+          resolve(derivedKey.toString('hex'));
+        });
+      });
+
+      // Create super admin user
+      const user = await storage.createUser({
+        email,
+        password: hashedPassword,
+        username: email.split('@')[0],
+      });
+
+      // Update to super admin using raw database query
+      await db.update(users).set({ isSuperAdmin: true, isAdmin: true }).where(eq(users.id, user.id));
+
+      res.json({ success: true, user: { id: user.id, email: user.email, isSuperAdmin: true } });
+    } catch (error) {
+      console.error("Error creating super admin:", error);
+      res.status(500).json({ error: "Failed to create super admin" });
+    }
+  });
 
   // Admin Routes
   app.get("/api/admin/stats", requireAdmin, async (req, res) => {
