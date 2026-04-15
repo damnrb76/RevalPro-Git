@@ -12,7 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/use-auth";
 import { 
   Shield, Users, BarChart3, Settings, Crown, 
-  Search, Eye, Edit, Trash2, Plus, AlertTriangle, Ticket, BookOpen
+  Search, Eye, Edit, Trash2, Plus, AlertTriangle, Ticket, BookOpen, Mail
 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { formatDateFull } from "@/lib/date-utils";
@@ -217,6 +217,10 @@ export default function AdminPanel() {
           <TabsTrigger value="settings" className="flex items-center gap-2 flex-shrink-0">
             <Settings className="h-4 w-4" />
             Settings
+          </TabsTrigger>
+          <TabsTrigger value="email-analytics" className="flex items-center gap-2 flex-shrink-0">
+            <Mail className="h-4 w-4" />
+            Email Analytics
           </TabsTrigger>
         </TabsList>
 
@@ -460,6 +464,24 @@ export default function AdminPanel() {
 
         <TabsContent value="blog" className="space-y-6">
           <BlogManagement />
+        </TabsContent>
+
+        <TabsContent value="email-analytics" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Email Campaign Analytics</CardTitle>
+              <CardDescription>View email automation performance and engagement metrics</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button 
+                onClick={() => window.location.href = '/admin/email-analytics'}
+                className="w-full"
+              >
+                <Mail className="h-4 w-4 mr-2" />
+                Open Email Analytics Dashboard
+              </Button>
+            </CardContent>
+          </Card>
         </TabsContent>
 
         <TabsContent value="settings" className="space-y-6">
