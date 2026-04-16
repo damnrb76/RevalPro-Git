@@ -47,6 +47,42 @@ export default function Blog() {
       readTime: '9 min read',
       category: 'Organization',
       image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&h=400&fit=crop'
+    },
+    {
+      id: 'nmc-revalidation-checklist',
+      title: 'The NMC Revalidation Checklist: Everything Nurses Need to Know',
+      excerpt: 'A comprehensive checklist breaking down everything you need to do for NMC revalidation, step-by-step.',
+      date: 'April 16, 2026',
+      readTime: '8 min read',
+      category: 'Revalidation Preparation',
+      image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=400&fit=crop'
+    },
+    {
+      id: 'five-reasons-fail-revalidation',
+      title: '5 Reasons Nurses Fail Revalidation (And How to Avoid Them)',
+      excerpt: 'Discover the five most common reasons nurses don\'t revalidate successfully and how to prevent them.',
+      date: 'April 17, 2026',
+      readTime: '7 min read',
+      category: 'Revalidation Requirements',
+      image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&h=400&fit=crop'
+    },
+    {
+      id: 'rachel-organised-revalidation',
+      title: 'How One Nurse Organised Her Entire Revalidation in 30 Days',
+      excerpt: 'A real story of how Rachel organised her complete revalidation in just 30 days—and how you can too.',
+      date: 'April 22, 2026',
+      readTime: '7 min read',
+      category: 'Organization',
+      image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=400&fit=crop'
+    },
+    {
+      id: 'nurses-guide-cpd',
+      title: 'The Nurse\'s Guide to CPD: Finding the Right Learning for Your Revalidation',
+      excerpt: 'Everything you need to know about CPD, including what counts, where to find it, and how to choose the right learning.',
+      date: 'April 23, 2026',
+      readTime: '9 min read',
+      category: 'Professional Development',
+      image: 'https://images.unsplash.com/photo-1516321318423-f06f70504c8a?w=600&h=400&fit=crop'
     }
   ];
 

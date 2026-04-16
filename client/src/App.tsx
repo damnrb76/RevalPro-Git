@@ -57,6 +57,10 @@ import BlogPost2 from "@/pages/BlogPost2";
 import BlogPost3 from "@/pages/BlogPost3";
 import BlogPost4 from "@/pages/BlogPost4";
 import BlogPost5 from "@/pages/BlogPost5";
+import BlogPost6 from "@/pages/BlogPost6";
+import BlogPost7 from "@/pages/BlogPost7";
+import BlogPost8 from "@/pages/BlogPost8";
+import BlogPost9 from "@/pages/BlogPost9";
 import Quiz from "@/pages/Quiz";
 import QuizLanding from "@/pages/QuizLanding";
 import SneakPeekPage from "@/pages/sneak-peek";
@@ -143,6 +147,10 @@ function AppRouter() {
           <Route path="/blog/reflective-accounts" component={BlogPost3} />
           <Route path="/blog/cpd-activities" component={BlogPost4} />
           <Route path="/blog/organizing-evidence" component={BlogPost5} />
+          <Route path="/blog/nmc-revalidation-checklist" component={BlogPost6} />
+          <Route path="/blog/five-reasons-fail-revalidation" component={BlogPost7} />
+          <Route path="/blog/rachel-organised-revalidation" component={BlogPost8} />
+          <Route path="/blog/nurses-guide-cpd" component={BlogPost9} />
           
           {/* Subscription Routes */}
           <ProtectedRoute path="/subscription" component={SubscriptionPage} />
