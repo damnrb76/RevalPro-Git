@@ -2,8 +2,8 @@ import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import { Express } from "express";
 import session from "express-session";
-import { scrypt, randomBytes, timingSafeEqual } from "crypto";
-import { promisify } from "util";
+import { randomBytes } from "crypto";
+import bcrypt from "bcrypt";
 import { storage } from "./storage";
 import { User } from "@shared/schema";
 
@@ -31,15 +31,20 @@ declare global {
   }
 }
 
-// For demo purposes, we'll use a very simple hash function
-// In a real app, you'd use a proper password hashing library
-export function hashPassword(password: string) {
-  return `hashed_${password}`;
+// Hash password using bcrypt
+export async function hashPassword(password: string): Promise<string> {
+  const saltRounds = 10;
+  return await bcrypt.hash(password, saltRounds);
 }
 
-function comparePasswords(supplied: string, stored: string) {
-  // Simple compare for demo
-  return stored === `hashed_${supplied}`;
+// Compare password with hashed password
+async function comparePasswords(supplied: string, stored: string): Promise<boolean> {
+  try {
+    return await bcrypt.compare(supplied, stored);
+  } catch (error) {
+    console.error('Password comparison error:', error);
+    return false;
+  }
 }
 
 export function setupAuth(app: Express) {
@@ -69,11 +74,14 @@ sameSite: 'lax', // Allow cookies to work across page navigations
     new LocalStrategy({ usernameField: 'email' }, async (email, password, done) => {
       try {
         const user = await storage.getUserByEmail(email);
-        if (!user || !(await comparePasswords(password, user.password))) {
+        if (!user) {
           return done(null, false);
-        } else {
-          return done(null, user);
         }
+        const isPasswordValid = await comparePasswords(password, user.password);
+        if (!isPasswordValid) {
+          return done(null, false);
+        }
+        return done(null, user);
       } catch (error) {
         return done(error);
       }
@@ -97,9 +105,10 @@ sameSite: 'lax', // Allow cookies to work across page navigations
         return res.status(400).json({ message: "Email already exists" });
       }
 
+      const hashedPassword = await hashPassword(req.body.password);
       const user = await storage.createUser({
         ...req.body,
-        password: await hashPassword(req.body.password),
+        password: hashedPassword,
       });
 
       req.login(user, (err) => {
