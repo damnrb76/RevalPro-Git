@@ -56,13 +56,29 @@ interface AdminStats {
 }
 
 export default function AdminPanel() {
-  const { user } = useAuth();
+  const { user, isLoading: userLoading } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState("");
   
+  // Show loading state while user is being fetched
+  if (userLoading) {
+    return (
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
+        <Card>
+          <CardContent className="p-8 text-center">
+            <div className="animate-pulse">
+              <div className="h-8 bg-gray-200 rounded w-1/2 mx-auto mb-4"></div>
+              <div className="h-4 bg-gray-200 rounded w-3/4 mx-auto"></div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+  
   // Check if user has admin access
-  if (!user?.isSuperAdmin && !user?.isAdmin) {
+  if (!user || (!user.isSuperAdmin && !user.isAdmin)) {
     return (
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         <Card>
