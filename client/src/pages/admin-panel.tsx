@@ -12,12 +12,10 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/use-auth";
 import { 
   Shield, Users, BarChart3, Settings, Crown, 
-  Search, Eye, Edit, Trash2, Plus, AlertTriangle, Ticket, BookOpen, Mail
+  Search, Eye, Edit, Trash2, Plus, AlertTriangle, Loader2
 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { formatDateFull } from "@/lib/date-utils";
-import CouponsAdminPage from "@/pages/admin/coupons";
-import BlogManagement from "@/pages/admin/blog-management";
 
 interface AdminUser {
   id: number;
@@ -28,22 +26,6 @@ interface AdminUser {
   created: string;
   isAdmin: boolean;
   isSuperAdmin: boolean;
-}
-
-interface BetaApplication {
-  id: number;
-  name: string;
-  email: string;
-  nmcPin: string;
-  nursingSpecialty: string;
-  workLocation: string;
-  experience: string;
-  currentChallenges: string;
-  expectations: string;
-  testingAvailability: string;
-  agreeToTerms: boolean;
-  allowContact: boolean;
-  submittedAt: string;
 }
 
 interface AdminStats {
@@ -67,10 +49,8 @@ export default function AdminPanel() {
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         <Card>
           <CardContent className="p-8 text-center">
-            <div className="animate-pulse">
-              <div className="h-8 bg-gray-200 rounded w-1/2 mx-auto mb-4"></div>
-              <div className="h-4 bg-gray-200 rounded w-3/4 mx-auto"></div>
-            </div>
+            <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
+            <p className="text-muted-foreground">Loading admin panel...</p>
           </CardContent>
         </Card>
       </div>
@@ -93,21 +73,17 @@ export default function AdminPanel() {
   }
 
   // Fetch admin statistics
-  const { data: stats, isLoading: statsLoading } = useQuery<AdminStats>({
+  const { data: stats, isLoading: statsLoading, error: statsError } = useQuery<AdminStats>({
     queryKey: ["/api/admin/stats"],
     enabled: !!user?.isSuperAdmin || !!user?.isAdmin,
+    retry: 1,
   });
 
   // Fetch all users
-  const { data: users, isLoading: usersLoading } = useQuery<AdminUser[]>({
+  const { data: users, isLoading: usersLoading, error: usersError } = useQuery<AdminUser[]>({
     queryKey: ["/api/admin/users"],
     enabled: !!user?.isSuperAdmin || !!user?.isAdmin,
-  });
-
-  // Fetch beta applications
-  const { data: betaApplications, isLoading: betaLoading } = useQuery<BetaApplication[]>({
-    queryKey: ["/api/admin/beta-applications"],
-    enabled: !!user?.isSuperAdmin || !!user?.isAdmin,
+    retry: 1,
   });
 
   // Filter users based on search term
@@ -218,25 +194,9 @@ export default function AdminPanel() {
             <Users className="h-4 w-4" />
             Users
           </TabsTrigger>
-          <TabsTrigger value="beta" className="flex items-center gap-2 flex-shrink-0">
-            <Eye className="h-4 w-4" />
-            Beta Apps
-          </TabsTrigger>
-          <TabsTrigger value="coupons" className="flex items-center gap-2 flex-shrink-0">
-            <Ticket className="h-4 w-4" />
-            Coupons
-          </TabsTrigger>
-          <TabsTrigger value="blog" className="flex items-center gap-2 flex-shrink-0">
-            <BookOpen className="h-4 w-4" />
-            Blog
-          </TabsTrigger>
           <TabsTrigger value="settings" className="flex items-center gap-2 flex-shrink-0">
             <Settings className="h-4 w-4" />
             Settings
-          </TabsTrigger>
-          <TabsTrigger value="email-analytics" className="flex items-center gap-2 flex-shrink-0">
-            <Mail className="h-4 w-4" />
-            Email Analytics
           </TabsTrigger>
         </TabsList>
 
@@ -254,6 +214,13 @@ export default function AdminPanel() {
                 </Card>
               ))}
             </div>
+          ) : statsError ? (
+            <Card>
+              <CardContent className="p-6 text-center">
+                <AlertTriangle className="h-8 w-8 text-yellow-500 mx-auto mb-2" />
+                <p className="text-muted-foreground">Failed to load statistics</p>
+              </CardContent>
+            </Card>
           ) : (
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
               <Card>
@@ -299,7 +266,7 @@ export default function AdminPanel() {
                       <p className="text-sm text-muted-foreground">Monthly Revenue</p>
                       <p className="text-3xl font-bold">£{stats?.totalRevenue || 0}</p>
                     </div>
-                    <BarChart3 className="h-8 w-8 text-revalpro-blue" />
+                    <BarChart3 className="h-8 w-8 text-blue-500" />
                   </div>
                 </CardContent>
               </Card>
@@ -311,33 +278,33 @@ export default function AdminPanel() {
           <Card>
             <CardHeader>
               <CardTitle>User Management</CardTitle>
-              <CardDescription>
-                Manage user accounts, subscriptions, and permissions
-              </CardDescription>
+              <CardDescription>Manage user accounts and subscriptions</CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="flex items-center gap-4 mb-6">
-                <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    placeholder="Search users by username or email..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10"
-                  />
-                </div>
+            <CardContent className="space-y-6">
+              <div className="flex gap-2">
+                <Search className="h-5 w-5 text-muted-foreground" />
+                <Input
+                  placeholder="Search by username or email..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="flex-1"
+                />
               </div>
 
               {usersLoading ? (
-                <div className="space-y-4">
-                  {[...Array(5)].map((_, i) => (
-                    <div key={i} className="animate-pulse">
-                      <div className="h-16 bg-gray-200 rounded"></div>
-                    </div>
-                  ))}
+                <div className="text-center py-8">
+                  <Loader2 className="h-8 w-8 animate-spin mx-auto mb-2" />
+                  <p className="text-muted-foreground">Loading users...</p>
                 </div>
+              ) : usersError ? (
+                <Card>
+                  <CardContent className="p-6 text-center">
+                    <AlertTriangle className="h-8 w-8 text-yellow-500 mx-auto mb-2" />
+                    <p className="text-muted-foreground">Failed to load users</p>
+                  </CardContent>
+                </Card>
               ) : (
-                <div className="rounded-md border">
+                <div className="overflow-x-auto">
                   <Table>
                     <TableHeader>
                       <TableRow>
@@ -346,57 +313,30 @@ export default function AdminPanel() {
                         <TableHead>Plan</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead>Joined</TableHead>
-                        <TableHead>Role</TableHead>
-                        <TableHead className="text-right">Actions</TableHead>
+                        <TableHead>Actions</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {filteredUsers.map((user) => (
-                        <TableRow key={user.id}>
-                          <TableCell className="font-medium">{user.username}</TableCell>
-                          <TableCell>{user.email || "—"}</TableCell>
-                          <TableCell>{getPlanBadge(user.currentPlan)}</TableCell>
+                      {filteredUsers.map((u) => (
+                        <TableRow key={u.id}>
+                          <TableCell className="font-medium">{u.username}</TableCell>
+                          <TableCell>{u.email}</TableCell>
+                          <TableCell>{getPlanBadge(u.currentPlan)}</TableCell>
                           <TableCell>
-                            <Badge variant={user.subscriptionStatus === "active" ? "default" : "secondary"}>
-                              {user.subscriptionStatus}
+                            <Badge variant={u.subscriptionStatus === "active" ? "default" : "secondary"}>
+                              {u.subscriptionStatus}
                             </Badge>
                           </TableCell>
-                          <TableCell>{formatDateFull(new Date(user.created))}</TableCell>
-                          <TableCell>
-                            {user.isSuperAdmin ? (
-                              <Badge variant="destructive">Super Admin</Badge>
-                            ) : user.isAdmin ? (
-                              <Badge variant="default">Admin</Badge>
-                            ) : (
-                              <Badge variant="secondary">User</Badge>
-                            )}
-                          </TableCell>
-                          <TableCell className="text-right">
-                            <div className="flex items-center gap-2 justify-end">
-                              <Select
-                                value={user.currentPlan}
-                                onValueChange={(newPlan) => handlePlanUpdate(user.id, newPlan)}
-                              >
-                                <SelectTrigger className="w-32">
-                                  <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="free">Free</SelectItem>
-                                  <SelectItem value="standard">Standard</SelectItem>
-                                  <SelectItem value="premium">Premium</SelectItem>
-                                </SelectContent>
-                              </Select>
-                              {!user.isSuperAdmin && (
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() => handleDeleteUser(user.id, user.username)}
-                                  disabled={deleteUser.isPending}
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
-                              )}
-                            </div>
+                          <TableCell>{formatDateFull(new Date(u.created))}</TableCell>
+                          <TableCell className="space-x-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleDeleteUser(u.id, u.username)}
+                              disabled={deleteUser.isPending}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
                           </TableCell>
                         </TableRow>
                       ))}
@@ -404,98 +344,6 @@ export default function AdminPanel() {
                   </Table>
                 </div>
               )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="beta" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Eye className="h-5 w-5" />
-                Beta Applications ({betaApplications?.length || 0})
-              </CardTitle>
-              <CardDescription>
-                View all submitted beta tester applications
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {betaLoading ? (
-                <div className="animate-pulse space-y-4">
-                  {[...Array(3)].map((_, i) => (
-                    <div key={i} className="h-16 bg-gray-200 rounded"></div>
-                  ))}
-                </div>
-              ) : betaApplications && betaApplications.length > 0 ? (
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Email</TableHead>
-                        <TableHead>Specialty</TableHead>
-                        <TableHead>Work Location</TableHead>
-                        <TableHead>Experience</TableHead>
-                        <TableHead>Submitted</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {betaApplications.map((application) => (
-                        <TableRow key={application.id}>
-                          <TableCell className="font-medium">
-                            {application.name}
-                          </TableCell>
-                          <TableCell>{application.email}</TableCell>
-                          <TableCell>
-                            <Badge variant="secondary">
-                              {application.nursingSpecialty}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>{application.workLocation}</TableCell>
-                          <TableCell>{application.experience}</TableCell>
-                          <TableCell>
-                            {new Date(application.submittedAt).toLocaleDateString()}
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              ) : (
-                <div className="text-center py-8">
-                  <Eye className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">No Applications Yet</h3>
-                  <p className="text-gray-500">
-                    Beta tester applications will appear here once submitted.
-                  </p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="coupons" className="space-y-6">
-          <CouponsAdminPage />
-        </TabsContent>
-
-        <TabsContent value="blog" className="space-y-6">
-          <BlogManagement />
-        </TabsContent>
-
-        <TabsContent value="email-analytics" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Email Campaign Analytics</CardTitle>
-              <CardDescription>View email automation performance and engagement metrics</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button 
-                onClick={() => window.location.href = '/admin/email-analytics'}
-                className="w-full"
-              >
-                <Mail className="h-4 w-4 mr-2" />
-                Open Email Analytics Dashboard
-              </Button>
             </CardContent>
           </Card>
         </TabsContent>
@@ -503,42 +351,38 @@ export default function AdminPanel() {
         <TabsContent value="settings" className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>System Settings</CardTitle>
-              <CardDescription>
-                Configure system-wide settings and preferences
-              </CardDescription>
+              <CardTitle>Admin Settings</CardTitle>
+              <CardDescription>Your administrator information</CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-6">
-                <div className="p-4 border border-blue-200 rounded-lg bg-blue-50">
-                  <h3 className="font-medium text-blue-900 mb-2">Admin Privileges</h3>
-                  <p className="text-sm text-blue-800">
-                    {user?.isSuperAdmin 
-                      ? "You have full super administrator access to all system functions."
-                      : "You have administrator access with user management capabilities."
-                    }
-                  </p>
-                </div>
+            <CardContent className="space-y-6">
+              <div>
+                <h4 className="font-medium mb-2">Your Role</h4>
+                <p className="text-sm text-muted-foreground">
+                  {user?.isSuperAdmin 
+                    ? "You have full super administrator access to all system functions."
+                    : "You have administrator access with user management capabilities."
+                  }
+                </p>
+              </div>
+              
+              <div className="grid gap-4 md:grid-cols-2">
+                <Card>
+                  <CardContent className="p-4">
+                    <h4 className="font-medium mb-2">User Registration</h4>
+                    <p className="text-sm text-muted-foreground">
+                      New user registration is currently enabled.
+                    </p>
+                  </CardContent>
+                </Card>
                 
-                <div className="grid gap-4 md:grid-cols-2">
-                  <Card>
-                    <CardContent className="p-4">
-                      <h4 className="font-medium mb-2">User Registration</h4>
-                      <p className="text-sm text-muted-foreground">
-                        New user registration is currently enabled.
-                      </p>
-                    </CardContent>
-                  </Card>
-                  
-                  <Card>
-                    <CardContent className="p-4">
-                      <h4 className="font-medium mb-2">Subscription Plans</h4>
-                      <p className="text-sm text-muted-foreground">
-                        All subscription tiers are active and available.
-                      </p>
-                    </CardContent>
-                  </Card>
-                </div>
+                <Card>
+                  <CardContent className="p-4">
+                    <h4 className="font-medium mb-2">Subscription Plans</h4>
+                    <p className="text-sm text-muted-foreground">
+                      All subscription tiers are active and available.
+                    </p>
+                  </CardContent>
+                </Card>
               </div>
             </CardContent>
           </Card>
