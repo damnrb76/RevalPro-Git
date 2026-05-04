@@ -401,18 +401,26 @@ export async function checkSubscriptionCancelledCampaign(): Promise<void> {
 
 // Run all campaigns
 export async function runAllEmailCampaigns(): Promise<void> {
-  console.log('Starting email automation campaigns...');
+  console.log('📧 Starting email automation campaigns...');
 
-  try {
-    await checkQuizNoLoginCampaign();
-    await checkQuizNoSubscribeCampaign();
-    await checkBlogNoAppCampaign();
-    await checkAppNoFirstTaskCampaign();
-    await checkFreeUserConversionCampaign();
-    await checkSubscriptionCancelledCampaign();
+  const campaigns = [
+    { name: 'Quiz No Login', fn: checkQuizNoLoginCampaign },
+    { name: 'Quiz No Subscribe', fn: checkQuizNoSubscribeCampaign },
+    { name: 'Blog No App', fn: checkBlogNoAppCampaign },
+    { name: 'App No First Task', fn: checkAppNoFirstTaskCampaign },
+    { name: 'Free User Conversion', fn: checkFreeUserConversionCampaign },
+    { name: 'Subscription Cancelled', fn: checkSubscriptionCancelledCampaign },
+  ];
 
-    console.log('Email campaigns completed successfully');
-  } catch (error) {
-    console.error('Error running email campaigns:', error);
+  for (const campaign of campaigns) {
+    try {
+      console.log(`  → Running ${campaign.name}...`);
+      await campaign.fn();
+      console.log(`  ✓ ${campaign.name} completed`);
+    } catch (error) {
+      console.error(`  ✗ ${campaign.name} failed:`, error instanceof Error ? error.message : error);
+    }
   }
+
+  console.log('📧 Email campaigns cycle completed');
 }

@@ -144,22 +144,68 @@ app.use((req, res, next) => {
     log(`🌍 Environment: ${app.get("env")}`);
   });
 
-  // Start email automation - runs every hour
+  // Start email automation - runs every 2 hours with safety checks
   if (process.env.NODE_ENV === 'production') {
-    log('📧 Starting email automation campaigns...');
+    log('📧 Email automation enabled');
     
-    // Run immediately on startup
-    await runAllEmailCampaigns();
+    let isRunning = false;
     
-    // Then run every hour
-    setInterval(async () => {
-      try {
-        await runAllEmailCampaigns();
-      } catch (error) {
-        console.error('Error running email campaigns:', error);
+    const safeRunEmailCampaigns = async () => {
+      if (isRunning) {
+        log('⚠️  Email campaigns already running, skipping...');
+        return;
       }
-    }, 60 * 60 * 1000); // 1 hour
+      
+      isRunning = true;
+      const startTime = Date.now();
+      const startMemory = process.memoryUsage().heapUsed / 1024 / 1024;
+      
+      try {
+        const timeout = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Email campaigns timeout after 5 minutes')), 5 * 60 * 1000)
+        );
+        
+        await Promise.race([
+          runAllEmailCampaigns(),
+          timeout
+        ]);
+        
+        const duration = Date.now() - startTime;
+        const endMemory = process.memoryUsage().heapUsed / 1024 / 1024;
+        const memoryDelta = endMemory - startMemory;
+        
+        log(`✅ Email campaigns completed in ${duration}ms (Memory: ${startMemory.toFixed(2)}MB -> ${endMemory.toFixed(2)}MB, Delta: ${memoryDelta.toFixed(2)}MB)`);
+      } catch (error) {
+        console.error('❌ Error running email campaigns:', error instanceof Error ? error.message : error);
+      } finally {
+        isRunning = false;
+      }
+    };
+    
+    setTimeout(() => {
+      safeRunEmailCampaigns().catch(err => console.error('Failed to run initial email campaigns:', err));
+    }, 10000);
+    
+    setInterval(() => {
+      safeRunEmailCampaigns().catch(err => console.error('Failed to run scheduled email campaigns:', err));
+    }, 2 * 60 * 60 * 1000);
   } else {
     log('📧 Email automation disabled in development mode');
   }
+  
+  process.on('SIGTERM', () => {
+    log('SIGTERM received, shutting down gracefully...');
+    server.close(() => {
+      log('Server closed');
+      process.exit(0);
+    });
+  });
+  
+  process.on('uncaughtException', (error) => {
+    console.error('❌ Uncaught Exception:', error);
+  });
+  
+  process.on('unhandledRejection', (reason, promise) => {
+    console.error('❌ Unhandled Rejection:', reason);
+  });
 })();
