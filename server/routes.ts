@@ -1211,6 +1211,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Create or update Stripe customer and start subscription (legacy method)
   app.post("/api/subscription/create", async (req, res) => {
+    const requestStartTime = Date.now();
+    const REQUEST_TIMEOUT = 35000; // 35 second timeout for entire request
+    
     if (!req.isAuthenticated()) {
       return res.status(401).json({ error: "You must be logged in" });
     }
@@ -1247,10 +1250,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const hasValidTestKey = process.env.TESTING_STRIPE_SECRET_KEY?.startsWith('sk_test_') || 
                               process.env.STRIPE_SECRET_KEY?.startsWith('sk_test_');
       
-      console.log(`💳 Creating subscription for user ${user.id}: ${planId} ${period}`);
-      console.log(`  - NODE_ENV: ${process.env.NODE_ENV}`);
-      console.log(`  - Has test key: ${hasValidTestKey}`);
-      console.log(`  - Will use real Stripe integration`);
+      console.log(`[API] 💳 Creating subscription for user ${user.id}: ${planId} ${period}`);
+      console.log(`[API]   - NODE_ENV: ${process.env.NODE_ENV}`);
+      console.log(`[API]   - Has test key: ${hasValidTestKey}`);
+      console.log(`[API]   - Will use real Stripe integration`);
 
       // Production mode: Use actual Stripe integration
       const priceId = planDetails.stripePriceId[period as keyof typeof planDetails.stripePriceId];
@@ -1297,20 +1300,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Create subscription
-      const subscription = await createSubscription({
-        customerId,
-        priceId,
-        userId: user.id,
+      // Create subscription with timeout protection
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => {
+          const elapsed = Date.now() - requestStartTime;
+          reject(new Error(`Subscription creation timeout after ${elapsed}ms`));
+        }, REQUEST_TIMEOUT);
       });
+      
+      const subscription = await Promise.race([
+        createSubscription({
+          customerId,
+          priceId,
+          userId: user.id,
+        }),
+        timeoutPromise
+      ]);
 
+      const elapsed = Date.now() - requestStartTime;
+      console.log(`[API] Subscription creation completed in ${elapsed}ms`);
+      
       res.json({
         subscriptionId: subscription.subscriptionId,
         clientSecret: subscription.clientSecret,
       });
     } catch (error) {
-      console.error("Error creating subscription:", error);
-      res.status(500).json({ error: "Failed to create subscription" });
+      const elapsed = Date.now() - requestStartTime;
+      console.error(`[API] Error creating subscription after ${elapsed}ms:`, error instanceof Error ? error.message : error);
+      
+      // Return specific error messages
+      const errorMessage = error instanceof Error ? error.message : "Failed to create subscription";
+      const statusCode = errorMessage.includes('timeout') ? 504 : 500;
+      
+      res.status(statusCode).json({ error: errorMessage });
     }
   });
 

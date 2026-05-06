@@ -150,21 +150,45 @@ export async function createCustomer({ email, name, userId }: CreateCustomerPara
 
 // Create a Stripe subscription
 export async function createSubscription({ customerId, priceId, userId }: CreateSubscriptionParams) {
+  const startTime = Date.now();
+  const TIMEOUT_MS = 30000; // 30 second timeout
+  
   try {
-    // Create the subscription
-    const subscription = await stripe.subscriptions.create({
-      customer: customerId,
-      items: [{ price: priceId }],
-      payment_behavior: 'default_incomplete',
-      payment_settings: { save_default_payment_method: 'on_subscription' },
-      expand: ['latest_invoice.payment_intent'],
+    console.log(`[Stripe] Creating subscription for user ${userId}, customer ${customerId}, price ${priceId}`);
+    
+    // Create a timeout promise
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => {
+        const elapsed = Date.now() - startTime;
+        reject(new Error(`Stripe subscription creation timeout after ${elapsed}ms. Please try again.`));
+      }, TIMEOUT_MS);
     });
+    
+    // Race between the actual call and the timeout
+    const subscription = await Promise.race([
+      stripe.subscriptions.create({
+        customer: customerId,
+        items: [{ price: priceId }],
+        payment_behavior: 'default_incomplete',
+        payment_settings: { save_default_payment_method: 'on_subscription' },
+        expand: ['latest_invoice.payment_intent'],
+      }),
+      timeoutPromise
+    ]) as Stripe.Subscription;
+    
+    const elapsed = Date.now() - startTime;
+    console.log(`[Stripe] Subscription created successfully in ${elapsed}ms: ${subscription.id}`);
 
     // Update user record with subscription details
-    await storage.updateUserStripeInfo(userId, {
-      stripeSubscriptionId: subscription.id,
-      subscriptionStatus: subscription.status,
-    });
+    try {
+      await storage.updateUserStripeInfo(userId, {
+        stripeSubscriptionId: subscription.id,
+        subscriptionStatus: subscription.status,
+      });
+    } catch (dbError) {
+      console.error(`[Stripe] Failed to update user ${userId} in database:`, dbError);
+      // Don't throw - subscription was created successfully, just log the DB error
+    }
 
     // Return the client secret so the client can complete the payment
     const invoice = subscription.latest_invoice as Stripe.Invoice;
@@ -172,6 +196,7 @@ export async function createSubscription({ customerId, priceId, userId }: Create
     
     // If subscription is active or trialing immediately (no payment needed), return success
     if (subscription.status === 'active' || subscription.status === 'trialing') {
+      console.log(`[Stripe] Subscription ${subscription.id} is ${subscription.status}, no payment needed`);
       return {
         subscriptionId: subscription.id,
         clientSecret: null,
@@ -180,21 +205,45 @@ export async function createSubscription({ customerId, priceId, userId }: Create
       };
     }
 
+    // Try to get the payment intent from the invoice
     if (invoice && 'payment_intent' in invoice && invoice.payment_intent) {
-      if (typeof invoice.payment_intent === 'string') {
-        paymentIntent = await stripe.paymentIntents.retrieve(invoice.payment_intent);
-      } else {
-        paymentIntent = invoice.payment_intent as Stripe.PaymentIntent;
+      try {
+        if (typeof invoice.payment_intent === 'string') {
+          console.log(`[Stripe] Retrieving payment intent: ${invoice.payment_intent}`);
+          paymentIntent = await Promise.race([
+            stripe.paymentIntents.retrieve(invoice.payment_intent),
+            new Promise((_, reject) => setTimeout(() => reject(new Error('Payment intent retrieval timeout')), 10000))
+          ]) as Stripe.PaymentIntent;
+        } else {
+          paymentIntent = invoice.payment_intent as Stripe.PaymentIntent;
+        }
+      } catch (piError) {
+        console.error(`[Stripe] Failed to retrieve payment intent:`, piError);
+        // Continue - we'll return what we have
       }
     }
     
+    const clientSecret = paymentIntent?.client_secret || null;
+    console.log(`[Stripe] Returning subscription with clientSecret: ${clientSecret ? 'present' : 'null'}`);
+    
     return {
       subscriptionId: subscription.id,
-      clientSecret: paymentIntent?.client_secret || null,
+      clientSecret,
       status: subscription.status,
     };
   } catch (error) {
-    console.error('Error creating Stripe subscription:', error);
+    const elapsed = Date.now() - startTime;
+    console.error(`[Stripe] Error creating subscription after ${elapsed}ms:`, error instanceof Error ? error.message : error);
+    
+    // Provide a user-friendly error message
+    if (error instanceof Error && error.message.includes('timeout')) {
+      throw new Error('Payment processing is taking longer than expected. Please try again.');
+    }
+    
+    if (error instanceof Error && error.message.includes('rate_limit')) {
+      throw new Error('Too many requests. Please wait a moment and try again.');
+    }
+    
     throw error;
   }
 }
